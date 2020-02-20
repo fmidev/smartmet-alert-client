@@ -49,7 +49,7 @@ export class SmartAlertClient {
       options.time
     );
 
-    this.defaultDay = options.time != null ? options.time : 0;
+    this.defaultDay = 0;
 
     // Debug mode data
     this.debugInfo = null;
@@ -70,7 +70,10 @@ export class SmartAlertClient {
     // Selection is initialized only once here
     // but updated by user actions. Then, state
     // is available between refresh.
-    this.selectedDay = this.defaultDay;
+    this.selectedDay =
+      options.time != null && options.time.selectedDay != null
+        ? options.time.selectedDay
+        : this.defaultDay;
 
     // Refresh
     this.intervalId = null;
@@ -821,7 +824,6 @@ export class SmartAlertClient {
               jQuery(window).off('scroll', scrollWarningsView);
             };
 
-            // Haxor to make day selection work properly between refresh.
             // By simulating UI component click, we make sure all element and
             // objects are properly updated if selected item differs from default.
             jQuery(`#day${self.selectedDay}`).trigger('click');
