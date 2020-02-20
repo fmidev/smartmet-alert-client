@@ -1,6 +1,6 @@
 Smart Alert Client is a customizable map visualizer for weather, flood and other alerts.
 
-####Compiling
+#### Compiling
 
 Configuration files:
 `js/config/*/*.toml`
@@ -25,7 +25,7 @@ Build all:
 `npm install`
 `npm run build-all`
 
-####Usage
+#### Usage
 
 Create a new instance of the English version:
 
@@ -33,7 +33,7 @@ Create a new instance of the English version:
 
 Other compiled language version are `fi` (Finnish) and `sv` (Swedish). 
 
-####Public API methods
+#### Public API methods
 
 `refresh(force=true, day, callbacks={})`
 Reload and refresh page content. Also, starts automatic refreshing in configured time interval.
