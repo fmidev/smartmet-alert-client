@@ -1,0 +1,4 @@
+refreshInterval = 600000
+automaticOnDocumentReady = false
+automaticOnPageVisible = true
+debugMode = false

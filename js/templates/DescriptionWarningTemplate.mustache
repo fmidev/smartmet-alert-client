@@ -1,0 +1,22 @@
+<div class="current-description-image-cell">
+    <div class="current-description-image warning-image symbol-image symbol-image-rotate-{{direction}} level-{{severity}} {{warningContext}}">
+        <span class="symbol-text symbol-text-rotate-{{direction}} region-warning-symbol-text">{{text}}</span>
+    </div>
+</div>
+<div class="current-description-text-cell ">
+    {{#areaInfo}}
+    <div class="description-info">
+        <span class="bold-text">{{warningTitle}} {{area}} — {{validText}} {{validFrom}} - {{validUntil}}</span><br>
+        {{info}}
+    </div>
+    {{/areaInfo}}
+    <div class="description-indent-text hidden" data-region="{{region}}" data-context="{{warningContext}}" data-severity="{{severity}}">
+        <div class="description-indent">
+            <div class="description-rectangle level-{{severity}}">
+            </div>
+        </div>
+        <div class="description-text">
+          {{description}} <a class="ext-link {{linkHidden}}" href="{{link}}" target="_blank">{{linkText}}</a>
+        </div>
+    </div>
+</div>

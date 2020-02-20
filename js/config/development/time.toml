@@ -1,0 +1,3 @@
+timeZone = 'Europe/Helsinki'
+maxDelay = 25200000 # 7 h
+ajaxCacheTTL = 15 # seconds
