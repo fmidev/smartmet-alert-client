@@ -359,7 +359,7 @@ const MapLargeView = MapView.extend({
               )} ${effectiveUntil
                 .tz(self.timeZone)
                 .format(timeFormat)}</div></div>`;
-              if (_.contains(addedRows, popUpTableRow)) {
+              if (_.includes(addedRows, popUpTableRow)) {
                 return;
               } else {
                 addedRows.push(popUpTableRow);

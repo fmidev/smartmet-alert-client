@@ -3,6 +3,7 @@ const I18nPlugin = require('i18n-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
 const languages = {
   fi: require('./locales/fi.json'),
 };
@@ -22,9 +23,8 @@ module.exports = Object.keys(languages).map(function(language) {
     entry: './js/SmartAlertClient.js',
     output: {
       library: ['fmi', language],
-      globalObject: 'this',
       libraryTarget: 'umd',
-      path: './dist/local/lib',
+      path: path.join(__dirname, './dist/local/lib'),
       filename: 'js/' + language + '.smart-alert-client.local.js',
       publicPath: 'lib/',
     },
@@ -38,19 +38,19 @@ module.exports = Object.keys(languages).map(function(language) {
         },
         {
           test: /.css$/,
-          loader: ExtractTextPlugin.extract('style-loader', 'css-loader', {
+          loader: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: 'css-loader',
             publicPath: '../',
           }),
         },
         {
           test: /.less$/,
-          loader: ExtractTextPlugin.extract(
-            'style-loader',
-            'css-loader!less-loader',
-            {
-              publicPath: '../',
-            }
-          ),
+          loader: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: 'css-loader!less-loader',
+            publicPath: '../',
+          }),
         },
         {
           test: /\.json$/,
@@ -95,24 +95,19 @@ module.exports = Object.keys(languages).map(function(language) {
         },
       ],
     },
-    closureLoader: {
-      paths: [__dirname + '/js/lib/metoclient'],
-      es6mode: true,
-      watch: false,
-    },
     resolve: {
-      // Absolute path that contains modules
-      root: __dirname,
-
       // Directory names to be searched for modules
-      modulesDirectories: ['js', 'node_modules'],
+      modules: [__dirname, 'js', 'node_modules'],
 
       // Replace modules with other modules or paths for compatibility or convenience
       alias: {
         underscore: 'lodash',
       },
     },
-    watch: true,
+    resolveLoader: {
+     moduleExtensions: ['-loader']
+    },
+    watch: false,
     plugins: [
       // Ignore all locale files of moment.js
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -147,7 +142,8 @@ module.exports = Object.keys(languages).map(function(language) {
         },
       ]),
       new I18nPlugin(languages[language]),
-      new webpack.BannerPlugin(banner, {
+      new webpack.BannerPlugin({
+        banner: banner,
         raw: false,
         entryOnly: true,
       }),

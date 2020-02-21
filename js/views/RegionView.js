@@ -57,7 +57,7 @@ const RegionView = Backbone.View.extend({
         warning.get('days').forEach((day) => {
           for (let j = 0; j < numParentWarnings; j++) {
             if (
-              _.contains(parentWarnings[j].get('days'), day) &&
+              _.includes(parentWarnings[j].get('days'), day) &&
               warning.collection.isIdentical(warning, parentWarnings[j]) &&
               numParentWarnings === regionWarnings.length
             ) {

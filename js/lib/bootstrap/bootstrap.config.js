@@ -3,9 +3,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
 
   // Default for the style loading
-  styleLoader: ExtractTextPlugin.extract('style-loader', 'css-loader!namespace-css-webpack-loader?scopeVarType=id&nameSpace=fmi-warnings!less-loader', {
-      publicPath: '../'
-  }),
+  styleLoader: 'style-loader!css-loader!namespace-css-webpack-loader?scopeVarType=id&nameSpace=fmi-warnings!less-loader',
+
   scripts: {
     'transition': true,
     'alert': true,
