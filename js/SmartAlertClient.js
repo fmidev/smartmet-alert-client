@@ -83,7 +83,7 @@ export class SmartAlertClient {
     this.windowEventsOff = null;
     // This holds the state of selection and should be
     // initialized only just before emptying and reloading content.
-    this.unselectedDataWarnings = null;
+    this.unselectedDataWarnings = [];
 
     // API callback functions
     this.apiCallbacks = {};
@@ -162,11 +162,12 @@ export class SmartAlertClient {
     // by unselecting data warnings before loading content
     // and setting it again after refresh. Without this
     // selections may not work properly.
+    const self = this;
     this.unselectedDataWarnings = [];
     jQuery('#fmi-warnings-list .flag-unselected').each(function() {
       const value = jQuery(this).attr('data-warning');
       if (value) {
-        this.unselectedDataWarnings.push(value);
+        self.unselectedDataWarnings.push(value);
       }
     });
     // Unselect all to make things work properly after reload.
@@ -724,8 +725,11 @@ export class SmartAlertClient {
               });
 
             jQuery('div#fmi-warnings .symbol-list-select')
-              .off('click')
-              .on('click', function() {
+              .off('click touchend')
+              .on('click touchend', function(event) {
+                if (event.type === 'touchend') {
+                  event.preventDefault();
+                }
                 const elem = jQuery(this);
                 elem
                   .toggleClass('flag-selected')
@@ -754,7 +758,10 @@ export class SmartAlertClient {
                       '\n' +
                       __('selectWarningTooltipLine2')
                   );
-                  if (jQuery('.tooltip').is(':visible')) {
+                  if (
+                    jQuery('.tooltip').is(':visible') &&
+                    event.type !== 'touchend'
+                  ) {
                     elem.tooltip('show');
                   }
                 } else {
@@ -767,9 +774,15 @@ export class SmartAlertClient {
                       '\n' +
                       __('selectDisabledWarningTooltipLine2')
                   );
-                  if (jQuery('.tooltip').is(':visible')) {
+                  if (
+                    jQuery('.tooltip').is(':visible') &&
+                    event.type !== 'touchend'
+                  ) {
                     elem.tooltip('show');
                   }
+                }
+                if (event.type === 'touchend') {
+                  elem.tooltip('hide');
                 }
                 self.updateActiveWarnings_();
               });
