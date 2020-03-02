@@ -579,7 +579,7 @@ export class SmartAlertClient {
               self.debugInfo.womlData = womlData;
               self.debugInfo.capData = capData;
               // Set here custom date for debugging purposes
-              // currentTime = moment('2017-01-28 9:50:00');
+              // this.currentTime = moment('2020-02-05 19:50:00');
               // console.log(`Debug mode: Current time is ${currentTime}.`);
             }
             if (capTime[1] === constants.AJAX_SUCCESS) {

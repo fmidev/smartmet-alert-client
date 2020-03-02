@@ -107,7 +107,7 @@ module.exports = Object.keys(languages).map(function(language) {
       },
     },
     resolveLoader: {
-     moduleExtensions: ['-loader']
+      moduleExtensions: ['-loader'],
     },
     watch: false,
     plugins: [
