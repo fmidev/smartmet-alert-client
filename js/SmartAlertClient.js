@@ -560,7 +560,7 @@ export class SmartAlertClient {
               cache: true,
               localCache: self.isLocalStorageAvailable_(),
               cacheTTL: 24 * 365,
-              cacheKey: 'regions-finland-2018-02',
+              cacheKey: 'regions-finland-2020-01',
               isCacheValid() {
                 return true;
               },
