@@ -31,12 +31,12 @@ Create a new instance of the English version:
 
 `var smartAlertClient = new fmi.en.SmartAlertClient(options);`
 
-Other compiled language version are `fi` (Finnish) and `sv` (Swedish). 
+Other compiled language version are `fi` (Finnish) and `sv` (Swedish).
 
 #### Public API methods
 
-`refresh(force=true, day, callbacks={})`
-Reload and refresh page content. Also, starts automatic refreshing in configured time interval.
+`refresh()`
+Reload and refresh page content.
 
 `stop()`
 Stop automatic refreshing started in the refresh function. Does not remove current content.

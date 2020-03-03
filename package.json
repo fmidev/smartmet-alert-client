@@ -1,6 +1,6 @@
 {
   "name": "smart-alert-client",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "ISC",

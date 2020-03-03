@@ -49,6 +49,13 @@ export class SmartAlertClient {
       options.time
     );
 
+    if (
+      typeof this.page.refreshInterval === 'number' &&
+      this.page.refreshInterval < constants.MINIMUM_REFRESH_INTERVAL
+    ) {
+      this.page.refreshInterval = constants.MINIMUM_REFRESH_INTERVAL;
+    }
+
     this.defaultDay = 0;
 
     // Debug mode data
@@ -77,29 +84,20 @@ export class SmartAlertClient {
 
     // Refresh
     this.intervalId = null;
-    this.lastRefreshTime = null;
-    this.lastForcedRefreshTime = null;
     this.workspace = null;
     this.windowEventsOff = null;
     // This holds the state of selection and should be
     // initialized only just before emptying and reloading content.
     this.unselectedDataWarnings = [];
 
-    // API callback functions
-    this.apiCallbacks = {};
-
     // Initialize
     this.createWorkspace_();
 
-    // Refresh when the page gained visibility and not otherwise
+    // Refresh when the page gained visibility
     if (this.page.automaticOnPageVisible) {
       jQuery(document).on({
         show: () => {
-          // Refresh should be forced only via API if there is
-          // any possibility for conflicting asynchronous operations.
-          this.refresh({
-            force: false,
-          });
+          this.refresh();
         },
         hide: () => {
           this.stop();
@@ -109,6 +107,13 @@ export class SmartAlertClient {
   }
 
   init_() {
+    if (typeof this.page.refreshInterval === 'number') {
+      this.intervalId = setTimeout(
+        this.refresh.bind(this),
+        this.page.refreshInterval
+      );
+    }
+
     // Debug mode data
     this.debugInfo = {};
 
@@ -606,23 +611,6 @@ export class SmartAlertClient {
                 self.modificationTime = womlModificationTime;
               }
             }
-            // Check if warnings are recently enough updated.
-            if (
-              self.currentTime.diff(self.modificationTime) > self.time.maxDelay
-            ) {
-              // Try to update old warnings.
-              if (
-                self.lastForcedRefreshTime == null ||
-                self.currentTime.diff(self.lastForcedRefreshTime) >
-                  self.page.refreshInterval / 2
-              ) {
-                self.lastForcedRefreshTime = self.currentTime.clone();
-                self.refresh();
-                return;
-              } else {
-                // Could not update too old warnings. Show an information message?
-              }
-            }
             if (capData[1] === constants.AJAX_SUCCESS) {
               capData[0].features.forEach(
                 self.createWarningModelFromCAP_,
@@ -853,9 +841,6 @@ export class SmartAlertClient {
               jQuery(`#day${self.defaultDay + 1}`).trigger('click');
               jQuery(`#day${self.defaultDay}`).trigger('click');
             }
-            if (self.apiCallbacks['finished']) {
-              self.apiCallbacks['finished'].call(self, true);
-            }
           })
           .fail(() => {
             // Hide spinner and show error text above actual content.
@@ -864,9 +849,6 @@ export class SmartAlertClient {
               .after(
                 `<div class="load-data-failed-text">${__('failed')}</div>`
               );
-            if (self.apiCallbacks['finished']) {
-              self.apiCallbacks['finished'].call(self, false);
-            }
           });
       });
   }
@@ -1017,57 +999,12 @@ export class SmartAlertClient {
     });
   }
 
-  // For internal use, force update parameter is set false as default.
-  singleRefresh_(force = false) {
-    // Prevent refresh conflicts
-    if (
-      force ||
-      this.lastRefreshTime == null ||
-      moment().diff(this.lastRefreshTime) > this.page.refreshInterval / 2
-    ) {
-      if (this.page.automaticOnPageVisible) {
-        this.lastRefreshTime = moment();
-      }
-      // Current refresh implementation tries to keep things simple by
-      // emptying old and recreating everything. More optimal and elegant
-      // way might be to keep old models and collections and use them to keep
-      // the state and handle refreshing of content by using them instead of
-      // recreating everything.
-      //
-      // Empty all and release event handlers before refreshing new content.
-      this.emptyInternal_();
-      // Recreate everything but do not loose user choices, keep the state.
-      this.createWorkspace_();
-    }
-  }
-
-  // Reload and refresh page content.
-  // Also, starts automatic refreshing in configured time interval.
-  // As a default, force refresh parameter is true for calls via API.
-  // Internal calls should make sure false is used in proper places.
-  refresh(config) {
-    // Stop possible existing interval before restarting new one.
-    // Then, multiple refresh calls without empty or stop between
-    // do not create multiple parallel intervals.
-    this.stop();
-    if (config == null) {
-      config = {};
-    }
-    if (config.day != null) {
-      this.selectedDay = config.day;
-    }
-    if (config.urls != null) {
-      this.urls = config.urls;
-    }
-    this.apiCallbacks = config.callbacks != null ? config.callbacks : {};
-    // Refresh content immediately.
-    this.singleRefresh_(config.force != null ? config.force : true);
-    // Start refresh interval.
-    this.intervalId = setInterval(
-      this.singleRefresh_,
-      this.page.refreshInterval
-    );
+  refresh() {
+    console.log('REFRESH');
+    // Empty all and release event handlers before refreshing new content.
+    this.empty();
+    // Recreate everything but do not loose user choices, keep the state.
+    this.createWorkspace_();
   }
 }
-
 export default SmartAlertClient;
