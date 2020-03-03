@@ -439,6 +439,12 @@ div#fmi-warnings div.current-description-image {
   width: 48px;
   height: 48px;
 }
+div#fmi-warnings div.symbol-list {
+  position: -webkit-sticky;
+  /* Safari */
+  position: sticky;
+  top: 0;
+}
 div#fmi-warnings div.symbol-list-table {
   display: table;
   border-spacing: 0;

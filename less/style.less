@@ -121,6 +121,11 @@ div#fmi-warnings {
       width: @current-description-image-height;
       height: @current-description-image-height;
     }
+    &.symbol-list {
+      position: -webkit-sticky; /* Safari */
+      position: sticky;
+      top: 0;
+    }
     &.symbol-list-table {
       display: table;
       border-spacing: 0;

@@ -17,7 +17,6 @@ import DaysView from 'views/DaysView';
 import RegionsView from 'views/RegionsView';
 import WarningsView from 'views/WarningsView';
 import Workspace from 'routers/Router';
-import findBootstrapEnvironment from 'tools/Layout';
 import * as constants from 'tools/Constants';
 
 export class SmartAlertClient {
@@ -782,47 +781,19 @@ export class SmartAlertClient {
                 jQuery(this).tooltip('hide');
               });
 
-            const scrollWarningsView = () => {
-              const bootstrapEnvironment = findBootstrapEnvironment();
-              if (['md', 'lg'].includes(bootstrapEnvironment)) {
-                const warningsViewDiv = jQuery('#fmi-warnings-view');
-                const windowScrollTop = jQuery(window).scrollTop();
-                const column = jQuery('#fmi-warnings-view').parent();
-                const columnHeight = column.height();
-                const columnTop = column.offset().top;
-                if (columnTop - windowScrollTop < 0) {
-                  const bottom = columnTop + column.parent().height();
-                  warningsViewDiv.offset({
-                    top:
-                      windowScrollTop + columnHeight > bottom
-                        ? bottom - columnHeight
-                        : windowScrollTop,
-                  });
-                } else {
-                  warningsViewDiv.offset({
-                    top: columnTop,
-                  });
-                }
-              }
-            };
-
             const resizer = () => {
               const warningsViewDiv = jQuery('#fmi-warnings-view');
               warningsViewDiv.offset({
                 top: warningsViewDiv.parent().offset().top,
               });
-              scrollWarningsView();
               // Mobile device memory saving
               self.daysView.renderMapSmallViews();
             };
 
             jQuery(window).resize(resizer);
 
-            jQuery(window).scroll(scrollWarningsView);
-
             self.windowEventsOff = () => {
               jQuery(window).off('resize', resizer);
-              jQuery(window).off('scroll', scrollWarningsView);
             };
 
             // By simulating UI component click, we make sure all element and
@@ -832,12 +803,8 @@ export class SmartAlertClient {
             // Like above trigger clicks to set proper selection for warning flag selection.
             self.setUnselectedDataWarnings_();
 
-            // TODO: Better fix needed to avoid unnecessary switching.
-            // This is just a quick fix to show the warnings information.
-            // So, this if-clause and its content should be removed when better fix implemented.
             if (self.selectedDay === self.defaultDay) {
               // This temporary switching makes sure warning information is shown.
-              // Notice, better fix should be done when actual reason to problem is known.
               jQuery(`#day${self.defaultDay + 1}`).trigger('click');
               jQuery(`#day${self.defaultDay}`).trigger('click');
             }
