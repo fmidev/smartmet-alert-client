@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.7 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.8 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -6165,4 +6165,7 @@ div#fmi-warnings .tooltip.right .tooltip-arrow:after {
   margin-top: -6px;
   border-width: 6px 6px 6px 0;
   border-right-color: #e3e3e3;
+}
+div#fmi-warnings .tab-content {
+  border-style: none;
 }
