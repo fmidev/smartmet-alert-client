@@ -54,6 +54,7 @@ export class SmartAlertClient {
     ) {
       this.page.refreshInterval = constants.MINIMUM_REFRESH_INTERVAL;
     }
+    this.lastRefreshed = 0;
 
     this.defaultDay = 0;
 
@@ -89,14 +90,14 @@ export class SmartAlertClient {
     // initialized only just before emptying and reloading content.
     this.unselectedDataWarnings = [];
 
-    // Initialize
-    this.createWorkspace_();
+    // Render
+    this.update_();
 
     // Refresh when the page gained visibility
     if (this.page.automaticOnPageVisible) {
       jQuery(document).on({
         show: () => {
-          this.refresh();
+          this.update_();
         },
         hide: () => {
           this.stop();
@@ -106,13 +107,6 @@ export class SmartAlertClient {
   }
 
   init_() {
-    if (typeof this.page.refreshInterval === 'number') {
-      this.intervalId = setTimeout(
-        this.refresh.bind(this),
-        this.page.refreshInterval
-      );
-    }
-
     // Debug mode data
     this.debugInfo = {};
 
@@ -134,9 +128,6 @@ export class SmartAlertClient {
     // Time
     this.currentTime = moment();
     this.modificationTime = moment(null);
-
-    // Refresh
-    this.intervalId = undefined;
 
     // This may be called multiple times when using interval refresh.
     if (!Backbone.History.started) {
@@ -831,60 +822,64 @@ export class SmartAlertClient {
     }
   }
 
-  createWorkspace_() {
-    this.init_();
-
-    this.loadData_();
-
-    // Collect debug info
-    const getBrowser = () => {
-      const ua = navigator.userAgent;
-      let tem;
-      let M =
-        ua.match(
-          /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i
-        ) || [];
-      if (/trident/i.test(M[1])) {
-        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return { name: 'IE', version: tem[1] || '' };
+  getBrowser_ () {
+    const ua = navigator.userAgent;
+    let tem;
+    let M =
+      ua.match(
+        /(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i
+      ) || [];
+    if (/trident/i.test(M[1])) {
+      tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+      return { name: 'IE', version: tem[1] || '' };
+    }
+    if (M[1] === 'Chrome') {
+      tem = ua.match(/\bOPR\/(\d+)/);
+      if (tem != null) {
+        return { name: 'Opera', version: tem[1] };
       }
-      if (M[1] === 'Chrome') {
-        tem = ua.match(/\bOPR\/(\d+)/);
-        if (tem != null) {
-          return { name: 'Opera', version: tem[1] };
-        }
-      }
-      M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-      if ((tem = ua.match(/version\/(\d+)/i)) != null) {
-        M.splice(1, 1, tem[1]);
-      }
-      return {
-        name: M[0],
-        version: M[1],
-      };
+    }
+    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+    if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+      M.splice(1, 1, tem[1]);
+    }
+    return {
+      name: M[0],
+      version: M[1],
     };
-    if (this.page.debugMode) {
-      jQuery('#fmi-warnings')
-        .prepend(
-          jQuery(
-            '<br><p>Liitä virheraporttiin seuraavat tiedot:</p><ul><li>mistä virheessä on kyse? (tarvittaessa myös kuva)</li><li>miten virhe saadaan toistettua?</li><li>oheisesta painikkeesta tuotettu tieto:<ul><li>uusi välilehti tai ikkuna avautuu ja muutaman sekunnin sisällä siihen ilmestyy tekstiä</li><li>valitse koko teksti (esimerkiksi paina Ctrl-a)</li><li>kopioi valittu teksti (Ctrl-c)</li><li>liitä teksti virheraporttiin (Ctrl-v)</li></ul></ul>'
-          )
+  };
+
+  generateErrorReport_ () {
+    jQuery('#fmi-warnings')
+      .prepend(
+        jQuery(
+          '<br><p>Liitä virheraporttiin seuraavat tiedot:</p><ul><li>mistä virheessä on kyse? (tarvittaessa myös kuva)</li><li>miten virhe saadaan toistettua?</li><li>oheisesta painikkeesta tuotettu tieto:<ul><li>uusi välilehti tai ikkuna avautuu ja muutaman sekunnin sisällä siihen ilmestyy tekstiä</li><li>valitse koko teksti (esimerkiksi paina Ctrl-a)</li><li>kopioi valittu teksti (Ctrl-c)</li><li>liitä teksti virheraporttiin (Ctrl-v)</li></ul></ul>'
         )
-        .prepend(
-          '<input type="button" id="test-raport" value="Liitetieto virheraporttiin" /><br>'
-        );
-      jQuery('#test-raport').click(() => {
-        const w = window.open();
-        jQuery(w.document.body).html(
-          JSON.stringify({
-            navigator,
-            browser: getBrowser(),
-            currentTime: this.currentTime,
-            woml: this.debugInfo.womlData,
-            cap: this.debugInfo.capData,
-          })
-        );
-      });
+      )
+      .prepend(
+        '<input type="button" id="test-raport" value="Liitetieto virheraporttiin" /><br>'
+      );
+    jQuery('#test-raport').click(() => {
+      const w = window.open();
+      jQuery(w.document.body).html(
+        JSON.stringify({
+          navigator,
+          browser: this.getBrowser_(),
+          currentTime: this.currentTime,
+          woml: this.debugInfo.womlData,
+          cap: this.debugInfo.capData,
+        })
+      );
+    });
+  }
+
+  createWorkspace_() {
+    this.lastRefreshed = Date.now();
+    this.init_();
+    this.loadData_();
+    // Collect debug info
+    if (this.page.debugMode) {
+      this.generateErrorReport_();
     }
   }
 
@@ -936,15 +931,6 @@ export class SmartAlertClient {
     jQuery('#fmi-warnings').empty();
   }
 
-  // Empty page content.
-  // Does not remove wrapping element itself, only its content.
-  // Removes page content related event handlers.
-  // Stops automatic refresh.
-  empty() {
-    this.stop();
-    this.emptyInternal_();
-  }
-
   // Select specific day.
   selectDay(day) {
     this.selectedDay = day;
@@ -966,10 +952,28 @@ export class SmartAlertClient {
     });
   }
 
+  update_() {
+    let dateNow = Date.now();
+    if (typeof this.page.refreshInterval === 'number') {
+      clearInterval(this.intervalId);
+      this.intervalId = setTimeout(
+        this.update_.bind(this),
+        this.page.refreshInterval
+      );
+    }
+    if (
+      ((document) && (document.visibilityState === 'hidden')) ||
+      (dateNow - this.lastRefreshed < constants.MINIMUM_REFRESH_INTERVAL)
+    ) {
+      return;
+    }
+    this.refresh();
+  }
+
   refresh() {
-    console.log('REFRESH');
     // Empty all and release event handlers before refreshing new content.
-    this.empty();
+    this.emptyInternal_();
+
     // Recreate everything but do not loose user choices, keep the state.
     this.createWorkspace_();
   }
