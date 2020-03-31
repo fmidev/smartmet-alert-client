@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+import 'idempotent-babel-polyfill';
 import 'bootstrap-webpack!lib/bootstrap/bootstrap.config.js';
 import 'lib/jquery/jalc';
 import 'lib/jquery/attrchange';
@@ -128,6 +128,10 @@ export class SmartAlertClient {
     // Time
     this.currentTime = moment();
     this.modificationTime = moment(null);
+
+    if ((this.workspace == null) && (Backbone.History.started)) {
+      Backbone.history.stop();
+    }
 
     // This may be called multiple times when using interval refresh.
     if (!Backbone.History.started) {
