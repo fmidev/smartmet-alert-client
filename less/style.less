@@ -154,6 +154,9 @@ div#fmi-warnings {
       padding-left: 15px;
       padding-right: 15px;
       padding-bottom: 5px;
+      span {
+        white-space: nowrap;
+      }
     }
     &.warning-image {
       border-radius: 50%;
@@ -176,17 +179,18 @@ div#fmi-warnings {
       position: absolute;
       margin-left: 15px;
       text-align: left;
-      z-index: 100;
+      z-index: 6;
     }
     &.data-providers {
       position: absolute;
       bottom: 12px;
       right: 16px;
       text-align: left;
-      z-index: 100;
+      z-index: 5;
     }
     &#fmi-warnings-view {
       margin-top: 15px;
+      min-width: 220px;
     }
     &#map {
       width: 100%;
@@ -198,7 +202,7 @@ div#fmi-warnings {
       bottom: 0;
     }
     .ol-zoom {
-      z-index: 200 !important;
+      z-index: 7 !important;
     }
   }
 
@@ -829,7 +833,7 @@ div#fmi-warnings {
   div.drag-container {
     &.zoom-zero {
       position: absolute;
-      z-index: 100;
+      z-index: 4;
       height: @map-large-height;
       left: 10px;
       right: 10px;
@@ -928,6 +932,10 @@ div#fmi-warnings {
 
   .tab-content {
     border-style: none;
+  }
+
+  #fmi-days-view p {
+    white-space: normal;
   }
 
 }

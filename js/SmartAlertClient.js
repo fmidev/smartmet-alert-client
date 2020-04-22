@@ -144,6 +144,12 @@ export class SmartAlertClient {
       // Create new main view by hand.
       this.workspace.main();
     }
+    if (this.page.stickyOffsetContainer != null) {
+      const stickyOffset = jQuery(this.page.stickyOffsetContainer).height();
+      if (stickyOffset) {
+        jQuery('div#fmi-warnings div.symbol-list').css('top', stickyOffset + 'px');
+      }
+    }
   }
 
   setUnselectedDataWarnings_() {

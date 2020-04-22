@@ -15,7 +15,7 @@ div#fmi-warnings {
     left: -50px;
     min-width: 300px;
     max-width: 400px;
-    z-index: 300;
+    z-index: 9;
   }
 
   .ol-popup:after, .ol-popup:before {
@@ -42,13 +42,17 @@ div#fmi-warnings {
     margin-left: -11px;
   }
 
-  .ol-popup-closer {
+  a.ol-popup-closer {
     position: absolute;
     top: 0;
     right: 0;
     height: 35px;
     width: 35px;
     background: url('@{image-ui-base-path}close.svg') no-repeat center;
+    &#day-map-large-base-popup-closer {
+      border-bottom: 0 none transparent;
+      z-index: 8;
+    }
   }
 
   .region-popup {
