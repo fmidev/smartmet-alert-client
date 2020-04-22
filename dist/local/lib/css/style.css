@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.12 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.13 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -371,6 +371,11 @@ div#fmi-warnings .region-popup-body {
   /* IE9 Compat Modes */
   src: local('Open Sans Bold'), local('OpenSans-Bold'), url(.././webpack-assets/open-sans-v13-latin-700/813c58a5156a3f3caddec473846f776f.eot?#iefix) format('embedded-opentype'),  url(.././webpack-assets/open-sans-v13-latin-700/73437ad44345f889f45e27c428d618d8.woff2) format('woff2'),  url(.././webpack-assets/open-sans-v13-latin-700/72862e7cf19603ad24f26baf86dd0e08.woff) format('woff'),  url(.././webpack-assets/open-sans-v13-latin-700/bdafb9df42d16395dd5d87d12a74ea3f.ttf) format('truetype'),  url(.././webpack-assets/open-sans-v13-latin-700/c0e9eb34c80900aaacc306b011e1ee3c.svg#OpenSans) format('svg');
   /* Legacy iOS */
+}
+div#fmi-warnings {
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
 div#fmi-warnings div.load-data-failed-text {
   color: red;
