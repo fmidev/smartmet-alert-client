@@ -124,6 +124,9 @@ div#fmi-warnings {
       width: @current-description-image-height;
       height: @current-description-image-height;
     }
+    &.day-region-views {
+      padding-left: 0;
+    }
     &.symbol-list {
       position: -webkit-sticky; /* Safari */
       position: sticky;
@@ -193,7 +196,7 @@ div#fmi-warnings {
     }
     &#fmi-warnings-view {
       margin-top: 15px;
-      min-width: 220px;
+      min-width: 240px;
     }
     &#map {
       width: 100%;
@@ -309,8 +312,8 @@ div#fmi-warnings {
   .show-text {
     margin-top: 5px;
     margin-bottom: 5px;
-    padding-right: 15px;
-    float: right;
+    padding-left: 59px;
+    float: left;
     color: #53b9e6;
     cursor: pointer;
   }
@@ -486,6 +489,10 @@ div#fmi-warnings {
       border-radius: 0;
       border: none;
     }
+  }
+
+  .navbar {
+    padding: 0;
   }
 
   .main_navbar .navbar-default,
@@ -763,7 +770,7 @@ div#fmi-warnings {
     font-size: 0 !important;
   }
 
-  @media (max-width: 639px) {
+  @media (max-width: 575px) {
     #fmi-day-small-view .map-small, #fmi-day-small-view .map-container {
       display: none;
     }
@@ -818,6 +825,12 @@ div#fmi-warnings {
       background-image: url('@{warning-image-path}several@{image-extension}') !important;
     }
 
+  }
+
+  @media (min-width: 576px) {
+    .col-sm-8 {
+      max-width: none;
+    }
   }
 
   @media print {
@@ -941,4 +954,10 @@ div#fmi-warnings {
     white-space: normal;
   }
 
+}
+
+@media (min-width: 768px) {
+  div#fmi-warnings {
+    min-width: 700px;
+  }
 }
