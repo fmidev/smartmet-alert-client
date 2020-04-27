@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.13 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.15 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -448,11 +448,15 @@ div#fmi-warnings div.current-description-image {
   width: 48px;
   height: 48px;
 }
+div#fmi-warnings div.day-region-views {
+  padding-left: 0;
+}
 div#fmi-warnings div.symbol-list {
   position: -webkit-sticky;
   /* Safari */
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 div#fmi-warnings div.symbol-list-table {
   display: table;
@@ -518,7 +522,7 @@ div#fmi-warnings div.data-providers {
 }
 div#fmi-warnings div#fmi-warnings-view {
   margin-top: 15px;
-  min-width: 220px;
+  min-width: 240px;
 }
 div#fmi-warnings div#map {
   width: 100%;
@@ -613,8 +617,8 @@ div#fmi-warnings .show-text-row {
 div#fmi-warnings .show-text {
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-right: 15px;
-  float: right;
+  padding-left: 59px;
+  float: left;
   color: #53b9e6;
   cursor: pointer;
 }
@@ -751,6 +755,9 @@ div#fmi-warnings a.current-warning-toggle:active {
 div#fmi-warnings .panel-group .panel {
   border-radius: 0;
   border: none;
+}
+div#fmi-warnings .navbar {
+  padding: 0;
 }
 div#fmi-warnings .main_navbar .navbar-default,
 div#fmi-warnings .dropdown-menu {
@@ -6037,7 +6044,7 @@ div#fmi-warnings .noselect {
 div#fmi-warnings .ol-viewport .ol-control button {
   font-size: 0 !important;
 }
-@media (max-width: 639px) {
+@media (max-width: 575px) {
   div#fmi-warnings #fmi-day-small-view .map-small,
   div#fmi-warnings #fmi-day-small-view .map-container {
     display: none;
@@ -6079,6 +6086,11 @@ div#fmi-warnings .ol-viewport .ol-control button {
   }
   div#fmi-warnings div.mobile-several {
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjhweCIgaGVpZ2h0PSIyOHB4IiB2aWV3Qm94PSIwIDAgMjggMjgiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTMuMzMzMzMzJSwxMi4xNTY4NjMlLDEyLjU0OTAyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDkuOTU3MDMxIDE0Ljk4NDM3NSBMIDE4LjYzMjgxMiAxNC45ODQzNzUgTCAxOC42MzI4MTIgMTMuNjA1NDY5IEwgOS45NTcwMzEgMTMuNjA1NDY5IFogTSA5Ljk1NzAzMSAxNC45ODQzNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTMuMzMzMzMzJSwxMi4xNTY4NjMlLDEyLjU0OTAyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjYwNTQ2OSAxOC42MzI4MTIgTCAxNC45ODQzNzUgMTguNjMyODEyIEwgMTQuOTg0Mzc1IDkuOTU3MDMxIEwgMTMuNjA1NDY5IDkuOTU3MDMxIFogTSAxMy42MDU0NjkgMTguNjMyODEyICIvPgo8L2c+Cjwvc3ZnPgo=) !important;
+  }
+}
+@media (min-width: 576px) {
+  div#fmi-warnings .col-sm-8 {
+    max-width: none;
   }
 }
 @media print {
@@ -6187,4 +6199,9 @@ div#fmi-warnings .tab-content {
 }
 div#fmi-warnings #fmi-days-view p {
   white-space: normal;
+}
+@media (min-width: 768px) {
+  div#fmi-warnings {
+    min-width: 700px;
+  }
 }
