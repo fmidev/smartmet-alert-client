@@ -236,6 +236,9 @@ const MapLargeView = MapView.extend({
       },
     });
     const map = MapView.prototype.visualizer.getMap();
+    if (map == null) {
+      return;
+    }
     MapView.prototype.zoomLevel = map.getView().getZoom();
 
     let showMapPopup = function(coordinate) {
