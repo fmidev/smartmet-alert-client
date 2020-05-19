@@ -24,7 +24,7 @@ const SeaWindModel = WarningModel.extend({
       this.set('severity', 2);
     }
   },
-  getSymbol(magnitude = true) {
+  getSymbol(size, magnitude = true) {
     // Notice, it is enough to provide svg-element that is existing by itself for Snap.
     const paper = Snap(
       jQuery(
@@ -47,10 +47,10 @@ const SeaWindModel = WarningModel.extend({
         'font-weight': 'bold',
       });
     const group = paper.group(circle, path, text);
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20">${group.outerSVG()}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}px" height="${size}px" viewBox="0 0 20 20">${group.outerSVG()}</svg>`;
   },
   getScale() {
-    return 1.5;
+    return 7;
   },
   getDirection() {
     const direction = this.get('direction');

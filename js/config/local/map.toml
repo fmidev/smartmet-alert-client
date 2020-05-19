@@ -7,5 +7,5 @@ resolutions = [2500, 1024, 512]
 zoom = 0
 projection = 'EPSG:3067'
 minMapWidthForPopup = 400
-iconScale = 1.2
+iconSize = 24
 minSymbolDistance = 50000

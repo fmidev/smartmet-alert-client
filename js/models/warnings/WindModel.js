@@ -21,7 +21,7 @@ const WindModel = WarningModel.extend({
       this.set('direction', direction - 90);
     }
   },
-  getSymbol() {
+  getSymbol(size) {
     // Notice, it is enough to provide svg-element that is existing by itself for Snap.
     const paper = Snap(
       jQuery(
@@ -49,7 +49,7 @@ const WindModel = WarningModel.extend({
       .attr({
         fill: '#221F20',
       });
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="10 10 20 20">${polygon.outerSVG()}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}px" height="${size}px" viewBox="10 10 20 20">${polygon.outerSVG()}</svg>`;
   },
   getDirection() {
     const direction = this.get('direction');

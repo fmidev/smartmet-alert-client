@@ -58,7 +58,7 @@ const WarningModel = Backbone.Model.extend({
     return '';
   },
   getScale() {
-    return map.iconScale;
+    return 0;
   },
   getDirection() {
     return 0;

@@ -7,6 +7,7 @@
 @symbol-list-select-height: 30px;
 @symbol-list-image-size: 44px;
 @image-padding: 3px;
+@map-large-width: 500px;
 @map-large-height: 550px;
 @image-base-path: '@{base-path}img/';
 @warning-image-path: '@{image-base-path}warning/';
@@ -82,7 +83,7 @@ div#fmi-warnings {
     }
     &.map-large {
       display: inline-block;
-      width: 100%;
+      width: @map-large-width;
       height: @map-large-height;
       background-color: #f8f8f8;
     }
@@ -210,6 +211,10 @@ div#fmi-warnings {
     }
     .ol-zoom {
       z-index: 7 !important;
+      display: none;
+      &.visible-zoom {
+        display: block;
+      }
     }
   }
 
@@ -743,6 +748,7 @@ div#fmi-warnings {
     width: 100%;
     text-align: center;
     margin: 0 auto;
+    padding-bottom: 1px;
     font-family: 'Open Sans', sans-serif;
     color: #ffffff;
     text-anchor: middle;
@@ -767,7 +773,7 @@ div#fmi-warnings {
     cursor: pointer;
   }
 
-  .ol-viewport .ol-control button {
+  .ol-control button {
     font-size: 0 !important;
   }
 

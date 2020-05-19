@@ -784,9 +784,11 @@ export class SmartAlertClient {
 
             const resizer = () => {
               const warningsViewDiv = jQuery('#fmi-warnings-view');
-              warningsViewDiv.offset({
-                top: warningsViewDiv.parent().offset().top,
-              });
+              if ((warningsViewDiv != null) && (warningsViewDiv.parent() != null) && (warningsViewDiv.parent().offset() != null)) {
+                warningsViewDiv.offset({
+                  top: warningsViewDiv.parent().offset().top,
+                });
+              }
               // Mobile device memory saving
               self.daysView.renderMapSmallViews();
             };

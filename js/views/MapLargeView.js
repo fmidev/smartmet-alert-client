@@ -511,6 +511,10 @@ const MapLargeView = MapView.extend({
     jQuery(`.day-map-large-${this.model.get('index')} .day-map-large`)
       .attr('id', 'day-map-large')
       .append(jQuery('#day-map-large-base'));
+    const zoomControl = jQuery('div#fmi-day-large-view>div.tab-pane>div.map-container div.ol-zoom');
+    if (zoomControl.length > 0) {
+      zoomControl.detach().appendTo('div#fmi-day-large-view>div.tab-pane.active>div.map-container');
+    }
     MapView.prototype.visualizer.hidePopup();
     MapView.prototype.visualizer.clearFeatures('WeatherSymbols');
     MapView.prototype.render.call(this);
@@ -670,7 +674,9 @@ const MapLargeView = MapView.extend({
         halfImageWidth +
         (numSymbols - 1 + (severalWarnings ? 1 : 0)) * halfImageWidth;
       const zIndex = 1000 + regionFeature.get('priority');
+      const zoomedIconSize = this.iconSize + 2 * MapView.prototype.zoomLevel;
       for (let i = 0; i < numSymbols; i++) {
+        const scaledIconSize = zoomedIconSize + filteredWarnings[i].getScale() * (MapView.prototype.zoomLevel + 1);
         styles.push({
           image: {
             type: 'icon',
@@ -679,17 +685,17 @@ const MapLargeView = MapView.extend({
             anchorYUnits: 'fraction',
             opacity: 1.0,
             rotation: 0,
-            scale: baseScale + filteredWarnings[i].getScale(),
-            size: [24, 24],
-            imgSize: [24, 24],
+            size: [scaledIconSize, scaledIconSize],
+            imgSize: [scaledIconSize, scaledIconSize],
             src: `data:image/svg+xml;base64,${base64.Base64.encode(
-              filteredWarnings[i].getSymbol()
+              filteredWarnings[i].getSymbol(scaledIconSize)
             )}`,
           },
           zIndex,
         });
       }
       if (severalWarnings) {
+        let sevIconSize = this.iconSize - 4 + 2 * MapView.prototype.zoomLevel;
         styles.push({
           image: {
             type: 'icon',
@@ -699,10 +705,10 @@ const MapLargeView = MapView.extend({
             opacity: 1.0,
             rotation: 0,
             scale: baseScale + self.iconSize,
-            size: [20, 20],
-            imgSize: [20, 20],
+            size: [sevIconSize, sevIconSize],
+            imgSize: [sevIconSize, sevIconSize],
             src: `data:image/svg+xml;base64,${base64.Base64.encode(
-              '<svg width="20px" height="20px" viewBox="0 0 13 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <title>multiple-symbol</title> <desc></desc> <defs></defs> <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-13.0, -13.0)"> <rect id="icon-bg" fill-opacity="0" fill="#E8E8E8" x="0" y="0" width="38" height="38" rx="100"></rect> <polygon id="fill-1" fill="#221F20" points="13.5111111 20.3336533 25.2895289 20.3336533 25.2895289 18.4669867 13.5111111 18.4669867"></polygon> <polygon id="fill-1" fill="#221F20" points="18.4669867 25.2895289 20.3336533 25.2895289 20.3336533 13.5111111 18.4669867 13.5111111"></polygon> </g> </g> </svg>'
+              '<svg width="' + sevIconSize + 'px" height="' + sevIconSize + 'px" viewBox="0 0 13 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <title>multiple-symbol</title> <desc></desc> <defs></defs> <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-13.0, -13.0)"> <rect id="icon-bg" fill-opacity="0" fill="#E8E8E8" x="0" y="0" width="38" height="38" rx="100"></rect> <polygon id="fill-1" fill="#221F20" points="13.5111111 20.3336533 25.2895289 20.3336533 25.2895289 18.4669867 13.5111111 18.4669867"></polygon> <polygon id="fill-1" fill="#221F20" points="18.4669867 25.2895289 20.3336533 25.2895289 20.3336533 13.5111111 18.4669867 13.5111111"></polygon> </g> </g> </svg>'
             )}`,
           },
           zIndex,

@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.16 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.17 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -407,7 +407,7 @@ div#fmi-warnings div.map-container {
 }
 div#fmi-warnings div.map-large {
   display: inline-block;
-  width: 100%;
+  width: 500px;
   height: 550px;
   background-color: #f8f8f8;
 }
@@ -536,6 +536,10 @@ div#fmi-warnings div#map {
 }
 div#fmi-warnings div .ol-zoom {
   z-index: 7 !important;
+  display: none;
+}
+div#fmi-warnings div .ol-zoom.visible-zoom {
+  display: block;
 }
 div#fmi-warnings a.ext-link {
   padding-right: 14px;
@@ -6016,6 +6020,7 @@ div#fmi-warnings span.symbol-text {
   width: 100%;
   text-align: center;
   margin: 0 auto;
+  padding-bottom: 1px;
   font-family: 'Open Sans', sans-serif;
   color: #ffffff;
   text-anchor: middle;
@@ -6042,7 +6047,7 @@ div#fmi-warnings .noselect {
   /* Non-prefixed version, currently not supported by any browser */
   cursor: pointer;
 }
-div#fmi-warnings .ol-viewport .ol-control button {
+div#fmi-warnings .ol-control button {
   font-size: 0 !important;
 }
 @media (max-width: 575px) {
