@@ -47,7 +47,7 @@ const SeaWindModel = WarningModel.extend({
         'font-weight': 'bold',
       });
     const group = paper.group(circle, path, text);
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}px" height="${size}px" viewBox="0 0 20 20">${group.outerSVG()}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${this.getAspectRatio() * size}px" height="${size}px" viewBox="0 0 20 20">${group.outerSVG()}</svg>`;
   },
   getScale() {
     return 7;

@@ -1,5 +1,6 @@
 import base64 from 'js-base64';
 import MapView from 'views/MapView';
+import { xor } from 'lodash';
 
 const MapLargeView = MapView.extend({
   initialize(options = {}) {
@@ -520,6 +521,9 @@ const MapLargeView = MapView.extend({
     MapView.prototype.render.call(this);
     let weatherSymbols = [];
     let checkConnection = function(region, styles, symbol) {
+      if ((styles == null) || (styles.length === 0)) {
+          return false;
+      }
       const regionModel = self.model.collection.regions.findWhere({
         region,
       });
@@ -662,49 +666,52 @@ const MapLargeView = MapView.extend({
         regionWarnings['full'].filter((warning) => warning.get('active'))
       );
       const styles = [];
-      const baseScale = (3.0 * (MapView.prototype.zoomLevel - 1.0)) / 10.0;
       const numFilteredWarnings = filteredWarnings.length;
       const maxNumSymbols = MapView.prototype.zoomLevel + 2;
       const severalWarnings = filteredWarnings.length > maxNumSymbols;
+      const sevIconSize = this.iconSize - 4 + 10 * MapView.prototype.zoomLevel;
+      const zoomedIconHeight = this.iconSize + 10 * MapView.prototype.zoomLevel;
+      const iconSizes = filteredWarnings
+        .map(warning => [
+          warning.getAspectRatio(),
+          zoomedIconHeight + warning.getScale()
+        ])
+        .map(warningItem => [
+          warningItem[0] * warningItem[1],
+          warningItem[1]
+        ]);
+      const iconWidthSums = iconSizes.reduce((sum, imageSize, index) => sum.concat([sum[index] + imageSize[0]]), [0]);
       const numSymbols = severalWarnings
         ? maxNumSymbols - 1
         : numFilteredWarnings;
-      const halfImageWidth = 12;
-      const anchorOffset =
-        halfImageWidth +
-        (numSymbols - 1 + (severalWarnings ? 1 : 0)) * halfImageWidth;
       const zIndex = 1000 + regionFeature.get('priority');
-      const zoomedIconSize = this.iconSize + 2 * MapView.prototype.zoomLevel;
       for (let i = 0; i < numSymbols; i++) {
-        const scaledIconSize = zoomedIconSize + filteredWarnings[i].getScale() * (MapView.prototype.zoomLevel + 1);
         styles.push({
           image: {
             type: 'icon',
-            anchor: [anchorOffset - i * 2 * halfImageWidth, 0.5],
+            anchor: [0.5 * (iconWidthSums[numSymbols] + (severalWarnings ? sevIconSize : 0)) - iconWidthSums[i], 0.5],
             anchorXUnits: 'pixels',
             anchorYUnits: 'fraction',
             opacity: 1.0,
             rotation: 0,
-            size: [scaledIconSize, scaledIconSize],
-            imgSize: [scaledIconSize, scaledIconSize],
+            size: iconSizes[i],
+            imgSize: iconSizes[i],
             src: `data:image/svg+xml;base64,${base64.Base64.encode(
-              filteredWarnings[i].getSymbol(scaledIconSize)
+              filteredWarnings[i].getSymbol(iconSizes[i][1])
             )}`,
           },
           zIndex,
         });
       }
       if (severalWarnings) {
-        let sevIconSize = this.iconSize - 4 + 2 * MapView.prototype.zoomLevel;
         styles.push({
           image: {
             type: 'icon',
-            anchor: [anchorOffset - numSymbols * 2 * halfImageWidth, 0.5],
+            anchor: [0.5 * (sevIconSize - iconWidthSums[numSymbols]), 0.5],
             anchorXUnits: 'pixels',
             anchorYUnits: 'fraction',
             opacity: 1.0,
             rotation: 0,
-            scale: baseScale + self.iconSize,
             size: [sevIconSize, sevIconSize],
             imgSize: [sevIconSize, sevIconSize],
             src: `data:image/svg+xml;base64,${base64.Base64.encode(

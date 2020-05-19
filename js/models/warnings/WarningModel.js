@@ -66,6 +66,9 @@ const WarningModel = Backbone.Model.extend({
   getText() {
     return '';
   },
+  getAspectRatio() {
+    return 1;
+  },
 });
 
 export default WarningModel;
