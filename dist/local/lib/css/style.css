@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.19 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.20 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -409,7 +409,7 @@ div#fmi-warnings div.map-large {
   display: inline-block;
   width: 500px;
   height: 550px;
-  background-color: #f8f8f8;
+  background-color: rgba(0, 0, 0, 0);
 }
 div#fmi-warnings div.day-map-large {
   height: 100%;
@@ -418,10 +418,48 @@ div#fmi-warnings div.map-small {
   position: relative;
   top: 0;
   display: inline-block;
-  width: 75px;
-  height: 120px;
-  background: no-repeat center;
-  background-size: 50px 250px;
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-0 {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-0 .ol-viewport {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-1 {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-1 .ol-viewport {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-2 {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-2 .ol-viewport {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-3 {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-3 .ol-viewport {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-4 {
+  width: 75px !important;
+  height: 120px !important;
+}
+div#fmi-warnings div.map-small .day-map-small-base-4 .ol-viewport {
+  width: 75px !important;
+  height: 120px !important;
 }
 div#fmi-warnings div.current-description {
   background-color: #f3f3f3;

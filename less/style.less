@@ -9,6 +9,8 @@
 @image-padding: 3px;
 @map-large-width: 500px;
 @map-large-height: 550px;
+@map-small-width: 75px;
+@map-small-height: 120px;
 @image-base-path: '@{base-path}img/';
 @warning-image-path: '@{image-base-path}warning/';
 @ui-image-path: '@{image-base-path}ui/';
@@ -85,7 +87,7 @@ div#fmi-warnings {
       display: inline-block;
       width: @map-large-width;
       height: @map-large-height;
-      background-color: #f8f8f8;
+      background-color: rgba(0, 0, 0, 0);
     }
     &.day-map-large {
       height: 100%;
@@ -94,10 +96,48 @@ div#fmi-warnings {
       position: relative;
       top: 0;
       display: inline-block;
-      width: 75px;
-      height: 120px;
-      background: no-repeat center;
-      background-size: 50px 250px;
+      width: @map-small-width !important;
+      height: @map-small-height !important;
+      .day-map-small-base-0 {
+        width: @map-small-width !important;
+        height: @map-small-height !important;
+        .ol-viewport {
+          width: @map-small-width !important;
+          height: @map-small-height !important;
+        }
+      }
+      .day-map-small-base-1 {
+        width: @map-small-width !important;
+        height: @map-small-height !important;
+        .ol-viewport {
+          width: @map-small-width !important;
+          height: @map-small-height !important;
+        }
+      }
+      .day-map-small-base-2 {
+        width: @map-small-width !important;
+        height: @map-small-height !important;
+        .ol-viewport {
+          width: @map-small-width !important;
+          height: @map-small-height !important;
+        }
+      }
+      .day-map-small-base-3 {
+        width: @map-small-width !important;
+        height: @map-small-height !important;
+        .ol-viewport {
+          width: @map-small-width !important;
+          height: @map-small-height !important;
+        }
+      }
+      .day-map-small-base-4 {
+        width: @map-small-width !important;
+        height: @map-small-height !important;
+        .ol-viewport {
+          width: @map-small-width !important;
+          height: @map-small-height !important;
+        }
+      }
     }
     &.current-description {
       background-color: #f3f3f3;
