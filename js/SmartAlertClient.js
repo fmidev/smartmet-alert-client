@@ -989,5 +989,13 @@ export class SmartAlertClient {
     // Recreate everything but do not loose user choices, keep the state.
     this.createWorkspace_();
   }
+
+  destroy() {
+    if (this.intervalId != null) {
+      clearInterval(this.intervalId);
+    }
+    this.emptyInternal_();
+  }
+
 }
 export default SmartAlertClient;
