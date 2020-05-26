@@ -991,9 +991,7 @@ export class SmartAlertClient {
   }
 
   destroy() {
-    if (this.intervalId != null) {
-      clearInterval(this.intervalId);
-    }
+    this.stop();
     this.emptyInternal_();
   }
 
