@@ -519,7 +519,7 @@ export class SmartAlertClient {
         jQuery.ajax({
           dataType: constants.DATA_TYPE,
           url:
-            self.urls.cap +
+            self.urls.cap + (self.urls.cap.endsWith('.json') ? '' :
             self.flood.supportedSeverities.reduce((filter, severity, index) => {
               return (
                 filter +
@@ -533,13 +533,13 @@ export class SmartAlertClient {
             __('capLanguage') +
             '%27' +
             '&t=' +
-            cacheTimestamp,
+            cacheTimestamp),
           cache: true,
           localCache: false,
         }),
         jQuery.ajax({
           dataType: constants.DATA_TYPE,
-          url: self.urls.capTime + '&t=' + cacheTimestamp,
+          url: self.urls.capTime + (self.urls.capTime.endsWith('.json') ? '' : '&t=' + cacheTimestamp),
           cache: true,
           localCache: false,
         })
@@ -567,13 +567,13 @@ export class SmartAlertClient {
             }),
             jQuery.ajax({
               dataType: constants.DATA_TYPE,
-              url: self.urls.womlTime + '&t=' + cacheTimestamp,
+              url: self.urls.womlTime + (self.urls.womlTime.endsWith('.json') ? '' : '&t=' + cacheTimestamp),
               cache: true,
               localCache: false,
             }),
             jQuery.ajax({
               dataType: constants.DATA_TYPE,
-              url: self.urls.woml + '&t=' + cacheTimestamp,
+              url: self.urls.woml + (self.urls.woml.endsWith('.json') ? '' : '&t=' + cacheTimestamp),
               cache: true,
               localCache: false,
             })
