@@ -73,6 +73,10 @@ export class SmartAlertClient {
 
     // Time
     this.currentTime = null;
+    this.forcedTime =
+      options.time != null && options.time.currentTime != null
+        ? options.time.currentTime
+        : null;
     this.modificationTime = null;
     // Selection is initialized only once here
     // but updated by user actions. Then, state
@@ -126,7 +130,7 @@ export class SmartAlertClient {
     this.regionsView = undefined;
 
     // Time
-    this.currentTime = moment();
+    this.currentTime = this.forcedTime ? moment(this.forcedTime) : moment();
     this.modificationTime = moment(null);
 
     if ((this.workspace == null) && (Backbone.History.started)) {
