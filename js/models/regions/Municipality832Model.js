@@ -3,7 +3,10 @@ import MunicipalityModel from 'models/regions/MunicipalityModel';
 
 const Municipality832Model = MunicipalityModel.extend({
   defaults: {
-    neighbours: [],
+    neighbours: [
+      'municipality_305',
+      'municipality_615',
+    ],
     parent: 'county_17',
     order: 20020,
   },
