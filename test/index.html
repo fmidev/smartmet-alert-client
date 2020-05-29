@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Varoitukset (production)</title>
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <link rel="stylesheet" href="../dist/production/lib/css/style.css">
+        <script type="text/javascript" src="../dist/production/lib/js/fi.smart-alert-client.js" charset="utf-8"></script>
+        <div id="fmi-warnings" style="max-width: 820px;"></div>
+        <script type="text/javascript">
+            var urlBase = "http://localhost:8088/";
+            var smartAlertClient = new fmi.fi.SmartAlertClient({
+              urls: {
+                woml: `${urlBase}woml.json`,
+                cap: `${urlBase}cap.json`,
+                womlTime: `${urlBase}womlTime.json`,
+                capTime: `${urlBase}capTime.json`
+              },
+              time: {
+                currentTime: '2020-05-27 13:18:42'
+              }
+            });
+
+console.log("??????????????");
+
+        </script>
+    </body>
+</html>
