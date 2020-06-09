@@ -1,0 +1,9 @@
+{
+  "page": {
+    "refreshInterval": 900000,
+    "stickyOffsetContainer": ".desktop-navigation-container:visible,.mobile-navigation-container:visible"
+  },
+  "time": {
+    "selectedDay": 1
+  }
+}

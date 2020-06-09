@@ -172,6 +172,10 @@ module.exports = Object.keys(languages).map(function(language) {
           to: 'img',
         },
         {
+          from: 'config',
+          to: 'config',
+        },
+        {
           from: 'fonts',
           to: 'fonts',
         },
