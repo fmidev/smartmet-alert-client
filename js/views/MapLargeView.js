@@ -512,10 +512,6 @@ const MapLargeView = MapView.extend({
     jQuery(`.day-map-large-${this.model.get('index')} .day-map-large`)
       .attr('id', 'day-map-large')
       .append(jQuery('#day-map-large-base'));
-    const zoomControl = jQuery('div#fmi-day-large-view>div.tab-pane>div.map-container div.ol-zoom');
-    if (zoomControl.length > 0) {
-      zoomControl.detach().appendTo('div#fmi-day-large-view>div.tab-pane.active>div.map-container');
-    }
     MapView.prototype.visualizer.hidePopup();
     MapView.prototype.visualizer.clearFeatures('WeatherSymbols');
     MapView.prototype.render.call(this);

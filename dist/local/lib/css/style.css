@@ -1,4 +1,4 @@
-/*! smart-alert-client - 2.0.30 | Finnish Meteorological Institute 2020 */
+/*! smart-alert-client - 2.0.31 | Finnish Meteorological Institute 2020 */
 div#fmi-warnings .ol-control, div#fmi-warnings .ol-scale-line {
     padding: 2px;
     position: absolute
@@ -297,8 +297,9 @@ div#fmi-warnings .ol-popup {
   border-radius: 1px;
   bottom: 12px;
   left: -50px;
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 275px;
+  width: 275px;
+  max-width: 275px;
   z-index: 9;
 }
 div#fmi-warnings .ol-popup:after,
@@ -363,6 +364,9 @@ div#fmi-warnings .region-popup-body {
   background-color: white;
   padding: 0 0 0 0;
 }
+div#fmi-warnings #day-map-large-base-popup {
+  margin-right: 20px;
+}
 /* open-sans-700 - latin */
 @font-face {
   font-family: 'Open Sans';
@@ -394,9 +398,11 @@ div#fmi-warnings div.loading-spinner {
 }
 div#fmi-warnings div.date-selector {
   background-color: #f8f8f8;
-  margin-left: 0;
-  margin-right: 0;
-  margin-top: 15px;
+  margin: 0;
+}
+div#fmi-warnings div.container-fluid {
+  padding: 0;
+  margin: 0;
 }
 div#fmi-warnings div.map-container {
   text-align: center;
@@ -405,13 +411,16 @@ div#fmi-warnings div.map-container {
   margin-right: 0;
   position: relative;
 }
-div#fmi-warnings div.map-large {
+div#fmi-warnings div#fmi-day-large-view div.map-container {
+  height: 550px;
+}
+div#fmi-warnings div#fmi-day-large-view div.map-container div.map-large {
   display: inline-block;
-  width: 500px;
+  width: 440px;
   height: 550px;
   background-color: rgba(0, 0, 0, 0);
 }
-div#fmi-warnings div.day-map-large {
+div#fmi-warnings div#fmi-day-large-view div.map-container div.day-map-large {
   height: 100%;
 }
 div#fmi-warnings div.map-small {
@@ -488,7 +497,11 @@ div#fmi-warnings div.current-description-image {
   height: 48px;
 }
 div#fmi-warnings div.day-region-views {
+  max-width: 440px;
+  width: 440px;
+  min-width: 440px;
   padding-left: 0;
+  padding-right: 0;
 }
 div#fmi-warnings div.symbol-list {
   position: -webkit-sticky;
@@ -496,6 +509,10 @@ div#fmi-warnings div.symbol-list {
   position: sticky;
   top: 0;
   z-index: 1;
+  padding-left: 20px;
+  padding-right: 0;
+  box-sizing: border-box;
+  width: 230px;
 }
 div#fmi-warnings div.symbol-list-table {
   display: table;
@@ -513,17 +530,20 @@ div#fmi-warnings div.symbol-list-cell-image {
 }
 div#fmi-warnings div.symbol-list-cell-text {
   padding-left: 15px;
-  padding-right: 25px;
+  padding-right: 0;
 }
 div#fmi-warnings div#fmi-warnings-list div.symbol-list-cell-text {
-  padding-right: 15px;
+  padding-right: 0;
+}
+div#fmi-warnings div#fmi-warnings-list div.symbol-list-cell-text hr {
+  margin-right: 0;
 }
 div#fmi-warnings div.symbol-list-main-row {
-  padding-left: 10px;
+  padding-left: 0;
 }
 div#fmi-warnings div.symbol-list-header-row {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 0;
+  padding-right: 0;
   padding-bottom: 5px;
 }
 div#fmi-warnings div.symbol-list-header-row span {
@@ -560,8 +580,7 @@ div#fmi-warnings div.data-providers {
   z-index: 5;
 }
 div#fmi-warnings div#fmi-warnings-view {
-  margin-top: 15px;
-  min-width: 240px;
+  margin-top: 0;
 }
 div#fmi-warnings div#map {
   width: 100%;
@@ -664,10 +683,11 @@ div#fmi-warnings .show-text {
   float: left;
   color: #53b9e6;
   cursor: pointer;
+  white-space: nowrap;
 }
 div#fmi-warnings hr.symbol-block-separator {
   margin-left: 59px;
-  margin-right: 25px;
+  margin-right: 0;
 }
 div#fmi-warnings hr.legend-separator {
   margin-top: 55px;
@@ -742,8 +762,12 @@ div#fmi-warnings .item-text {
   line-height: normal;
 }
 div#fmi-warnings .current-warning-panel {
-  margin-left: 15px;
-  margin-right: 15px;
+  margin-left: 0;
+  margin-right: 0;
+}
+div#fmi-warnings h5#header-land,
+div#fmi-warnings h5#header-sea {
+  margin-left: 0;
 }
 div#fmi-warnings .current-warning-image {
   background-size: 28px 28px;
@@ -873,6 +897,8 @@ div#fmi-warnings .nav-tabs.nav-justified li.active > a:focus {
 div#fmi-warnings .nav,
 div#fmi-warnings .row {
   display: block;
+  margin-left: 0;
+  margin-right: 0;
 }
 div#fmi-warnings .all-days {
   padding-left: 0;
@@ -972,14 +998,17 @@ div#fmi-warnings .popup-table-symbol-cell {
   width: 28px;
   min-width: 28px;
   margin-top: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 2px;
+  margin-right: 0;
 }
 div#fmi-warnings .popup-table-text-cell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 3px 25px 3px 10px;
+  padding: 5px 0 0 2px;
+}
+div#fmi-warnings .popup-table-text-cell.popup-table-no-warnings-cell {
+  padding: 8px 0 0 7px;
 }
 div#fmi-warnings .popup-table-heading {
   background-color: #EEE;
@@ -6132,11 +6161,6 @@ div#fmi-warnings .ol-control button {
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjhweCIgaGVpZ2h0PSIyOHB4IiB2aWV3Qm94PSIwIDAgMjggMjgiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTMuMzMzMzMzJSwxMi4xNTY4NjMlLDEyLjU0OTAyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDkuOTU3MDMxIDE0Ljk4NDM3NSBMIDE4LjYzMjgxMiAxNC45ODQzNzUgTCAxOC42MzI4MTIgMTMuNjA1NDY5IEwgOS45NTcwMzEgMTMuNjA1NDY5IFogTSA5Ljk1NzAzMSAxNC45ODQzNzUgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOmV2ZW5vZGQ7ZmlsbDpyZ2IoMTMuMzMzMzMzJSwxMi4xNTY4NjMlLDEyLjU0OTAyJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDEzLjYwNTQ2OSAxOC42MzI4MTIgTCAxNC45ODQzNzUgMTguNjMyODEyIEwgMTQuOTg0Mzc1IDkuOTU3MDMxIEwgMTMuNjA1NDY5IDkuOTU3MDMxIFogTSAxMy42MDU0NjkgMTguNjMyODEyICIvPgo8L2c+Cjwvc3ZnPgo=) !important;
   }
 }
-@media (min-width: 576px) {
-  div#fmi-warnings .col-sm-8 {
-    max-width: none;
-  }
-}
 @media print {
   div#fmi-warnings #fmi-regions-view .collapse {
     display: inline;
@@ -6152,8 +6176,10 @@ div#fmi-warnings div.drag-container.zoom-zero {
   position: absolute;
   z-index: 4;
   height: 550px;
-  left: 10px;
-  right: 10px;
+  max-width: 100%;
+  width: 440px;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 div#fmi-warnings .tooltip.top {
   padding: 6px 0;
@@ -6194,13 +6220,16 @@ div#fmi-warnings .tooltip-arrow:after {
   border: solid transparent;
   z-index: -1;
 }
+div#fmi-warnings .tooltip {
+  left: 185px !important;
+}
 div#fmi-warnings .tooltip.top .tooltip-arrow {
   bottom: 2px;
   border-top-color: #ffffff;
 }
 div#fmi-warnings .tooltip.top .tooltip-arrow:after {
   bottom: -2px;
-  left: 50%;
+  left: 50% !important;
   margin-left: -6px;
   border-width: 6px 6px 0;
   border-top-color: #e3e3e3;
@@ -6211,7 +6240,7 @@ div#fmi-warnings .tooltip.bottom .tooltip-arrow {
 }
 div#fmi-warnings .tooltip.bottom .tooltip-arrow:after {
   top: -2px;
-  left: 50%;
+  left: 50% !important;
   margin-left: -6px;
   border-width: 0 6px 6px;
   border-bottom-color: #e3e3e3;
@@ -6222,7 +6251,7 @@ div#fmi-warnings .tooltip.left .tooltip-arrow {
 }
 div#fmi-warnings .tooltip.left .tooltip-arrow:after {
   right: -2px;
-  top: 50%;
+  top: 50% !important;
   margin-top: -6px;
   border-width: 6px 0 6px 6px;
   border-left-color: #e3e3e3;
@@ -6233,7 +6262,7 @@ div#fmi-warnings .tooltip.right .tooltip-arrow {
 }
 div#fmi-warnings .tooltip.right .tooltip-arrow:after {
   left: -2px;
-  top: 50%;
+  top: 50% !important;
   margin-top: -6px;
   border-width: 6px 6px 6px 0;
   border-right-color: #e3e3e3;
@@ -6247,5 +6276,42 @@ div#fmi-warnings #fmi-days-view p {
 @media (min-width: 768px) {
   div#fmi-warnings {
     min-width: 700px;
+  }
+}
+@media (max-width: 767px) {
+  div#fmi-warnings div.day-region-views {
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  div#fmi-warnings div.map-large {
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  div#fmi-warnings div.drag-container.zoom-zero {
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  div#fmi-warnings div.symbol-list {
+    position: static;
+    padding-left: 0;
+    margin-bottom: 20px;
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  div#fmi-warnings div#fmi-warnings-view div.symbol-list-table div.symbol-list-cell.symbol-list-cell-text {
+    padding-right: 0;
+  }
+  div#fmi-warnings div#fmi-warnings-view div.symbol-list-table div.symbol-list-cell.symbol-list-cell-text hr {
+    margin-right: 0;
+  }
+  div#fmi-warnings hr.symbol-block-separator {
+    margin-right: 0;
+  }
+  div#fmi-warnings div.show-text-row {
+    display: none;
   }
 }

@@ -7,7 +7,7 @@
 @symbol-list-select-height: 30px;
 @symbol-list-image-size: 44px;
 @image-padding: 3px;
-@map-large-width: 500px;
+@map-large-width: 440px;
 @map-large-height: 550px;
 @map-small-width: 75px;
 @map-small-height: 120px;
@@ -72,9 +72,11 @@ div#fmi-warnings {
     }
     &.date-selector {
       background-color: #f8f8f8;
-      margin-left: 0;
-      margin-right: 0;
-      margin-top: 15px;
+      margin: 0;
+    }
+    &.container-fluid {
+      padding: 0;
+      margin: 0;
     }
     &.map-container {
       text-align: center;
@@ -83,14 +85,19 @@ div#fmi-warnings {
       margin-right: 0;
       position: relative;
     }
-    &.map-large {
-      display: inline-block;
-      width: @map-large-width;
-      height: @map-large-height;
-      background-color: rgba(0, 0, 0, 0);
-    }
-    &.day-map-large {
-      height: 100%;
+    &#fmi-day-large-view {
+      div.map-container {
+        height: @map-large-height;
+        div.map-large {
+          display: inline-block;
+          width: @map-large-width;
+          height: @map-large-height;
+          background-color: rgba(0, 0, 0, 0);
+        }
+        div.day-map-large {
+          height: 100%;
+        }
+      }
     }
     &.map-small {
       position: relative;
@@ -166,13 +173,21 @@ div#fmi-warnings {
       height: @current-description-image-height;
     }
     &.day-region-views {
+      max-width: @map-large-width;
+      width: @map-large-width;
+      min-width: @map-large-width;
       padding-left: 0;
+      padding-right: 0;
     }
     &.symbol-list {
       position: -webkit-sticky; /* Safari */
       position: sticky;
       top: 0;
       z-index: 1;
+      padding-left: 20px;
+      padding-right: 0;
+      box-sizing: border-box;
+      width: 230px;
     }
     &.symbol-list-table {
       display: table;
@@ -190,17 +205,20 @@ div#fmi-warnings {
     }
     &.symbol-list-cell-text {
       padding-left: 15px;
-      padding-right: 25px;
+      padding-right: 0;
     }
     &#fmi-warnings-list div.symbol-list-cell-text {
-      padding-right: 15px;
+      padding-right: 0;
+      hr {
+        margin-right: 0;
+      }
     }
     &.symbol-list-main-row {
-      padding-left: 10px;
+      padding-left: 0;
     }
     &.symbol-list-header-row {
-      padding-left: 15px;
-      padding-right: 15px;
+      padding-left: 0;
+      padding-right: 0;
       padding-bottom: 5px;
       span {
         white-space: nowrap;
@@ -237,8 +255,7 @@ div#fmi-warnings {
       z-index: 5;
     }
     &#fmi-warnings-view {
-      margin-top: 15px;
-      min-width: 240px;
+      margin-top: 0;
     }
     &#map {
       width: 100%;
@@ -362,11 +379,12 @@ div#fmi-warnings {
     float: left;
     color: #53b9e6;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   hr.symbol-block-separator {
     margin-left: 59px;
-    margin-right: 25px;
+    margin-right: 0;
   }
 
   hr.legend-separator {
@@ -464,8 +482,12 @@ div#fmi-warnings {
   }
 
   .current-warning-panel {
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  h5#header-land, h5#header-sea {
+    margin-left: 0;
   }
 
   .current-warning-image {
@@ -621,6 +643,8 @@ div#fmi-warnings {
 
   .nav, .row {
     display: block;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .all-days {
@@ -739,15 +763,18 @@ div#fmi-warnings {
     width: @current-warning-image-height;
     min-width: @current-warning-image-height;
     margin-top: (@current-warning-height - @current-warning-image-height) / 2;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 2px;
+    margin-right: 0;
   }
 
   .popup-table-text-cell {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 3px 25px 3px 10px;
+    padding: 5px 0 0 2px;
+    &.popup-table-no-warnings-cell {
+      padding: 8px 0 0 7px;
+    }
   }
 
   .popup-table-heading {
@@ -874,12 +901,6 @@ div#fmi-warnings {
 
   }
 
-  @media (min-width: 576px) {
-    .col-sm-8 {
-      max-width: none;
-    }
-  }
-
   @media print {
     #fmi-regions-view .collapse {
       display: inline;
@@ -898,8 +919,10 @@ div#fmi-warnings {
       position: absolute;
       z-index: 4;
       height: @map-large-height;
-      left: 10px;
-      right: 10px;
+      max-width: 100%;
+      width: @map-large-width;
+      left: 50%;
+      transform: translate(-50%, 0);
     }
   }
 
@@ -947,12 +970,13 @@ div#fmi-warnings {
   }
 
   .tooltip {
+    left: 185px !important;
     &.top .tooltip-arrow {
       bottom: 2 * @tooltip-border-width;
       border-top-color: @tooltip-background-color;
       &:after {
         bottom: -2 * @tooltip-border-width;
-        left: 50%;
+        left: 50% !important;
         margin-left: -@tooltip-arrow-border-width;
         border-width: @tooltip-arrow-border-width @tooltip-arrow-border-width 0;
         border-top-color: @tooltip-border-color;
@@ -963,7 +987,7 @@ div#fmi-warnings {
       border-bottom-color: @tooltip-background-color;
       &:after {
         top: -2 * @tooltip-border-width;
-        left: 50%;
+        left: 50% !important;
         margin-left: -@tooltip-arrow-border-width;
         border-width: 0 @tooltip-arrow-border-width @tooltip-arrow-border-width;
         border-bottom-color: @tooltip-border-color;
@@ -974,7 +998,7 @@ div#fmi-warnings {
       border-left-color: @tooltip-background-color;
       &:after {
         right: -2 * @tooltip-border-width;
-        top: 50%;
+        top: 50% !important;
         margin-top: -@tooltip-arrow-border-width;
         border-width: @tooltip-arrow-border-width 0 @tooltip-arrow-border-width @tooltip-arrow-border-width;
         border-left-color: @tooltip-border-color;
@@ -985,7 +1009,7 @@ div#fmi-warnings {
       border-right-color: @tooltip-background-color;
       &:after {
         left: -2 * @tooltip-border-width;
-        top: 50%;
+        top: 50% !important;
         margin-top: -@tooltip-arrow-border-width;
         border-width: @tooltip-arrow-border-width @tooltip-arrow-border-width @tooltip-arrow-border-width 0;
         border-right-color: @tooltip-border-color;
@@ -1006,5 +1030,49 @@ div#fmi-warnings {
 @media (min-width: 768px) {
   div#fmi-warnings {
     min-width: 700px;
+  }
+}
+
+@media (max-width: 767px) {
+  div#fmi-warnings {
+    div.day-region-views {
+      min-width: 100%;
+      width: 100%;
+      max-width: 100%;
+    }
+    div.map-large {
+      min-width: 100%;
+      width: 100%;
+      max-width: 100%;
+    }
+    div.drag-container.zoom-zero {
+      min-width: 100%;
+      width: 100%;
+      max-width: 100%;
+    }
+    div.symbol-list {
+      position: static;
+      padding-left: 0;
+      margin-bottom: 20px;
+      min-width: 100%;
+      width: 100%;
+      max-width: 100%;
+    }
+    div#fmi-warnings-view {
+      div.symbol-list-table {
+        div.symbol-list-cell.symbol-list-cell-text {
+          padding-right: 0;
+          hr {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+    hr.symbol-block-separator {
+      margin-right: 0;
+    }
+    div.show-text-row {
+      display: none;
+    }
   }
 }
