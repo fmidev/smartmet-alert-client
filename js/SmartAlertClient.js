@@ -95,18 +95,12 @@ export class SmartAlertClient {
     this.unselectedDataWarnings = [];
 
     // Render
-    this.update_();
+    this.updateWarnings_();
 
     // Refresh when the page gained visibility
     if (this.page.automaticOnPageVisible) {
-      jQuery(document).on({
-        show: () => {
-          this.update_();
-        },
-        hide: () => {
-          this.stop();
-        },
-      });
+      jQuery(document).on('show.smart-alert-client', this.updateWarnings_.bind(this));
+      jQuery(document).on('hide.smart-alert-client', this.stop.bind(this));
     }
   }
 
@@ -173,7 +167,7 @@ export class SmartAlertClient {
     // selections may not work properly.
     const self = this;
     this.unselectedDataWarnings = [];
-    jQuery('#fmi-warnings-list .flag-unselected').each(function() {
+    jQuery('div#fmi-warnings #fmi-warnings-list .flag-unselected').each(function() {
       const value = jQuery(this).attr('data-warning');
       if (value) {
         self.unselectedDataWarnings.push(value);
@@ -945,6 +939,8 @@ export class SmartAlertClient {
     this.emptyViews_();
     this.emptyCollections_();
     jQuery('#fmi-warnings').empty();
+    jQuery(document).off('show.smart-alert-client');
+    jQuery(document).off('hide.smart-alert-client');
   }
 
   // Select specific day.
@@ -968,12 +964,12 @@ export class SmartAlertClient {
     });
   }
 
-  update_() {
+  updateWarnings_() {
     let dateNow = Date.now();
     if (typeof this.page.refreshInterval === 'number') {
       clearInterval(this.intervalId);
       this.intervalId = setTimeout(
-        this.update_.bind(this),
+        this.updateWarnings_.bind(this),
         this.page.refreshInterval
       );
     }
