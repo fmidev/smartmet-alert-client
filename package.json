@@ -16,7 +16,8 @@
     "build-production": "node node_modules/webpack/bin/webpack.js --config webpack.config.production.js --progress -p",
     "build-default": "node node_modules/webpack/bin/webpack.js --config webpack.config.default.js --progress -p",
     "build-all": "npm run build-local && npm run build-development && npm run build-testing && npm run build-production && npm run build-default",
-    "test": "jest"
+    "test": "jest",
+    "test-update": "jest --updateSnapshot"
   },
   "jest": {
     "transform": {}
