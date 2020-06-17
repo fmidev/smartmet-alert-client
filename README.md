@@ -36,16 +36,13 @@ Other compiled language version are `fi` (Finnish) and `sv` (Swedish).
 #### Public API methods
 
 `destroy()`
-Empty page content. Does not remove wrapping element itself, only its content. Removes page content related event handlers. Stops automatic refresh.
+Empties page content. Does not remove wrapping element itself, only its content. Removes page content related event handlers. Stops automatic refresh.
 
 `refresh()`
-Reload and refresh page content.
-
-`stop()`
-Stop automatic refreshing started in the refresh function. Does not remove current content.
+Reloads and refreshes page content.
 
 `selectDay(day)`
-Select specific day. Current date is 0.
+Selects specific day. Current date is 0.
 
 `setUrls(dataURLObject)`
 Sets custom data URLs for `geom`, `woml`, `womlTime`, `cap` and `capTime` properties.

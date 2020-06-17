@@ -100,7 +100,7 @@ export class SmartAlertClient {
     // Refresh when the page gained visibility
     if (this.page.automaticOnPageVisible) {
       jQuery(document).on('show.smart-alert-client', this.updateWarnings_.bind(this));
-      jQuery(document).on('hide.smart-alert-client', this.stop.bind(this));
+      jQuery(document).on('hide.smart-alert-client', this.stopWarnings_.bind(this));
     }
   }
 
@@ -895,7 +895,7 @@ export class SmartAlertClient {
 
   // Stop automatic refreshing started in the refresh function.
   // Does not remove current content.
-  stop() {
+  stopWarnings_() {
     clearInterval(this.intervalId);
     this.intervalId = undefined;
   }
@@ -991,7 +991,7 @@ export class SmartAlertClient {
   }
 
   destroy() {
-    this.stop();
+    this.stopWarnings_();
     this.emptyInternal_();
   }
 
