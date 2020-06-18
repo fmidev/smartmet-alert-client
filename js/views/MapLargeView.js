@@ -572,7 +572,8 @@ const MapLargeView = MapView.extend({
     };
 
     const regions = MapView.prototype.visualizer.getFeatures('Regions');
-    regions.forEach((regionFeature) => {
+    regions.filter((regionFeature) => regionFeature.get('regionChildren').length === 0)
+      .forEach((regionFeature) => {
       const region = regionFeature.get('region');
       const regionWarnings = self.model.get('regionWarnings')[index][region];
       if (typeof regionWarnings === 'undefined') {
