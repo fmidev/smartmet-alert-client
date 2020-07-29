@@ -1,48 +1,24 @@
-Smart Alert Client is a customizable map visualizer for weather, flood and other alerts.
+# fmi-smart-alert-client
 
-#### Compiling
+## Project setup
+```
+npm install
+```
 
-Configuration files:
-`js/config/*/*.toml`
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-Fully minified production build:
-`npm install`
-`npm run build-production`
+### Compiles and minifies for production
+```
+npm run build
+```
 
-Fully minified testing build:
-`npm install`
-`npm run build-testing`
+### Lints and fixes files
+```
+npm run lint
+```
 
-Faster development build (with single locale 'fi' only, debug enabled):
-`npm install`
-`npm run build-development`
-
-Faster local build (with single locale 'fi' only, debug enabled):
-`npm install`
-`npm run build-local`
-
-Build all:
-`npm install`
-`npm run build-all`
-
-#### Usage
-
-Create a new instance of the English version:
-
-`var smartAlertClient = new fmi.en.SmartAlertClient(options);`
-
-Other compiled language version are `fi` (Finnish) and `sv` (Swedish).
-
-#### Public API methods
-
-`destroy()`
-Empties page content. Does not remove wrapping element itself, only its content. Removes page content related event handlers. Stops automatic refresh.
-
-`refresh()`
-Reloads and refreshes page content.
-
-`selectDay(day)`
-Selects specific day. Current date is 0.
-
-`setUrls(dataURLObject)`
-Sets custom data URLs for `geom`, `woml`, `womlTime`, `cap` and `capTime` properties.
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

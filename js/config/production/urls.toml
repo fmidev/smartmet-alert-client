@@ -1,6 +1,0 @@
-# GeoServer
-geom = 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=alert:geometry_finland_selected_all&maxFeatures=1000&outputFormat=application%2Fjson&who=fmi'
-woml = 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=alert:weather_finland_active_all&maxFeatures=1000&outputFormat=application%2Fjson&who=fmi'
-cap = 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=alert:flood_finland_active_all&maxFeatures=10000&outputFormat=application%2Fjson&who=fmi'
-womlTime = 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=alert:weather_update_time&maxFeatures=50&outputFormat=application%2Fjson&who=fmi'
-capTime = 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=alert:flood_update_time&maxFeatures=50&outputFormat=application%2Fjson&who=fmi'

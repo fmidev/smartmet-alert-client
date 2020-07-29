@@ -1,0 +1,132 @@
+@import "./constants.scss";
+
+@for $i from 0 through 360 {
+  $imgRotationDeg: unquote($i + 'deg');
+  div.symbol-image.symbol-image-rotate-#{$i} {
+    -webkit-transform: rotate($imgRotationDeg);
+    -moz-transform: rotate($imgRotationDeg);
+    -ms-transform: rotate($imgRotationDeg);
+    -o-transform: rotate($imgRotationDeg);
+    transform: rotate($imgRotationDeg);
+  }
+  $txtRotation: 360 - $i;
+  $txtRotationDeg: unquote($txtRotation + 'deg');
+  span.symbol-text.symbol-text-rotate-#{$i} {
+    -webkit-transform: rotate($txtRotationDeg);
+    -moz-transform: rotate($txtRotationDeg);
+    -ms-transform: rotate($txtRotationDeg);
+    -o-transform: rotate($txtRotationDeg);
+    transform: rotate($txtRotationDeg);
+  }
+}
+
+div.symbol-image {
+  display: table;
+}
+
+.level-1 {
+  background-color: $green;
+}
+
+.level-2 {
+  background-color: $yellow;
+}
+
+.level-3 {
+  background-color: $orange;
+}
+
+.level-4 {
+  background-color: $red;
+}
+
+.thunder-storm {
+  background-image: url($warning-image-path + 'thunder-storm' + $image-extension);
+}
+
+.wind {
+  background-image: url($warning-image-path + 'wind' + $image-extension);
+}
+
+.rain {
+  background-image: url($warning-image-path + 'rain' + $image-extension);
+}
+
+.traffic-weather {
+  background-image: url($warning-image-path + 'traffic-weather' + $image-extension);
+}
+
+.pedestrian-safety {
+  background-image: url($warning-image-path + 'pedestrian-safety' + $image-extension);
+}
+
+.forest-fire-weather {
+  background-image: url($warning-image-path + 'forest-fire-weather' + $image-extension);
+}
+
+.grass-fire-weather {
+  background-image: url($warning-image-path + 'grass-fire-weather' + $image-extension);
+}
+
+.hot-weather {
+  background-image: url($warning-image-path + 'hot-weather' + $image-extension);
+}
+
+.cold-weather {
+  background-image: url($warning-image-path + 'cold-weather' + $image-extension);
+}
+
+.uv-note {
+  background-image: url($warning-image-path + 'uv-note' + $image-extension);
+}
+
+.flood-level {
+  background-image: url($warning-image-path + 'flood-level-3' + $image-extension);
+}
+
+.sea-wind {
+  background-image: url($warning-image-path + 'sea-wind' + $image-extension);
+}
+
+.sea-thunder-storm {
+  background-image: url($warning-image-path + 'sea-thunder-storm' + $image-extension);
+}
+
+.sea-water-height-high-water {
+  background-image: url($warning-image-path + 'sea-water-height-high-water' + $image-extension);
+}
+
+.sea-water-height-shallow-water {
+  background-image: url($warning-image-path + 'sea-water-height-shallow-water' + $image-extension);
+}
+
+.sea-wave-height {
+  background-image: url($warning-image-path + 'sea-wave-height' + $image-extension);
+}
+
+.sea-icing {
+  background-image: url($warning-image-path + 'sea-icing' + $image-extension);
+}
+
+.several {
+  background-image: url($warning-image-path + 'several' + $image-extension);
+}
+
+span.symbol-text {
+  display: table-cell;
+  vertical-align: middle;
+  line-height: normal;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  font-family: "Roboto", "Arial", "Open Sans", sans-serif;
+  color: #ffffff;
+  text-anchor: middle;
+  font-weight: 700;
+}
+
+@media (max-width: 575px) {
+  .symbol-text {
+    display: none;
+  }
+}

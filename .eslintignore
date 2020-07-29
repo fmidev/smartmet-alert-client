@@ -1,0 +1,18 @@
+# package directories
+node_modules
+jspm_packages
+dist
+
+# Serverless directories
+.serverless
+
+#nuxt compile dir
+.nuxt
+
+# env file
+.env
+
+
+static
+staticS3
+assets
