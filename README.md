@@ -1,5 +1,7 @@
 # fmi-smart-alert-client
 
+Smart Alert Client is a customizable map visualizer for weather, flood and other alerts.
+
 ## Project setup
 ```
 npm install

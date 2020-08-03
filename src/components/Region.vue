@@ -41,10 +41,10 @@ export default {
       return i18n.t(this.name);
     },
     warningsSummary() {
-      return this.input.map((warning) => this.$store.state.warningsStore.warnings[warning.identifiers[0]]);
+      return this.input.map((warning) => this.$store.getters.warnings[warning.identifiers[0]]);
     },
     warnings() {
-      return this.input.reduce((allWarnings, warning) => (allWarnings.concat(warning.identifiers.map((identifier) => this.$store.state.warningsStore.warnings[identifier]))), []);
+      return this.input.reduce((allWarnings, warning) => (allWarnings.concat(warning.identifiers.map((identifier) => this.$store.getters.warnings[identifier]))), []);
     },
     buttonLabel() {
       return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);

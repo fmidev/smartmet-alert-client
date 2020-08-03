@@ -35,13 +35,13 @@
 </template>
 
 <script>
-import warningUtils from '../mixins/warningUtils';
+import fields from '../mixins/fields';
 import i18n from '../i18n';
 
 export default {
   name: 'DescriptionWarning',
   props: ['input'],
-  mixins: [warningUtils],
+  mixins: [fields],
   computed: {
     warningTitle() {
       return i18n.t(this.input.type);

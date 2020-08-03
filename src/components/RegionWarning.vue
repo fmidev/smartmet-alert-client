@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import warningUtils from '../mixins/warningUtils';
+import fields from '../mixins/fields';
 
 export default {
   name: 'RegionWarning',
   props: ['input'],
-  mixins: [warningUtils],
+  mixins: [fields],
 };
 </script>
 

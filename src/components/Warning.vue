@@ -34,12 +34,13 @@
 
 <script>
 import i18n from '../i18n';
-import warningUtils from '../mixins/warningUtils';
+import fields from '../mixins/fields';
+import utils from '../mixins/utils';
 
 export default {
   name: 'Warning',
   props: ['input', 'hideable'],
-  mixins: [warningUtils],
+  mixins: [fields, utils],
   computed: {
     title() {
       return i18n.t(this.input.type);
@@ -53,10 +54,10 @@ export default {
               ${i18n.t('selectWarningTooltipLine2')}`;
     },
     showLabel() {
-      return `${i18n.t('selectDisabledWarningTooltipLine1')} ${this.$options.filters.uncapitalize(this.title)} ${i18n.t('selectDisabledWarningTooltipLine2')}`;
+      return `${i18n.t('selectDisabledWarningTooltipLine1')} ${this.uncapitalize(this.title)} ${i18n.t('selectDisabledWarningTooltipLine2')}`;
     },
     hideLabel() {
-      return `${i18n.t('selectWarningTooltipLine1')} ${this.$options.filters.uncapitalize(this.title)} ${i18n.t('selectWarningTooltipLine2')}`;
+      return `${i18n.t('selectWarningTooltipLine1')} ${this.uncapitalize(this.title)} ${i18n.t('selectWarningTooltipLine2')}`;
     },
   },
   methods: {
@@ -65,13 +66,6 @@ export default {
         warning: this.input.type,
         visible: !this.input.visible,
       });
-    },
-  },
-  filters: {
-    uncapitalize(value) {
-      if (!value) return '';
-      const stringValue = value.toString();
-      return stringValue.charAt(0).toLowerCase() + stringValue.slice(1);
     },
   },
 };
