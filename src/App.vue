@@ -1,5 +1,5 @@
 <template>
-    <AlertClient :currentTime="currentTime" :selectedDay="selectedDay" :warnings="warnings" :days="days" :regions="regions" :legend="legend" :language="language" /></template>
+    <AlertClient @update-warnings="fetchWarnings" :currentTime="currentTime" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :warnings="warnings" :days="days" :regions="regions" :legend="legend" :language="language" /></template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
@@ -23,6 +23,7 @@ export default {
   data() {
     return {
       currentTime: Date.now(),
+      refreshInterval: 1000 * 60 * 15,
       selectedDay: 0,
       updatedAt: null,
       warnings: {},
@@ -53,29 +54,34 @@ export default {
     };
   },
   computed: {
-    language: () => 'en',
     WEATHER_UPDATED: () => 'weather_update_time',
     FLOOD_UPDATED: () => 'flood_update_time',
     WEATHER_WARNINGS: () => 'weather_finland_active_all',
     FLOOD_WARNINGS: () => 'flood_finland_active_all',
     URL_BASE: () => 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=50&outputFormat=application%2Fjson&typeName=',
+    language: () => 'en',
   },
-  beforeMount() {
-    const typeNames = [this.WEATHER_UPDATED, this.FLOOD_UPDATED, this.WEATHER_WARNINGS, this.FLOOD_WARNINGS];
-    axios.all(typeNames.map((typeName) => axios.get(this.URL_BASE + typeName))).then((responses) => {
-      const responseData = typeNames.reduce((data, typeName, index) => {
-        // eslint-disable-next-line no-param-reassign
-        data[typeName] = responses[index].data.features;
-        return data;
-      }, {});
-      const data = this.handleMapWarnings(responseData);
-      this.warnings = data.warnings;
-      this.days = data.days;
-      this.regions = data.regions;
-      this.legend = data.legend;
-    }).catch((err) => {
-      (console.error || console.log).call(console, err.stack || err);
-    });
+  created() {
+    this.fetchWarnings();
+  },
+  methods: {
+    fetchWarnings() {
+      const typeNames = [this.WEATHER_UPDATED, this.FLOOD_UPDATED, this.WEATHER_WARNINGS, this.FLOOD_WARNINGS];
+      axios.all(typeNames.map((typeName) => axios.get(this.URL_BASE + typeName))).then((responses) => {
+        const responseData = typeNames.reduce((data, typeName, index) => {
+          // eslint-disable-next-line no-param-reassign
+          data[typeName] = responses[index].data.features;
+          return data;
+        }, {});
+        const data = this.handleMapWarnings(responseData);
+        this.warnings = data.warnings;
+        this.days = data.days;
+        this.regions = data.regions;
+        this.legend = data.legend;
+      }).catch((err) => {
+        (console.error || console.log).call(console, err.stack || err);
+      });
+    },
   },
 };
 </script>

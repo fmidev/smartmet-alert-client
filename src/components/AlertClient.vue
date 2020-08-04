@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings">
+  <div v-visibility-change="visibilityChange" id="fmi-warnings">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
@@ -15,11 +15,15 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import visibility from 'vue-visibility-change';
 import i18n from '../i18n';
 import Days from './Days.vue';
 import Regions from './Regions.vue';
 import Warnings from './Warnings.vue';
 import module from '../store/module';
+
+Vue.use(visibility);
 
 export default {
   name: 'AlertClient',
@@ -27,6 +31,10 @@ export default {
     currentTime: {
       type: Number,
       default: Date.now(),
+    },
+    refreshInterval: {
+      type: Number,
+      default: 1000 * 60 * 15,
     },
     selectedDay: {
       type: Number,
@@ -43,6 +51,11 @@ export default {
     Regions,
     Warnings,
   },
+  data() {
+    return {
+      timer: null,
+    };
+  },
   watch: {
     warnings() {
       this.$store.commit('Set warnings', this.warnings);
@@ -56,9 +69,31 @@ export default {
     this.$store.commit('Set selected day', this.selectedDay);
     this.$store.commit('Set visible warnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
     this.$store.commit('Set warnings', this.warnings);
+    this.initTimer();
   },
   beforeDestroy() {
+    clearInterval(this.timer);
     this.$store.unregisterModule('warningsStore');
+  },
+  methods: {
+    visibilityChange(evt, hidden) {
+      console.log(evt);
+      console.log(hidden);
+      if (!hidden) {
+        this.cancelTimer();
+        this.update();
+        this.initTimer();
+      }
+    },
+    initTimer() {
+      this.timer = setInterval(this.update, this.refreshInterval);
+    },
+    cancelTimer() {
+      clearInterval(this.timer);
+    },
+    update() {
+      this.$emit('update-warnings');
+    },
   },
 };
 </script>
