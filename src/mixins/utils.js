@@ -29,6 +29,7 @@ export default {
     DATE_TIME_FORMAT: () => 'd.M. H:mm',
     DATE_FORMAT: () => 'd.M.y',
     TIME_FORMAT: () => 'HH:mm',
+    WIND: () => 'wind',
     SEA_WIND: () => 'sea-wind',
     WARNING_LEVELS: () => ['level-1', 'level-2', 'level-3', 'level-4'],
     typeClass() {
@@ -79,6 +80,20 @@ export default {
       return properties[this.WARNING_CONTEXT] === this.SEA_WIND ? properties[this.PHYSICAL_VALUE] : '';
     },
     createWeatherWarning(warning) {
+      let direction = 0;
+      let severity = Number(warning.properties.severity.slice(-1));
+      switch (warning.properties[this.WARNING_CONTEXT]) {
+        case this.SEA_WIND:
+          direction = warning.properties[this.PHYSICAL_DIRECTION] - 180;
+          if (warning.properties[this.SEVERITY] === this.WARNING_LEVELS[0]) {
+            severity += 1;
+          }
+          break;
+        case this.WIND:
+          direction = warning.properties[this.PHYSICAL_DIRECTION] - 90;
+          break;
+        default:
+      }
       return {
         type: this.warningType(warning.properties),
         regions: {
@@ -88,10 +103,8 @@ export default {
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
         effectiveDays: this.effectiveDays(warning.properties),
         validInterval: this.validInterval(warning.properties),
-        severity: Number(warning.properties.severity.slice(-1)) +
-          (((warning.properties[this.WARNING_CONTEXT] === this.SEA_WIND) &&
-          (warning.properties[this.SEVERITY] === this.WARNING_LEVELS[0])) ? 1 : 0),
-        direction: warning.properties[this.PHYSICAL_DIRECTION],
+        severity,
+        direction,
         text: this.text(warning.properties),
         info: {
           fi: he.decode(warning.properties[this.INFO_FI]),
@@ -240,6 +253,9 @@ export default {
         regions,
         legend,
       };
+    },
+    isClientSide() {
+      return ((typeof document !== 'undefined') && (document));
     },
   },
 };
