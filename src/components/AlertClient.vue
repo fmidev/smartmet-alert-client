@@ -1,5 +1,5 @@
 <template>
-  <div v-visibility-change="visibilityChange" id="fmi-warnings">
+  <div id="fmi-warnings">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
@@ -15,15 +15,12 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import visibility from 'vue-visibility-change';
 import i18n from '../i18n';
 import Days from './Days.vue';
 import Regions from './Regions.vue';
 import Warnings from './Warnings.vue';
 import module from '../store/module';
-
-Vue.use(visibility);
+import utils from '../mixins/utils';
 
 export default {
   name: 'AlertClient',
@@ -46,6 +43,7 @@ export default {
     legend: Array,
     language: String,
   },
+  mixins: [utils],
   components: {
     Days,
     Regions,
@@ -54,6 +52,7 @@ export default {
   data() {
     return {
       timer: null,
+      visibilityListener: null,
     };
   },
   watch: {
@@ -70,16 +69,20 @@ export default {
     this.$store.commit('Set visible warnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
     this.$store.commit('Set warnings', this.warnings);
     this.initTimer();
+    if (this.isClientSide()) {
+      this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
+    }
   },
   beforeDestroy() {
+    if (this.isClientSide()) {
+      document.removeEventListener('visibilitychange', this.visibilityListener);
+    }
     clearInterval(this.timer);
     this.$store.unregisterModule('warningsStore');
   },
   methods: {
-    visibilityChange(evt, hidden) {
-      console.log(evt);
-      console.log(hidden);
-      if (!hidden) {
+    visibilityChange() {
+      if ((this.isClientSide()) && (!document.hidden)) {
         this.cancelTimer();
         this.update();
         this.initTimer();

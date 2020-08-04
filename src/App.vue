@@ -66,6 +66,7 @@ export default {
   },
   methods: {
     fetchWarnings() {
+      console.log('Updating...');
       const typeNames = [this.WEATHER_UPDATED, this.FLOOD_UPDATED, this.WEATHER_WARNINGS, this.FLOOD_WARNINGS];
       axios.all(typeNames.map((typeName) => axios.get(this.URL_BASE + typeName))).then((responses) => {
         const responseData = typeNames.reduce((data, typeName, index) => {
