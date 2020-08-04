@@ -1,6 +1,7 @@
 import {
   format, getDay, getDate, getMonth, getYear, addDays, startOfDay, endOfDay, isEqual, isBefore, isAfter, compareDesc,
 } from 'date-fns';
+import he from 'he';
 import config from './config';
 
 export default {
@@ -23,11 +24,13 @@ export default {
     EFFECTIVE_FROM: () => 'effective_from',
     EFFECTIVE_UNTIL: () => 'effective_until',
     WARNING_CONTEXT: () => 'warning_context',
+    SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
     DATE_TIME_FORMAT: () => 'd.M. H:mm',
     DATE_FORMAT: () => 'd.M.y',
     TIME_FORMAT: () => 'HH:mm',
     SEA_WIND: () => 'sea-wind',
+    WARNING_LEVELS: () => ['level-1', 'level-2', 'level-3', 'level-4'],
     typeClass() {
       return this.input.type.split(/(?=[A-Z])/).reduce((acc, part) => acc + (acc.length ? '-' : '') + part.toLowerCase(), '');
     },
@@ -85,13 +88,15 @@ export default {
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
         effectiveDays: this.effectiveDays(warning.properties),
         validInterval: this.validInterval(warning.properties),
-        severity: Number(warning.properties.severity.slice(-1)),
+        severity: Number(warning.properties.severity.slice(-1)) +
+          (((warning.properties[this.WARNING_CONTEXT] === this.SEA_WIND) &&
+          (warning.properties[this.SEVERITY] === this.WARNING_LEVELS[0])) ? 1 : 0),
         direction: warning.properties[this.PHYSICAL_DIRECTION],
         text: this.text(warning.properties),
         info: {
-          fi: warning.properties[this.INFO_FI],
-          sv: warning.properties[this.INFO_SV],
-          en: warning.properties[this.INFO_EN],
+          fi: he.decode(warning.properties[this.INFO_FI]),
+          sv: he.decode(warning.properties[this.INFO_SV]),
+          en: he.decode(warning.properties[this.INFO_EN]),
         },
       };
     },
@@ -199,13 +204,20 @@ export default {
       })));
     },
 
+    isValid(warning) {
+      return (((warning != null) && (warning.properties != null)) &&
+      ((this.WARNING_LEVELS.slice(1).includes(warning.properties.severity)) ||
+      ((warning.properties[this.WARNING_CONTEXT] === this.SEA_WIND) &&
+        (this.WARNING_LEVELS.includes(warning.properties.severity)))));
+    },
+
     handleMapWarnings(data) {
       const warnings = {};
       this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
         .map((updateTime) => new Date(data[updateTime][0].properties[this.UPDATE_TIME]))
         .sort(compareDesc)[0];
       data[this.WEATHER_WARNINGS].forEach((warning) => {
-        if ((warning != null) && (warning.properties != null)) {
+        if (this.isValid(warning)) {
           if (warnings[warning.properties.identifier] == null) {
             warnings[warning.properties.identifier] = this.createWeatherWarning(warning);
           } else {

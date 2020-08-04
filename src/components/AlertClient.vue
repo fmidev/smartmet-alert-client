@@ -24,6 +24,10 @@ import module from '../store/module';
 export default {
   name: 'AlertClient',
   props: {
+    currentTime: {
+      type: Number,
+      default: Date.now(),
+    },
     selectedDay: {
       type: Number,
       default: 0,
@@ -39,9 +43,13 @@ export default {
     Regions,
     Warnings,
   },
+  watch: {
+    warnings() {
+      this.$store.commit('Set warnings', this.warnings);
+    },
+  },
   beforeCreate() {
     this.$store.registerModule('warningsStore', module);
-    this.$store.commit('Set current time', 1594196573441);
   },
   created() {
     i18n.locale = this.language;

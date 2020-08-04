@@ -29,7 +29,15 @@ import MapLarge from './MapLarge.vue';
 export default {
   name: 'DayLarge',
   components: { MapLarge },
-  props: ['index', 'input'],
+  props: {
+    index: {
+      type: Number,
+    },
+    input: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   computed: {
     warnings() {
       return i18n.t('warnings');

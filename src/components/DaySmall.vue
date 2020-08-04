@@ -22,7 +22,18 @@ export default {
   components: {
     MapSmall,
   },
-  props: ['index', 'input', 'active'],
+  props: {
+    index: {
+      type: Number,
+    },
+    input: {
+      type: Object,
+      default: () => ({}),
+    },
+    active: {
+      type: Boolean,
+    },
+  },
   computed: {
     weekday() {
       return i18n.t(this.input.weekdayName);

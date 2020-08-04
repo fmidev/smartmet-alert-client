@@ -32,7 +32,12 @@ export default {
     DaySmall,
     DayLarge,
   },
-  props: ['input'],
+  props: {
+    input: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       selectedDay: 0,

@@ -32,7 +32,21 @@ import DescriptionWarning from './DescriptionWarning.vue';
 export default {
   name: 'Region',
   components: { RegionWarning, DescriptionWarning },
-  props: ['type', 'code', 'name', 'input'],
+  props: {
+    type: {
+      type: String,
+    },
+    code: {
+      type: String,
+    },
+    name: {
+      type: String,
+    },
+    input: {
+      type: Array,
+      default: () => [],
+    },
+  },
   computed: {
     identifier() {
       return `accordion-item-${this.code}`;

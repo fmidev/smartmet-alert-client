@@ -3,7 +3,7 @@
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="
-          `level-${input.severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`
+          `level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`
         "
       ></div>
     </div>

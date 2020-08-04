@@ -18,7 +18,7 @@
         >{{ showWarningsText }}</span
       >
     </div>
-    <div class="row symbol-list-main-row hidden">
+    <div :class="['row', 'symbol-list-main-row', { 'd-none': warnings.length > 0 }]">
       <hr class="symbol-block-separator" />
     </div>
     <div id="fmi-warnings-list" >
@@ -121,12 +121,23 @@ export default {
     Warning,
   },
   props: ['input'],
-  data() {
-    return {
-      warnings: this.input,
-    };
+  watch: {
+    input() {
+      this.showAll();
+    },
+    visibleWarnings(newVisibleWarnings) {
+      this.warnings.forEach((warning) => {
+        const isVisible = newVisibleWarnings.includes(warning.type);
+        if (isVisible !== warning.visible) {
+          Vue.set(warning, 'visible', isVisible);
+        }
+      });
+    },
   },
   computed: {
+    warnings() {
+      return this.input;
+    },
     visibleWarnings() {
       return this.$store.getters.visibleWarnings;
     },
@@ -134,7 +145,7 @@ export default {
       return this.visibleWarnings.length !== this.input.length;
     },
     warningSymbolsText() {
-      return this.input.length > 0 ?
+      return this.warnings.length > 0 ?
         i18n.t('warningSymbols') :
         i18n.t('noWarnings');
     },
@@ -157,19 +168,9 @@ export default {
       return i18n.t('warningLevel4');
     },
   },
-  watch: {
-    visibleWarnings(newVisibleWarnings) {
-      this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type);
-        if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible);
-        }
-      });
-    },
-  },
   methods: {
     showAll() {
-      this.$store.commit('Set visible warnings', this.warnings.reduce((types, warning) => types.concat([warning.key]), []));
+      this.$store.commit('Set visible warnings', this.warnings.reduce((types, warning) => types.concat([warning.type]), []));
     },
   },
 };
@@ -184,6 +185,7 @@ h2 {
   font-weight: bold;
   color: black;
   white-space: nowrap;
+  margin-top: 0;
 }
 
 .row {

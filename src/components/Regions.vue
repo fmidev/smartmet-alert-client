@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     anyRegionWarnings(region) {
-      return this.input[this.selectedDay][region].reduce((numObjKeys, warning) => numObjKeys + Object.keys(warning).length, 0) > 0;
+      return ((this.input.length > 0) && (this.input[this.selectedDay][region].reduce((numObjKeys, warning) => numObjKeys + Object.keys(warning).length, 0) > 0));
     },
   },
 };
