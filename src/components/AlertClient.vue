@@ -169,6 +169,10 @@ div.symbol-list {
 }
 
 @media (max-width: 767px) {
+  div#fmi-warnings {
+    width: 100%;
+  }
+
   div.day-region-views {
     min-width: 100%;
     width: 100%;
