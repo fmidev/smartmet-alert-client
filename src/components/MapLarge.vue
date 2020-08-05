@@ -1,5 +1,5 @@
 <template>
-  <div class="map-large" :class="'day-map-large-'">
+  <div class="map-large">
     <div
       class="day-map-large"
       :style="{

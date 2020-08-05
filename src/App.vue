@@ -4,6 +4,7 @@
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
 import axios from 'axios';
+import { formatISO } from 'date-fns';
 import utils from './mixins/utils';
 import AlertClient from './components/AlertClient.vue';
 import store from './store';
@@ -19,10 +20,23 @@ export default {
   components: {
     AlertClient,
   },
+  props: {
+    currentDate: {
+      type: String,
+      default: formatISO(new Date()),
+    },
+    baseUrl: {
+      type: String,
+      default: 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows',
+    },
+    weatherUpdated: String,
+    floodUpdated: String,
+    weatherWarnings: String,
+    floodWarnings: String,
+  },
   mixins: [utils],
   data() {
     return {
-      currentTime: Date.now(),
       refreshInterval: 1000 * 60 * 15,
       selectedDay: 0,
       updatedAt: null,
@@ -54,12 +68,39 @@ export default {
     };
   },
   computed: {
-    WEATHER_UPDATED: () => 'weather_update_time',
-    FLOOD_UPDATED: () => 'flood_update_time',
-    WEATHER_WARNINGS: () => 'weather_finland_active_all',
-    FLOOD_WARNINGS: () => 'flood_finland_active_all',
-    URL_BASE: () => 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=50&outputFormat=application%2Fjson&typeName=',
-    language: () => 'en',
+    weatherUpdatedType() {
+      return 'weather_update_time';
+    },
+    floodUpdatedType() {
+      return 'flood_update_time';
+    },
+    weatherWarningsType() {
+      return 'weather_finland_active_all';
+    },
+    floodWarningsType() {
+      return 'flood_finland_active_all';
+    },
+    weatherUpdatedQuery() {
+      return this.weatherUpdated || `${this.query}${this.weatherUpdatedType}`;
+    },
+    floodUpdatedQuery() {
+      return this.floodUpdated || `${this.query}${this.floodUpdatedType}`;
+    },
+    weatherWarningsQuery() {
+      return this.weatherWarnings || `${this.query}${this.weatherWarningsType}`;
+    },
+    floodWarningsQuery() {
+      return this.floodWarnings || `${this.query}${this.floodWarningsType}`;
+    },
+    query() {
+      return '?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=1000&outputFormat=application%2Fjson&typeName=';
+    },
+    language() {
+      return 'en';
+    },
+    currentTime() {
+      return (new Date(this.currentDate)).getTime();
+    },
   },
   created() {
     this.fetchWarnings();
@@ -67,13 +108,14 @@ export default {
   methods: {
     fetchWarnings() {
       console.log('Updating...');
-      const typeNames = [this.WEATHER_UPDATED, this.FLOOD_UPDATED, this.WEATHER_WARNINGS, this.FLOOD_WARNINGS];
-      axios.all(typeNames.map((typeName) => axios.get(this.URL_BASE + typeName))).then((responses) => {
-        const responseData = typeNames.reduce((data, typeName, index) => {
-          // eslint-disable-next-line no-param-reassign
-          data[typeName] = responses[index].data.features;
-          return data;
-        }, {});
+      axios.all([this.weatherUpdatedQuery, this.floodUpdatedQuery, this.weatherWarningsQuery, this.floodWarningsQuery]
+        .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then((responses) => {
+        const responseData = [this.weatherUpdatedType, this.floodUpdatedType, this.weatherWarningsType, this.floodWarningsType]
+          .reduce((data, typeName, index) => {
+            // eslint-disable-next-line no-param-reassign
+            data[typeName] = responses[index].data.features;
+            return data;
+          }, {});
         const data = this.handleMapWarnings(responseData);
         this.warnings = data.warnings;
         this.days = data.days;
