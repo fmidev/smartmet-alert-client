@@ -49,7 +49,7 @@ export default {
       return i18n.t('atTime') || '';
     },
     warningsDate() {
-      return `${this.input.day}.${this.input.month}.${this.input.year}` || '';
+      return ((this.input.day != null) && (this.input.month != null) && (this.input.year != null)) ? `${this.input.day}.${this.input.month}.${this.input.year}` : '';
     },
     updatedDate() {
       return this.input.updatedDate || '';

@@ -14,16 +14,16 @@
         </div>
         <div class="symbol-list-select-container .d-none .d-sm-block">
             <div
-              :id="`fmi-warnings-flag-${input.type}`"
+              :id="id"
               :class="[
                 'symbol-list-select',
                 input.visible ? 'flag-selected' : 'flag-unselected',
                 { 'd-none d-sm-block': hideable }
               ]"
-              :title="input.visible ? hideTooltip : showTooltip"
+              :title="input.visible ? hideTooltipTitle : showTooltipTitle"
               :aria-label="input.visible ? hideLabel : showLabel"
               tabindex="0"
-              v-on:click="toggle()"
+              v-on:click="toggle"
               v-b-tooltip.hover="{ html: true, placement: 'top', delay: 0, fallbackPlacement: [], container: `fmi-warnings-flag-${input.type}`}"
             />
         </div>
@@ -43,13 +43,16 @@ export default {
   props: ['input', 'hideable'],
   mixins: [fields, utils],
   computed: {
+    id() {
+      return `fmi-warnings-flag-${this.input.type}`;
+    },
     title() {
       return i18n.t(this.input.type);
     },
-    showTooltip() {
+    showTooltipTitle() {
       return `<span>${i18n.t('selectDisabledWarningTooltipLine1')}<br>${i18n.t('selectDisabledWarningTooltipLine2')}</span>`;
     },
-    hideTooltip() {
+    hideTooltipTitle() {
       return `<span>${i18n.t('selectWarningTooltipLine1')}<br>${i18n.t('selectWarningTooltipLine2')}</span>`;
     },
     showLabel() {
@@ -167,12 +170,13 @@ div.symbol-list-text {
   width: 30px;
   height: $symbol-list-line-height;
   display: table-cell;
+  vertical-align: middle;
 }
 
 .symbol-list-select {
   width: 100%;
   height: $symbol-list-select-height;
-  margin: 9px 0;
+  margin: 0;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -189,7 +193,8 @@ div.symbol-list-text {
 
 ::v-deep .tooltip.bs-tooltip-top {
   opacity: 1;
-  top: -3px !important;
+  top: -9px !important;
+  padding: 0;
 
   .arrow {
     content: '';
@@ -197,7 +202,7 @@ div.symbol-list-text {
     width: 0;
     height: 0;
     border: solid transparent;
-    bottom: 2px;
+    bottom: -5px;
     left: 50% !important;
     margin: 0 0 0 -6px;
     border-width: 6px 6px 0;
@@ -205,14 +210,15 @@ div.symbol-list-text {
   }
 
   .arrow:before {
-    position: relative;
+    position: absolute;
     width: 0;
     height: 0;
     border-width: 5px 5px 0;
     border-top-color: $tooltip-background-color;
     left: 50% !important;
     margin: 0 0 0 -5px;
-    top: -3px;
+    top: -6px;
+    pointer-events: none;
   }
 
   .tooltip-inner {
@@ -223,7 +229,6 @@ div.symbol-list-text {
     font-size: 14px;
     padding: 3px 6px;
     height: 52px;
-    max-height: 100%;
     width: 90px;
     max-width: 100%;
     display: table;
