@@ -36,13 +36,13 @@ export default {
   },
   computed: {
     weekday() {
-      return i18n.t(this.input.weekdayName);
+      return i18n.t(this.input.weekdayName) || '';
     },
     severity() {
       return this.input.severity;
     },
     date() {
-      return `${this.input.day}.${this.input.month}.`;
+      return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
     },
   },
 };

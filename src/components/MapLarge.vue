@@ -25,13 +25,13 @@ export default {
   },
 
   data: () => ({
-    warningsDate: null,
-    updated: null,
-    updatedDate: null,
-    atTime: null,
-    updatedTime: null,
-    dataProviderFirst: null,
-    dataProviderSecond: null,
+    warningsDate: '',
+    updated: '',
+    updatedDate: '',
+    atTime: '',
+    updatedTime: '',
+    dataProviderFirst: '',
+    dataProviderSecond: '',
   }),
 };
 </script>

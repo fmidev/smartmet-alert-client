@@ -36,12 +36,13 @@
 
 <script>
 import fields from '../mixins/fields';
+import utils from '../mixins/utils';
 import i18n from '../i18n';
 
 export default {
   name: 'DescriptionWarning',
   props: ['input'],
-  mixins: [fields],
+  mixins: [fields, utils],
   computed: {
     warningTitle() {
       return i18n.t(this.input.type);

@@ -40,22 +40,22 @@ export default {
   },
   computed: {
     warnings() {
-      return i18n.t('warnings');
+      return i18n.t('warnings') || '';
     },
     updated() {
-      return i18n.t('updated');
+      return i18n.t('updated') || '';
     },
     atTime() {
-      return i18n.t('atTime');
+      return i18n.t('atTime') || '';
     },
     warningsDate() {
-      return `${this.input.day}.${this.input.month}.${this.input.year}`;
+      return `${this.input.day}.${this.input.month}.${this.input.year}` || '';
     },
     updatedDate() {
-      return this.input.updatedDate;
+      return this.input.updatedDate || '';
     },
     updatedTime() {
-      return this.input.updatedTime;
+      return this.input.updatedTime || '';
     },
     dataProviderFirst() {
       return i18n.t('dataProviderFirst');

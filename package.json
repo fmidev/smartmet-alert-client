@@ -28,7 +28,7 @@
     "@babel/polyfill": "^7.7.0",
     "axios": "0.19.2",
     "bootstrap": "^4.3.1",
-    "bootstrap-vue": "2.15.0",
+    "bootstrap-vue": "2.16.0",
     "core-js": "^3.6.5",
     "date-fns": "2.15.0",
     "he": "1.2.0",

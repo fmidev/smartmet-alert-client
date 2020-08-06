@@ -8,7 +8,6 @@
         'row',
         'symbol-list-main-row',
         'show-text-row',
-        { '.d-none': warnings.length > 0 }
       ]"
     >
       <span
@@ -18,7 +17,7 @@
         >{{ showWarningsText }}</span
       >
     </div>
-    <div :class="['row', 'symbol-list-main-row', { 'd-none': warnings.length > 0 }]">
+    <div class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
     </div>
     <div id="fmi-warnings-list" >

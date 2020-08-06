@@ -14,6 +14,7 @@
         </div>
         <div class="symbol-list-select-container .d-none .d-sm-block">
             <div
+              :id="`fmi-warnings-flag-${input.type}`"
               :class="[
                 'symbol-list-select',
                 input.visible ? 'flag-selected' : 'flag-unselected',
@@ -23,7 +24,7 @@
               :aria-label="input.visible ? hideLabel : showLabel"
               tabindex="0"
               v-on:click="toggle()"
-              v-b-tooltip.hover
+              v-b-tooltip.hover="{ html: true, placement: 'top', delay: 0, fallbackPlacement: [], container: `fmi-warnings-flag-${input.type}`}"
             />
         </div>
       </div>
@@ -46,12 +47,10 @@ export default {
       return i18n.t(this.input.type);
     },
     showTooltip() {
-      return `${i18n.t('selectDisabledWarningTooltipLine1')}
-              ${i18n.t('selectDisabledWarningTooltipLine2')}`;
+      return `<span>${i18n.t('selectDisabledWarningTooltipLine1')}<br>${i18n.t('selectDisabledWarningTooltipLine2')}</span>`;
     },
     hideTooltip() {
-      return `${i18n.t('selectWarningTooltipLine1')}
-              ${i18n.t('selectWarningTooltipLine2')}`;
+      return `<span>${i18n.t('selectWarningTooltipLine1')}<br>${i18n.t('selectWarningTooltipLine2')}</span>`;
     },
     showLabel() {
       return `${i18n.t('selectDisabledWarningTooltipLine1')} ${this.uncapitalize(this.title)} ${i18n.t('selectDisabledWarningTooltipLine2')}`;
@@ -188,50 +187,62 @@ div.symbol-list-text {
   background-image: url($ui-image-path + 'flag-unselected' + $image-extension);
 }
 
-  .tooltip {
-    &.top {
-      padding: $tooltip-arrow-border-width 0;
-      margin-top: -3px;
-    }
-    &.right {
-      padding: 0 $tooltip-arrow-border-width;
-    }
-    &.bottom {
-      padding: $tooltip-arrow-border-width 0;
-    }
-    &.left {
-      padding: 0 $tooltip-arrow-border-width;
-    }
-    &.in {
-      opacity: 1;
-    }
-    .tooltip-inner {
-      background-color: $tooltip-background-color;
-      border: $tooltip-border-width solid $tooltip-border-color;
-      color: $tooltip-inner-color;
-      font-family: "Roboto", sans-serif;
-      font-size: 14px;
-      padding: 3px 6px;
-      height: 52px;
-      max-height: 100%;
-      width: 90px;
-      max-width: 100%;
-      display: table-cell;
-      vertical-align: middle;
-      white-space: pre-wrap;
-    }
-  }
+::v-deep .tooltip.bs-tooltip-top {
+  opacity: 1;
+  top: -3px !important;
 
-  .tooltip-arrow:after {
+  .arrow {
     content: '';
     position: absolute;
     width: 0;
     height: 0;
     border: solid transparent;
-    z-index: -1;
+    bottom: 2px;
+    left: 50% !important;
+    margin: 0 0 0 -6px;
+    border-width: 6px 6px 0;
+    border-top-color: $tooltip-border-color;
   }
 
-  @media (max-width: 767px) {
+  .arrow:before {
+    position: relative;
+    width: 0;
+    height: 0;
+    border-width: 5px 5px 0;
+    border-top-color: $tooltip-background-color;
+    left: 50% !important;
+    margin: 0 0 0 -5px;
+    top: -3px;
+  }
+
+  .tooltip-inner {
+    background-color: $tooltip-background-color;
+    border: $tooltip-border-width solid $tooltip-border-color;
+    color: $tooltip-inner-color;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    padding: 3px 6px;
+    height: 52px;
+    max-height: 100%;
+    width: 90px;
+    max-width: 100%;
+    display: table;
+    text-align: center;
+
+    span {
+      display: table-cell;
+      vertical-align: middle;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+  }
+}
+
+@media (max-width: 767px) {
   div.symbol-list-table {
     div.symbol-list-cell.symbol-list-cell-text {
       padding-right: 0;

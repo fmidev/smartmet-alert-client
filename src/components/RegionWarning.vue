@@ -6,11 +6,12 @@
 
 <script>
 import fields from '../mixins/fields';
+import utils from '../mixins/utils';
 
 export default {
   name: 'RegionWarning',
   props: ['input'],
-  mixins: [fields],
+  mixins: [fields, utils],
 };
 </script>
 
