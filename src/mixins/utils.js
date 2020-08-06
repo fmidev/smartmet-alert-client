@@ -155,24 +155,28 @@ export default {
       }, {});
     },
     createLegend(severities) {
-      return this.warningTypes.reduce((orderedSeverities, warningType) => {
-        if (severities[warningType]) {
-          orderedSeverities.push({
-            type: warningType,
-            severity: severities[warningType],
-            visible: true,
-          });
-        }
+      const warningKeys = Object.keys(severities);
+      return [4, 3, 2].reduce((orderedSeverities, severity) => {
+        const warningTypesBySeverity = warningKeys.filter((key) => severities[key] === severity);
+        this.warningTypes.forEach((warningType) => {
+          if (warningTypesBySeverity.includes(warningType)) {
+            orderedSeverities.push({
+              type: warningType,
+              severity: severities[warningType],
+              visible: true,
+            });
+          }
+        });
         return orderedSeverities;
       }, []);
     },
-    createRegions(warnings, legend) {
+    createRegions(warnings) {
       const warningKeys = Object.keys(warnings);
-      return [3, 2, 1].reduce((regionWarnings, severity) => {
+      return [4, 3, 2].reduce((regionWarnings, severity) => {
         const warningsBySeverity = warningKeys.filter((key) => warnings[key].severity === severity);
         [...Array(this.NUMBER_OF_DAYS).keys()].forEach((day) => {
           const warningsByDay = warningsBySeverity.filter((key) => warnings[key].effectiveDays[day]);
-          legend.map((legendItem) => legendItem.type).forEach((warningType) => {
+          this.warningTypes.forEach((warningType) => {
             const warningsByType = warningsByDay.filter((key) => warnings[key].type === warningType);
             warningsByType.sort((key1, key2) => {
               const effectiveFrom1 = new Date(warnings[key1].effectiveFrom);
