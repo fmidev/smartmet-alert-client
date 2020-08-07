@@ -181,6 +181,7 @@ div.symbol-list {
   div.symbol-list {
     position: static;
     padding-left: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
     min-width: 100%;
     width: 100%;

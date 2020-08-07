@@ -12,13 +12,14 @@
         <div class="item-text symbol-list-text">
           {{ title }}
         </div>
-        <div class="symbol-list-select-container .d-none .d-sm-block">
+        <div class="symbol-list-select-container">
             <div
               :id="id"
               :class="[
                 'symbol-list-select',
                 input.visible ? 'flag-selected' : 'flag-unselected',
-                { 'd-none d-sm-block': hideable }
+                'd-m-block',
+                { 'd-none': !hideable }
               ]"
               :title="input.visible ? hideTooltipTitle : showTooltipTitle"
               :aria-label="input.visible ? hideLabel : showLabel"

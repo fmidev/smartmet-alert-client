@@ -86,26 +86,35 @@ export default {
 }
 
 ::v-deep a.day.day0 {
-  border-top: none !important;
-  border-bottom: none !important;
-  border-right: 1px solid $white !important;
-  border-left: none !important;
+  border: none !important;
+  div.date-selector-cell > div {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-right: 1px solid $white !important;
+    border-left: none !important;
+  }
 }
 
 ::v-deep a.day.day1,
 ::v-deep a.day.day2,
 ::v-deep a.day.day3 {
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: 1px solid $white !important;
-  border-right: 1px solid $white !important;
+  border: none !important;
+  div.date-selector-cell > div {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: 1px solid $white !important;
+    border-right: 1px solid $white !important;
+  }
 }
 
 ::v-deep a.day.day4 {
-  border-top: none !important;
-  border-bottom: none !important;
-  border-left: 1px solid $white !important;
-  border-right: none !important;
+  border: none !important;
+  div.date-selector-cell > div {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: 1px solid $white !important;
+    border-right: none !important;
+  }
 }
 
 @media (max-width: 575px) {

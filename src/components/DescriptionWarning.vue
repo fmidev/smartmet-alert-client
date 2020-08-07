@@ -25,8 +25,8 @@
         </div>
         <div class="description-text">
           {{ description }}
-          <a :class="['ext-link', {'d-none': linkHidden}]" :href="`${link}`" target="_blank">{{
-            linkText
+          <a :class="['ext-link', {'d-none': linkHidden}]" :href="`${input.link}`" target="_blank">{{
+            input.linkText
           }}</a>
         </div>
       </div>
@@ -54,13 +54,7 @@ export default {
       return i18n.t('valid');
     },
     linkHidden() {
-      return true;
-    },
-    link() {
-      return '';
-    },
-    linkText() {
-      return '';
+      return ((this.input.link == null) || (this.input.link.length === 0));
     },
     description() {
       return i18n.t(`${this.input.type}DescriptionLevel${this.input.severity}`);
@@ -138,6 +132,7 @@ export default {
   }
 
   a.ext-link {
+    color: #303193;
     padding-right: 14px;
     background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
       right;

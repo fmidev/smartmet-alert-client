@@ -93,7 +93,7 @@ div.map-container {
   position: relative;
   height: $map-large-height;
   background: transparent;
-  top: 10px;
+  top: 0;
 }
 
 div.warning-map-status {

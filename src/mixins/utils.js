@@ -3,6 +3,7 @@ import {
 } from 'date-fns';
 import he from 'he';
 import config from './config';
+import i18n from '../i18n';
 
 export default {
   mixins: [config],
@@ -120,6 +121,8 @@ export default {
           sv: he.decode(warning.properties[this.INFO_SV]),
           en: he.decode(warning.properties[this.INFO_EN]),
         },
+        link: '',
+        linkText: '',
       };
     },
     createFloodWarning(warning) {
@@ -142,6 +145,8 @@ export default {
             ).replace(/\n/g, ' '),
           )[0],
         },
+        link: i18n.t('floodLink'),
+        linkText: i18n.t('floodLinkText'),
       };
     },
     createDays(warnings) {
