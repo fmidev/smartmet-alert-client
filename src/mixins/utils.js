@@ -23,6 +23,8 @@ export default {
     PHYSICAL_VALUE: () => 'physical_value',
     EFFECTIVE_FROM: () => 'effective_from',
     EFFECTIVE_UNTIL: () => 'effective_until',
+    ONSET: () => 'onset',
+    EXPIRES: () => 'expires',
     WARNING_CONTEXT: () => 'warning_context',
     SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
@@ -31,7 +33,14 @@ export default {
     TIME_FORMAT: () => 'HH:mm',
     WIND: () => 'wind',
     SEA_WIND: () => 'sea-wind',
+    FLOOD_LEVEL_TYPE: () => 'floodLevel',
     WARNING_LEVELS: () => ['level-1', 'level-2', 'level-3', 'level-4'],
+    FLOOD_LEVELS: () => ({
+      minor: 1,
+      moderate: 2,
+      severe: 3,
+      extreme: 4,
+    }),
     typeClass() {
       return this.input.type.split(/(?=[A-Z])/).reduce((acc, part) => acc + (acc.length ? '-' : '') + part.toLowerCase(), '');
     },
@@ -64,14 +73,14 @@ export default {
     regionFromReference(reference) {
       return reference.substring(reference.lastIndexOf('#') + 1);
     },
-    validInterval(properties) {
-      const effectiveFrom = new Date(properties[this.EFFECTIVE_FROM]);
-      const effectiveUntil = new Date(properties[this.EFFECTIVE_UNTIL]);
+    validInterval(start, end) {
+      const effectiveFrom = new Date(start);
+      const effectiveUntil = new Date(end);
       return `${format(effectiveFrom, this.DATE_TIME_FORMAT)} - ${format(effectiveUntil, this.DATE_TIME_FORMAT)}`;
     },
-    effectiveDays(properties) {
-      const effectiveFrom = new Date(properties[this.EFFECTIVE_FROM]);
-      const effectiveUntil = new Date(properties[this.EFFECTIVE_UNTIL]);
+    effectiveDays(start, end) {
+      const effectiveFrom = new Date(start);
+      const effectiveUntil = new Date(end);
       const currentDate = new Date(this.currentTime);
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((isBefore(effectiveFrom, startOfDay(addDays(currentDate, index + 1)))) &&
         (isAfter(effectiveUntil, endOfDay(addDays(currentDate, index - 1))))));
@@ -101,8 +110,8 @@ export default {
         },
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
-        effectiveDays: this.effectiveDays(warning.properties),
-        validInterval: this.validInterval(warning.properties),
+        effectiveDays: this.effectiveDays(warning.properties[this.EFFECTIVE_FROM], warning.properties[this.EFFECTIVE_UNTIL]),
+        validInterval: this.validInterval(warning.properties[this.EFFECTIVE_FROM], warning.properties[this.EFFECTIVE_UNTIL]),
         severity,
         direction,
         text: this.text(warning.properties),
@@ -114,19 +123,24 @@ export default {
       };
     },
     createFloodWarning(warning) {
-      console.log(warning);
       return {
-        type: '',
-        effectiveFrom: '',
-        effectiveUntil: '',
-        validInterval: '', // '8.7. 15:00 - 8.7. 24:00',
-        severity: '',
-        direction: null,
+        type: this.FLOOD_LEVEL_TYPE,
+        regions: {
+          [this.regionFromReference(warning.properties.reference)]: true,
+        },
+        effectiveFrom: warning.properties[this.ONSET],
+        effectiveUntil: warning.properties[this.EXPIRES],
+        effectiveDays: this.effectiveDays(warning.properties[this.ONSET], warning.properties[this.EXPIRES]),
+        validInterval: this.validInterval(warning.properties[this.ONSET], warning.properties[this.EXPIRES]),
+        severity: this.FLOOD_LEVELS[warning.properties.severity.toLowerCase()],
+        direction: 0,
         text: '',
         info: {
-          fi: '',
-          sv: '',
-          en: '',
+          [warning.properties.language.substr(0, 2).toLowerCase()]: JSON.parse(
+            decodeURIComponent(
+              warning.properties.description != null ? warning.properties.description : '[%22%22]',
+            ).replace(/\n/g, ' '),
+          )[0],
         },
       };
     },
@@ -243,14 +257,18 @@ export default {
         }
       });
       data[this.FLOOD_WARNINGS].forEach((warning) => {
-        if ((warnings != null) && (warnings.properties != null)) {
-          warnings[warning.properties.identifier] = this.createFloodWarning(warning);
+        if ((warning != null) && (warning.properties != null)) {
+          if (warnings[warning.properties.identifier] == null) {
+            warnings[warning.properties.identifier] = this.createFloodWarning(warning);
+          } else {
+            warnings[warning.properties.identifier].regions[this.regionFromReference(warning.properties.reference)] = true;
+          }
         }
       });
       const days = this.createDays(warnings);
       const maxSeverities = this.getMaxSeverities(warnings);
       const legend = this.createLegend(maxSeverities);
-      const regions = this.createRegions(warnings, legend);
+      const regions = this.createRegions(warnings);
       return {
         warnings,
         days,

@@ -90,13 +90,27 @@ export default {
       return this.weatherWarnings || `${this.query}${this.weatherWarningsType}`;
     },
     floodWarningsQuery() {
-      return this.floodWarnings || `${this.query}${this.floodWarningsType}`;
+      return this.floodWarnings || `${this.query}${this.floodWarningsType}${this.floodFilter}`;
     },
     query() {
       return '?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=1000&outputFormat=application%2Fjson&typeName=';
     },
+    floodSupportedSeverities() {
+      return ['moderate', 'severe', 'extreme'];
+    },
+    floodFilter() {
+      return `${this.floodSupportedSeverities.reduce((filter, severity, index) => (`${filter + (index === 0 ? '' : ',')}%27${severity.toUpperCase()}%27`),
+        '&cql_filter=severity%20IN%20(')})%20AND%20language=%27${this.capLanguage()}%27`;
+    },
     language() {
       return 'en';
+    },
+    capLanguage() {
+      return () => ({
+        'fi-FI': 'fi',
+        'sv-SV': 'sv',
+        'en-US': 'en',
+      })[this.language];
     },
     currentTime() {
       return (new Date(this.currentDate)).getTime();
