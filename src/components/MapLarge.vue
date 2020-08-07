@@ -1,14 +1,8 @@
 <template>
   <div class="map-large">
-    <div
-      class="day-map-large"
-      :style="{
-        width: '440px',
-        height: '550px',
-        //        borderTop: '10px solid transparent',
-        backgroundImage: 'url(../tmp/map' + index + '.png)'
-      }"
-    ></div>
+    <div class="day-map-large">
+      <img src="../assets/img/ui/finland.svg" alt="" />
+    </div>
   </div>
 </template>
 
@@ -44,9 +38,6 @@ div.map-large {
   width: $map-large-width;
   height: $map-large-height;
   background-color: rgba(0, 0, 0, 0);
-}
-div.day-map-large {
-  height: 100%;
 }
 
 @media (max-width: 767px) {

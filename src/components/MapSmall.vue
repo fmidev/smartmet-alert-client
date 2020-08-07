@@ -1,6 +1,6 @@
 <template>
   <div :id="`day-map-small-${index}`" class="map-small">
-    <img :src="`../tmp/map${index}small.png`" alt="" />
+    <img src="../assets/img/ui/finland-small.svg" alt="" />
   </div>
 </template>
 
