@@ -12,6 +12,7 @@ export default {
     WEEKDAY_NAMES: () => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
     REGION_LAND: () => 'land',
     REGION_SEA: () => 'sea',
+    REGION_LAKE: () => 'lake',
     WEATHER_UPDATE_TIME: () => 'weather_update_time',
     FLOOD_UPDATE_TIME: () => 'flood_update_time',
     UPDATE_TIME: () => 'update_time',
@@ -72,7 +73,11 @@ export default {
       );
     },
     regionFromReference(reference) {
-      return reference.substring(reference.lastIndexOf('#') + 1);
+      let regionId = reference.substring(reference.lastIndexOf('#') + 1);
+      if (regionId.indexOf('.') !== regionId.lastIndexOf('.')) {
+        regionId = regionId.replace('.', '_');
+      }
+      return regionId;
     },
     validInterval(start, end) {
       const effectiveFrom = new Date(start);
