@@ -368,6 +368,16 @@ export default {
           parent: '',
         },
       },
+      colors: {
+        sea: '#bee2f1',
+        levels: [
+          '#6af86a',
+          '#6af86a',
+          '#f8f800',
+          '#f9bf2e',
+          '#ff0909',
+        ],
+      },
     };
   },
 };

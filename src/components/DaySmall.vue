@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="date-selector-cell-body map-container">
-      <MapSmall :index="index" />
+      <MapSmall :index="index" :input="regions" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -27,6 +27,10 @@ export default {
       type: Number,
     },
     input: {
+      type: Object,
+      default: () => ({}),
+    },
+    regions: {
       type: Object,
       default: () => ({}),
     },

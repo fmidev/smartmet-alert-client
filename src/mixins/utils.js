@@ -284,5 +284,18 @@ export default {
     isClientSide() {
       return ((typeof document !== 'undefined') && (document));
     },
+    regionColor(regionId) {
+      const regionType = this.geometries[regionId].type;
+      const region = this.input[regionType].find((regionData) => regionData.key === regionId);
+      let severity = 0;
+      if (region != null) {
+        const warning = this.$store.getters.warnings[region.warnings[0].identifiers[0]];
+        severity = warning.severity;
+      }
+      if (severity) {
+        return this.colors.levels[severity];
+      }
+      return regionType === this.REGION_SEA ? this.colors.sea : this.colors.levels[0];
+    },
   },
 };

@@ -14,9 +14,9 @@
         :title-link-class="['day', `day${i}`]"
       >
         <template v-slot:title>
-          <DaySmall :index="i" :input="input[i]" :active="i === selectedDay" />
+          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :active="i === selectedDay" />
         </template>
-        <DayLarge :index="i" :input="input[i]" />
+        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" />
       </b-tab>
     </b-tabs>
   </div>
@@ -34,6 +34,10 @@ export default {
   },
   props: {
     input: {
+      type: Array,
+      default: () => [],
+    },
+    regions: {
       type: Array,
       default: () => [],
     },
