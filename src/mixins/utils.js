@@ -289,8 +289,11 @@ export default {
       const region = this.input[regionType].find((regionData) => regionData.key === regionId);
       let severity = 0;
       if (region != null) {
-        const warning = this.$store.getters.warnings[region.warnings[0].identifiers[0]];
-        severity = warning.severity;
+        const visibleWarnings = this.$store.getters.visibleWarnings;
+        const topWarning = region.warnings.find((warning) => visibleWarnings.includes(warning.type));
+        if (topWarning != null) {
+          severity = this.$store.getters.warnings[topWarning.identifiers[0]].severity;
+        }
       }
       if (severity) {
         return this.colors.levels[severity];
