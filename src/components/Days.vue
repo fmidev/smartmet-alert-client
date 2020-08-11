@@ -3,6 +3,7 @@
     <b-tabs
       v-model="selectedDay"
       id="fmi-warnings-date-selector"
+      :lazy="true"
       :no-fade="true"
       nav-class="fmi-warnings-date-nav"
       justified
