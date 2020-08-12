@@ -4,17 +4,20 @@
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="440" height="550"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round">
                 <g id="finland-large">
-                    <path v-for="path in paths" :key="path.key" stroke="#000000" stroke-width="0.5"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" />
+                    <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
+                          :data-region="path.dataRegion" v-on:click="regionClicked" style="cursor: pointer"/>
                 </g>
             </svg>
-            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom"></b-button>
-            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom"></b-button>
+            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"></b-button>
+            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"></b-button>
+            <div id="fmi-warnings-region-tooltip-reference" :style="`left: ${tooltipX} top: ${tooltipY}`" v-b-tooltip.hover="{ id: 'fmi-warnings-region-tooltip', html: true, placement: 'top', delay: 0, fallbackPlacement: []}" title="test"></div>
         </div>
     </div>
 </template>
 
 <script>
+import Panzoom from '@panzoom/panzoom';
 import i18n from '../i18n';
 import config from '../mixins/config';
 import geometry from '../mixins/geometry';
@@ -46,11 +49,12 @@ export default {
           fill: regionColor,
           d: regionGeom.pathLarge,
           opacity: visible ? '1' : '0',
+          dataRegion: regionId,
+          strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
         };
       });
     },
   },
-
   data: () => ({
     warningsDate: '',
     updated: '',
@@ -59,7 +63,54 @@ export default {
     updatedTime: '',
     dataProviderFirst: '',
     dataProviderSecond: '',
+    tooltipX: 0,
+    tooltipY: 0,
+    scale: 1,
   }),
+  watch: {
+    scale() {
+      if (this.scale === 1) {
+        this.panzoom.reset({
+          animate: false,
+        });
+      }
+    },
+  },
+  methods: {
+    regionClicked(event) {
+      console.log('clicked');
+      console.log(event.target.dataset.region);
+      console.log(event.clientX);
+      console.log(event.clientY);
+      this.tooltipX = event.clientX;
+      this.tooltipY = event.clientY;
+      this.$root.$emit('bv::enable::tooltip', 'fmi-warnings-region-tooltip');
+    },
+    zoomIn() {
+      this.panzoom.zoom(this.panzoom.getScale() + 1, {
+        force: true,
+      });
+    },
+    zoomOut() {
+      this.panzoom.zoom(this.panzoom.getScale() - 1, {
+        force: true,
+      });
+    },
+  },
+  mounted() {
+    const finlandLarge = document.getElementById('finland-large');
+    this.panzoom = Panzoom(finlandLarge, {
+      disableZoom: true,
+      panOnlyWhenZoomed: true,
+      animate: false,
+      origin: '50% 50%',
+      minScale: 1,
+      maxScale: 3,
+    });
+    finlandLarge.addEventListener('panzoomchange', (event) => {
+      this.scale = this.panzoom.getScale();
+    });
+  },
 };
 </script>
 
@@ -94,6 +145,10 @@ export default {
         top: 36px;
         border-radius: 0 0 2px 2px;
         background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjNTNCOUU2IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+    }
+
+    #fmi-warnings-region-tooltip-reference {
+        position: absolute;
     }
 
     @media (max-width: 767px) {

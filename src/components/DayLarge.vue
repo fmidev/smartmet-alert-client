@@ -76,7 +76,7 @@ export default {
 
 div,
 span {
-  background: #f8f8f8;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 p {
@@ -109,7 +109,7 @@ div.warning-map-status {
 
 div.data-providers {
   position: absolute;
-  bottom: 12px;
+  bottom: 4px;
   right: 16px;
   text-align: left;
   z-index: 5;
