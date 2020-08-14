@@ -12,8 +12,7 @@
     </div>
     <div class="current-description-text-cell ">
       <div class="description-info">
-        <span class="font-weight-bold"
-          >{{ warningTitle }} — {{ validText }} {{ input.validInterval }}</span
+        <span class="font-weight-bold" v-html="`${warningTitle} — ${validText } ${input.validInterval}`"></span
         ><br />
         {{ info }}
       </div>

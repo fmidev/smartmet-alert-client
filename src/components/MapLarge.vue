@@ -6,12 +6,42 @@
                 <g id="finland-large">
                     <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" v-on:click="regionClicked" style="cursor: pointer"/>
+                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" v-on:click="regionClicked"
+                          style="cursor: pointer"/>
                 </g>
             </svg>
             <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"></b-button>
             <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"></b-button>
-            <div id="fmi-warnings-region-tooltip-reference" :style="`left: ${tooltipX} top: ${tooltipY}`" v-b-tooltip.hover="{ id: 'fmi-warnings-region-tooltip', html: true, placement: 'top', delay: 0, fallbackPlacement: []}" title="test"></div>
+            <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle"></div>
+            <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
+                       target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
+                       container="fmi-warnings-region-tooltip-reference">
+                <div class="ol-popup" id="day-map-large-base-popup"><a
+                        :class="['ol-popup-closer', `shadow-${popupLevel}`]"
+                        id="day-map-large-base-popup-closer"
+                        href="#"
+                        v-on:click="closeTooltip"
+                ></a>
+                    <div id="day-map-large-base-popup-content">
+                        <div class="region-popup">
+                            <div :class="['region-popup-header', `${popupLevel}`]">
+                                <span class="region-popup-header-text bold-text">
+                                    {{ regionTitle }}
+                                </span>
+                            </div>
+                            <div class="region-popup-wrapper">
+                                <div class="region-popup-body">
+                                    <div class="popup-table">
+                                        <div class="popup-table-body">
+                                            <PopupRow v-for="popupWarning in popupWarnings" v-bind:key="popupWarning.id" :input="popupWarning"></PopupRow>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </b-tooltip>
         </div>
     </div>
 </template>
@@ -20,11 +50,12 @@
 import Panzoom from '@panzoom/panzoom';
 import i18n from '../i18n';
 import config from '../mixins/config';
-import geometry from '../mixins/geometry';
 import utils from '../mixins/utils';
+import PopupRow from './PopupRow.vue';
 
 export default {
   name: 'MapLarge',
+  components: { PopupRow },
   props: {
     index: {
       type: Number,
@@ -34,39 +65,50 @@ export default {
       default: () => ({}),
     },
   },
-  mixins: [config, geometry, utils],
+  mixins: [config, utils],
   computed: {
     warnings() {
       return i18n.t('warnings');
     },
+    tooltipStyle() {
+      return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`;
+    },
     paths() {
       return this.regionIds.map((regionId) => {
-        const regionGeom = this.geometries[regionId];
-        const regionColor = this.regionColor(regionId);
-        const visible = ((regionGeom.subType !== this.REGION_LAKE) || (regionColor !== this.colors.sea));
+        const visualization = this.regionVisualization(regionId);
         return {
           key: `large-${regionId}`,
-          fill: regionColor,
-          d: regionGeom.pathLarge,
-          opacity: visible ? '1' : '0',
+          fill: visualization.color,
+          d: visualization.geom.pathLarge,
+          opacity: visualization.visible ? '1' : '0',
           dataRegion: regionId,
+          dataSeverity: visualization.severity,
           strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
         };
       });
     },
+    regionTitle() {
+      return i18n.t(this.popupRegion.name);
+    },
   },
-  data: () => ({
-    warningsDate: '',
-    updated: '',
-    updatedDate: '',
-    atTime: '',
-    updatedTime: '',
-    dataProviderFirst: '',
-    dataProviderSecond: '',
-    tooltipX: 0,
-    tooltipY: 0,
-    scale: 1,
-  }),
+  data() {
+    return {
+      warningsDate: '',
+      updated: '',
+      updatedDate: '',
+      atTime: '',
+      updatedTime: '',
+      dataProviderFirst: '',
+      dataProviderSecond: '',
+      showTooltip: false,
+      tooltipX: 0,
+      tooltipY: 0,
+      scale: 1,
+      popupRegion: {},
+      popupLevel: '',
+      popupWarnings: [],
+    };
+  },
   watch: {
     scale() {
       if (this.scale === 1) {
@@ -78,13 +120,37 @@ export default {
   },
   methods: {
     regionClicked(event) {
-      console.log('clicked');
-      console.log(event.target.dataset.region);
-      console.log(event.clientX);
-      console.log(event.clientY);
-      this.tooltipX = event.clientX;
-      this.tooltipY = event.clientY;
-      this.$root.$emit('bv::enable::tooltip', 'fmi-warnings-region-tooltip');
+      this.popupLevel = `level-${event.target.dataset.severity}`;
+      const regionId = event.target.dataset.region;
+      this.popupRegion = this.geometries[event.target.dataset.region];
+      const region = this.input[this.geometries[event.target.dataset.region].type].find((regionWarning) => regionWarning.key === regionId);
+      let popupWarnings = [];
+      if (region != null) {
+        region.warnings.forEach((warningByType) => {
+          warningByType.identifiers.forEach((identifier) => {
+            const warning = this.$store.getters.warnings[identifier];
+            popupWarnings.push({
+              type: warningByType.type,
+              severity: warning.severity,
+              direction: warning.direction,
+              text: warning.text != null ? warning.text : '',
+              interval: warning.validInterval,
+            });
+          });
+        });
+      } else {
+        popupWarnings = [{
+          type: '',
+          severity: 0,
+          direction: 0,
+          text: '',
+          interval: i18n.t('popupNoWarnings'),
+        }];
+      }
+      this.popupWarnings = popupWarnings;
+      this.tooltipX = event.offsetX;
+      this.tooltipY = event.offsetY;
+      this.showTooltip = true;
     },
     zoomIn() {
       this.panzoom.zoom(this.panzoom.getScale() + 1, {
@@ -95,6 +161,9 @@ export default {
       this.panzoom.zoom(this.panzoom.getScale() - 1, {
         force: true,
       });
+    },
+    closeTooltip() {
+      this.showTooltip = false;
     },
   },
   mounted() {
@@ -107,7 +176,7 @@ export default {
       minScale: 1,
       maxScale: 3,
     });
-    finlandLarge.addEventListener('panzoomchange', (event) => {
+    finlandLarge.addEventListener('panzoomchange', () => {
       this.scale = this.panzoom.getScale();
     });
   },
@@ -116,6 +185,7 @@ export default {
 
 <style scoped lang="scss">
     @import "../scss/constants.scss";
+    @import "../scss/warningImages.scss";
 
     div.map-large {
         display: inline-block;
@@ -147,8 +217,179 @@ export default {
         background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjNTNCOUU2IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
     }
 
+    #fmi-warnings-region-tooltip {
+        opacity: 1;
+    }
+
     #fmi-warnings-region-tooltip-reference {
         position: absolute;
+        width: 1px;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        padding: 0;
+        border-radius: 1px;
+        bottom: 12px;
+        left: -50px;
+        min-width: 275px;
+        width: 275px;
+        max-width: 275px;
+        z-index: 9;
+    }
+
+    ::v-deep .tooltip.bs-tooltip-top {
+
+        .arrow, .arrow::before {
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .arrow {
+            padding: 0;
+            border-radius: 1px;
+            border: 11px solid transparent;
+            border-top-color: $dark-gray;
+            left: 60px;
+            margin-left: -11px;
+            top: -12px;
+            z-index: 10;
+        }
+
+        .arrow::before {
+            border: 10px solid transparent;
+            border-top-color: $white;
+            left: -10px;
+            top: -11px;
+            z-index: 9;
+        }
+    }
+
+    a.ol-popup-closer {
+        border-bottom: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 35px;
+        width: 35px;
+        background: url($ui-image-path + 'close' + $image-extension) no-repeat center;
+
+        &#day-map-large-base-popup-closer {
+            border-bottom: 0 none transparent;
+            z-index: 8;
+        }
+    }
+
+    .region-popup {
+        width: 100%;
+        background-color: white;
+        cursor: default;
+    }
+
+    div.region-popup-header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 35px;
+        line-height: 35px;
+        padding-left: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    span.region-popup-header-text {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .region-popup-wrapper {
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 0 0 0;
+    }
+
+    .region-popup-body {
+        top: 40px;
+        width: 100%;
+        background-color: white;
+        padding: 0 0 0 0;
+    }
+
+    #day-map-large-base-popup {
+        margin-right: 20px;
+    }
+
+    .shadow-level-0 {
+        background-color: $green-shadow !important;
+    }
+
+    .shadow-level-1 {
+        background-color: $green-shadow !important;
+    }
+
+    .shadow-level-2 {
+        background-color: $yellow-shadow !important;
+    }
+
+    .shadow-level-3 {
+        background-color: $orange-shadow !important;
+    }
+
+    .shadow-level-4 {
+        background-color: $red-shadow !important;
+    }
+
+    ::v-deep div.tooltip-inner {
+        padding: 0;
+    }
+
+    .popup-table {
+        border-spacing: 4px;
+        display: table;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+
+    .popup-table-heading {
+        background-color: #EEE;
+        display: table-header-group;
+    }
+
+    .popup-table-head {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .popup-table-heading {
+        background-color: #EEE;
+        display: table-header-group;
+        font-weight: bold;
+    }
+
+    .popup-table-foot {
+        background-color: #EEE;
+        display: table-footer-group;
+        font-weight: bold;
+    }
+
+    .popup-table-body {
+        display: table-row-group;
+    }
+
+    div.symbol-image {
+        display: table;
     }
 
     @media (max-width: 767px) {

@@ -95,22 +95,6 @@ div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
 
-.level-1 {
-  background-color: $green;
-}
-
-.level-2 {
-  background-color: $yellow;
-}
-
-.level-3 {
-  background-color: $orange;
-}
-
-.level-4 {
-  background-color: $red;
-}
-
 div.symbol-list-image-column {
   width: 44px;
   margin-top: 2px;

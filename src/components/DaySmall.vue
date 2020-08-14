@@ -111,6 +111,10 @@ div.map-container {
     height: 60px !important;
   }
 
+  div.mobile-level-0 {
+    background-color: $green !important;
+  }
+
   div.mobile-level-1 {
     background-color: $green !important;
   }

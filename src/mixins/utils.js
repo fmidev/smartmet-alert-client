@@ -1,5 +1,5 @@
 import {
-  format, getDay, getDate, getMonth, getYear, addDays, startOfDay, endOfDay, isEqual, isBefore, isAfter, compareDesc,
+  format, getDay, getDate, getMonth, getYear, addDays, startOfDay, isEqual, isBefore, isAfter, compareDesc,
 } from 'date-fns';
 import he from 'he';
 import config from './config';
@@ -30,7 +30,7 @@ export default {
     WARNING_CONTEXT: () => 'warning_context',
     SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
-    DATE_TIME_FORMAT: () => 'd.M. H:mm',
+    DATE_TIME_FORMAT: () => "'<strong>'dd.MM.'</strong>' HH:mm",
     DATE_FORMAT: () => 'd.M.y',
     TIME_FORMAT: () => 'HH:mm',
     WIND: () => 'wind',
@@ -43,18 +43,6 @@ export default {
       severe: 3,
       extreme: 4,
     }),
-    typeClass() {
-      return this.input.type.split(/(?=[A-Z])/).reduce((acc, part) => acc + (acc.length ? '-' : '') + part.toLowerCase(), '');
-    },
-    rotation() {
-      return Number.isFinite(this.input.direction) ? Math.round((this.input.direction + 360) % 360) : 0;
-    },
-    severity() {
-      if (this.input.severity < 2 || this.input.severity > 4) {
-        return null;
-      }
-      return this.input.severity;
-    },
   },
   methods: {
     uncapitalize(value) {
@@ -89,7 +77,7 @@ export default {
       const effectiveUntil = new Date(end);
       const currentDate = new Date(this.currentTime);
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((isBefore(effectiveFrom, startOfDay(addDays(currentDate, index + 1)))) &&
-        (isAfter(effectiveUntil, endOfDay(addDays(currentDate, index - 1))))));
+        (isAfter(effectiveUntil, startOfDay(addDays(currentDate, index))))));
     },
     text(properties) {
       return properties[this.WARNING_CONTEXT] === this.SEA_WIND ? properties[this.PHYSICAL_VALUE] : '';
@@ -111,6 +99,7 @@ export default {
       }
       return {
         type: this.warningType(warning.properties),
+        id: warning.properties.identifier,
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
@@ -133,6 +122,7 @@ export default {
     createFloodWarning(warning) {
       return {
         type: this.FLOOD_LEVEL_TYPE,
+        id: warning.properties.identifier,
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
@@ -289,7 +279,7 @@ export default {
     isClientSide() {
       return ((typeof document !== 'undefined') && (document));
     },
-    regionColor(regionId) {
+    regionSeverity(regionId) {
       const regionType = this.geometries[regionId].type;
       const region = this.input[regionType].find((regionData) => regionData.key === regionId);
       let severity = 0;
@@ -300,10 +290,20 @@ export default {
           severity = this.$store.getters.warnings[topWarning.identifiers[0]].severity;
         }
       }
-      if (severity) {
-        return this.colors.levels[severity];
-      }
-      return regionType === this.REGION_SEA ? this.colors.sea : this.colors.levels[0];
+      return severity;
+    },
+    regionVisualization(regionId) {
+      const geom = this.geometries[regionId];
+      const severity = this.regionSeverity(regionId);
+      const isLand = (this.geometries[regionId].type === this.REGION_LAND);
+      const color = ((severity) || (isLand) ? this.colors.levels[severity] : this.colors.sea);
+      const visible = ((isLand) || (geom.subType !== this.REGION_LAKE));
+      return {
+        geom,
+        severity,
+        color,
+        visible,
+      };
     },
   },
 };

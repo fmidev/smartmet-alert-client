@@ -11,7 +11,6 @@
 
 <script>
 import config from '../mixins/config';
-import geometry from '../mixins/geometry';
 import utils from '../mixins/utils';
 
 export default {
@@ -25,18 +24,16 @@ export default {
       default: () => ({}),
     },
   },
-  mixins: [config, geometry, utils],
+  mixins: [config, utils],
   computed: {
     paths() {
       return this.regionIds.map((regionId) => {
-        const regionGeom = this.geometries[regionId];
-        const regionColor = this.regionColor(regionId);
-        const visible = ((regionGeom.subType !== this.REGION_LAKE) || (regionColor !== this.colors.sea));
+        const visualization = this.regionVisualization(regionId);
         return {
           key: `small-${this.index}-${regionId}`,
-          fill: regionColor,
-          d: regionGeom.pathSmall,
-          opacity: visible ? '1' : '0',
+          fill: visualization.color,
+          d: visualization.geom.pathSmall,
+          opacity: visualization.visible ? '1' : '0',
         };
       });
     },

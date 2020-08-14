@@ -111,7 +111,6 @@ export default {
   hyphens: none;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
-  font-weight: normal;
   line-height: 1.42857143;
   color: #000;
   background-color: transparent;

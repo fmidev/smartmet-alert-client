@@ -177,6 +177,7 @@ export default {
 
 <style scoped lang="scss">
 @import "../scss/constants.scss";
+@import "../scss/warningImages.scss";
 
 h2 {
   font-family: "Roboto", sans-serif;
@@ -286,18 +287,6 @@ div#fmi-warnings-view {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
-}
-.level-1 {
-  background-color: $green;
-}
-.level-2 {
-  background-color: $yellow;
-}
-.level-3 {
-  background-color: $orange;
-}
-.level-4 {
-  background-color: $red;
 }
 hr {
   padding: 0;

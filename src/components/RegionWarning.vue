@@ -1,6 +1,6 @@
 <template>
   <div :class="['symbol-image', 'warning-image', 'current-warning-image', `symbol-image-rotate-${rotation}`, `symbol-rotate-${rotation}`, `level-${input.severity}`, `${typeClass}`]">
-    <span :class="['warning-symbol-text', `symbol-text symbol-text-rotate-${rotation}`]">{{ input.text }}</span>
+    <span :class="['warning-symbol-text', 'symbol-text', `symbol-text-rotate-${rotation}`]">{{ input.text }}</span>
   </div>
 </template>
 
