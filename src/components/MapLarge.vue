@@ -2,13 +2,15 @@
     <div class="map-large">
         <div class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="440" height="550"
-                 viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round">
-                <g id="finland-large">
+                 viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large">
+                <g>
                     <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
                           :data-region="path.dataRegion" :data-severity="path.dataSeverity" v-on:click="regionClicked"
                           style="cursor: pointer"/>
                 </g>
+                <svg v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
+                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
             </svg>
             <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"></b-button>
             <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"></b-button>
@@ -33,7 +35,8 @@
                                 <div class="region-popup-body">
                                     <div class="popup-table">
                                         <div class="popup-table-body">
-                                            <PopupRow v-for="popupWarning in popupWarnings" v-bind:key="popupWarning.id" :input="popupWarning"></PopupRow>
+                                            <PopupRow v-for="popupWarning in popupWarnings" v-bind:key="popupWarning.id"
+                                                      :input="popupWarning"></PopupRow>
                                         </div>
                                     </div>
                                 </div>
@@ -86,6 +89,38 @@ export default {
           strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
         };
       });
+    },
+    iconSize() {
+      return 28 - 4 * this.scale;
+    },
+    icons() {
+      const data = [];
+      const visibleWarnings = this.$store.getters.visibleWarnings;
+      this.regionIds.forEach((regionId) => {
+        const region = this.regionData(regionId);
+        if (region != null) {
+          if (visibleWarnings.includes(region.warnings[0].type)) {
+            const identifier = region.warnings[0].identifiers[0];
+            const coords = this.geometries[regionId].center;
+            const warning = this.$store.getters.warnings[identifier];
+            const icon = this.warningIcon(warning);
+            const scale = icon.scale ? icon.scale : 1;
+            const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
+            const height = scale * icon.scale * this.iconSize;
+            data.push({
+              key: `${regionId}-${identifier}`,
+              x: `${coords[0] - width / 2}px`,
+              y: `${coords[1] - height / 2}px`,
+              width: `${width}px`,
+              height: `${height}px`,
+              version: '1.1',
+              viewBox: `0 0 ${icon.aspectRatio[0]} ${icon.aspectRatio[1]}`,
+              geom: icon.geom,
+            });
+          }
+        }
+      });
+      return data;
     },
     regionTitle() {
       return i18n.t(this.popupRegion.name);

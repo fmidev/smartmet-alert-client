@@ -279,9 +279,12 @@ export default {
     isClientSide() {
       return ((typeof document !== 'undefined') && (document));
     },
-    regionSeverity(regionId) {
+    regionData(regionId) {
       const regionType = this.geometries[regionId].type;
-      const region = this.input[regionType].find((regionData) => regionData.key === regionId);
+      return this.input[regionType].find((regionData) => regionData.key === regionId);
+    },
+    regionSeverity(regionId) {
+      const region = this.regionData(regionId);
       let severity = 0;
       if (region != null) {
         const visibleWarnings = this.$store.getters.visibleWarnings;
