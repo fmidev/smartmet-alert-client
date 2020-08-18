@@ -158,6 +158,5 @@
     "selectWarningTooltipLine2": "kartalta",
     "selectDisabledWarningTooltipLine1": "Näytä",
     "selectDisabledWarningTooltipLine2": "kartalla",
-    "loading": "Ladataan",
-    "description": "Varoituksen kuvaus"
+    "description": "Vaikutuskuvaus"
 }
