@@ -427,6 +427,10 @@ export default {
         display: table;
     }
 
+    svg#finland-large {
+        cursor: default !important;
+    }
+
     @media (max-width: 767px) {
         div.map-large {
             min-width: 100%;
