@@ -37,6 +37,10 @@ export default {
       type: Number,
       default: 1000 * 60 * 15,
     },
+    language: {
+      type: String,
+      default: 'fi',
+    },
   },
   mixins: [utils],
   data() {
@@ -105,9 +109,6 @@ export default {
     floodFilter() {
       return `${this.floodSupportedSeverities.reduce((filter, severity, index) => (`${filter + (index === 0 ? '' : ',')}%27${severity.toUpperCase()}%27`),
         '&cql_filter=severity%20IN%20(')})%20AND%20language=%27${this.capLanguage()}%27`;
-    },
-    language() {
-      return 'en';
     },
     capLanguage() {
       return () => ({
