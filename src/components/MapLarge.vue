@@ -295,7 +295,7 @@ export default {
             border-top-color: $dark-gray;
             left: 60px;
             margin-left: -11px;
-            top: -12px;
+            top: 0;
             z-index: 10;
         }
 

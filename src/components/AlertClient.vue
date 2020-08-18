@@ -118,8 +118,6 @@ export default {
   line-height: 1.42857143;
   color: #000;
   background-color: transparent;
-  padding: 0;
-  margin: 0;
 
   .bold-text {
     font-weight: bold;
