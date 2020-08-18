@@ -165,5 +165,7 @@
     "selectWarningTooltipLine2": "kartan",
     "selectDisabledWarningTooltipLine1": "Visa på",
     "selectDisabledWarningTooltipLine2": "kartan",
-    "description": "Effektbeskrivningen"
+    "description": "Effektbeskrivningen",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
 }

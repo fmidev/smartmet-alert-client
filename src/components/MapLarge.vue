@@ -12,8 +12,8 @@
                 <svg v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
                      :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
             </svg>
-            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"></b-button>
-            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"></b-button>
+            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn" :aria-label="zoomInText"></b-button>
+            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut" :aria-label="zoomOutText"></b-button>
             <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle"></div>
             <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
                        target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
@@ -70,8 +70,11 @@ export default {
   },
   mixins: [config, utils],
   computed: {
-    warnings() {
-      return i18n.t('warnings');
+    zoomInText() {
+      return i18n.t('zoomIn');
+    },
+    zoomOutText() {
+      return i18n.t('zoomOut');
     },
     tooltipStyle() {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`;

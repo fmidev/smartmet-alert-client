@@ -165,5 +165,7 @@
     "selectWarningTooltipLine2": "the map",
     "selectDisabledWarningTooltipLine1": "Show on",
     "selectDisabledWarningTooltipLine2": "the map",
-    "description": "Impact description"
+    "description": "Impact description",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
 }

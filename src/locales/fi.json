@@ -165,5 +165,7 @@
     "selectWarningTooltipLine2": "kartalta",
     "selectDisabledWarningTooltipLine1": "Näytä",
     "selectDisabledWarningTooltipLine2": "kartalla",
-    "description": "Vaikutuskuvaus"
+    "description": "Vaikutuskuvaus",
+    "zoomIn": "Lähennä",
+    "zoomOut": "Loitonna"
 }
