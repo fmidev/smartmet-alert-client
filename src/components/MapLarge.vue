@@ -82,8 +82,8 @@ export default {
         return {
           key: `large-${regionId}`,
           fill: visualization.color,
-          d: visualization.geom.pathLarge,
-          opacity: visualization.visible ? '1' : '0',
+          d: visualization.visible ? visualization.geom.pathLarge : '',
+          opacity: '1',
           dataRegion: regionId,
           dataSeverity: visualization.severity,
           strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
@@ -157,8 +157,8 @@ export default {
     regionClicked(event) {
       this.popupLevel = `level-${event.target.dataset.severity}`;
       const regionId = event.target.dataset.region;
-      this.popupRegion = this.geometries[event.target.dataset.region];
-      const region = this.input[this.geometries[event.target.dataset.region].type].find((regionWarning) => regionWarning.key === regionId);
+      this.popupRegion = this.geometries[regionId];
+      const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
         region.warnings.forEach((warningByType) => {
