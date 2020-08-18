@@ -183,8 +183,8 @@ export default {
         }];
       }
       this.popupWarnings = popupWarnings;
-      this.tooltipX = event.offsetX;
-      this.tooltipY = event.offsetY;
+      this.tooltipX = event.layerX;
+      this.tooltipY = event.layerY;
       this.showTooltip = true;
     },
     zoomIn() {
