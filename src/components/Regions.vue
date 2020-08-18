@@ -1,12 +1,12 @@
 <template>
   <div class="row">
-    <h5 v-if="anyLandWarnings" id="header-land" class="header-region">{{ landText }}</h5>
+    <h2 v-if="anyLandWarnings" id="header-land" class="header-region">{{ landText }}</h2>
     <div id="accordion-land" class="accordion-region" role="tablist">
         <div v-for="region in this.regions.land" :key="region.key" >
             <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
         </div>
     </div>
-    <h5 v-if="anySeaWarnings" id="header-sea" class="header-region">{{ seaText }}</h5>
+    <h2 v-if="anySeaWarnings" id="header-sea" class="header-region">{{ seaText }}</h2>
     <div id="accordion-sea" class="accordion-region" role="tablist">
         <div v-for="region in this.regions.sea" :key="region.key" >
             <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
@@ -54,7 +54,7 @@ export default {
 <style scoped lang="scss">
   @import "../scss/constants.scss";
 
-h5 {
+h2 {
   width: 100%;
   font-weight: bold;
   margin-top: 15px;
@@ -62,10 +62,11 @@ h5 {
   &.symbol-list-title {
     margin-left: -15px;
   }
+  color: black;
 }
 
-h5#header-land,
-h5#header-sea {
+h2#header-land,
+h2#header-sea {
   margin-left: 0;
 }
 
@@ -73,7 +74,7 @@ div.accordion-region {
   width: 100%;
 }
 
-h5.header-region {
+h2.header-region {
     font-size: 14px;
     font-weight: bold;
     line-height: 1.1;
