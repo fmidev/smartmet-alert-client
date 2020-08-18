@@ -1,5 +1,5 @@
 <template>
-  <div class="date-selector-cell" :class="{ active: active }">
+  <div :class="['date-selector-cell', { active: active }]" :aria-label="ariaLabel" >
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
         <span class="bold-text weekday-text">{{ weekday }}</span>
@@ -47,6 +47,9 @@ export default {
     },
     date() {
       return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
+    },
+    ariaLabel() {
+      return `${i18n.t(`${this.input.weekdayName}Full`)} ${this.input.day}.${this.input.month}.${this.input.year}`;
     },
   },
 };
