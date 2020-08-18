@@ -77,7 +77,7 @@ export default {
     if (this.isClientSide()) {
       document.removeEventListener('visibilitychange', this.visibilityListener);
     }
-    clearInterval(this.timer);
+    this.cancelTimer();
     this.$store.unregisterModule('warningsStore');
   },
   methods: {
@@ -89,10 +89,14 @@ export default {
       }
     },
     initTimer() {
-      this.timer = setInterval(this.update, this.refreshInterval);
+      if (this.refreshInterval) {
+        this.timer = setInterval(this.update, this.refreshInterval);
+      }
     },
     cancelTimer() {
-      clearInterval(this.timer);
+      if (this.timer != null) {
+        clearInterval(this.timer);
+      }
     },
     update() {
       this.$emit('update-warnings');

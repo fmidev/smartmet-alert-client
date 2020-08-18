@@ -33,13 +33,17 @@ export default {
     floodUpdated: String,
     weatherWarnings: String,
     floodWarnings: String,
+    refreshInterval: {
+      type: Number,
+      default: 1000 * 60 * 15,
+    },
   },
   mixins: [utils],
   data() {
     return {
-      refreshInterval: 1000 * 60 * 15,
       selectedDay: 0,
       updatedAt: null,
+      refreshedAt: null,
       warnings: {},
       days: [],
       regions: [
@@ -113,7 +117,7 @@ export default {
       })[this.language];
     },
     currentTime() {
-      return (new Date(this.currentDate)).getTime();
+      return this.refreshedAt ? this.refreshedAt : (new Date(this.currentDate)).getTime();
     },
   },
   created() {
@@ -130,6 +134,9 @@ export default {
             data[typeName] = responses[index].data.features;
             return data;
           }, {});
+        if (this.updatedAt != null) {
+          this.refreshedAt = Date.now();
+        }
         const data = this.handleMapWarnings(responseData);
         this.warnings = data.warnings;
         this.days = data.days;
