@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import 'focus-visible';
 import DaySmall from './DaySmall.vue';
 import DayLarge from './DayLarge.vue';
 
@@ -80,7 +81,7 @@ export default {
 }
 
 ::v-deep a.day {
-  background-color: #f8f8f8 !important;
+  background-color: $light-gray !important;
   border-radius: 0;
   border: 0;
   padding: 0;
@@ -88,6 +89,14 @@ export default {
   outline: none;
   text-align: center;
   color: transparent;
+}
+
+::v-deep a.day:focus {
+  background-color: $dark-gray !important;
+}
+
+::v-deep a.day:focus:not([data-focus-visible-added]) {
+  background-color: $light-gray !important;
 }
 
 ::v-deep a.day.day0 {

@@ -32,6 +32,7 @@
     "bootstrap-vue": "2.16.0",
     "core-js": "^3.6.5",
     "date-fns": "2.15.0",
+    "focus-visible": "5.1.0",
     "he": "1.2.0",
     "mutationobserver-shim": "^0.3.3",
     "svgpath": "2.3.0",
