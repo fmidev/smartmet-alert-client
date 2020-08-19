@@ -9,7 +9,7 @@
                           :data-region="path.dataRegion" :data-severity="path.dataSeverity" v-on:click="regionClicked"
                           style="cursor: pointer"/>
                 </g>
-                <svg v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
+                <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
                      :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
             </svg>
             <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn" :aria-label="zoomInText"></b-button>
@@ -95,6 +95,9 @@ export default {
     },
     iconSize() {
       return 28 - 4 * this.scale;
+    },
+    maxWarningIcons() {
+      return this.scale + 1;
     },
     icons() {
       const data = [];

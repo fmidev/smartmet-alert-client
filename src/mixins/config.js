@@ -591,7 +591,7 @@ export default {
           }`;
           break;
         case 'rain':
-          icon.width = [18, 17];
+          icon.aspectRatio = [18, 17];
           icon.geom = `
             <title>rain-symbol</title>
             <desc></desc>
@@ -620,7 +620,7 @@ export default {
             </g>`;
           break;
         case 'trafficWeather':
-          icon.width = [21, 23];
+          icon.aspectRatio = [21, 23];
           icon.geom = `
             <title>traffic-symbol</title>
             <desc></desc>
@@ -663,7 +663,7 @@ export default {
             </g>`;
           break;
         case 'pedestrianSafety':
-          icon.width = [20, 21];
+          icon.aspectRatio = [20, 21];
           icon.geom = `
             <title>pedestrian-symbol</title>
             <desc></desc>
@@ -701,7 +701,7 @@ export default {
             </g>`;
           break;
         case 'grassFireWeather':
-          icon.width = [18, 22];
+          icon.aspectRatio = [18, 22];
           icon.geom = `
             <title>grassfire-symbol</title>
             <desc></desc>
@@ -719,7 +719,7 @@ export default {
             </g>`;
           break;
         case 'hotWeather':
-          icon.width = [11, 25];
+          icon.aspectRatio = [11, 25];
           icon.geom = `
             <title>heat-symbol</title>
             <desc></desc>
@@ -737,7 +737,7 @@ export default {
             </g>`;
           break;
         case 'coldWeather':
-          icon.width = [11, 25];
+          icon.aspectRatio = [11, 25];
           icon.geom = `
             <title>freeze-symbol</title>
             <desc></desc>
@@ -755,7 +755,7 @@ export default {
             </g>`;
           break;
         case 'uvNote':
-          icon.width = [21, 12];
+          icon.aspectRatio = [21, 12];
           icon.geom = `
             <title>ultraviolet-symbol</title>
             <desc></desc>
@@ -866,7 +866,7 @@ export default {
             </g>`;
           break;
         case 'seaThunderStorm':
-          icon.width = [12, 22];
+          icon.aspectRatio = [12, 22];
           icon.geom = `
             <title>seathunder-symbol</title>
             <desc></desc>
@@ -882,7 +882,7 @@ export default {
             </g>`;
           break;
         case 'seaWaterHeightHighWater':
-          icon.width = [23, 22];
+          icon.aspectRatio = [23, 22];
           icon.geom = `
             <title>highsealevel-symbol</title>
             <desc></desc>
@@ -931,7 +931,7 @@ export default {
             </g>`;
           break;
         case 'seaWaterHeightShallowWater':
-          icon.width = [23, 22];
+          icon.aspectRatio = [23, 22];
           icon.geom = `
             <title>lowsealevel-symbol</title>
             <desc></desc>
@@ -995,7 +995,7 @@ export default {
             </g>`;
           break;
         case 'seaIcing':
-          icon.width = [19, 17];
+          icon.aspectRatio = [19, 17];
           icon.geom = `
             <title>icing-symbol</title>
             <desc></desc>
