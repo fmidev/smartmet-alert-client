@@ -61,11 +61,21 @@ export default {
       );
     },
     regionFromReference(reference) {
-      let regionId = reference.substring(reference.lastIndexOf('#') + 1);
-      if (regionId.indexOf('.') !== regionId.lastIndexOf('.')) {
-        regionId = regionId.replace('.', '_');
-      }
-      return regionId;
+      return reference.split(',').map((url) => {
+        let subUrl = url.substring(url.lastIndexOf('#') + 1);
+        // Saimaa
+        if (subUrl.indexOf('.') !== subUrl.lastIndexOf('.')) {
+          subUrl = subUrl.replace('.', '_');
+        }
+        return subUrl;
+      }).reduce((regionId, rawId, index, array) => {
+        const parts = rawId.split('.');
+        if (index === 0) {
+          // eslint-disable-next-line no-param-reassign
+          regionId += parts[0];
+        }
+        return regionId + (index === array.length - 1 ? '.' : '_') + parts[1];
+      }, '');
     },
     validInterval(start, end) {
       const effectiveFrom = new Date(start);

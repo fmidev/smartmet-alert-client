@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     fetchWarnings() {
-      console.log('Updating...');
+      console.log(`Updating warnings at ${new Date()}`);
       axios.all([this.weatherUpdatedQuery, this.floodUpdatedQuery, this.weatherWarningsQuery, this.floodWarningsQuery]
         .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then((responses) => {
         const responseData = [this.weatherUpdatedType, this.floodUpdatedType, this.weatherWarningsType, this.floodWarningsType]
