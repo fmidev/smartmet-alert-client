@@ -80,18 +80,21 @@ export default {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`;
     },
     paths() {
-      return this.regionIds.map((regionId) => {
-        const visualization = this.regionVisualization(regionId);
-        return {
-          key: `large-${regionId}`,
-          fill: visualization.color,
-          d: visualization.visible ? visualization.geom.pathLarge : '',
-          opacity: '1',
-          dataRegion: regionId,
-          dataSeverity: visualization.severity,
-          strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
-        };
-      });
+      return this.regionIds.reduce((regions, regionId) => {
+        if (this.geometries[regionId].pathLarge) {
+          const visualization = this.regionVisualization(regionId);
+          regions.push({
+            key: `large-${regionId}`,
+            fill: visualization.color,
+            d: visualization.visible ? visualization.geom.pathLarge : '',
+            opacity: '1',
+            dataRegion: regionId,
+            dataSeverity: visualization.severity,
+            strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
+          });
+        }
+        return regions;
+      }, []);
     },
     iconSize() {
       return 28 - 4 * this.scale;
@@ -104,7 +107,7 @@ export default {
       const visibleWarnings = this.$store.getters.visibleWarnings;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
-        if (region != null) {
+        if ((region != null) && (this.geometries[regionId].children.length === 0)) {
           if (visibleWarnings.includes(region.warnings[0].type)) {
             const identifier = region.warnings[0].identifiers[0];
             const coords = this.geometries[regionId].center;

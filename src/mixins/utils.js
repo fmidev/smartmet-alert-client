@@ -246,10 +246,15 @@ export default {
     },
 
     isValid(warning) {
-      return (((warning != null) && (warning.properties != null)) &&
-      ((this.WARNING_LEVELS.slice(1).includes(warning.properties.severity)) ||
+      if ((warning == null) || (warning.properties == null)) {
+        return false;
+      }
+      if (warning.type === this.FLOOD_LEVEL_TYPE) {
+        return true;
+      }
+      return ((this.WARNING_LEVELS.slice(1).includes(warning.properties.severity)) ||
       ((warning.properties[this.WARNING_CONTEXT] === this.SEA_WIND) &&
-        (this.WARNING_LEVELS.includes(warning.properties.severity)))));
+        (this.WARNING_LEVELS.includes(warning.properties.severity))));
     },
 
     handleMapWarnings(data) {
@@ -257,23 +262,34 @@ export default {
       this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
         .map((updateTime) => new Date(data[updateTime][0].properties[this.UPDATE_TIME]))
         .sort(compareDesc)[0];
-      data[this.WEATHER_WARNINGS].forEach((warning) => {
-        if (this.isValid(warning)) {
-          if (warnings[warning.properties.identifier] == null) {
-            warnings[warning.properties.identifier] = this.createWeatherWarning(warning);
-          } else {
-            warnings[warning.properties.identifier].regions[this.regionFromReference(warning.properties.reference)] = true;
+      const createWarnings = {
+        [this.WEATHER_WARNINGS]: this.createWeatherWarning,
+        [this.FLOOD_WARNINGS]: this.createFloodWarning,
+      };
+      Object.keys(createWarnings).forEach((warningType) => {
+        data[warningType].forEach((warning) => {
+          if (this.isValid(warning)) {
+            let regionId;
+            const warningId = warning.properties.identifier;
+            if (warnings[warningId] == null) {
+              warnings[warningId] = createWarnings[warningType](warning);
+              regionId = Object.keys(warnings[warningId].regions)[0];
+            } else {
+              regionId = this.regionFromReference(warning.properties.reference);
+              warnings[warningId].regions[regionId] = true;
+            }
+            this.geometries[regionId].children.forEach((id) => {
+              warnings[warningId].regions[id] = true;
+            });
+            const parentId = this.geometries[regionId].parent;
+            if (parentId) {
+              this.$store.commit('Set overridden regions', {
+                region: parentId,
+                overridden: warnings[warningId].effectiveDays,
+              });
+            }
           }
-        }
-      });
-      data[this.FLOOD_WARNINGS].forEach((warning) => {
-        if ((warning != null) && (warning.properties != null)) {
-          if (warnings[warning.properties.identifier] == null) {
-            warnings[warning.properties.identifier] = this.createFloodWarning(warning);
-          } else {
-            warnings[warning.properties.identifier].regions[this.regionFromReference(warning.properties.reference)] = true;
-          }
-        }
+        });
       });
       const days = this.createDays(warnings);
       const maxSeverities = this.getMaxSeverities(warnings);
@@ -302,6 +318,10 @@ export default {
         if (topWarning != null) {
           severity = this.$store.getters.warnings[topWarning.identifiers[0]].severity;
         }
+      }
+      const parentId = this.geometries[regionId].parent;
+      if (parentId) {
+        severity = Math.max(severity, this.regionSeverity(parentId));
       }
       return severity;
     },

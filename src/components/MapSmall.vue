@@ -27,15 +27,18 @@ export default {
   mixins: [config, utils],
   computed: {
     paths() {
-      return this.regionIds.map((regionId) => {
-        const visualization = this.regionVisualization(regionId);
-        return {
-          key: `small-${this.index}-${regionId}`,
-          fill: visualization.color,
-          d: visualization.geom.pathSmall,
-          opacity: visualization.visible ? '1' : '0',
-        };
-      });
+      return this.regionIds.reduce((regions, regionId) => {
+        if (this.geometries[regionId].pathSmall) {
+          const visualization = this.regionVisualization(regionId);
+          regions.push({
+            key: `small-${this.index}-${regionId}`,
+            fill: visualization.color,
+            d: visualization.geom.pathSmall,
+            opacity: visualization.visible ? '1' : '0',
+          });
+        }
+        return regions;
+      }, []);
     },
   },
 };

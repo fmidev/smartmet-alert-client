@@ -18,11 +18,14 @@
 <script>
 import i18n from '../i18n';
 import Region from './Region.vue';
+import config from '../mixins/config';
+import utils from '../mixins/utils';
 
 export default {
   name: 'Regions',
   components: { Region },
   props: ['input'],
+  mixins: [config, utils],
   computed: {
     landText() {
       return i18n.t('regionLand');
@@ -30,8 +33,23 @@ export default {
     seaText() {
       return i18n.t('regionSea');
     },
+    overriddenRegions() {
+      return this.$store.getters.overriddenRegions;
+    },
     regions() {
-      return this.input[this.selectedDay];
+      const overriddenRegions = this.overriddenRegions;
+      const overriddenIds = Object.keys(overriddenRegions).filter((regionId) => overriddenRegions[regionId][this.selectedDay]);
+      return [this.REGION_LAND, this.REGION_SEA].reduce((regionData, regionType) => {
+        // eslint-disable-next-line no-param-reassign
+        regionData[regionType] = this.input[this.selectedDay][regionType].reduce((regions, region) => {
+          const parentId = this.geometries[region.key].parent;
+          if ((!overriddenIds.includes(region.key)) && ((!parentId) || (overriddenIds.includes(parentId)))) {
+            regions.push(region);
+          }
+          return regions;
+        }, []);
+        return regionData;
+      }, {});
     },
     selectedDay() {
       return this.$store.getters.selectedDay;

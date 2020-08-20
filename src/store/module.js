@@ -4,6 +4,7 @@ import {
   SET_WARNINGS,
   SET_VISIBLE_WARNINGS,
   SET_WARNING_VISIBILITY,
+  SET_OVERRIDDEN_REGIONS,
 } from './mutation-types';
 
 export default {
@@ -12,12 +13,14 @@ export default {
     currentTime: null,
     warnings: {},
     visibleWarnings: [],
+    overriddenRegions: {},
   }),
   getters: {
     selectedDay: (state) => state.selectedDay,
     currentTime: (state) => state.currentTime,
     warnings: (state) => state.warnings,
     visibleWarnings: (state) => state.visibleWarnings,
+    overriddenRegions: (state) => state.overriddenRegions,
   },
   mutations: {
     [SET_CURRENT_TIME]: (state, currentTime) => {
@@ -41,6 +44,16 @@ export default {
             (visibleWarningType) => visibleWarningType !== warning,
           );
       }
+    },
+    [SET_OVERRIDDEN_REGIONS]: (state, { region, overridden }) => {
+      if (state.overriddenRegions[region] == null) {
+        state.overriddenRegions[region] = [false, false, false, false, false];
+      }
+      overridden.forEach((override, index) => {
+        if (override) {
+          state.overriddenRegions[region][index] = true;
+        }
+      });
     },
   },
   actions: {},
