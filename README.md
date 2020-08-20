@@ -2,6 +2,8 @@
 
 Smart Alert Client is a customizable map visualizer for weather, flood and other alerts.
 
+![Screenshot](./screenshot.png)
+
 ## Project setup
 ```
 npm install
@@ -21,6 +23,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
