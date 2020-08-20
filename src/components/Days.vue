@@ -51,7 +51,7 @@ export default {
   },
   watch: {
     selectedDay(newValue) {
-      this.$store.commit('Set selected day', newValue);
+      this.$store.dispatch('setSelectedDay', newValue);
     },
   },
   computed: {

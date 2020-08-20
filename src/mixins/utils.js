@@ -258,6 +258,7 @@ export default {
     },
 
     handleMapWarnings(data) {
+      this.$store.dispatch('clearWarnings');
       const warnings = {};
       this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
         .map((updateTime) => new Date(data[updateTime][0].properties[this.UPDATE_TIME]))
@@ -283,7 +284,7 @@ export default {
             });
             const parentId = this.geometries[regionId].parent;
             if (parentId) {
-              this.$store.commit('Set overridden regions', {
+              this.$store.dispatch('setOverriddenRegion', {
                 region: parentId,
                 overridden: warnings[warningId].effectiveDays,
               });

@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     toggle() {
-      this.$store.commit('Set warning visibility', {
+      this.$store.dispatch('setWarningVisibility', {
         warning: this.input.type,
         visible: !this.input.visible,
       });

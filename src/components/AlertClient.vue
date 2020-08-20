@@ -57,7 +57,7 @@ export default {
   },
   watch: {
     warnings() {
-      this.$store.commit('Set warnings', this.warnings);
+      this.$store.dispatch('setWarnings', this.warnings);
     },
   },
   beforeCreate() {
@@ -65,9 +65,9 @@ export default {
   },
   created() {
     i18n.locale = this.language;
-    this.$store.commit('Set selected day', this.selectedDay);
-    this.$store.commit('Set visible warnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
-    this.$store.commit('Set warnings', this.warnings);
+    this.$store.dispatch('setSelectedDay', this.selectedDay);
+    this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
+    this.$store.dispatch('setWarnings', this.warnings);
     this.initTimer();
     if (this.isClientSide()) {
       this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
@@ -82,10 +82,14 @@ export default {
   },
   methods: {
     visibilityChange() {
-      if ((this.isClientSide()) && (!document.hidden)) {
-        this.cancelTimer();
-        this.update();
-        this.initTimer();
+      if (this.isClientSide()) {
+        if (document.hidden) {
+          this.cancelTimer();
+        } else {
+          this.cancelTimer();
+          this.update();
+          this.initTimer();
+        }
       }
     },
     initTimer() {

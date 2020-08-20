@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     showAll() {
-      this.$store.commit('Set visible warnings', this.warnings.reduce((types, warning) => types.concat([warning.type]), []));
+      this.$store.dispatch('setVisibleWarnings', this.warnings.reduce((types, warning) => types.concat([warning.type]), []));
     },
   },
 };

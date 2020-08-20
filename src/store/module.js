@@ -4,6 +4,7 @@ import {
   SET_WARNINGS,
   SET_VISIBLE_WARNINGS,
   SET_WARNING_VISIBILITY,
+  SET_OVERRIDDEN_REGION,
   SET_OVERRIDDEN_REGIONS,
 } from './mutation-types';
 
@@ -45,7 +46,7 @@ export default {
           );
       }
     },
-    [SET_OVERRIDDEN_REGIONS]: (state, { region, overridden }) => {
+    [SET_OVERRIDDEN_REGION]: (state, { region, overridden }) => {
       if (state.overriddenRegions[region] == null) {
         state.overriddenRegions[region] = [false, false, false, false, false];
       }
@@ -55,6 +56,32 @@ export default {
         }
       });
     },
+    [SET_OVERRIDDEN_REGION]: (state, overriddenRegions) => {
+      state.overriddenRegions = overriddenRegions;
+    },
   },
-  actions: {},
+  actions: {
+    setCurrentTime({ commit }, currentTime) {
+      commit(SET_CURRENT_TIME, currentTime);
+    },
+    setSelectedDay({ commit }, selectedDay) {
+      commit(SET_SELECTED_DAY, selectedDay);
+    },
+    setWarnings({ commit }, warnings) {
+      commit(SET_WARNINGS, warnings);
+    },
+    setVisibleWarnings({ commit }, visibleWarnings) {
+      commit(SET_VISIBLE_WARNINGS, visibleWarnings);
+    },
+    setWarningVisibility({ commit }, { warning, visible }) {
+      commit(SET_WARNING_VISIBILITY, { warning, visible });
+    },
+    setOverriddenRegion({ commit }, { region, overridden }) {
+      commit(SET_OVERRIDDEN_REGION, { region, overridden });
+    },
+    clearWarnings({ commit }) {
+      commit(SET_WARNINGS, {});
+      commit(SET_OVERRIDDEN_REGIONS, {});
+    },
+  },
 };
