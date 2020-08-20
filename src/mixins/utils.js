@@ -36,6 +36,7 @@ export default {
     WIND: () => 'wind',
     SEA_WIND: () => 'sea-wind',
     FLOOD_LEVEL_TYPE: () => 'floodLevel',
+    MULTIPLE: () => 'multiple',
     WARNING_LEVELS: () => ['level-1', 'level-2', 'level-3', 'level-4'],
     FLOOD_LEVELS: () => ({
       minor: 1,

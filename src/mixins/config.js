@@ -1092,6 +1092,23 @@ export default {
                 </g>
             </g>`;
           break;
+        case 'multiple':
+          icon.aspectRatio = [13, 13];
+          icon.scale = 0.8;
+          icon.geom = `
+            <title>multiple-symbol</title>
+            <desc></desc>
+            <defs></defs>
+            <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Symbols" transform="translate(-13.0, -13.0)">
+                    <rect id="icon-bg" fill-opacity="0" fill="#E8E8E8" x="0" y="0" width="38" height="38" rx="100"></rect>
+                    <polygon id="fill-1" fill="#221F20"
+                             points="13.5111111 20.3336533 25.2895289 20.3336533 25.2895289 18.4669867 13.5111111 18.4669867"></polygon>
+                    <polygon id="fill-1" fill="#221F20"
+                             points="18.4669867 25.2895289 20.3336533 25.2895289 20.3336533 13.5111111 18.4669867 13.5111111"></polygon>
+                </g>
+            </g>`;
+          break;
         default:
           break;
       }

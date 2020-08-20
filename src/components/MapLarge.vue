@@ -104,29 +104,45 @@ export default {
     },
     icons() {
       const data = [];
+      const warnings = this.$store.getters.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
+      const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
         if ((region != null) && (this.geometries[regionId].children.length === 0)) {
-          if (visibleWarnings.includes(region.warnings[0].type)) {
-            const identifier = region.warnings[0].identifiers[0];
-            const coords = this.geometries[regionId].center;
-            const warning = this.$store.getters.warnings[identifier];
-            const icon = this.warningIcon(warning);
-            const scale = icon.scale ? icon.scale : 1;
-            const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
-            const height = scale * icon.scale * this.iconSize;
+          const iconSizes = [];
+          const aspectRatios = [];
+          const keys = [];
+          const geoms = [];
+          region.warnings.forEach((regionWarning, index, regionWarnings) => {
+            if ((visibleWarnings.includes(regionWarning.type)) && (iconSizes.length < maxWarningIcons)) {
+              const identifier = regionWarning.identifiers[0];
+              const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
+                this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
+              const scale = icon.scale ? icon.scale : 1;
+              const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
+              const height = scale * icon.scale * this.iconSize;
+              iconSizes.push([width, height]);
+              aspectRatios.push(icon.aspectRatio);
+              geoms.push(icon.geom);
+              keys.push(`${regionId}-${identifier}`);
+            }
+          });
+          let offsetX = -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2;
+          const coords = this.geometries[regionId].center;
+          iconSizes.forEach((iconSize, index) => {
             data.push({
-              key: `${regionId}-${identifier}`,
-              x: `${coords[0] - width / 2}px`,
-              y: `${coords[1] - height / 2}px`,
-              width: `${width}px`,
-              height: `${height}px`,
+              key: keys[index],
+              x: `${coords[0] + offsetX}px`,
+              y: `${coords[1] - iconSize[1] / 2}px`,
+              width: `${iconSize[0]}px`,
+              height: `${iconSize[1]}px`,
               version: '1.1',
-              viewBox: `0 0 ${icon.aspectRatio[0]} ${icon.aspectRatio[1]}`,
-              geom: icon.geom,
+              viewBox: `0 0 ${aspectRatios[index][0]} ${aspectRatios[index][1]}`,
+              geom: geoms[index],
             });
-          }
+            offsetX += iconSize[0];
+          });
         }
       });
       return data;
