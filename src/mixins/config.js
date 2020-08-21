@@ -659,14 +659,15 @@ export default {
             </g>`;
           break;
         case 'wind':
-          icon.aspectRatio = [28, 28];
-          icon.scale = 1.3;
+          icon.aspectRatio = [14, 14];
+          icon.scale = 0.9;
           icon.geom = `
             <title>wind-symbol</title>
             <desc></desc>
             <defs></defs>
             <path d="${svgpath('M 12.140625 9.332031 L 6.84375 14.039062 L 12.140625 18.746094 L 12.140625 16.394531 L 20.535156 16.394531 L 20.535156 11.6875 L 12.140625 11.6875 Z M 12.140625 9.332031')
-    .rotate(warning.direction, 14.0, 14.0)
+    .translate(-6.84375, -7)
+    .rotate(warning.direction, 7.0, 7.0)
     .toString()}" fill="#221F20" />
           }`;
           break;
