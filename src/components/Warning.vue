@@ -25,7 +25,7 @@
               :aria-label="input.visible ? hideLabel : showLabel"
               tabindex="0"
               v-on:click="toggle"
-              v-b-tooltip.hover="{ html: true, placement: 'top', delay: 0, fallbackPlacement: [], container: `fmi-warnings-flag-${input.type}`}"
+              v-b-tooltip.hover="{ id: 'fmi-warnings-toggle-tooltip', html: true, placement: 'top', delay: 0, fallbackPlacement: [], container: `fmi-warnings-flag-${input.type}`}"
             />
         </div>
       </div>
@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     toggle() {
+      this.$root.$emit('bv::disable::tooltip', 'fmi-warnings-toggle-tooltip');
       this.$store.dispatch('setWarningVisibility', {
         warning: this.input.type,
         visible: !this.input.visible,
