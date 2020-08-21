@@ -222,7 +222,8 @@ export default {
         force: true,
       });
     },
-    closeTooltip() {
+    closeTooltip(event) {
+      event.preventDefault();
       this.showTooltip = false;
     },
   },

@@ -65,7 +65,6 @@ export default {
   },
   methods: {
     toggle() {
-      this.$root.$emit('bv::disable::tooltip', 'fmi-warnings-toggle-tooltip');
       this.$store.dispatch('setWarningVisibility', {
         warning: this.input.type,
         visible: !this.input.visible,
