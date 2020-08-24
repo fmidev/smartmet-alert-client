@@ -21,7 +21,6 @@
                 'd-m-block',
                 { 'd-none': !hideable }
               ]"
-              :title="input.visible ? hideTooltipTitle : showTooltipTitle"
               :aria-label="input.visible ? hideLabel : showLabel"
               tabindex="0"
               v-on:click="toggle"
