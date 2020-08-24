@@ -332,7 +332,7 @@ export default {
       const severity = this.regionSeverity(regionId);
       const isLand = (this.geometries[regionId].type === this.REGION_LAND);
       const color = ((severity) || (isLand) ? this.colors.levels[severity] : this.colors.sea);
-      const visible = ((isLand) || (geom.subType !== this.REGION_LAKE));
+      const visible = ((severity) || (geom.subType !== this.REGION_LAKE));
       return {
         geom,
         severity,

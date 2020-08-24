@@ -6,8 +6,7 @@
                 <g>
                     <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" v-on:click="regionClicked"
-                          style="cursor: pointer"/>
+                          v-on:click="regionClicked" style="cursor: pointer"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
                      :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
@@ -88,8 +87,6 @@ export default {
             fill: visualization.color,
             d: visualization.visible ? visualization.geom.pathLarge : '',
             opacity: '1',
-            dataRegion: regionId,
-            dataSeverity: visualization.severity,
             strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
           });
         }
