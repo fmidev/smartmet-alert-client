@@ -56,7 +56,7 @@ export default {
         }
       });
     },
-    [SET_OVERRIDDEN_REGION]: (state, overriddenRegions) => {
+    [SET_OVERRIDDEN_REGIONS]: (state, overriddenRegions) => {
       state.overriddenRegions = overriddenRegions;
     },
   },
