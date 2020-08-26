@@ -4,6 +4,7 @@
       <h2>{{ warningSymbolsText }}</h2>
     </div>
     <div
+      v-if="input.length > 0"
       :class="[
         'row',
         'symbol-list-main-row',
@@ -17,7 +18,7 @@
         >{{ showWarningsText }}</span
       >
     </div>
-    <div class="row symbol-list-main-row">
+    <div v-if="input.length > 0" class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
     </div>
     <div id="fmi-warnings-list" >
