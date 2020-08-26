@@ -961,7 +961,7 @@ export default {
             </g>`;
           break;
         case 'floodLevel':
-          icon.aspectRatio = (warning.severity === 2) ? [22 / 21] : [22 / 20];
+          icon.aspectRatio = (warning.severity === 2) ? [22, 21] : [22, 20];
           switch (warning.severity) {
             case 3:
               icon.geom = `

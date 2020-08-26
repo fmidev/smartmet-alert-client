@@ -1,6 +1,6 @@
 {
   "name": "fmi-smart-alert-client",
-  "version": "3.0.0-alpha.4",
+  "version": "3.0.0-alpha.5",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "ISC",

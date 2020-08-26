@@ -250,7 +250,8 @@ export default {
       if ((warning == null) || (warning.properties == null)) {
         return false;
       }
-      if (warning.type === this.FLOOD_LEVEL_TYPE) {
+      // Valid flood warning
+      if ((warning.properties.severity != null) && (Object.keys(this.FLOOD_LEVELS).includes(warning.properties.severity.toLowerCase()))) {
         return true;
       }
       return ((this.WARNING_LEVELS.slice(1).includes(warning.properties.severity)) ||
@@ -280,15 +281,17 @@ export default {
               regionId = this.regionFromReference(warning.properties.reference);
               warnings[warningId].regions[regionId] = true;
             }
-            this.geometries[regionId].children.forEach((id) => {
-              warnings[warningId].regions[id] = true;
-            });
-            const parentId = this.geometries[regionId].parent;
-            if (parentId) {
-              this.$store.dispatch('setOverriddenRegion', {
-                region: parentId,
-                overridden: warnings[warningId].effectiveDays,
+            if (this.geometries[regionId]) {
+              this.geometries[regionId].children.forEach((id) => {
+                warnings[warningId].regions[id] = true;
               });
+              const parentId = this.geometries[regionId].parent;
+              if (parentId) {
+                this.$store.dispatch('setOverriddenRegion', {
+                  region: parentId,
+                  overridden: warnings[warningId].effectiveDays,
+                });
+              }
             }
           }
         });
