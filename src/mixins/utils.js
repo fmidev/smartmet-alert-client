@@ -114,6 +114,7 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
+        mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
         effectiveDays: this.effectiveDays(warning.properties[this.EFFECTIVE_FROM], warning.properties[this.EFFECTIVE_UNTIL]),
@@ -137,6 +138,7 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
+        mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.ONSET],
         effectiveUntil: warning.properties[this.EXPIRES],
         effectiveDays: this.effectiveDays(warning.properties[this.ONSET], warning.properties[this.EXPIRES]),
@@ -154,6 +156,42 @@ export default {
         link: i18n.t('floodLink'),
         linkText: i18n.t('floodLinkText'),
       };
+    },
+    setHasAnyOfArray(set, array) {
+      return array.findIndex((item) => set.has(item)) >= 0;
+    },
+    createClusters(regions) {
+      const clusters = Object.keys(regions).filter((regionId) => this.geometries[regionId]).sort().map((regionId) => [regionId]);
+      const neighbours = clusters.map((cluster) => new Set(this.geometries[cluster[0]].neighbours));
+      let i = 0;
+      while (i < clusters.length) {
+        let j = i + 1;
+        while (j < clusters.length) {
+          if (this.setHasAnyOfArray(neighbours[j], clusters[i])) {
+            clusters[i] = clusters[i].concat(clusters[j]);
+            clusters.splice(j, 1);
+            neighbours[i] = new Set([...neighbours[i], ...neighbours[j]]);
+            neighbours.splice(j, 1);
+            i = 0;
+            j = 0;
+          }
+          j++;
+        }
+        i++;
+      }
+      const compareRegions = (regionId1, regionId2) => this.geometries[regionId2].weight - this.geometries[regionId1].weight;
+      return clusters.filter((cluster) => cluster.length > 1).map((cluster) => cluster.sort(compareRegions));
+    },
+    mergedIcons(regions) {
+      return new Set(this.createClusters(regions).reduce((references, cluster) => {
+        cluster.forEach((regionId, index) => {
+          if (index > 0) {
+            // eslint-disable-next-line no-param-reassign
+            references.push(regionId);
+          }
+        });
+        return references;
+      }, []));
     },
     createDays(warnings) {
       const currentDate = new Date(this.currentTime);
@@ -295,6 +333,9 @@ export default {
             }
           }
         });
+      });
+      Object.keys(warnings).forEach((key) => {
+        warnings[key].mergedIcons = this.mergedIcons(warnings[key].regions);
       });
       const days = this.createDays(warnings);
       const maxSeverities = this.getMaxSeverities(warnings);

@@ -115,8 +115,8 @@ export default {
           const keys = [];
           const geoms = [];
           region.warnings.forEach((regionWarning, index, regionWarnings) => {
-            if ((visibleWarnings.includes(regionWarning.type)) && (iconSizes.length < maxWarningIcons)) {
-              const identifier = regionWarning.identifiers[0];
+            const identifier = regionWarning.identifiers[0];
+            if ((visibleWarnings.includes(regionWarning.type)) && (!warnings[identifier].mergedIcons.has(regionId)) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
                 this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
               const scale = icon.scale ? icon.scale : 1;
