@@ -1,5 +1,5 @@
 {
-  "name": "smartmet-alert-client",
+  "name": "@fmidev/smartmet-alert-client",
   "version": "3.0.0-alpha.6",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fmidev/smartmet-alert-client"
+    "url": "git+https://github.com/fmidev/smartmet-alert-client.git"
   },
   "scripts": {
     "serve": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service serve",
@@ -72,5 +72,17 @@
     "> 1%",
     "last 2 versions",
     "not dead"
+  ],
+  "bugs": {
+    "url": "https://github.com/fmidev/smartmet-alert-client/issues"
+  },
+  "homepage": "https://github.com/fmidev/smartmet-alert-client#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "smartmet",
+    "alert",
+    "wfs"
   ]
 }
