@@ -1,13 +1,13 @@
 {
-  "name": "fmi-smart-alert-client",
+  "name": "smartmet-alert-client",
   "version": "3.0.0-alpha.6",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
-  "license": "ISC",
+  "license": "MIT",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fmidev/fmi-smart-alert-client"
+    "url": "https://github.com/fmidev/smartmet-alert-client"
   },
   "scripts": {
     "serve": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service serve",
