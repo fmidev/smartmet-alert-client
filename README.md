@@ -1,6 +1,6 @@
-# fmi-smart-alert-client
+# SmartMet Alert Client (smartmet-alert-client)
 
-Smart Alert Client is a customizable map visualizer for weather, flood and other alerts.
+SmartMet Alert Client is a customizable map visualizer for weather, flood and other alerts.
 
 ![Screenshot](./screenshot.png)
 
