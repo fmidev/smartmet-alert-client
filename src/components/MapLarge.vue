@@ -46,6 +46,7 @@
                 </div>
             </b-tooltip>
         </div>
+        <div :class="{'prevent-tooltip': dragging}"></div>
     </div>
 </template>
 
@@ -159,6 +160,7 @@ export default {
       updatedTime: '',
       dataProviderFirst: '',
       dataProviderSecond: '',
+      dragging: false,
       showTooltip: false,
       tooltipX: 0,
       tooltipY: 0,
@@ -266,7 +268,11 @@ export default {
       });
       if (panned) {
         this.showTooltip = false;
+        this.dragging = true;
       }
+    });
+    finlandLarge.addEventListener('panzoomend', () => {
+      this.dragging = false;
     });
   },
 };
@@ -481,6 +487,15 @@ export default {
 
     div.symbol-image {
         display: table;
+    }
+
+    div.prevent-tooltip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
     }
 
     svg#finland-large {
