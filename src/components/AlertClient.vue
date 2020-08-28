@@ -57,8 +57,10 @@ export default {
       this.$store.dispatch('setWarnings', this.warnings);
     },
   },
-  beforeCreate() {
-    this.$store.registerModule('warningsStore', module);
+  async beforeCreate() {
+    if (!this.$store.hasModule('warningsStore')) {
+      await this.$store.registerModule('warningsStore', module);
+    }
   },
   created() {
     i18n.locale = this.language;
@@ -75,7 +77,6 @@ export default {
       document.removeEventListener('visibilitychange', this.visibilityListener);
     }
     this.cancelTimer();
-    this.$store.unregisterModule('warningsStore');
   },
   methods: {
     visibilityChange() {
@@ -119,6 +120,7 @@ export default {
   line-height: 1.42857143;
   color: #000;
   background-color: transparent;
+  font-weight: normal;
 
   .bold-text {
     font-weight: bold;

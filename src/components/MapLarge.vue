@@ -65,7 +65,6 @@ export default {
     },
     input: {
       type: Object,
-      default: () => ({}),
     },
   },
   mixins: [config, utils],

@@ -50,28 +50,7 @@ export default {
       refreshedAt: null,
       warnings: {},
       days: [],
-      regions: [
-        {
-          land: [],
-          sea: [],
-        },
-        {
-          land: [],
-          sea: [],
-        },
-        {
-          land: [],
-          sea: [],
-        },
-        {
-          land: [],
-          sea: [],
-        },
-        {
-          land: [],
-          sea: [],
-        },
-      ],
+      regions: this.regionsDefault(),
       parents: {},
       legend: [],
     };

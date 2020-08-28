@@ -39,7 +39,6 @@ export default {
     },
     regions: {
       type: Object,
-      default: () => ({}),
     },
   },
   computed: {

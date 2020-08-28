@@ -389,5 +389,29 @@ export default {
         visible,
       };
     },
+    regionsDefault() {
+      return [
+        {
+          land: [],
+          sea: [],
+        },
+        {
+          land: [],
+          sea: [],
+        },
+        {
+          land: [],
+          sea: [],
+        },
+        {
+          land: [],
+          sea: [],
+        },
+        {
+          land: [],
+          sea: [],
+        },
+      ];
+    },
   },
 };

@@ -39,10 +39,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    regions: {
-      type: Array,
-      default: () => [],
-    },
+    regions: Array,
   },
   data() {
     return {
