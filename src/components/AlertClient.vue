@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
           <Days :input="days" :regions="regions" />
-          <Regions :input="regions" />
+          <Regions :input="regions" :parents="parents" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
           <Warnings :input="legend" />
@@ -25,10 +25,6 @@ import utils from '../mixins/utils';
 export default {
   name: 'AlertClient',
   props: {
-    currentTime: {
-      type: Number,
-      default: Date.now(),
-    },
     refreshInterval: {
       type: Number,
       default: 1000 * 60 * 15,
@@ -40,6 +36,7 @@ export default {
     warnings: Object,
     days: Array,
     regions: Array,
+    parents: Object,
     legend: Array,
     language: String,
   },
@@ -139,6 +136,7 @@ export default {
 
 div#fmi-warnings {
   width: 700px;
+  padding-top: 20px;
   margin-bottom: 20px;
 }
 

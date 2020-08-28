@@ -24,7 +24,10 @@ import utils from '../mixins/utils';
 export default {
   name: 'Regions',
   components: { Region },
-  props: ['input'],
+  props: {
+    input: Array,
+    parents: Object,
+  },
   mixins: [config, utils],
   computed: {
     landText() {
@@ -33,11 +36,8 @@ export default {
     seaText() {
       return i18n.t('regionSea');
     },
-    overriddenRegions() {
-      return this.$store.getters.overriddenRegions;
-    },
     regions() {
-      const overriddenRegions = this.overriddenRegions;
+      const overriddenRegions = this.parents;
       const overriddenIds = Object.keys(overriddenRegions).filter((regionId) => overriddenRegions[regionId][this.selectedDay]);
       return [this.REGION_LAND, this.REGION_SEA].reduce((regionData, regionType) => {
         // eslint-disable-next-line no-param-reassign

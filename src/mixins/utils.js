@@ -298,8 +298,8 @@ export default {
     },
 
     handleMapWarnings(data) {
-      this.$store.dispatch('clearWarnings');
       const warnings = {};
+      const parents = {};
       this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
         .map((updateTime) => new Date(data[updateTime][0].properties[this.UPDATE_TIME]))
         .sort(compareDesc)[0];
@@ -325,9 +325,13 @@ export default {
               });
               const parentId = this.geometries[regionId].parent;
               if (parentId) {
-                this.$store.dispatch('setOverriddenRegion', {
-                  region: parentId,
-                  overridden: warnings[warningId].effectiveDays,
+                if (parents[parentId] == null) {
+                  parents[parentId] = [false, false, false, false, false];
+                }
+                warnings[warningId].effectiveDays.forEach((override, index) => {
+                  if (override) {
+                    parents[parentId][index] = true;
+                  }
                 });
               }
             }
@@ -345,6 +349,7 @@ export default {
         warnings,
         days,
         regions,
+        parents,
         legend,
       };
     },

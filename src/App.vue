@@ -1,5 +1,5 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :currentTime="currentTime" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :warnings="warnings" :days="days" :regions="regions" :legend="legend" :language="language" /></template>
+    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :warnings="warnings" :days="days" :regions="regions" :parents="parents" :legend="legend" :language="language" /></template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
@@ -72,6 +72,7 @@ export default {
           sea: [],
         },
       ],
+      parents: {},
       legend: [],
     };
   },
@@ -142,6 +143,7 @@ export default {
         this.warnings = data.warnings;
         this.days = data.days;
         this.regions = data.regions;
+        this.parents = data.parents;
         this.legend = data.legend;
       }).catch((err) => {
         (console.error || console.log).call(console, err.stack || err);
