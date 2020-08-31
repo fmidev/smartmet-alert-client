@@ -39,11 +39,18 @@ export default {
       type: Array,
       default: () => [],
     },
+    defaultDay: {
+      type: Number,
+      default: 0,
+      validator(value) {
+        return [0, 1, 2, 3, 4].includes(value);
+      },
+    },
     regions: Array,
   },
   data() {
     return {
-      selectedDay: 0,
+      selectedDay: this.defaultDay,
     };
   },
   watch: {
