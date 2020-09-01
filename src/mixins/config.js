@@ -831,6 +831,44 @@ export default {
           '#ff0909',
         ],
       },
+      bbox: {
+        type: 'Feature',
+        id: 'bbox',
+        geometry: {
+          type: 'GeometryCollection',
+          geometries: [
+            {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [
+                    -130771.51174365,
+                    6461377.33211536,
+                  ],
+                  [
+                    732870,
+                    6461377.33211536,
+                  ],
+                  [
+                    732870,
+                    7776435,
+                  ],
+                  [
+                    -130771.51174365,
+                    7776435,
+                  ],
+                  [
+                    -130771.51174365,
+                    6461377.33211536,
+                  ],
+                ],
+              ],
+            },
+          ],
+        },
+        geometry_name: 'geom',
+        properties: {},
+      },
     };
   },
   methods: {

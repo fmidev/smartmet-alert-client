@@ -1,7 +1,20 @@
 import {
-  format, getDay, getDate, getMonth, getYear, addDays, startOfDay, isEqual, isBefore, isAfter, compareDesc,
+  addDays,
+  compareDesc,
+  format,
+  getDate,
+  getDay,
+  getMonth,
+  getYear,
+  isAfter,
+  isBefore,
+  isEqual,
+  startOfDay,
 } from 'date-fns';
 import he from 'he';
+import mapshaper from 'mapshaper';
+import xpath from 'xpath';
+import { DOMParser } from 'xmldom';
 import config from './config';
 import i18n from '../i18n';
 
@@ -30,7 +43,7 @@ export default {
     WARNING_CONTEXT: () => 'warning_context',
     SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
-    DATE_TIME_FORMAT: () => "'<strong>'dd.MM.'</strong>' HH:mm",
+    DATE_TIME_FORMAT: () => 'dd.MM. HH:mm',
     DATE_FORMAT: () => 'd.M.y',
     TIME_FORMAT: () => 'HH:mm',
     WIND: () => 'wind',
@@ -44,6 +57,8 @@ export default {
       severe: 3,
       extreme: 4,
     }),
+    COVERAGE_JSON: () => 'coverage.json',
+    COVERAGE_SVG: () => 'coverage.svg',
   },
   methods: {
     uncapitalize(value) {
@@ -114,6 +129,9 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
+        covRegions: new Set(),
+        coverages: [],
+        coveragesSmall: [],
         mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
@@ -138,6 +156,9 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
+        covRegions: new Set(),
+        coverages: [],
+        coveragesSmall: [],
         mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.ONSET],
         effectiveUntil: warning.properties[this.EXPIRES],
@@ -266,6 +287,7 @@ export default {
                     warningItem = {
                       type: warningType,
                       identifiers: [],
+                      coverage: warnings[key].covRegions.size > 0,
                     };
                     regionItem.warnings.push(warningItem);
                   }
@@ -297,18 +319,92 @@ export default {
         (this.WARNING_LEVELS.includes(warning.properties.severity))));
     },
 
-    handleMapWarnings(data) {
+    coverageGeom(coverageProperty) {
+      const coverageData = [];
+      const warnings = this.$store.getters.warnings;
+      const visibleWarnings = this.$store.getters.visibleWarnings;
+      Object.keys(warnings).forEach((key) => {
+        if ((warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) && (warnings[key].coverages.length > 0)) {
+          warnings[key].covRegions.forEach((covRegion) => {
+            if ((this.coverageRegions[covRegion] == null) || (this.coverageRegions[covRegion] < warnings[key].severity)) {
+              this.coverageRegions[covRegion] = warnings[key].severity;
+            }
+          });
+          warnings[key][coverageProperty].forEach((coverage) => {
+            coverageData.push({
+              d: coverage.path,
+              opacity: '1',
+              strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
+              fill: this.colors.levels[warnings[key].severity],
+            });
+          });
+          this.coverageWarnings.push(key);
+          this.coverageWarnings.sort((key1, key2) => warnings[key1].severity - warnings[key2].severity);
+        }
+      });
+      return coverageData;
+    },
+
+    async createCoverage(coverage, width, height, reference) {
+      const data = {
+        type: 'FeatureCollection',
+        features: [
+          coverage,
+          this.bbox,
+        ],
+        totalFeatures: 2,
+        crs: {
+          type: 'name',
+          properties: {
+            name: 'urn:ogc:def:crs:EPSG::3067',
+          },
+        },
+      };
+      if (reference != null) {
+        data.features.push({
+          type: 'Feature',
+          id: 'reference',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: reference,
+          },
+        });
+        data.totalFeatures++;
+      }
+      const input = {
+        [this.COVERAGE_JSON]: JSON.stringify(data),
+      };
+      return mapshaper.applyCommands(`-i coverage.json -o format=svg width=${width} height=${height}`, input);
+    },
+
+    coverageData(coverage) {
+      const doc = new DOMParser().parseFromString(coverage);
+      const paths = xpath.select('//*[name()="svg"]//*[local-name()="path" and @id!="bbox"]', doc);
+      const circle = xpath.select('//*[name()="svg"]//*[local-name()="circle" and @id="reference"]', doc);
+      return paths.map((path, index) => ({
+        path: path.getAttribute('d'),
+        reference: ((index === 0) && (circle.length > 0)) ? [
+          Number(circle[0].getAttribute('cx')),
+          Number(circle[0].getAttribute('cy')),
+        ] : [],
+      }));
+    },
+
+    async handleMapWarnings(data) {
       const warnings = {};
       const parents = {};
       this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
-        .map((updateTime) => new Date(data[updateTime][0].properties[this.UPDATE_TIME]))
+        .map((updateTime) => new Date(data[updateTime].features[0].properties[this.UPDATE_TIME]))
         .sort(compareDesc)[0];
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
         [this.FLOOD_WARNINGS]: this.createFloodWarning,
       };
-      Object.keys(createWarnings).forEach((warningType) => {
-        data[warningType].forEach((warning) => {
+      const warningTypes = Object.keys(createWarnings);
+      for (const warningType of warningTypes) {
+        const features = data[warningType].features;
+        for (const warning of features) {
           if (this.isValid(warning)) {
             let regionId;
             const warningId = warning.properties.identifier;
@@ -318,6 +414,21 @@ export default {
             } else {
               regionId = this.regionFromReference(warning.properties.reference);
               warnings[warningId].regions[regionId] = true;
+            }
+            // Space after comma is needed for merged areas
+            warning.properties.coverage_references.split(', ')
+              .filter((reference) => reference.length > 0).forEach((reference) => {
+                const covRegionId = this.regionFromReference(reference);
+                warnings[warningId].regions[covRegionId] = true;
+                warnings[warningId].covRegions.add(covRegionId);
+              });
+            if (warning.geometry != null) {
+              // eslint-disable-next-line no-await-in-loop
+              const coverage = await this.createCoverage(warning, 440, 550, [warning.properties.representative_x, warning.properties.representative_y]);
+              // eslint-disable-next-line no-await-in-loop
+              const coverageSmall = await this.createCoverage(warning, 75, 120);
+              warnings[warningId].coverages = this.coverageData(coverage[this.COVERAGE_SVG]);
+              warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
             }
             if (this.geometries[regionId]) {
               this.geometries[regionId].children.forEach((id) => {
@@ -336,8 +447,8 @@ export default {
               }
             }
           }
-        });
-      });
+        }
+      }
       Object.keys(warnings).forEach((key) => {
         warnings[key].mergedIcons = this.mergedIcons(warnings[key].regions);
       });
@@ -365,7 +476,7 @@ export default {
       let severity = 0;
       if (region != null) {
         const visibleWarnings = this.$store.getters.visibleWarnings;
-        const topWarning = region.warnings.find((warning) => visibleWarnings.includes(warning.type));
+        const topWarning = region.warnings.find((warning) => !warning.coverage && visibleWarnings.includes(warning.type));
         if (topWarning != null) {
           severity = this.$store.getters.warnings[topWarning.identifiers[0]].severity;
         }

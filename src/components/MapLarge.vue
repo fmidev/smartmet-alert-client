@@ -8,8 +8,12 @@
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
                           :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
                           style="cursor: pointer"/>
+                    <path v-for="coverage in coverages" :key="coverage.key" stroke="#000000" :stroke-width="coverage.strokeWidth"
+                          :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity" style="cursor: pointer;pointer-events: none"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
+                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
+                <svg version="1.2" v-for="icon in coverageIcons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
                      :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
             </svg>
             <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn" :aria-label="zoomInText"></b-button>
@@ -96,6 +100,9 @@ export default {
         return regions;
       }, []);
     },
+    coverages() {
+      return this.coverageGeom('coverages');
+    },
     iconSize() {
       return 28 - 4 * this.scale;
     },
@@ -116,7 +123,7 @@ export default {
           const geoms = [];
           region.warnings.forEach((regionWarning, index, regionWarnings) => {
             const identifier = regionWarning.identifiers[0];
-            if ((visibleWarnings.includes(regionWarning.type)) && (!warnings[identifier].mergedIcons.has(regionId)) && (iconSizes.length < maxWarningIcons)) {
+            if ((visibleWarnings.includes(regionWarning.type)) && (warnings[identifier].covRegions.size === 0) && (!warnings[identifier].mergedIcons.has(regionId)) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
                 this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
               const scale = icon.scale ? icon.scale : 1;
@@ -147,6 +154,31 @@ export default {
       });
       return data;
     },
+    coverageIcons() {
+      const warnings = this.$store.getters.warnings;
+      const visibleWarnings = this.$store.getters.visibleWarnings;
+      return this.coverageWarnings.reduce((iconData, warningId) => {
+        const warning = warnings[warningId];
+        if ((visibleWarnings.includes(warning.type)) && (warning.coverages.length > 0)) {
+          const reference = warning.coverages[0].reference;
+          const icon = this.warningIcon(warning);
+          const scale = icon.scale ? icon.scale : 1;
+          const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
+          const height = scale * icon.scale * this.iconSize;
+          iconData.push({
+            key: warningId + Math.random(),
+            x: `${reference[0] - width / 2}px`,
+            y: `${reference[1] - height / 2}px`,
+            width,
+            height,
+            version: '1.1',
+            viewBox: `0 0 ${icon.aspectRatio[0]} ${icon.aspectRatio[1]}`,
+            geom: icon.geom,
+          });
+        }
+        return iconData;
+      }, []);
+    },
     regionTitle() {
       return i18n.t(this.popupRegion.name);
     },
@@ -172,6 +204,8 @@ export default {
       popupRegion: {},
       popupLevel: '',
       popupWarnings: [],
+      coverageRegions: {},
+      coverageWarnings: [],
     };
   },
   watch: {
@@ -189,11 +223,19 @@ export default {
         });
       }
     },
+    input() {
+      this.coverageRegions = {};
+      this.coverageWarnings = [];
+    },
   },
   methods: {
     regionClicked(event) {
-      this.popupLevel = `level-${event.target.dataset.severity}`;
       const regionId = event.target.dataset.region;
+      let severity = Number(event.target.dataset.severity);
+      if ((this.coverageRegions[regionId] != null) && (this.coverageRegions[regionId] > severity)) {
+        severity = this.coverageRegions[regionId];
+      }
+      this.popupLevel = `level-${severity}`;
       this.popupRegion = this.geometries[regionId];
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];

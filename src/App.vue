@@ -108,17 +108,17 @@ export default {
     fetchWarnings() {
       console.log(`Updating warnings at ${new Date()}`);
       axios.all([this.weatherUpdatedQuery, this.floodUpdatedQuery, this.weatherWarningsQuery, this.floodWarningsQuery]
-        .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then((responses) => {
+        .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then(async (responses) => {
         const responseData = [this.weatherUpdatedType, this.floodUpdatedType, this.weatherWarningsType, this.floodWarningsType]
           .reduce((data, typeName, index) => {
             // eslint-disable-next-line no-param-reassign
-            data[typeName] = responses[index].data.features;
+            data[typeName] = responses[index].data;
             return data;
           }, {});
         if (this.updatedAt != null) {
           this.refreshedAt = Date.now();
         }
-        const data = this.handleMapWarnings(responseData);
+        const data = await this.handleMapWarnings(responseData);
         this.warnings = data.warnings;
         this.days = data.days;
         this.regions = data.regions;
