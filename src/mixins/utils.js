@@ -415,20 +415,22 @@ export default {
               regionId = this.regionFromReference(warning.properties.reference);
               warnings[warningId].regions[regionId] = true;
             }
-            // Space after comma is needed for merged areas
-            warning.properties.coverage_references.split(', ')
-              .filter((reference) => reference.length > 0).forEach((reference) => {
-                const covRegionId = this.regionFromReference(reference);
-                warnings[warningId].regions[covRegionId] = true;
-                warnings[warningId].covRegions.add(covRegionId);
-              });
-            if (warning.geometry != null) {
-              // eslint-disable-next-line no-await-in-loop
-              const coverage = await this.createCoverage(warning, 440, 550, [warning.properties.representative_x, warning.properties.representative_y]);
-              // eslint-disable-next-line no-await-in-loop
-              const coverageSmall = await this.createCoverage(warning, 75, 120);
-              warnings[warningId].coverages = this.coverageData(coverage[this.COVERAGE_SVG]);
-              warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
+            if (warning.properties.coverage_references != null) {
+              // Space after comma is needed for merged areas
+              warning.properties.coverage_references.split(', ')
+                .filter((reference) => reference.length > 0).forEach((reference) => {
+                  const covRegionId = this.regionFromReference(reference);
+                  warnings[warningId].regions[covRegionId] = true;
+                  warnings[warningId].covRegions.add(covRegionId);
+                });
+              if (warning.geometry != null) {
+                // eslint-disable-next-line no-await-in-loop
+                const coverage = await this.createCoverage(warning, 440, 550, [warning.properties.representative_x, warning.properties.representative_y]);
+                // eslint-disable-next-line no-await-in-loop
+                const coverageSmall = await this.createCoverage(warning, 75, 120);
+                warnings[warningId].coverages = this.coverageData(coverage[this.COVERAGE_SVG]);
+                warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
+              }
             }
             if (this.geometries[regionId]) {
               this.geometries[regionId].children.forEach((id) => {
