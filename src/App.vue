@@ -48,7 +48,11 @@ export default {
     },
     debugMode: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    warningsResponse: {
+      type: Object,
+      default: null,
     },
   },
   mixins: [utils],
@@ -56,7 +60,7 @@ export default {
     return {
       updatedAt: null,
       refreshedAt: null,
-      warningsData: {},
+      warningsData: null,
     };
   },
   computed: {
@@ -106,10 +110,14 @@ export default {
     },
   },
   created() {
-    this.fetchWarnings();
+    if (this.warningsResponse != null) {
+      this.warningsData = this.warningsResponse;
+    } else {
+      this.fetchWarnings();
+    }
   },
   methods: {
-    fetchWarnings() {
+    async fetchWarnings() {
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`);
       }

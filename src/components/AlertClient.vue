@@ -59,14 +59,7 @@ export default {
   },
   watch: {
     warningsData() {
-      this.handleMapWarnings(this.warningsData).then((result) => {
-        this.warnings = result.warnings;
-        this.days = result.days;
-        this.regions = result.regions;
-        this.parents = result.parents;
-        this.legend = result.legend;
-        this.$store.dispatch('setWarnings', this.warnings);
-      });
+      this.createDataForChildren();
     },
   },
   async beforeCreate() {
@@ -79,10 +72,12 @@ export default {
     this.$store.dispatch('setSelectedDay', this.selectedDay);
     this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
     this.$store.dispatch('setWarnings', this.warnings);
+    this.createDataForChildren();
+  },
+
+  mounted() {
     this.initTimer();
-    if (this.isClientSide()) {
-      this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
-    }
+    this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
   },
   beforeDestroy() {
     if (this.isClientSide()) {
@@ -91,6 +86,18 @@ export default {
     this.cancelTimer();
   },
   methods: {
+    createDataForChildren() {
+      if (this.warningsData != null) {
+        this.handleMapWarnings(this.warningsData).then((result) => {
+          this.warnings = result.warnings;
+          this.days = result.days;
+          this.regions = result.regions;
+          this.parents = result.parents;
+          this.legend = result.legend;
+          this.$store.dispatch('setWarnings', this.warnings);
+        });
+      }
+    },
     visibilityChange() {
       if (this.isClientSide()) {
         if (document.hidden) {
