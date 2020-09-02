@@ -1,5 +1,5 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :warnings="warnings" :days="days" :regions="regions" :parents="parents" :legend="legend" :language="language" /></template>
+    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" /></template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
@@ -48,11 +48,7 @@ export default {
       selectedDay: 0,
       updatedAt: null,
       refreshedAt: null,
-      warnings: {},
-      days: [],
-      regions: this.regionsDefault(),
-      parents: {},
-      legend: [],
+      warningsData: {},
     };
   },
   computed: {
@@ -118,12 +114,7 @@ export default {
         if (this.updatedAt != null) {
           this.refreshedAt = Date.now();
         }
-        const data = await this.handleMapWarnings(responseData);
-        this.warnings = data.warnings;
-        this.days = data.days;
-        this.regions = data.regions;
-        this.parents = data.parents;
-        this.legend = data.legend;
+        this.warningsData = responseData;
       }).catch((err) => {
         (console.error || console.log).call(console, err.stack || err);
       });

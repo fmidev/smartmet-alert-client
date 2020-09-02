@@ -33,11 +33,11 @@ export default {
       type: Number,
       default: 0,
     },
-    warnings: Object,
-    days: Array,
-    regions: Array,
-    parents: Object,
-    legend: Array,
+    currentTime: {
+      type: Number,
+      default: Date.now(),
+    },
+    warningsData: Object,
     language: String,
   },
   mixins: [utils],
@@ -50,11 +50,23 @@ export default {
     return {
       timer: null,
       visibilityListener: null,
+      warnings: {},
+      days: [],
+      regions: this.regionsDefault(),
+      parents: {},
+      legend: [],
     };
   },
   watch: {
-    warnings() {
-      this.$store.dispatch('setWarnings', this.warnings);
+    warningsData() {
+      this.handleMapWarnings(this.warningsData).then((result) => {
+        this.warnings = result.warnings;
+        this.days = result.days;
+        this.regions = result.regions;
+        this.parents = result.parents;
+        this.legend = result.legend;
+        this.$store.dispatch('setWarnings', this.warnings);
+      });
     },
   },
   async beforeCreate() {
