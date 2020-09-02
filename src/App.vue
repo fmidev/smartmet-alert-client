@@ -51,7 +51,6 @@ export default {
       default: true,
     },
     warningsResponse: {
-      type: Object,
       default: null,
     },
   },
