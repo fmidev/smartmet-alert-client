@@ -1,5 +1,6 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" /></template>
+    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" />
+</template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
@@ -29,6 +30,10 @@ export default {
       type: String,
       default: 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows',
     },
+    selectedDay: {
+      type: Number,
+      default: 0,
+    },
     weatherUpdated: String,
     floodUpdated: String,
     weatherWarnings: String,
@@ -41,11 +46,14 @@ export default {
       type: String,
       default: 'fi',
     },
+    debugMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [utils],
   data() {
     return {
-      selectedDay: 0,
       updatedAt: null,
       refreshedAt: null,
       warningsData: {},
@@ -102,7 +110,9 @@ export default {
   },
   methods: {
     fetchWarnings() {
-      console.log(`Updating warnings at ${new Date()}`);
+      if (this.debugMode) {
+        console.log(`Updating warnings at ${new Date()}`);
+      }
       axios.all([this.weatherUpdatedQuery, this.floodUpdatedQuery, this.weatherWarningsQuery, this.floodWarningsQuery]
         .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then(async (responses) => {
         const responseData = [this.weatherUpdatedType, this.floodUpdatedType, this.weatherWarningsType, this.floodWarningsType]
