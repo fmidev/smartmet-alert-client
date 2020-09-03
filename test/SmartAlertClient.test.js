@@ -24,7 +24,7 @@ afterAll(async (done) => {
 });
 
 describe('Smart Alert Client', () => {
-  it('renders correctly in Chromium', async () => {
+  it('Set 1 renders correctly in Chromium', async () => {
     browser = await playwright.chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -32,10 +32,18 @@ describe('Smart Alert Client', () => {
       width: 1000,
       height: 3000,
     });
-    await page.goto(`file:${path.join(__dirname, 'index.html')}`);
-    await page.waitForSelector('.day-map-large');
-    const element = await page.$('#fmi-warnings');
-    const image = await element.screenshot();
-    expect(image).toMatchImageSnapshot();
+    let element;
+    let image;
+    /* eslint-disable no-await-in-loop */
+    for (let i = 1; i <= 4; i++) {
+      await page.goto(`file:${path.join(__dirname, `set-${i}.html`)}`);
+      await page.waitForSelector('.day-map-large');
+      element = await page.$('#fmi-warnings');
+      image = await element.screenshot();
+      expect(image).toMatchImageSnapshot({
+        customSnapshotIdentifier: `set-${i}`,
+      });
+    }
+    /* eslint-enable no-await-in-loop */
   });
 });

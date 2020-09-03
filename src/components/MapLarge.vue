@@ -1,24 +1,30 @@
 <template>
     <div class="map-large" tabindex="0">
         <div class="day-map-large">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="440" height="550"
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
-                 style="position:absolute; left:0; top:0; width:100%; height:100%">
+                 style="max-height:550px;">
                 <g>
                     <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
                           :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
                           style="cursor: pointer"/>
-                    <path v-for="coverage in coverages" :key="coverage.key" stroke="#000000" :stroke-width="coverage.strokeWidth"
-                          :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity" style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="coverage in coverages" :key="coverage.key" stroke="#000000"
+                          :stroke-width="coverage.strokeWidth"
+                          :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity"
+                          style="cursor: pointer;pointer-events: none"/>
                 </g>
-                <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
-                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
-                <svg version="1.2" v-for="icon in coverageIcons" v-bind:key="icon.key" :x="icon.x" :y="icon.y" :width="icon.width"
-                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none" />
+                <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
+                     :width="icon.width"
+                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none"/>
+                <svg version="1.2" v-for="icon in coverageIcons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
+                     :width="icon.width"
+                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none"/>
             </svg>
-            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn" :aria-label="zoomInText"></b-button>
-            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut" :aria-label="zoomOutText"></b-button>
+            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"
+                      :aria-label="zoomInText"></b-button>
+            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"
+                      :aria-label="zoomOutText"></b-button>
             <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle"></div>
             <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
                        target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
@@ -328,8 +334,12 @@ export default {
     div.map-large {
         display: inline-block;
         width: $map-large-width;
-        height: $map-large-height;
+        height: 100%;
         background-color: rgba(0, 0, 0, 0);
+    }
+
+    div.day-map-large {
+        height: 100%;
     }
 
     button.fmi-warnings-zoom {
@@ -551,6 +561,11 @@ export default {
             width: 100%;
             max-width: 100%;
         }
+
+        div#fmi-warnings-region-tooltip-reference {
+            display: none;
+        }
+
     }
 
     @media (max-width: 575px) {
@@ -558,8 +573,5 @@ export default {
             display: none;
         }
 
-        div#fmi-warnings-region-tooltip-reference {
-            display: none;
-        }
     }
 </style>

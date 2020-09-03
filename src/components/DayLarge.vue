@@ -94,7 +94,7 @@ div.map-container {
   margin-left: 0;
   margin-right: 0;
   position: relative;
-  height: $map-large-height;
+  max-height: $map-large-height;
   background: transparent;
   top: 0;
 }
