@@ -1,0 +1,26 @@
+<meta charset="utf-8">
+<title>SmartMetAlertClient Test 3</title>
+<script src="https://unpkg.com/vue"></script>
+<script src="../dist/SmartMetAlertClient.umd.js"></script>
+<link rel="stylesheet" href="../dist/SmartMetAlertClient.css">
+
+<div id="test"></div>
+
+<script>
+new Vue({
+  el: '#test',
+  render: h => h(
+    SmartMetAlertClient,
+    {
+      props: {
+        currentDate: '2020-09-03T12:26:11Z',
+        baseUrl: 'http://localhost:8088/',
+        weatherUpdated: 'womlTime-3.json',
+        floodUpdated: 'capTime-3.json',
+        weatherWarnings: 'woml-3.json',
+        floodWarnings: 'cap-3.json',
+      }
+    },
+  ),
+});
+</script>

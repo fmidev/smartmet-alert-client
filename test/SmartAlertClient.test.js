@@ -37,7 +37,7 @@ describe('Smart Alert Client', () => {
     /* eslint-disable no-await-in-loop */
     for (let i = 1; i <= 4; i++) {
       await page.goto(`file:${path.join(__dirname, `set-${i}.html`)}`);
-      await page.waitForSelector('.day-map-large');
+      await page.waitForSelector('#fmi-warnings-list');
       element = await page.$('#fmi-warnings');
       image = await element.screenshot();
       expect(image).toMatchImageSnapshot({
