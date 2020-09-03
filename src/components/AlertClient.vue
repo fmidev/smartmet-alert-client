@@ -174,7 +174,6 @@ div.container-fluid {
 div.day-region-views {
   max-width: $map-large-width;
   width: $map-large-width;
-  min-width: $map-large-width;
   padding-left: 0;
   padding-right: 0;
 }

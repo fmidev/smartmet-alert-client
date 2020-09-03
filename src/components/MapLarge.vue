@@ -2,7 +2,8 @@
     <div class="map-large" tabindex="0">
         <div class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="440" height="550"
-                 viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large">
+                 viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
+                 style="position:absolute; left:0; top:0; width:100%; height:100%">
                 <g>
                     <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
@@ -554,6 +555,10 @@ export default {
 
     @media (max-width: 575px) {
         button.fmi-warnings-zoom {
+            display: none;
+        }
+
+        div#fmi-warnings-region-tooltip-reference {
             display: none;
         }
     }
