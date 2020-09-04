@@ -113,4 +113,11 @@ div.data-providers {
   text-align: left;
   z-index: 5;
 }
+
+@media screen and (orientation:landscape) {
+  div.map-container {
+    height: $map-large-height;
+  }
+}
+
 </style>
