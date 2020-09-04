@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { vueWindowSizeMixin } from 'vue-window-size';
 import config from '../mixins/config';
 import utils from '../mixins/utils';
 
@@ -28,16 +29,22 @@ export default {
       default: () => ({}),
     },
   },
-  mixins: [config, utils],
+  mixins: [config, utils, vueWindowSizeMixin],
   data() {
     return {
       coverageRegions: {},
       coverageWarnings: [],
+      pathsNeeded: false,
     };
+  },
+  watch: {
+    windowWidth() {
+      this.pathsNeeded = this.isFullMode();
+    },
   },
   computed: {
     paths() {
-      return this.regionIds.reduce((regions, regionId) => {
+      return this.pathsNeeded ? this.regionIds.reduce((regions, regionId) => {
         if (this.geometries[regionId].pathSmall) {
           const visualization = this.regionVisualization(regionId);
           regions.push({
@@ -48,10 +55,22 @@ export default {
           });
         }
         return regions;
-      }, []);
+      }, []) : [];
     },
     coverages() {
       return this.coverageGeom('coveragesSmall');
+    },
+  },
+  mounted() {
+    this.pathsNeeded = this.isFullMode();
+  },
+  methods: {
+    isFullMode() {
+      if (!this.isClientSide()) {
+        return true;
+      }
+      const element = document.getElementById(`day-map-small-${this.index}`);
+      return ((element != null) && (element.offsetParent !== null));
     },
   },
 };
