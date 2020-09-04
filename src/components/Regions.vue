@@ -37,6 +37,7 @@ export default {
       return i18n.t('regionSea');
     },
     regions() {
+      const compareRegions = (region1, region2) => region1.regionIndex - region2.regionIndex;
       const overriddenRegions = this.parents;
       const overriddenIds = Object.keys(overriddenRegions).filter((regionId) => overriddenRegions[regionId][this.selectedDay]);
       return [this.REGION_LAND, this.REGION_SEA].reduce((regionData, regionType) => {
@@ -48,6 +49,7 @@ export default {
           }
           return regions;
         }, []);
+        regionData[regionType].sort(compareRegions);
         return regionData;
       }, {});
     },

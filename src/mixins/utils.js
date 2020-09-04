@@ -270,13 +270,14 @@ export default {
               return (isAfter(effectiveFrom1, effectiveFrom2) || (isEqual(effectiveFrom1, effectiveFrom2) && (isBefore(effectiveUntil1, effectiveUntil2))));
             });
             warningsByType.forEach((key) => {
-              this.regionIds.forEach((regionId) => {
+              this.regionIds.forEach((regionId, regionIndex) => {
                 if (warnings[key].regions[regionId]) {
                   const regionItems = regionWarnings[day][this.geometries[regionId].type];
                   let regionItem = regionItems.find((regionWarning) => regionWarning.key === regionId);
                   if (regionItem == null) {
                     regionItem = {
                       key: regionId,
+                      regionIndex,
                       name: this.geometries[regionId].name,
                       warnings: [],
                     };
