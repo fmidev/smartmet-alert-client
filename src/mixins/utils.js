@@ -43,7 +43,7 @@ export default {
     WARNING_CONTEXT: () => 'warning_context',
     SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
-    DATE_TIME_FORMAT: () => 'dd.MM. HH:mm',
+    DATE_TIME_FORMAT: () => 'd.M. HH:mm',
     DATE_FORMAT: () => 'd.M.y',
     TIME_FORMAT: () => 'HH:mm',
     WIND: () => 'wind',
