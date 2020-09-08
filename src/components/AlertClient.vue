@@ -7,7 +7,7 @@
           <Regions :input="regions" :parents="parents" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-          <Warnings :input="legend" />
+          <Warnings v-show="validData" :input="legend" />
         </div>
       </div>
     </div>
@@ -56,6 +56,12 @@ export default {
       parents: {},
       legend: [],
     };
+  },
+  computed: {
+    validData() {
+      return ((this.days != null) && (this.days.length === 5) && (this.days[0].updatedDate != null) &&
+        (this.days[0].updatedDate.length > 0));
+    },
   },
   watch: {
     warningsData() {
