@@ -19,17 +19,7 @@ module.exports = {
       enableInSFC: false,
     },
   },
-  css: {
-    loaderOptions: {
-      less: {
-        javascriptEnabled: true,
-      },
-    },
-  },
   configureWebpack: {
-    optimization: {
-      minimize: true,
-    },
     plugins: [
       new webpack.BannerPlugin({
         banner,
