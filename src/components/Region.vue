@@ -87,6 +87,10 @@ export default {
         margin-right: 0;
     }
 
+    .current-warning-panel:focus:not([data-focus-visible-added]) {
+        outline: none;
+    }
+
     .current-warning-heading {
         background-color: #f8f8f8;
         height: $current-warning-height;

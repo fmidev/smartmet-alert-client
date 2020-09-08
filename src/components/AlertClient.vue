@@ -185,8 +185,6 @@ div.day-region-views {
 }
 
 div.symbol-list {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
   top: 0;
   z-index: 1;
   padding-left: 20px;

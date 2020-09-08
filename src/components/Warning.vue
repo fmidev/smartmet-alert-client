@@ -12,21 +12,24 @@
                 <div class="item-text symbol-list-text">
                     {{ title }}
                 </div>
-                <div class="symbol-list-select-container">
-                        <div
-                            :id="id"
-                            :class="[
-                                'symbol-list-select',
-                                input.visible ? 'flag-selected' : 'flag-unselected',
-                                'd-m-block',
-                                { 'd-none': !hideable }
-                            ]"
-                            :aria-label="input.visible ? hideLabel : showLabel"
-                            tabindex="0"
-                            v-on:click="toggle"
-                            @mouseover="openTooltip"
-                            @mouseout="closeTooltip"
-                        />
+                <div class="symbol-list-select-container d-none d-md-table-cell">
+                    <div
+                        :id="id"
+                        :class="[
+                            'symbol-list-select',
+                            input.visible ? 'flag-selected' : 'flag-unselected',
+                            'd-md-block',
+                            { 'd-none': !hideable }
+                        ]"
+                        :aria-label="input.visible ? hideLabel : showLabel"
+                        tabindex="0"
+                        @touchmove="preventEvents"
+                        @touchend="preventEvents"
+                        @touchstart="toggle"
+                        @mousedown="toggle"
+                        @mouseenter="openTooltip"
+                        @mouseleave="closeTooltip"
+                    />
                     <b-tooltip id="fmi-warnings-toggle-tooltip" :show.sync="showTooltip" triggers="" :target="id" placement="top" delay=0 :fallback-placement="[]" :container="`fmi-warnings-flag-${input.type}`" >
                         <span>
                             {{ tooltipFirstLine }}
@@ -45,6 +48,7 @@
 import i18n from '../i18n';
 import fields from '../mixins/fields';
 import utils from '../mixins/utils';
+import 'focus-visible';
 
 export default {
   name: 'Warning',
@@ -76,18 +80,22 @@ export default {
     },
   },
   methods: {
-    toggle() {
+    toggle(event) {
+      event.preventDefault();
       this.$store.dispatch('setWarningVisibility', {
         warning: this.input.type,
         visible: !this.input.visible,
       });
-      this.closeTooltip();
+      this.closeTooltip(event);
     },
     openTooltip() {
       this.showTooltip = true;
     },
     closeTooltip() {
       this.showTooltip = false;
+    },
+    preventEvents(event) {
+      event.preventDefault();
     },
   },
 };
@@ -192,6 +200,10 @@ export default {
         background-image: url($ui-image-path + 'flag-selected' + $image-extension);
     }
 
+    .flag-unselected:focus:not([data-focus-visible-added]), .flag-selected:focus:not([data-focus-visible-added]) {
+        outline: none;
+    }
+
     .flag-unselected {
         cursor: pointer;
         background-image: url($ui-image-path + 'flag-unselected' + $image-extension);
@@ -201,6 +213,7 @@ export default {
         opacity: 1;
         top: -9px !important;
         padding: 0;
+        outline: none;
 
         .arrow {
             content: '';
