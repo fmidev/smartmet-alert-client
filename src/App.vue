@@ -52,9 +52,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    warningsResponse: {
-      default: null,
-    },
   },
   mixins: [utils],
   data() {
@@ -111,11 +108,7 @@ export default {
     },
   },
   created() {
-    if (this.warningsResponse != null) {
-      this.warningsData = this.warningsResponse;
-    } else {
-      this.fetchWarnings();
-    }
+    this.fetchWarnings();
   },
   methods: {
     async fetchWarnings() {
@@ -135,7 +128,7 @@ export default {
         }
         this.warningsData = responseData;
       }).catch(() => {
-        this.warningsData = {};
+        this.warningsData = null;
       });
     },
   },
