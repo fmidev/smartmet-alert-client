@@ -134,8 +134,8 @@ export default {
           this.refreshedAt = Date.now();
         }
         this.warningsData = responseData;
-      }).catch((err) => {
-        (console.error || console.log).call(console, err.stack || err);
+      }).catch(() => {
+        this.warningsData = {};
       });
     },
   },
