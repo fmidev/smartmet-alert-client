@@ -18,8 +18,8 @@
                         :class="[
                             'symbol-list-select',
                             input.visible ? 'flag-selected' : 'flag-unselected',
-                            'd-md-block',
-                            { 'd-none': !hideable }
+                            { 'd-md-block' : hideable },
+                            'd-none',
                         ]"
                         :aria-label="input.visible ? hideLabel : showLabel"
                         tabindex="0"
