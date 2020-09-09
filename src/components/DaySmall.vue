@@ -49,7 +49,7 @@ export default {
       return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
     },
     ariaLabel() {
-      return `${i18n.t(`${this.input.weekdayName}Full`)} ${this.input.day}.${this.input.month}.${this.input.year}`;
+      return `${this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''} ${this.input.day}.${this.input.month}.${this.input.year}`;
     },
   },
 };
