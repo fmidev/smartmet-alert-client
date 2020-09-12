@@ -14,7 +14,8 @@
     "build": "vue-cli-service build --target lib --name SmartMetAlertClient",
     "lint": "vue-cli-service lint",
     "test": "jest",
-    "test-update": "jest --updateSnapshot"
+    "test-update": "jest --updateSnapshot",
+    "json-server": "json-server test/db.json -p 3030"
   },
   "jest": {
     "transform": {}
