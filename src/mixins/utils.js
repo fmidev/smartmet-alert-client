@@ -8,7 +8,6 @@ import {
   getYear,
   isAfter,
   isBefore,
-  isEqual,
   startOfDay,
 } from 'date-fns';
 import he from 'he';
@@ -139,6 +138,7 @@ export default {
         validInterval: this.validInterval(warning.properties[this.EFFECTIVE_FROM], warning.properties[this.EFFECTIVE_UNTIL]),
         severity,
         direction,
+        value: warning.properties[this.PHYSICAL_VALUE],
         text: this.text(warning.properties),
         info: {
           fi: he.decode(warning.properties[this.INFO_FI]),
@@ -166,6 +166,7 @@ export default {
         validInterval: this.validInterval(warning.properties[this.ONSET], warning.properties[this.EXPIRES]),
         severity: this.FLOOD_LEVELS[warning.properties.severity.toLowerCase()],
         direction: 0,
+        value: 0,
         text: '',
         info: {
           [warning.properties.language.substr(0, 2).toLowerCase()]: JSON.parse(
@@ -263,11 +264,20 @@ export default {
           this.warningTypes.forEach((warningType) => {
             const warningsByType = warningsByDay.filter((key) => warnings[key].type === warningType);
             warningsByType.sort((key1, key2) => {
-              const effectiveFrom1 = new Date(warnings[key1].effectiveFrom);
-              const effectiveUntil1 = new Date(warnings[key1].effectiveUntil);
-              const effectiveFrom2 = new Date(warnings[key2].effectiveFrom);
-              const effectiveUntil2 = new Date(warnings[key2].effectiveUntil);
-              return (isAfter(effectiveFrom1, effectiveFrom2) || (isEqual(effectiveFrom1, effectiveFrom2) && (isBefore(effectiveUntil1, effectiveUntil2))));
+              if (warnings[key1].severity !== warnings[key2].severity) {
+                return warnings[key2].severity - warnings[key1].severity;
+              }
+              if (warnings[key1].value !== warnings[key2].value) {
+                return warnings[key2].value - warnings[key1].value;
+              }
+              const effectiveFrom1 = (new Date(warnings[key1].effectiveFrom)).getTime();
+              const effectiveFrom2 = (new Date(warnings[key2].effectiveFrom)).getTime();
+              if (effectiveFrom1 !== effectiveFrom2) {
+                return effectiveFrom2 - effectiveFrom1;
+              }
+              const effectiveUntil1 = (new Date(warnings[key1].effectiveUntil)).getTime();
+              const effectiveUntil2 = (new Date(warnings[key2].effectiveUntil)).getTime();
+              return effectiveUntil2 - effectiveUntil1;
             });
             warningsByType.forEach((key) => {
               this.regionIds.forEach((regionId, regionIndex) => {
