@@ -123,9 +123,11 @@ export default {
             data[typeName] = responses[index].data;
             return data;
           }, {});
+        const currentTime = Date.now();
         if (this.updatedAt != null) {
-          this.refreshedAt = Date.now();
+          this.refreshedAt = currentTime;
         }
+        this.updatedAt = currentTime;
         this.warningsData = responseData;
       }).catch(() => {
         this.warningsData = null;
