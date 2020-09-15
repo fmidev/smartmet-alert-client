@@ -14,7 +14,7 @@
                           :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity"
                           style="cursor: pointer;pointer-events: none"/>
                     <path v-for="path in overlayPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :d="path.d" fill-opacity=0 style="cursor: pointer"/>
+                          :d="path.d" fill-opacity=0 style="cursor: pointer;pointer-events: none"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
                      :width="icon.width"
