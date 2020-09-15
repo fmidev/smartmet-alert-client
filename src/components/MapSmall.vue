@@ -41,6 +41,10 @@ export default {
     windowWidth() {
       this.pathsNeeded = this.isFullMode();
     },
+    input() {
+      this.coverageRegions = {};
+      this.coverageWarnings = [];
+    },
   },
   computed: {
     paths() {
