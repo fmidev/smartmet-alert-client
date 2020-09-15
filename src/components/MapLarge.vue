@@ -13,6 +13,8 @@
                           :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity"
                           style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="path in overlayPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :d="path.d" fill-opacity=0 style="cursor: pointer"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
                      :width="icon.width"
@@ -90,22 +92,29 @@ export default {
     tooltipStyle() {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`;
     },
+    size() {
+      return 'Large';
+    },
     paths() {
       return this.regionIds.reduce((regions, regionId) => {
         if (this.geometries[regionId].pathLarge) {
           const visualization = this.regionVisualization(regionId);
           regions.push({
-            key: `large-${regionId}`,
+            key: `${regionId}${this.size}`,
             fill: visualization.color,
             d: visualization.visible ? visualization.geom.pathLarge : '',
             opacity: '1',
             dataRegion: regionId,
             dataSeverity: visualization.severity,
-            strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
+            strokeWidth: ((this.geometries[regionId].type === 'sea') &&
+              (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
           });
         }
         return regions;
       }, []);
+    },
+    strokeWidth() {
+      return String(0.7 - 0.1 * (this.scale - 1));
     },
     coverages() {
       return this.coverageGeom('coverages');

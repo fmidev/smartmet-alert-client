@@ -58,6 +58,21 @@ export default {
     }),
     COVERAGE_JSON: () => 'coverage.json',
     COVERAGE_SVG: () => 'coverage.svg',
+    overlayPaths() {
+      return this.regionIds.reduce((regions, regionId) => {
+        if ((this.geometries[regionId].pathLarge) && ((this.geometries[regionId].type === 'land') ||
+          (this.geometries[regionId].subType === 'lake'))) {
+          const visualization = this.regionVisualization(regionId);
+          regions.push({
+            key: `${regionId}${this.size}Overlay`,
+            d: visualization.visible ? visualization.geom[`path${this.size}`] : '',
+            opacity: '1',
+            strokeWidth: this.strokeWidth,
+          });
+        }
+        return regions;
+      }, []);
+    },
   },
   methods: {
     uncapitalize(value) {
