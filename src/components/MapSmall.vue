@@ -61,14 +61,15 @@ export default {
             fill: visualization.color,
             d: visualization.geom.pathSmall,
             opacity: visualization.visible ? '1' : '0',
-            strokeWidth: this.strokeWidth,
+            strokeWidth: ((this.geometries[regionId].type === 'sea') &&
+              (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
           });
         }
         return regions;
       }, []) : [];
     },
     strokeWidth() {
-      return 0.5;
+      return 0.4;
     },
     coverages() {
       return this.coverageGeom('coveragesSmall');
