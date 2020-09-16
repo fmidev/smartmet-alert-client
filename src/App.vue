@@ -98,9 +98,9 @@ export default {
     },
     capLanguage() {
       return () => ({
-        'fi-FI': 'fi',
-        'sv-SV': 'sv',
-        'en-US': 'en',
+        fi: 'fi-FI',
+        sv: 'sv-SV',
+        en: 'en-US',
       })[this.language];
     },
     currentTime() {
