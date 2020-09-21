@@ -3,13 +3,30 @@
         <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="75" height="120"
              viewBox="0 0 75 120" stroke-linecap="round" stroke-linejoin="round">
             <g :id="`finland-small-${index}`">
-                <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
+                <path v-for="path in bluePaths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
                       :fill="path.fill" :d="path.d" :opacity="path.opacity"/>
-                <path v-for="coverage in coverages" :key="coverage.key" stroke="#000000"
+                <path v-for="path in greenPaths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
+                      :fill="path.fill" :d="path.d" :opacity="path.opacity"/>
+                <path v-for="path in yellowPaths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
+                      :fill="path.fill" :d="path.d" :opacity="path.opacity"/>
+                <path v-for="coverage in yellowCoverages" :key="coverage.key" stroke="#000000"
                       :stroke-width="coverage.strokeWidth" :fill="coverage.fill" :d="coverage.d"
-                      :opacity="coverage.opacity" pointer-events="fill"/>
+                      :fill-opacity="coverage.fillOpacity" pointer-events="fill"/>
+                <path v-for="path in orangePaths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
+                      :fill="path.fill" :d="path.d" :opacity="path.opacity"/>
+                <path v-for="coverage in orangeCoverages" :key="coverage.key" stroke="#000000"
+                      :stroke-width="coverage.strokeWidth" :fill="coverage.fill" :d="coverage.d"
+                      :fill-opacity="coverage.fillOpacity" pointer-events="fill"/>
+                <path v-for="path in redPaths" :key="path.key" stroke="#000000" :stroke-width=path.strokeWidth
+                      :fill="path.fill" :d="path.d" :opacity="path.opacity"/>
+                <path v-for="coverage in redCoverages" :key="coverage.key" stroke="#000000"
+                      :stroke-width="coverage.strokeWidth" :fill="coverage.fill" :d="coverage.d"
+                      :fill-opacity="coverage.fillOpacity" pointer-events="fill"/>
                 <path v-for="path in this.overlayPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                       :d="path.d" fill-opacity=0 />
+                <path v-for="coverage in overlayCoverages" :key="coverage.key" stroke="#000000"
+                      :stroke-width="coverage.strokeWidth" :fill="coverage.fill" :d="coverage.d"
+                      :fill-opacity="coverage.fillOpacity" pointer-events="fill"/>
             </g>
         </svg>
     </div>
@@ -52,33 +69,33 @@ export default {
     size() {
       return 'Small';
     },
-    paths() {
-      return this.pathsNeeded ? this.regionIds.reduce((regions, regionId) => {
-        if (this.geometries[regionId].pathSmall) {
-          const visualization = this.regionVisualization(regionId);
-          regions.push({
-            key: `${this.index}-${regionId}${this.size}`,
-            fill: visualization.color,
-            d: visualization.geom.pathSmall,
-            opacity: visualization.visible ? '1' : '0',
-            strokeWidth: ((this.geometries[regionId].type === 'sea') &&
-              (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
-          });
-        }
-        return regions;
-      }, []) : [];
-    },
     strokeWidth() {
       return 0.4;
-    },
-    coverages() {
-      return this.coverageGeom('coveragesSmall');
     },
   },
   mounted() {
     this.pathsNeeded = this.isFullMode();
   },
   methods: {
+    paths(options) {
+      return this.pathsNeeded ? this.regionIds.reduce((regions, regionId) => {
+        if ((this.geometries[regionId].pathSmall) &&
+          ((this.geometries[regionId].type === options.type) === (this.geometries[regionId].subType == null))) {
+          const visualization = this.regionVisualization(regionId);
+          if ((options.severity == null) || (visualization.severity === options.severity)) {
+            regions.push({
+              key: `${this.index}-${regionId}${this.size}`,
+              fill: visualization.color,
+              d: visualization.geom.pathSmall,
+              opacity: visualization.visible ? '1' : '0',
+              strokeWidth: ((this.geometries[regionId].type === 'sea') &&
+                (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
+            });
+          }
+        }
+        return regions;
+      }, []) : [];
+    },
     isFullMode() {
       if (!this.isClientSide()) {
         return true;

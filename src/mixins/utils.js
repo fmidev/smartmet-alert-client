@@ -58,6 +58,35 @@ export default {
     }),
     COVERAGE_JSON: () => 'coverage.json',
     COVERAGE_SVG: () => 'coverage.svg',
+    bluePaths() {
+      return this.paths({
+        type: this.REGION_SEA,
+      });
+    },
+    greenPaths() {
+      return this.paths({
+        type: this.REGION_LAND,
+        severity: 0,
+      });
+    },
+    yellowPaths() {
+      return this.paths({
+        type: this.REGION_LAND,
+        severity: 2,
+      });
+    },
+    orangePaths() {
+      return this.paths({
+        type: this.REGION_LAND,
+        severity: 3,
+      });
+    },
+    redPaths() {
+      return this.paths({
+        type: this.REGION_LAND,
+        severity: 4,
+      });
+    },
     overlayPaths() {
       return this.regionIds.reduce((regions, regionId) => {
         if ((this.geometries[regionId].pathLarge) && ((this.geometries[regionId].type === 'land') ||
@@ -72,6 +101,18 @@ export default {
         }
         return regions;
       }, []);
+    },
+    yellowCoverages() {
+      return this.coverageGeom(`coverages${this.size}`, 0, 1, 2);
+    },
+    orangeCoverages() {
+      return this.coverageGeom(`coverages${this.size}`, 0, 1, 3);
+    },
+    redCoverages() {
+      return this.coverageGeom(`coverages${this.size}`, 0, 1, 4);
+    },
+    overlayCoverages() {
+      return this.coverageGeom(`coverages${this.size}`, 1, 0);
     },
   },
   methods: {
@@ -144,7 +185,7 @@ export default {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
         covRegions: new Set(),
-        coverages: [],
+        coveragesLarge: [],
         coveragesSmall: [],
         mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
@@ -172,7 +213,7 @@ export default {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
         covRegions: new Set(),
-        coverages: [],
+        coveragesLarge: [],
         coveragesSmall: [],
         mergedIcons: new Set(),
         effectiveFrom: warning.properties[this.ONSET],
@@ -345,27 +386,30 @@ export default {
         (this.WARNING_LEVELS.includes(warning.properties.severity))));
     },
 
-    coverageGeom(coverageProperty) {
+    coverageGeom(coverageProperty, strokeWidth, fillOpacity, severity) {
       const coverageData = [];
       const warnings = this.$store.getters.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
       Object.keys(warnings).forEach((key) => {
-        if ((warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) && (warnings[key].coverages.length > 0)) {
-          warnings[key].covRegions.forEach((covRegion) => {
-            if ((this.coverageRegions[covRegion] == null) || (this.coverageRegions[covRegion] < warnings[key].severity)) {
-              this.coverageRegions[covRegion] = warnings[key].severity;
-            }
-          });
+        if (((severity == null) || (warnings[key].severity === severity)) &&
+          (warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) &&
+          (warnings[key].coveragesLarge.length > 0)) {
+          if (!this.coverageWarnings.includes(key)) {
+            warnings[key].covRegions.forEach((covRegion) => {
+              if ((this.coverageRegions[covRegion] == null) || (this.coverageRegions[covRegion] < warnings[key].severity)) {
+                this.coverageRegions[covRegion] = warnings[key].severity;
+              }
+            });
+            this.coverageWarnings.push(key);
+          }
           warnings[key][coverageProperty].forEach((coverage) => {
             coverageData.push({
               d: coverage.path,
-              opacity: '1',
-              strokeWidth: String(0.7 - 0.1 * (this.scale - 1)),
+              fillOpacity,
+              strokeWidth,
               fill: this.colors.levels[warnings[key].severity],
             });
           });
-          this.coverageWarnings.push(key);
-          this.coverageWarnings.sort((key1, key2) => warnings[key1].severity - warnings[key2].severity);
         }
       });
       return coverageData;
@@ -454,7 +498,7 @@ export default {
                 const coverage = await this.createCoverage(warning, 440, 550, [warning.properties.representative_x, warning.properties.representative_y]);
                 // eslint-disable-next-line no-await-in-loop
                 const coverageSmall = await this.createCoverage(warning, 75, 120);
-                warnings[warningId].coverages = this.coverageData(coverage[this.COVERAGE_SVG]);
+                warnings[warningId].coveragesLarge = this.coverageData(coverage[this.COVERAGE_SVG]);
                 warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
               }
             }
@@ -520,7 +564,7 @@ export default {
       const severity = this.regionSeverity(regionId);
       const isLand = (this.geometries[regionId].type === this.REGION_LAND);
       const color = ((severity) || (isLand) ? this.colors.levels[severity] : this.colors.sea);
-      const visible = ((severity) || (geom.subType !== this.REGION_LAKE));
+      const visible = ((severity > 0) || (geom.subType !== this.REGION_LAKE));
       return {
         geom,
         severity,

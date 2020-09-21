@@ -1,20 +1,48 @@
-<template>
+ <template>
     <div class="map-large" tabindex="0">
         <div class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
                  style="max-height:550px;">
                 <g>
-                    <path v-for="path in paths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                    <path v-for="path in bluePaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
                           :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
                           style="cursor: pointer"/>
-                    <path v-for="coverage in coverages" :key="coverage.key" stroke="#000000"
+                    <path v-for="path in greenPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
+                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
+                          style="cursor: pointer"/>
+                    <path v-for="path in yellowPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
+                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
+                          style="cursor: pointer"/>
+                    <path v-for="coverage in yellowCoverages" :key="coverage.key" stroke="#000000"
                           :stroke-width="coverage.strokeWidth"
-                          :fill="coverage.fill" :d="coverage.d" :opacity="coverage.opacity"
+                          :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
+                          style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="path in orangePaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
+                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
+                          style="cursor: pointer"/>
+                    <path v-for="coverage in orangeCoverages" :key="coverage.key" stroke="#000000"
+                          :stroke-width="coverage.strokeWidth"
+                          :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
+                          style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="path in redPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
+                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
+                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
+                          style="cursor: pointer"/>
+                    <path v-for="coverage in redCoverages" :key="coverage.key" stroke="#000000"
+                          :stroke-width="coverage.strokeWidth"
+                          :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
                     <path v-for="path in overlayPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
                           :d="path.d" fill-opacity=0 style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="coverage in overlayCoverages" :key="coverage.key" stroke="#000000"
+                          :stroke-width="coverage.strokeWidth"
+                          :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
+                          style="cursor: pointer;pointer-events: none"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
                      :width="icon.width"
@@ -95,29 +123,8 @@ export default {
     size() {
       return 'Large';
     },
-    paths() {
-      return this.regionIds.reduce((regions, regionId) => {
-        if (this.geometries[regionId].pathLarge) {
-          const visualization = this.regionVisualization(regionId);
-          regions.push({
-            key: `${regionId}${this.size}`,
-            fill: visualization.color,
-            d: visualization.visible ? visualization.geom.pathLarge : '',
-            opacity: '1',
-            dataRegion: regionId,
-            dataSeverity: visualization.severity,
-            strokeWidth: ((this.geometries[regionId].type === 'sea') &&
-              (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
-          });
-        }
-        return regions;
-      }, []);
-    },
     strokeWidth() {
       return String(0.7 - 0.1 * (this.scale - 1));
-    },
-    coverages() {
-      return this.coverageGeom('coverages');
     },
     iconSize() {
       return 28 - 4 * this.scale;
@@ -175,8 +182,8 @@ export default {
       const visibleWarnings = this.$store.getters.visibleWarnings;
       return this.coverageWarnings.reduce((iconData, warningId) => {
         const warning = warnings[warningId];
-        if ((visibleWarnings.includes(warning.type)) && (warning.coverages.length > 0)) {
-          const reference = warning.coverages[0].reference;
+        if ((visibleWarnings.includes(warning.type)) && (warning.coveragesLarge.length > 0)) {
+          const reference = warning.coveragesLarge[0].reference;
           const icon = this.warningIcon(warning);
           const scale = icon.scale ? icon.scale : 1;
           const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
@@ -245,6 +252,27 @@ export default {
     },
   },
   methods: {
+    paths(options) {
+      return this.regionIds.reduce((regions, regionId) => {
+        if ((this.geometries[regionId].pathLarge) &&
+          ((this.geometries[regionId].type === options.type) === (this.geometries[regionId].subType == null))) {
+          const visualization = this.regionVisualization(regionId);
+          if ((options.severity == null) || (visualization.severity === options.severity)) {
+            regions.push({
+              key: `${regionId}${this.size}`,
+              fill: visualization.color,
+              d: visualization.visible ? visualization.geom.pathLarge : '',
+              opacity: '1',
+              dataRegion: regionId,
+              dataSeverity: visualization.severity,
+              strokeWidth: ((this.geometries[regionId].type === 'sea') &&
+                (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
+            });
+          }
+        }
+        return regions;
+      }, []);
+    },
     regionClicked(event) {
       const regionId = event.target.dataset.region;
       let severity = Number(event.target.dataset.severity);
