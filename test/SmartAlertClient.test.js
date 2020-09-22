@@ -24,7 +24,7 @@ afterAll(async (done) => {
 });
 
 describe('Smart Alert Client', () => {
-  it('Set 1 renders correctly in Chromium', async () => {
+  it('Test sets render correctly in Chromium', async () => {
     browser = await playwright.chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -35,7 +35,7 @@ describe('Smart Alert Client', () => {
     let element;
     let image;
     /* eslint-disable no-await-in-loop */
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 8; i++) {
       await page.goto(`file:${path.join(__dirname, `set-${i}.html`)}`);
       await page.waitForSelector('#fmi-warnings-list');
       element = await page.$('#fmi-warnings');
