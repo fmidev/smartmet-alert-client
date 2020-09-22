@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.0.26",
+  "version": "3.0.27",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -12,10 +12,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name SmartMetAlertClient",
+    "release": "run-s build simplify-style",
     "lint": "vue-cli-service lint",
     "test": "jest",
-    "test-update": "jest --updateSnapshot",
-    "json-server": "json-server test/db.json -p 3030"
+    "update-test": "jest --updateSnapshot",
+    "serve-json": "json-server test/db.json -p 3030",
+    "simplify-style": "shx head -n 1 dist/SmartMetAlertClient.css > dist/SmartMetAlertClient-without-Bootstrap.css"
   },
   "jest": {
     "transform": {}
@@ -62,12 +64,14 @@
     "jest": "^26.2.2",
     "jest-image-snapshot": "^4.1.0",
     "json-server": "^0.16.1",
+    "npm-run-all": "4.1.5",
     "playwright": "^1.2.1",
     "popper.js": "^1.16.0",
     "portal-vue": "^2.1.6",
     "prettier": "^1.19.1",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
+    "shx": "0.3.2",
     "vue-cli-plugin-bootstrap-vue": "^0.6.0",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.43.0"
