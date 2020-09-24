@@ -84,7 +84,7 @@ export default {
           const visualization = this.regionVisualization(regionId);
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
-              key: `${this.index}-${regionId}${this.size}`,
+              key: `${regionId}${this.size}${this.index}Path`,
               fill: visualization.color,
               d: visualization.geom.pathSmall,
               opacity: visualization.visible ? '1' : '0',

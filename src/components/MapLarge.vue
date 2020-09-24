@@ -5,42 +5,43 @@
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
                  style="max-height:550px;">
                 <g>
-                    <path v-for="path in bluePaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
-                          style="cursor: pointer"/>
-                    <path v-for="path in greenPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
-                          style="cursor: pointer"/>
-                    <path v-for="path in yellowPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
-                          style="cursor: pointer"/>
-                    <path v-for="coverage in yellowCoverages" :key="coverage.key" stroke="#000000"
-                          :stroke-width="coverage.strokeWidth"
+                    <path v-for="path in bluePaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
+                          pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
+                          @click="regionClicked" style="cursor: pointer"/>
+                    <path v-for="path in greenPaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
+                          pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
+                          @click="regionClicked" style="cursor: pointer"/>
+                    <path v-for="path in yellowPaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
+                          pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
+                          @click="regionClicked" style="cursor: pointer"/>
+                    <path v-for="coverage in yellowCoverages" :key="coverage.key" :id="coverage.key"
+                          stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in orangePaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
-                          style="cursor: pointer"/>
-                    <path v-for="coverage in orangeCoverages" :key="coverage.key" stroke="#000000"
-                          :stroke-width="coverage.strokeWidth"
+                    <path v-for="path in orangePaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
+                          pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
+                          @click="regionClicked" style="cursor: pointer"/>
+                    <path v-for="coverage in orangeCoverages" :key="coverage.key" :id="coverage.key"
+                          stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in redPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :fill="path.fill" :d="path.d" :opacity="path.opacity" pointer-events="fill"
-                          :data-region="path.dataRegion" :data-severity="path.dataSeverity" @click="regionClicked"
-                          style="cursor: pointer"/>
-                    <path v-for="coverage in redCoverages" :key="coverage.key" stroke="#000000"
-                          :stroke-width="coverage.strokeWidth"
+                    <path v-for="path in redPaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
+                          pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
+                          @click="regionClicked" style="cursor: pointer"/>
+                    <path v-for="coverage in redCoverages" :key="coverage.key" :id="coverage.key"
+                          stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in overlayPaths" :key="path.key" stroke="#000000" :stroke-width="path.strokeWidth"
-                          :d="path.d" fill-opacity=0 style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="coverage in overlayCoverages" :key="coverage.key" stroke="#000000"
-                          :stroke-width="coverage.strokeWidth"
+                    <path v-for="path in overlayPaths" :key="path.key" :id="path.key" stroke="#000000"
+                          :stroke-width="path.strokeWidth" :d="path.d" fill-opacity=0
+                          style="cursor: pointer;pointer-events: none"/>
+                    <path v-for="coverage in overlayCoverages" :key="coverage.key" :id="coverage.key"
+                          stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
                 </g>
@@ -111,6 +112,15 @@ export default {
   },
   mixins: [config, utils],
   computed: {
+    minIconDistSqr() {
+      return 500;
+    },
+    iconDistStep() {
+      return 10;
+    },
+    iconMaxIter() {
+      return 40;
+    },
     zoomInText() {
       return i18n.t('zoomIn');
     },
@@ -170,6 +180,7 @@ export default {
               version: '1.1',
               viewBox: `0 0 ${aspectRatios[index][0]} ${aspectRatios[index][1]}`,
               geom: geoms[index],
+              regionId,
             });
             offsetX += iconSize[0];
           });
@@ -183,7 +194,23 @@ export default {
       return this.coverageWarnings.reduce((iconData, warningId) => {
         const warning = warnings[warningId];
         if ((visibleWarnings.includes(warning.type)) && (warning.coveragesLarge.length > 0)) {
-          const reference = warning.coveragesLarge[0].reference;
+          let reference = warning.coveragesLarge[0].reference;
+          let iterIndex = 0;
+          let radius;
+          let angle;
+          // Prevent too close warning symbols
+          while ((!this.validIconLocation(reference, warningId)) && (iterIndex < this.iconMaxIter)) {
+            angle = 0.25 * Math.PI * iterIndex;
+            iterIndex++;
+            radius = Math.ceil(iterIndex / 8) * this.iconDistStep;
+            reference = [
+              warning.coveragesLarge[0].reference[0] + radius * Math.cos(angle),
+              warning.coveragesLarge[0].reference[1] + radius * Math.sin(angle),
+            ];
+          }
+          if (iterIndex >= this.iconMaxIter) {
+            reference = warning.coveragesLarge[0].reference;
+          }
           const icon = this.warningIcon(warning);
           const scale = icon.scale ? icon.scale : 1;
           const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
@@ -259,7 +286,7 @@ export default {
           const visualization = this.regionVisualization(regionId);
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
-              key: `${regionId}${this.size}`,
+              key: `${regionId}${this.size}${this.index}Path`,
               fill: visualization.color,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',
@@ -309,6 +336,21 @@ export default {
       this.tooltipX = event.layerX;
       this.tooltipY = event.layerY;
       this.showTooltip = true;
+    },
+    validIconLocation(coord, warningId) {
+      const warnings = this.$store.getters.warnings;
+      const warning = warnings[warningId];
+      const activeIconRegions = new Set();
+      this.icons.forEach((icon) => {
+        activeIconRegions.add(icon.regionId);
+      });
+      return !Array.from(warning.covRegions).some((covRegion) => {
+        if (!activeIconRegions.has(covRegion)) {
+          return false;
+        }
+        const center = this.geometries[covRegion].center;
+        return (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 < this.minIconDistSqr;
+      });
     },
     zoomIn() {
       this.panzoom.zoom(this.panzoom.getScale() + 1, {

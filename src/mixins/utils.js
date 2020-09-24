@@ -93,7 +93,7 @@ export default {
           (this.geometries[regionId].subType === 'lake'))) {
           const visualization = this.regionVisualization(regionId);
           regions.push({
-            key: `${regionId}${this.size}Overlay`,
+            key: `${regionId}${this.size}${this.index}Overlay`,
             d: visualization.visible ? visualization.geom[`path${this.size}`] : '',
             opacity: '1',
             strokeWidth: this.strokeWidth,
@@ -404,6 +404,7 @@ export default {
           }
           warnings[key][coverageProperty].forEach((coverage) => {
             coverageData.push({
+              key: `${key}${this.size}${this.index}${fillOpacity}Coverage`,
               d: coverage.path,
               fillOpacity,
               strokeWidth,
