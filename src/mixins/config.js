@@ -3,26 +3,27 @@ import svgpath from 'svgpath';
 export default {
   data() {
     return {
-      warningTypes:
+      warningTypes: new Map(
         [
-          'thunderStorm',
-          'wind',
-          'rain',
-          'trafficWeather',
-          'pedestrianSafety',
-          'forestFireWeather',
-          'grassFireWeather',
-          'hotWeather',
-          'coldWeather',
-          'uvNote',
-          'floodLevel',
-          'seaWind',
-          'seaThunderStorm',
-          'seaWaterHeightHighWater',
-          'seaWaterHeightShallowWater',
-          'seaWaveHeight',
-          'seaIcing',
+          ['thunderStorm', 'land'],
+          ['wind', 'land'],
+          ['rain', 'land'],
+          ['trafficWeather', 'land'],
+          ['pedestrianSafety', 'land'],
+          ['forestFireWeather', 'land'],
+          ['grassFireWeather', 'land'],
+          ['hotWeather', 'land'],
+          ['coldWeather', 'land'],
+          ['uvNote', 'land'],
+          ['floodLevel', 'land'],
+          ['seaWind', 'sea'],
+          ['seaThunderStorm', 'sea'],
+          ['seaWaterHeightHighWater', 'sea'],
+          ['seaWaterHeightShallowWater', 'sea'],
+          ['seaWaveHeight', 'sea'],
+          ['seaIcing', 'sea'],
         ],
+      ),
       regionIds:
         [
           'sea_region.B5E',

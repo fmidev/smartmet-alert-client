@@ -156,7 +156,7 @@ export default {
           const geoms = [];
           region.warnings.forEach((regionWarning, index, regionWarnings) => {
             const identifier = regionWarning.identifiers[0];
-            if ((visibleWarnings.includes(regionWarning.type)) && (warnings[identifier].covRegions.size === 0) && (!warnings[identifier].mergedIcons.has(regionId)) && (iconSizes.length < maxWarningIcons)) {
+            if ((visibleWarnings.includes(regionWarning.type)) && (warnings[identifier].covRegions.size === 0) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
                 this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
               const scale = icon.scale ? icon.scale : 1;
@@ -231,6 +231,20 @@ export default {
     },
     regionTitle() {
       return i18n.t(this.popupRegion.name);
+    },
+    commonSets() {
+      const map = new Map();
+      const warnings = this.$store.getters.warnings;
+      this.input.land.filter((regionItem) => this.geometries[regionItem.key].neighbours.length > 0).forEach((regionItem) => {
+        const serialized = regionItem.warnings.reduce((reduced, warning) => {
+          const w = warnings[warning.identifiers[0]];
+          return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`;
+        }, '');
+        const set = map.has(serialized) ? map.get(serialized) : new Set();
+        set.add(regionItem.key);
+        map.set(serialized, set);
+      });
+      return map;
     },
   },
   data() {
