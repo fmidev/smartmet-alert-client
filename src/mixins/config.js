@@ -1059,6 +1059,7 @@ export default {
           break;
         case 'uvNote':
           icon.aspectRatio = [21, 12];
+          icon.scale = 0.75;
           icon.geom = `
             <title>ultraviolet-symbol</title>
             <desc></desc>
