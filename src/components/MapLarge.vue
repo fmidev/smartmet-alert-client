@@ -149,7 +149,7 @@ export default {
       const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
-        if ((region != null) && (this.geometries[regionId].children.length === 0)) {
+        if ((region != null) && (this.geometries[regionId].children.length === 0) && (!this.mergedRegions.has(regionId))) {
           const iconSizes = [];
           const aspectRatios = [];
           const keys = [];
@@ -270,6 +270,30 @@ export default {
         }
       });
       return arrayNetworks;
+    },
+    networkCenters() {
+      return this.networks.map((network) => {
+        const arrayNetwork = Array.from(network);
+        const weightSum = arrayNetwork.reduce((sum, region) => sum + this.geometries[region].weight, 0);
+        return arrayNetwork.reduce((sum, region) => {
+          const geom = this.geometries[region];
+          return sum.map((sumByIndex, index) => sumByIndex + geom.weight * geom.center[index]);
+        }, [0, 0]).map((weightedSumByIndex) => weightedSumByIndex / weightSum);
+      });
+    },
+    networkReps() {
+      return this.networks.map((network, networkIndex) => network[this.indexOfSmallest(network.map((region) => [0, 1].reduce((sum, coordIndex) => sum + (this.geometries[region].center[coordIndex] - this.networkCenters[networkIndex][coordIndex]) ** 2, 0) / this.geometries[region].weight))]);
+    },
+    mergedRegions() {
+      const merged = new Set();
+      this.networks.forEach((network, index) => {
+        network.forEach((region) => {
+          if (region !== this.networkReps[index]) {
+            merged.add(region);
+          }
+        });
+      });
+      return merged;
     },
   },
   data() {
@@ -412,6 +436,13 @@ export default {
           return false;
         });
       });
+    },
+    indexOfSmallest(array) {
+      let lowest = 0;
+      for (let i = 1; i < array.length; i++) {
+        if (array[i] < array[lowest]) lowest = i;
+      }
+      return lowest;
     },
     zoomIn() {
       this.panzoom.zoom(this.panzoom.getScale() + 1, {
