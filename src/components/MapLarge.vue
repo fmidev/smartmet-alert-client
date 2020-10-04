@@ -232,19 +232,44 @@ export default {
     regionTitle() {
       return i18n.t(this.popupRegion.name);
     },
-    commonSets() {
+    regionSets() {
       const map = new Map();
       const warnings = this.$store.getters.warnings;
+      const visibleWarnings = this.$store.getters.visibleWarnings;
       this.input.land.filter((regionItem) => this.geometries[regionItem.key].neighbours.length > 0).forEach((regionItem) => {
         const serialized = regionItem.warnings.reduce((reduced, warning) => {
+          if (!visibleWarnings.includes(warning.type)) {
+            return reduced;
+          }
           const w = warnings[warning.identifiers[0]];
           return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`;
         }, '');
-        const set = map.has(serialized) ? map.get(serialized) : new Set();
-        set.add(regionItem.key);
-        map.set(serialized, set);
+        if (serialized) {
+          const set = map.has(serialized) ? map.get(serialized) : new Set();
+          set.add(regionItem.key);
+          map.set(serialized, set);
+        }
       });
       return map;
+    },
+    networks() {
+      let allNetworks = [];
+      this.regionSets.forEach((regionSet) => {
+        const networks = [];
+        regionSet.forEach((region) => {
+          networks.push(new Set([region]));
+        });
+        // eslint-disable-next-line no-empty
+        while (this.mergeNetworks(networks)) {}
+        allNetworks = allNetworks.concat(networks);
+      });
+      const arrayNetworks = [];
+      allNetworks.forEach((network) => {
+        if (network.size > 1) {
+          arrayNetworks.push(Array.from(network.keys()));
+        }
+      });
+      return arrayNetworks;
     },
   },
   data() {
@@ -364,6 +389,28 @@ export default {
         }
         const center = this.geometries[covRegion].center;
         return (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 < this.minIconDistSqr;
+      });
+    },
+    mergeNetworks(networks) {
+      return networks.some((network1, index1) => {
+        const neighbours = Array.from(network1.keys()).reduce((reduced, region) => {
+          this.geometries[region].neighbours.forEach((neighbour) => {
+            reduced.add(neighbour);
+          });
+          return reduced;
+        }, new Set());
+        return networks.some((network2, index2) => {
+          if (index2 <= index1) {
+            return false;
+          }
+          const ngbrIndex = Array.from(neighbours.keys()).findIndex((neighbour) => network2.has(neighbour));
+          if (ngbrIndex >= 0) {
+            network2.forEach(networks[index1].add, networks[index1]);
+            networks.splice(index2, 1);
+            return true;
+          }
+          return false;
+        });
       });
     },
     zoomIn() {
