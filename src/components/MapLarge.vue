@@ -5,15 +5,15 @@
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
                  style="max-height:550px;">
                 <g>
-                    <path v-for="path in bluePaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in bluePaths" :key="path.key" :id="path.key" :stroke="strokeColor"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
                           @click="regionClicked" style="cursor: pointer"/>
-                    <path v-for="path in greenPaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in greenPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
                           @click="regionClicked" style="cursor: pointer"/>
-                    <path v-for="path in yellowPaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in yellowPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
                           @click="regionClicked" style="cursor: pointer"/>
@@ -21,7 +21,7 @@
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in orangePaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in orangePaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
                           @click="regionClicked" style="cursor: pointer"/>
@@ -29,7 +29,7 @@
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in redPaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in redPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
                           @click="regionClicked" style="cursor: pointer"/>
@@ -37,11 +37,11 @@
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
-                    <path v-for="path in overlayPaths" :key="path.key" :id="path.key" stroke="#000000"
+                    <path v-for="path in overlayPaths" :key="path.key" :id="path.key" :stroke="strokeColor"
                           :stroke-width="path.strokeWidth" :d="path.d" fill-opacity=0
                           style="cursor: pointer;pointer-events: none"/>
                     <path v-for="coverage in overlayCoverages" :key="coverage.key" :id="coverage.key"
-                          stroke="#000000" :stroke-width="coverage.strokeWidth"
+                          :stroke="strokeColor" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
                           style="cursor: pointer;pointer-events: none"/>
                 </g>
@@ -134,7 +134,10 @@ export default {
       return 'Large';
     },
     strokeWidth() {
-      return String(0.7 - 0.1 * (this.scale - 1));
+      return String(1.2 - (this.scale - 1) / this.scale);
+    },
+    strokeColor() {
+      return 'rgb(80,80,80)';
     },
     iconSize() {
       return 28 - 4 * this.scale;
