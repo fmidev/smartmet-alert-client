@@ -157,7 +157,7 @@ export default {
           const aspectRatios = [];
           const keys = [];
           const geoms = [];
-          region.warnings.forEach((regionWarning, index, regionWarnings) => {
+          region.warnings.filter((warning) => visibleWarnings.includes(warning.type)).forEach((regionWarning, index, regionWarnings) => {
             const identifier = regionWarning.identifiers[0];
             if ((visibleWarnings.includes(regionWarning.type)) && (warnings[identifier].covRegions.size === 0) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
@@ -367,6 +367,7 @@ export default {
       }, []);
     },
     regionClicked(event) {
+      const visibleWarnings = this.$store.getters.visibleWarnings;
       const regionId = event.target.dataset.region;
       let severity = Number(event.target.dataset.severity);
       if ((this.coverageRegions[regionId] != null) && (this.coverageRegions[regionId] > severity)) {
@@ -377,7 +378,7 @@ export default {
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
-        region.warnings.forEach((warningByType) => {
+        region.warnings.filter((warning) => visibleWarnings.includes(warning.type)).forEach((warningByType) => {
           warningByType.identifiers.forEach((identifier) => {
             const warning = this.$store.getters.warnings[identifier];
             popupWarnings.push({
