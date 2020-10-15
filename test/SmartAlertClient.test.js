@@ -3,6 +3,8 @@ const jsonServer = require('json-server');
 const { toMatchImageSnapshot } = require('jest-image-snapshot');
 const playwright = require('playwright');
 
+const numTests = 9;
+
 expect.extend({ toMatchImageSnapshot });
 
 jest.setTimeout(60000);
@@ -35,13 +37,14 @@ describe('Smart Alert Client', () => {
     let element;
     let image;
     /* eslint-disable no-await-in-loop */
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= numTests; i++) {
       await page.goto(`file:${path.join(__dirname, `set-${i}.html`)}`);
       await page.waitForSelector('#fmi-warnings-list');
       element = await page.$('#fmi-warnings');
       image = await element.screenshot();
       expect(image).toMatchImageSnapshot({
         customSnapshotIdentifier: `set-${i}`,
+        failureThreshold: 2,
       });
     }
     /* eslint-enable no-await-in-loop */
