@@ -74,7 +74,9 @@ export default {
     }
   },
   created() {
-    i18n.locale = this.language;
+    if (this.language) {
+      i18n.locale = this.language;
+    }
     this.$store.dispatch('setSelectedDay', this.selectedDay);
     this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
     this.$store.dispatch('setWarnings', this.warnings);

@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.0.35",
+  "version": "3.0.36",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -47,11 +47,11 @@
     "xpath": "0.0.29"
   },
   "devDependencies": {
-    "@vue/cli": "^4.5.4",
-    "@vue/cli-plugin-babel": "^4.5.4",
-    "@vue/cli-plugin-eslint": "^4.5.4",
-    "@vue/cli-plugin-vuex": "^4.5.4",
-    "@vue/cli-service": "^4.5.0",
+    "@vue/cli": "4.5.7",
+    "@vue/cli-plugin-babel": "4.5.7",
+    "@vue/cli-plugin-eslint": "4.5.7",
+    "@vue/cli-plugin-vuex": "4.5.7",
+    "@vue/cli-service": "4.5.7",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",

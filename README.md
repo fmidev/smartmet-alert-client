@@ -23,3 +23,12 @@ npm run build
 ```
 npm run lint
 ```
+
+### Localization
+
+The default language is defined in the .env file. This can be overridden when defining a Vue component:
+```
+<template>
+    <AlertClient :refreshInterval="refreshInterval" :selectedDay="selectedDay" language="en"/>
+</template>
+```

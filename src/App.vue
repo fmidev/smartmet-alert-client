@@ -44,10 +44,7 @@ export default {
       type: Number,
       default: 1000 * 60 * 15,
     },
-    language: {
-      type: String,
-      default: 'fi',
-    },
+    language: String,
     debugMode: {
       type: Boolean,
       default: false,
