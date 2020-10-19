@@ -3,6 +3,7 @@
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
         <span class="bold-text weekday-text">{{ weekday }}</span>
+        <br class="d-inline d-sm-none">
         {{ date }}
       </div>
     </div>
