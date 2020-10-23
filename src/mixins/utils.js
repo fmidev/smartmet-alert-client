@@ -461,9 +461,9 @@ export default {
               // Space after comma is needed for merged areas
               warning.properties.coverage_references.split(', ')
                 .filter((reference) => reference.length > 0).forEach((reference) => {
-                  const covRegionId = this.regionFromReference(reference);
-                  warnings[warningId].regions[covRegionId] = true;
-                  warnings[warningId].covRegions.add(covRegionId);
+                  regionId = this.regionFromReference(reference);
+                  warnings[warningId].regions[regionId] = true;
+                  warnings[warningId].covRegions.add(regionId);
                 });
               if (warning.geometry != null) {
                 // eslint-disable-next-line no-await-in-loop
