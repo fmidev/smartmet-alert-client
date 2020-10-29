@@ -368,8 +368,8 @@ export default {
     },
     regionClicked(event) {
       const visibleWarnings = this.$store.getters.visibleWarnings;
-      const regionId = event.target.dataset.region;
-      let severity = Number(event.target.dataset.severity);
+      const regionId = event.target.getAttribute('data-region');
+      let severity = Number(event.target.getAttribute('data-severity'));
       if ((this.coverageRegions[regionId] != null) && (this.coverageRegions[regionId] > severity)) {
         severity = this.coverageRegions[regionId];
       }

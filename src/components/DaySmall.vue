@@ -64,14 +64,12 @@ div.active div.date-selector-cell-footer {
 }
 
 div.date-selector-cell.active:after {
+  display: inline;
   content: "";
-  width: 0;
-  height: 0;
   position: relative;
   border-left: solid 5px transparent;
   border-right: solid 5px transparent;
   border-top: solid 7px $black;
-  left: 0;
   top: 5px;
 }
 

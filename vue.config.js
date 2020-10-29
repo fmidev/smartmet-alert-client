@@ -11,14 +11,6 @@ const banner =
     new Date().getFullYear()}`;
 
 module.exports = {
-  pluginOptions: {
-    i18n: {
-      locale: 'fi',
-      fallbackLocale: 'en',
-      localeDir: 'locales',
-      enableInSFC: false,
-    },
-  },
   configureWebpack: {
     plugins: [
       new webpack.BannerPlugin({
@@ -28,4 +20,5 @@ module.exports = {
       }),
     ],
   },
+  transpileDependencies: ['flatqueue', 'flatbush', 'mapshaper', 'xmldom'],
 };
