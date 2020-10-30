@@ -178,12 +178,11 @@ export default {
           break;
         default:
       }
+      const regionId = this.regionFromReference(warning.properties.reference);
       return {
         type: this.warningType(warning.properties),
         id: warning.properties.identifier,
-        regions: {
-          [this.regionFromReference(warning.properties.reference)]: true,
-        },
+        regions: this.geometries[regionId] ? new Set([regionId]) : new Set(),
         covRegions: new Set(),
         coveragesLarge: [],
         coveragesSmall: [],
@@ -208,9 +207,7 @@ export default {
       return {
         type: this.FLOOD_LEVEL_TYPE,
         id: warning.properties.identifier,
-        regions: {
-          [this.regionFromReference(warning.properties.reference)]: true,
-        },
+        regions: new Set([this.regionFromReference(warning.properties.reference)]),
         covRegions: new Set(),
         coveragesLarge: [],
         coveragesSmall: [],
@@ -299,7 +296,7 @@ export default {
             });
             warningsByType.forEach((key) => {
               this.regionIds.forEach((regionId, regionIndex) => {
-                if (warnings[key].regions[regionId]) {
+                if (warnings[key].regions.has(regionId)) {
                   const regionItems = regionWarnings[day][this.geometries[regionId].type];
                   let regionItem = regionItems.find((regionWarning) => regionWarning.key === regionId);
                   if (regionItem == null) {
@@ -452,18 +449,24 @@ export default {
             const warningId = warning.properties.identifier;
             if (warnings[warningId] == null) {
               warnings[warningId] = createWarnings[warningType](warning);
-              regionId = Object.keys(warnings[warningId].regions)[0];
+              if (warnings[warningId].regions.size > 0) {
+                regionId = Array.from(warnings[warningId].regions)[0];
+              }
             } else {
               regionId = this.regionFromReference(warning.properties.reference);
-              warnings[warningId].regions[regionId] = true;
+              if (this.geometries[regionId]) {
+                warnings[warningId].regions.add(regionId);
+              }
             }
             if (warning.properties.coverage_references != null) {
               // Space after comma is needed for merged areas
               warning.properties.coverage_references.split(', ')
                 .filter((reference) => reference.length > 0).forEach((reference) => {
                   regionId = this.regionFromReference(reference);
-                  warnings[warningId].regions[regionId] = true;
-                  warnings[warningId].covRegions.add(regionId);
+                  if (this.geometries[regionId]) {
+                    warnings[warningId].regions.add(regionId);
+                    warnings[warningId].covRegions.add(regionId);
+                  }
                 });
               if (warning.geometry != null) {
                 // eslint-disable-next-line no-await-in-loop
@@ -476,7 +479,7 @@ export default {
             }
             if (this.geometries[regionId]) {
               this.geometries[regionId].children.forEach((id) => {
-                warnings[warningId].regions[id] = true;
+                warnings[warningId].regions.add(id);
               });
               const parentId = this.geometries[regionId].parent;
               if (parentId) {

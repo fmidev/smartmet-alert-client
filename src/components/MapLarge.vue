@@ -244,7 +244,11 @@ export default {
           if (!visibleWarnings.includes(warning.type)) {
             return reduced;
           }
-          const w = warnings[warning.identifiers[0]];
+          const warningIdentifier = warning.identifiers.find((identifier) => (warnings[identifier].regions.size > warnings[identifier].covRegions.size));
+          if (warningIdentifier == null) {
+            return reduced;
+          }
+          const w = warnings[warningIdentifier];
           return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`;
         }, '');
         if (serialized) {
