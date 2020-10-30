@@ -2,51 +2,67 @@ const path = require('path');
 const jsonServer = require('json-server');
 const { toMatchImageSnapshot } = require('jest-image-snapshot');
 const playwright = require('playwright');
+const glob = require('glob');
 
-const numTests = 9;
+const TIMEOUT = 60000;
+const VIEWPORT_WIDTH = 1000;
+const VIEWPORT_HEIGHT = 3000;
+const MATCH_THRESHOLD = 2;
+const FILE_NAMES = glob.sync(path.join(__dirname, '/html/*.html')).sort();
+const BROWSERS = ['chromium', 'firefox'];
+
+let serverListener;
 
 expect.extend({ toMatchImageSnapshot });
 
-jest.setTimeout(60000);
-const server = jsonServer.create();
-const router = jsonServer.router(`${path.join(__dirname, 'db.json')}`);
-const middlewares = jsonServer.defaults();
-server.use(middlewares);
-server.use(router);
-const serverListener = server.listen(8088, () => {
-  console.log('JSON Server is running');
+beforeAll(async (done) => {
+  jest.setTimeout(TIMEOUT);
+  const server = jsonServer.create();
+  const router = jsonServer.router(`${path.join(__dirname, 'db.json')}`);
+  const middlewares = jsonServer.defaults();
+  server.use(middlewares);
+  server.use(router);
+  serverListener = server.listen(8088, () => {
+    done();
+  });
 });
 
-let browser;
 afterAll(async (done) => {
-  await browser.close();
   serverListener.close(() => {
     done();
   });
 });
 
-describe('Smart Alert Client', () => {
-  it('Test sets render correctly in Chromium', async () => {
-    browser = await playwright.chromium.launch();
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.setViewportSize({
-      width: 1000,
-      height: 3000,
+for (const browserName of BROWSERS) {
+  describe('Smart Alert Client', () => {
+    let browser;
+    let context;
+    let page;
+
+    beforeAll(async () => {
+      browser = await playwright[browserName].launch();
+      context = await browser.newContext();
+      page = await context.newPage();
+      await page.setViewportSize({
+        width: VIEWPORT_WIDTH,
+        height: VIEWPORT_HEIGHT,
+      });
     });
-    let element;
-    let image;
-    /* eslint-disable no-await-in-loop */
-    for (let i = 1; i <= numTests; i++) {
-      await page.goto(`file:${path.join(__dirname, `set-${i}.html`)}`);
-      await page.waitForSelector('#fmi-warnings-list');
-      element = await page.$('#fmi-warnings');
-      image = await element.screenshot();
-      expect(image).toMatchImageSnapshot({
-        customSnapshotIdentifier: `set-${i}`,
-        failureThreshold: 2,
+
+    afterAll(() => browser.close());
+
+    for (const fileName of FILE_NAMES) {
+      const testCase = `${fileName.split('/').pop().split('.').shift()}`;
+      it(`renders ${testCase} correctly in ${browserName}`, async () => {
+        await page.goto(`file:${fileName}`);
+        await page.waitForSelector('#fmi-warnings-list');
+        const element = await page.$('#fmi-warnings');
+        const image = await element.screenshot();
+        expect(image).toMatchImageSnapshot({
+          customSnapshotIdentifier: `${browserName}-${testCase}`,
+          failureThreshold: MATCH_THRESHOLD,
+        });
       });
     }
-    /* eslint-enable no-await-in-loop */
   });
-});
+}
