@@ -244,7 +244,7 @@ export default {
           if (!visibleWarnings.includes(warning.type)) {
             return reduced;
           }
-          const warningIdentifier = warning.identifiers.find((identifier) => (warnings[identifier].regions.size > warnings[identifier].covRegions.size));
+          const warningIdentifier = warning.identifiers.find((identifier) => (Object.keys(warnings[identifier].regions).length > warnings[identifier].covRegions.size));
           if (warningIdentifier == null) {
             return reduced;
           }
