@@ -44,7 +44,10 @@ export default {
       type: Number,
       default: 1000 * 60 * 15,
     },
-    language: String,
+    language: {
+      type: String,
+      default: process.env.VUE_APP_I18N_LOCALE || 'en',
+    },
     debugMode: {
       type: Boolean,
       default: false,
