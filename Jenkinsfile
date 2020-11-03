@@ -51,6 +51,12 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                sh "npm test"
+            }
+        }
+
         stage('Determine version from package.json') {
             steps {
                 script {
