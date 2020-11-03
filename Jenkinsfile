@@ -13,7 +13,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'default'
+        nodejs 'nodejs-14'
     }
 
     options {
