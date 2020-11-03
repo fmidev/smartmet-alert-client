@@ -39,8 +39,8 @@ pipeline {
         stage('Install') {
             steps {
                 sh "env"
-		sh "npm --version"
-		sh "nodejs --version"
+                sh "npm --version"
+                sh "nodejs --version"
                 sh "npm install"
             }
         }
@@ -53,7 +53,9 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "npm test"
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh "npm test"
+                }
             }
         }
 
@@ -78,6 +80,13 @@ pipeline {
                 sh "chmod --verbose --recursive u+r+w+X,g+r-w+X,o-r-w-x dist/"
                 sh "ssh ${deployUserAndHost} \"mkdir --parents --mode=750 ${deployBaseDirectory}/${packageVersion}\""
                 sh "scp -rp dist/* ${deployUserAndHost}:${deployBaseDirectory}/${packageVersion}/"
+            }
+        }
+
+        stage('TODO: Publish package to npmjs.com') {
+            when { environment name: 'BRANCH_NAME', value: 'master' }
+            steps {
+                sh "echo \"TODO: npm publish\""
             }
         }
     }
