@@ -53,10 +53,14 @@ pipeline {
 
         stage('Test') {
             steps {
+                sh "npm test || echo \"Some or all tests failed\""
+            }
+            // This syntax requires a newer Pipeline plugin
+            /*steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh "npm test"
                 }
-            }
+            }*/
         }
 
         stage('Determine version from package.json') {
