@@ -159,7 +159,7 @@ export default {
           const geoms = [];
           region.warnings.filter((warning) => visibleWarnings.includes(warning.type)).forEach((regionWarning, index, regionWarnings) => {
             const identifier = regionWarning.identifiers[0];
-            if ((visibleWarnings.includes(regionWarning.type)) && (warnings[identifier].covRegions.size === 0) && (iconSizes.length < maxWarningIcons)) {
+            if ((visibleWarnings.includes(regionWarning.type)) && (Object.keys(warnings[identifier].covRegions).length === 0) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
                 this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
               const scale = icon.scale ? icon.scale : 1;
@@ -244,7 +244,10 @@ export default {
           if (!visibleWarnings.includes(warning.type)) {
             return reduced;
           }
-          const warningIdentifier = warning.identifiers.find((identifier) => (Object.keys(warnings[identifier].regions).length > warnings[identifier].covRegions.size));
+          const warningIdentifier = warning.identifiers.find((identifier) => {
+            const warningById = warnings[identifier];
+            return Object.keys(warningById.regions).length > Object.keys(warningById.covRegions).length;
+          });
           if (warningIdentifier == null) {
             return reduced;
           }
@@ -411,12 +414,12 @@ export default {
     validIconLocation(coord, warningId) {
       const warnings = this.$store.getters.warnings;
       const warning = warnings[warningId];
-      const activeIconRegions = new Set();
+      const activeIconRegions = {};
       this.icons.forEach((icon) => {
-        activeIconRegions.add(icon.regionId);
+        activeIconRegions[icon.regionId] = true;
       });
-      return !Array.from(warning.covRegions).some((covRegion) => {
-        if (!activeIconRegions.has(covRegion)) {
+      return !Object.keys(warning.covRegions).some((covRegion) => {
+        if (!activeIconRegions[covRegion]) {
           return false;
         }
         const center = this.geometries[covRegion].center;

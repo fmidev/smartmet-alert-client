@@ -185,7 +185,7 @@ export default {
         regions: this.geometries[regionId] ? {
           [this.regionFromReference(warning.properties.reference)]: true,
         } : {},
-        covRegions: new Set(),
+        covRegions: {},
         coveragesLarge: [],
         coveragesSmall: [],
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
@@ -212,7 +212,7 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
-        covRegions: new Set(),
+        covRegions: {},
         coveragesLarge: [],
         coveragesSmall: [],
         effectiveFrom: warning.properties[this.ONSET],
@@ -317,7 +317,7 @@ export default {
                     warningItem = {
                       type: warningType,
                       identifiers: [],
-                      coverage: warnings[key].covRegions.size > 0,
+                      coverage: Object.keys(warnings[key].covRegions).length > 0,
                     };
                     regionItem.warnings.push(warningItem);
                   }
@@ -367,7 +367,7 @@ export default {
           (warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) &&
           (warnings[key].coveragesLarge.length > 0)) {
           if (!this.coverageWarnings.includes(key)) {
-            warnings[key].covRegions.forEach((covRegion) => {
+            Object.keys(warnings[key].covRegions).forEach((covRegion) => {
               if ((this.coverageRegions[covRegion] == null) || (this.coverageRegions[covRegion] < warnings[key].severity)) {
                 this.coverageRegions[covRegion] = warnings[key].severity;
               }
@@ -470,7 +470,7 @@ export default {
                   regionId = this.regionFromReference(reference);
                   if (this.geometries[regionId]) {
                     warnings[warningId].regions[regionId] = true;
-                    warnings[warningId].covRegions.add(regionId);
+                    warnings[warningId].covRegions[regionId] = true;
                   }
                 });
               if (warning.geometry != null) {
