@@ -197,9 +197,9 @@ export default {
         value: warning.properties[this.PHYSICAL_VALUE],
         text: this.text(warning.properties),
         info: {
-          fi: he.decode(warning.properties[this.INFO_FI]),
-          sv: he.decode(warning.properties[this.INFO_SV]),
-          en: he.decode(warning.properties[this.INFO_EN]),
+          fi: warning.properties[this.INFO_FI] != null ? he.decode(warning.properties[this.INFO_FI]) : '',
+          sv: warning.properties[this.INFO_SV] != null ? he.decode(warning.properties[this.INFO_SV]) : '',
+          en: warning.properties[this.INFO_EN] != null ? he.decode(warning.properties[this.INFO_EN]) : '',
         },
         link: '',
         linkText: '',
