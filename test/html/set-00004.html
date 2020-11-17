@@ -1,26 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
 <meta charset="utf-8">
 <title>SmartMet Alert Client Test 4</title>
-<script src="https://unpkg.com/vue"></script>
+<script src="./lib/vue.js"></script>
 <script src="../../dist/SmartMetAlertClient.umd.js"></script>
 <link rel="stylesheet" href="../../dist/SmartMetAlertClient.css">
+</head>
 
+<body>
 <div id="test"></div>
-
 <script>
 new Vue({
   el: '#test',
-  render: h => h(
-    SmartMetAlertClient,
-    {
-      props: {
-        currentDate: '2020-09-04T14:35:44Z',
-        baseUrl: 'http://localhost:8088/',
-        weatherUpdated: 'womlTime-4.json',
-        floodUpdated: 'capTime-4.json',
-        weatherWarnings: 'woml-4.json',
-        floodWarnings: 'cap-4.json',
+  render: function(h) {
+    return h(SmartMetAlertClient,
+      {
+        props: {
+          currentDate: '2020-09-04T14:35:44Z',
+          baseUrl: 'http://localhost:8088/',
+          weatherUpdated: 'womlTime-4.json',
+          floodUpdated: 'capTime-4.json',
+          weatherWarnings: 'woml-4.json',
+          floodWarnings: 'cap-4.json',
+        }
       }
-    },
-  ),
+    );
+  }
 });
 </script>
+</body>
+</html>

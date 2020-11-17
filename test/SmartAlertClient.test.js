@@ -1,7 +1,6 @@
 const path = require('path');
 const jsonServer = require('json-server');
 const { toMatchImageSnapshot } = require('jest-image-snapshot');
-const playwright = require('playwright');
 const glob = require('glob');
 
 const TIMEOUT = 60000;
@@ -9,7 +8,7 @@ const VIEWPORT_WIDTH = 1000;
 const VIEWPORT_HEIGHT = 3000;
 const MATCH_THRESHOLD = 2;
 const FILE_NAMES = glob.sync(path.join(__dirname, '/html/*.html')).sort();
-const BROWSERS = ['chromium', 'firefox'];
+const BROWSERS = ['chromium'];
 
 let serverListener;
 
@@ -34,28 +33,27 @@ afterAll(async (done) => {
 });
 
 for (const browserName of BROWSERS) {
-  describe('Smart Alert Client', () => {
-    let browser;
-    let context;
-    let page;
-
+  describe('SmartMet Alert Client', () => {
     beforeAll(async () => {
-      browser = await playwright[browserName].launch();
-      context = await browser.newContext();
-      page = await context.newPage();
-      await page.setViewportSize({
+      await page.setViewport({
         width: VIEWPORT_WIDTH,
         height: VIEWPORT_HEIGHT,
       });
+      page.on('error', (err) => {
+        console.log('error happen at the page: ', err);
+      });
+      page.on('pageerror', (pageerr) => {
+        console.log('pageerror occurred: ', pageerr);
+      });
     });
-
-    afterAll(() => browser.close());
 
     for (const fileName of FILE_NAMES) {
       const testCase = `${fileName.split('/').pop().split('.').shift()}`;
       it(`renders ${testCase} correctly in ${browserName}`, async () => {
         await page.goto(`file:${fileName}`);
-        await page.waitForSelector('#fmi-warnings-list');
+        await page.waitForSelector('#fmi-warnings-list', {
+          visible: true,
+        });
         const element = await page.$('#fmi-warnings');
         const image = await element.screenshot();
         expect(image).toMatchImageSnapshot({
