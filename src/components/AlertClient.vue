@@ -143,7 +143,7 @@ export default {
   -ms-hyphens: none;
   hyphens: none;
   font-family: "Roboto", sans-serif;
-  font-size: 14px;
+  font-size: $font-size;
   line-height: 1.42857143;
   color: #000;
   background-color: transparent;
@@ -164,7 +164,7 @@ export default {
 }
 
 div#fmi-warnings {
-  width: 700px;
+  width: 690px;
   padding-top: 20px;
   margin-bottom: 20px;
 }
@@ -192,9 +192,9 @@ div.symbol-list {
   padding-left: 20px;
   padding-right: 0;
   box-sizing: border-box;
-  width: 230px;
-  max-width: 230px;
-  min-width: 230px;
+  width: $symbol-list-width;
+  max-width: $symbol-list-width;
+  min-width: $symbol-list-width;
 }
 
 @media (max-width: 767px) {

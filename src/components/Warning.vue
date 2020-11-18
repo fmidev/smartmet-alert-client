@@ -245,7 +245,7 @@ export default {
             border: $tooltip-border-width solid $tooltip-border-color;
             color: $tooltip-inner-color;
             font-family: "Roboto", sans-serif;
-            font-size: 14px;
+            font-size: $font-size;
             padding: 3px 6px;
             height: 52px;
             width: 90px;

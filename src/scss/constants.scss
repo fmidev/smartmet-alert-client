@@ -1,7 +1,9 @@
 $base-path: '../assets/';
+$font-size: 16px;
 $current-warning-height: 38px;
 $current-warning-image-height: 28px;
 $current-description-image-height: 48px;
+$symbol-list-width: 250px;
 $symbol-list-line-height: 48px;
 $symbol-list-select-height: 30px;
 $symbol-list-image-size: 44px;
@@ -34,3 +36,4 @@ $tooltip-border-color: $dark-gray;
 $tooltip-background-color: $white;
 $tooltip-inner-color: $black;
 $tooltip-arrow-border-width: $tooltip-arrow-width + $tooltip-border-width;
+$popup-width: 300px;

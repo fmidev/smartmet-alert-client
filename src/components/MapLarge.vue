@@ -60,8 +60,8 @@
             <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
                        target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
                        container="fmi-warnings-region-tooltip-reference">
-                <div class="ol-popup" id="day-map-large-base-popup"><a
-                        :class="['ol-popup-closer', `shadow-${popupLevel}`]"
+                <div class="fmi-warnings-popup" id="day-map-large-base-popup"><a
+                        :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
                         id="day-map-large-base-popup-closer"
                         href="#"
                         v-on:click="closeTooltip"
@@ -559,7 +559,7 @@ export default {
         pointer-events: none;
     }
 
-    .ol-popup {
+    .fmi-warnings-popup {
         position: absolute;
         background-color: white;
         -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
@@ -568,9 +568,9 @@ export default {
         border-radius: 1px;
         bottom: 12px;
         left: -50px;
-        min-width: 275px;
-        width: 275px;
-        max-width: 275px;
+        min-width: $popup-width;
+        width: $popup-width;
+        max-width: $popup-width;
         z-index: 9;
     }
 
@@ -604,7 +604,7 @@ export default {
         }
     }
 
-    a.ol-popup-closer {
+    a.fmi-warnings-popup-closer {
         border-bottom: none;
         position: absolute;
         top: 0;

@@ -1,7 +1,7 @@
 <template>
   <div id="fmi-warnings-view" class="sticky-top">
     <div class="row symbol-list-header-row">
-      <h2>{{ warningSymbolsText }}</h2>
+      <h2>{{ warningSymbolsText }} <br v-if="input.length > 0"> {{ warningSymbolDaysText }} </h2>
     </div>
     <div
       v-if="input.length > 0"
@@ -149,6 +149,11 @@ export default {
         i18n.t('warningSymbols') :
         i18n.t('noWarnings');
     },
+    warningSymbolDaysText() {
+      return this.warnings.length > 0 ?
+        i18n.t('warningSymbolDays') :
+        '';
+    },
     showWarningsText() {
       return i18n.t('showWarnings');
     },
@@ -182,7 +187,7 @@ export default {
 
 h2 {
   font-family: "Roboto", sans-serif;
-  font-size: 14px;
+  font-size: $font-size;
   font-weight: bold;
   color: black;
   white-space: nowrap;

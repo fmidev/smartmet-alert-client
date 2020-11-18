@@ -95,7 +95,7 @@ div.accordion-region {
 }
 
 h2.header-region {
-    font-size: 14px;
+    font-size: $font-size;
     font-weight: bold;
     line-height: 1.1;
     margin-top: 15px;
