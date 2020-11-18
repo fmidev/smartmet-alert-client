@@ -157,7 +157,7 @@ export default {
           const aspectRatios = [];
           const keys = [];
           const geoms = [];
-          region.warnings.filter((warning) => visibleWarnings.includes(warning.type)).forEach((regionWarning, index, regionWarnings) => {
+          region.warnings.filter((warning) => !warning.coverage && visibleWarnings.includes(warning.type)).forEach((regionWarning, index, regionWarnings) => {
             const identifier = regionWarning.identifiers[0];
             if ((visibleWarnings.includes(regionWarning.type)) && (Object.keys(warnings[identifier].covRegions).length === 0) && (iconSizes.length < maxWarningIcons)) {
               const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
