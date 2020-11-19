@@ -216,8 +216,7 @@ div.symbol-list-main-row {
 .show-text {
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-left: 59px;
-  float: left;
+  float: right;
   color: #53b9e6;
   cursor: pointer;
   white-space: nowrap;
