@@ -5,7 +5,7 @@
                 {{ input.text }}
             </span>
         </div>
-        <div class="popup-table-cell popup-table-text-cell" v-html="input.interval"></div>
+        <div class="popup-table-cell popup-table-text-cell" :class="[`text-level-${severity}`]" v-html="input.interval"></div>
     </div>
 </template>
 
@@ -75,6 +75,9 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         padding: 5px 0 0 2px;
+        &.text-level-0 {
+            padding-left: 12px;
+        }
     }
 
     .warning-image {
