@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SmartMet Alert Client Test 12</title>
+<script src="./lib/vue.js"></script>
+<script src="../../dist/SmartMetAlertClient.umd.js"></script>
+<link rel="stylesheet" href="../../dist/SmartMetAlertClient.css">
+</head>
+
+<body>
+<div id="test"></div>
+<script>
+new Vue({
+  el: '#test',
+  render: function(h) {
+    return h(SmartMetAlertClient,
+      {
+        props: {
+          currentDate: '2020-11-19T06:42:22.857Z',
+          baseUrl: 'http://localhost:8088/',
+          weatherUpdated: 'womlTime-12.json',
+          floodUpdated: 'capTime-12.json',
+          weatherWarnings: 'woml-12.json',
+          floodWarnings: 'cap-12.json',
+        }
+      }
+    );
+  }
+});
+</script>
+</body>
+</html>
