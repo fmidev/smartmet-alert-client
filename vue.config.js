@@ -19,6 +19,11 @@ module.exports = {
         entryOnly: true,
       }),
     ],
+    resolve: {
+      alias: {
+        flatbush: 'flatbush/flatbush',
+      },
+    },
   },
-  transpileDependencies: ['flatqueue', 'flatbush', 'mapshaper', 'xmldom', 'xpath'],
+  transpileDependencies: ['mapshaper', 'flatqueue', 'flatbush', 'xmldom', 'xpath'],
 };
