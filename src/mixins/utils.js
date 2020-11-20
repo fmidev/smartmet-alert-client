@@ -251,7 +251,7 @@ export default {
     },
     getMaxSeverities(warnings) {
       return Object.values(warnings).reduce((maxSeverities, warning) => {
-        if ((maxSeverities[warning.type] == null) || (maxSeverities[warning.type] < warning.severity)) {
+        if ((warning.effectiveDays.some((effectiveDay) => effectiveDay)) && ((maxSeverities[warning.type] == null) || (maxSeverities[warning.type] < warning.severity))) {
           // eslint-disable-next-line no-param-reassign
           maxSeverities[warning.type] = warning.severity;
         }
