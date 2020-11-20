@@ -1,5 +1,5 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" />
+    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
@@ -47,6 +47,10 @@ export default {
     language: {
       type: String,
       default: process.env.VUE_APP_I18N_LOCALE || 'en',
+    },
+    sleep: {
+      type: Boolean,
+      default: true,
     },
     debugMode: {
       type: Boolean,

@@ -39,6 +39,10 @@ export default {
     },
     warningsData: Object,
     language: String,
+    sleep: {
+      type: Boolean,
+      default: true,
+    },
   },
   mixins: [utils],
   components: {
@@ -85,7 +89,9 @@ export default {
 
   mounted() {
     this.initTimer();
-    this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
+    if (this.sleep) {
+      this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
+    }
   },
   beforeDestroy() {
     if (this.isClientSide()) {
