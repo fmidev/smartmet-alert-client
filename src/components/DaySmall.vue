@@ -59,6 +59,10 @@ export default {
 <style scoped lang="scss">
 @import "../scss/constants.scss";
 
+div.date-selector-cell {
+  height: 186px;
+}
+
 div.active div.date-selector-cell-footer {
   background-color: $black;
 }
@@ -66,11 +70,11 @@ div.active div.date-selector-cell-footer {
 div.date-selector-cell.active:after {
   display: inline;
   content: "";
-  position: relative;
+  position: absolute;
   border-left: solid 5px transparent;
   border-right: solid 5px transparent;
   border-top: solid 7px $black;
-  top: 5px;
+  top: 164px;
 }
 
 .date-selector-cell-footer {
