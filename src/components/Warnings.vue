@@ -186,7 +186,7 @@ export default {
 @import "../scss/warningImages.scss";
 
 h2 {
-  font-family: "Roboto", sans-serif;
+  font-family: $font-family;
   font-size: $font-size;
   font-weight: bold;
   color: black;

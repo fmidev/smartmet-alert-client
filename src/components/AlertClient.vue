@@ -142,7 +142,7 @@ export default {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  font-family: "Roboto", sans-serif;
+  font-family: $font-family;
   font-size: $font-size;
   line-height: 1.42857143;
   color: #000;

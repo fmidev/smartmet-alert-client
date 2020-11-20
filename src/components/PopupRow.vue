@@ -60,7 +60,7 @@ export default {
         width: 100%;
         text-align: center;
         margin: 0 auto;
-        font-family: 'Open Sans', sans-serif;
+        font-family: $font-family;
         color: #ffffff;
         text-anchor: middle;
         font-weight: 700;
