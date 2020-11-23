@@ -1,7 +1,7 @@
 <template>
   <div id="fmi-warnings-view" class="sticky-top">
     <div class="row symbol-list-header-row">
-      <h2>{{ warningSymbolsText }} <br v-if="input.length > 0"> {{ warningSymbolDaysText }} </h2>
+      <h2>{{ warningSymbolsText }} <br v-if="input.length > 0" class="symbol-list-header-line-break"> {{ warningSymbolDaysText }} </h2>
     </div>
     <div
       v-if="input.length > 0"
@@ -306,6 +306,9 @@ hr {
     margin-right: 0;
   }
   div.show-text-row {
+    display: none;
+  }
+  ::v-deep br.symbol-list-header-line-break {
     display: none;
   }
 }
