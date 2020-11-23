@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import 'focus-visible';
 import Panzoom from '@panzoom/panzoom';
 import i18n from '../i18n';
 import config from '../mixins/config';
@@ -518,6 +519,9 @@ export default {
         width: $map-large-width;
         height: 100%;
         background-color: rgba(0, 0, 0, 0);
+        &:focus:not([data-focus-visible-added]) {
+            outline: none;
+        }
     }
 
     div.day-map-large {

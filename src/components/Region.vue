@@ -26,6 +26,7 @@
 
 <script>
 import i18n from '../i18n';
+import 'focus-visible';
 import RegionWarning from './RegionWarning.vue';
 import DescriptionWarning from './DescriptionWarning.vue';
 

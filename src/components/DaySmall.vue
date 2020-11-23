@@ -67,17 +67,19 @@ div.active div.date-selector-cell-footer {
   background-color: $black;
 }
 
-div.date-selector-cell.active:after {
+div.date-selector-cell.active .date-selector-cell-footer:after {
   display: inline;
   content: "";
   position: absolute;
   border-left: solid 5px transparent;
   border-right: solid 5px transparent;
   border-top: solid 7px $black;
-  top: 164px;
+  top: 4px;
+  left: 39px;
 }
 
 .date-selector-cell-footer {
+  position: relative;
   background-color: $dark-gray;
   height: 4px;
 }
