@@ -40,6 +40,7 @@ export default {
     floodUpdated: String,
     weatherWarnings: String,
     floodWarnings: String,
+    warnings: Object,
     refreshInterval: {
       type: Number,
       default: 1000 * 60 * 15,
@@ -112,7 +113,11 @@ export default {
     },
   },
   created() {
-    this.fetchWarnings();
+    if (this.warnings) {
+      this.warningsData = this.warnings;
+    } else {
+      this.fetchWarnings();
+    }
   },
   methods: {
     async fetchWarnings() {
