@@ -334,17 +334,19 @@ export default {
   },
   watch: {
     scale() {
-      if (this.scale === 1) {
-        this.panzoom.setOptions({
-          touchAction: '',
-        });
-        this.panzoom.reset({
-          animate: false,
-        });
-      } else {
-        this.panzoom.setOptions({
-          touchAction: 'none',
-        });
+      if (this.panzoom != null) {
+        if (this.scale === 1) {
+          this.panzoom.setOptions({
+            touchAction: '',
+          });
+          this.panzoom.reset({
+            animate: false,
+          });
+        } else {
+          this.panzoom.setOptions({
+            touchAction: 'none',
+          });
+        }
       }
     },
     input() {
@@ -457,14 +459,18 @@ export default {
       return lowest;
     },
     zoomIn() {
-      this.panzoom.zoom(this.panzoom.getScale() + 1, {
-        force: true,
-      });
+      if (this.panzoom != null) {
+        this.panzoom.zoom(this.panzoom.getScale() + 1, {
+          force: true,
+        });
+      }
     },
     zoomOut() {
-      this.panzoom.zoom(this.panzoom.getScale() - 1, {
-        force: true,
-      });
+      if (this.panzoom != null) {
+        this.panzoom.zoom(this.panzoom.getScale() - 1, {
+          force: true,
+        });
+      }
     },
     closeTooltip(event) {
       event.preventDefault();
@@ -472,40 +478,44 @@ export default {
     },
   },
   mounted() {
-    const finlandLarge = document.getElementById('finland-large');
-    this.panzoom = Panzoom(finlandLarge, {
-      disableZoom: true,
-      panOnlyWhenZoomed: true,
-      animate: false,
-      origin: '50% 50%',
-      minScale: 1,
-      maxScale: 3,
-      touchAction: '',
-    });
-    finlandLarge.addEventListener('panzoomzoom', () => {
-      this.scale = this.panzoom.getScale();
-      this.showTooltip = false;
-    });
-    finlandLarge.addEventListener('panzoompan', (event) => {
-      const eventDetail = event.detail;
-      if (eventDetail == null) {
-        return;
+    if (this.isClientSide()) {
+      const finlandLarge = document.getElementById('finland-large');
+      if (finlandLarge != null) {
+        this.panzoom = Panzoom(finlandLarge, {
+          disableZoom: true,
+          panOnlyWhenZoomed: true,
+          animate: false,
+          origin: '50% 50%',
+          minScale: 1,
+          maxScale: 3,
+          touchAction: '',
+        });
+        finlandLarge.addEventListener('panzoomzoom', () => {
+          this.scale = this.panzoom.getScale();
+          this.showTooltip = false;
+        });
+        finlandLarge.addEventListener('panzoompan', (event) => {
+          const eventDetail = event.detail;
+          if (eventDetail == null) {
+            return;
+          }
+          let panned = false;
+          ['x', 'y'].forEach((axis) => {
+            if (eventDetail[axis] !== this.pan[axis]) {
+              this.pan[axis] = eventDetail[axis];
+              panned = true;
+            }
+          });
+          if (panned) {
+            this.showTooltip = false;
+            this.dragging = true;
+          }
+        });
+        finlandLarge.addEventListener('panzoomend', () => {
+          this.dragging = false;
+        });
       }
-      let panned = false;
-      ['x', 'y'].forEach((axis) => {
-        if (eventDetail[axis] !== this.pan[axis]) {
-          this.pan[axis] = eventDetail[axis];
-          panned = true;
-        }
-      });
-      if (panned) {
-        this.showTooltip = false;
-        this.dragging = true;
-      }
-    });
-    finlandLarge.addEventListener('panzoomend', () => {
-      this.dragging = false;
-    });
+    }
   },
 };
 </script>
