@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 const PACKAGE = require('./package.json');
 
 const banner =
@@ -13,6 +14,14 @@ const banner =
 module.exports = {
   configureWebpack: {
     plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'public/index.??.html',
+            flatten: true,
+          },
+        ],
+      }),
       new webpack.BannerPlugin({
         banner,
         raw: false,

@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.1.16",
+  "version": "3.1.17",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -51,6 +51,7 @@
     "@vue/cli-service": "4.5.8",
     "@vue/eslint-config-prettier": "6.0.0",
     "babel-eslint": "10.1.0",
+    "copy-webpack-plugin": "6.4.0",
     "cross-env": "7.0.2",
     "eslint": "7.13.0",
     "eslint-config-airbnb-base": "14.2.1",
