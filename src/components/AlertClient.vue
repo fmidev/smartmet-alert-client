@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings">
+  <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
@@ -59,6 +59,8 @@ export default {
       regions: this.regionsDefault(),
       parents: {},
       legend: [],
+      // eslint-disable-next-line no-undef
+      version: VERSION,
     };
   },
   computed: {
@@ -91,7 +93,6 @@ export default {
       this.update();
     }
   },
-
   mounted() {
     this.initTimer();
     if (this.sleep) {

@@ -14,6 +14,9 @@ const banner =
 module.exports = {
   configureWebpack: {
     plugins: [
+      new webpack.DefinePlugin({
+        VERSION: JSON.stringify(PACKAGE.version),
+      }),
       new CopyPlugin({
         patterns: [
           {
