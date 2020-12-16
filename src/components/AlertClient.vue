@@ -74,7 +74,9 @@ export default {
   },
   async beforeCreate() {
     if (!this.$store.hasModule('warningsStore')) {
-      await this.$store.registerModule('warningsStore', module);
+      await this.$store.registerModule('warningsStore', module, {
+        preserveState: false,
+      });
     }
   },
   created() {
@@ -85,6 +87,9 @@ export default {
     this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
     this.$store.dispatch('setWarnings', this.warnings);
     this.createDataForChildren();
+    if (this.warningsData == null) {
+      this.update();
+    }
   },
 
   mounted() {
@@ -98,6 +103,7 @@ export default {
       document.removeEventListener('visibilitychange', this.visibilityListener);
     }
     this.cancelTimer();
+    this.$store.unregisterModule('warningsStore');
   },
   methods: {
     createDataForChildren() {

@@ -58,6 +58,12 @@ export default {
     }),
     COVERAGE_JSON: () => 'coverage.json',
     COVERAGE_SVG: () => 'coverage.svg',
+    allWarnings() {
+      return this.$store.getters.warnings;
+    },
+    visibleWarnings() {
+      return this.$store.getters.visibleWarnings;
+    },
     bluePaths() {
       return this.paths({
         type: this.REGION_SEA,
@@ -360,8 +366,8 @@ export default {
 
     coverageGeom(coverageProperty, strokeWidth, fillOpacity, severity) {
       const coverageData = [];
-      const warnings = this.$store.getters.warnings;
-      const visibleWarnings = this.$store.getters.visibleWarnings;
+      const warnings = this.allWarnings;
+      const visibleWarnings = this.visibleWarnings;
       Object.keys(warnings).forEach((key) => {
         if (((severity == null) || (warnings[key].severity === severity)) &&
           (warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) &&
@@ -524,10 +530,10 @@ export default {
       const region = this.regionData(regionId);
       let severity = 0;
       if (region != null) {
-        const visibleWarnings = this.$store.getters.visibleWarnings;
+        const visibleWarnings = this.visibleWarnings;
         const topWarning = region.warnings.find((warning) => !warning.coverage && visibleWarnings.includes(warning.type));
         if (topWarning != null) {
-          severity = this.$store.getters.warnings[topWarning.identifiers[0]].severity;
+          severity = this.allWarnings[topWarning.identifiers[0]].severity;
         }
       }
       const parentId = this.geometries[regionId].parent;

@@ -115,8 +115,6 @@ export default {
   created() {
     if (this.warnings) {
       this.warningsData = this.warnings;
-    } else {
-      this.fetchWarnings();
     }
   },
   methods: {

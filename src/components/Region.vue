@@ -56,10 +56,24 @@ export default {
       return i18n.t(this.name);
     },
     warningsSummary() {
-      return this.input.map((warning) => this.$store.getters.warnings[warning.identifiers[0]]);
+      return this.input.reduce((warnings, warningInfo) => {
+        if ((warningInfo != null) && (warningInfo.identifiers != null) && (warningInfo.identifiers.length > 0)) {
+          const warning = this.$store.getters.warnings[warningInfo.identifiers[0]];
+          if (warning != null) {
+            warnings.push(warning);
+          }
+        }
+        return warnings;
+      }, []);
     },
     warnings() {
-      return this.input.reduce((allWarnings, warning) => (allWarnings.concat(warning.identifiers.map((identifier) => this.$store.getters.warnings[identifier]))), []);
+      return this.input.reduce((allWarnings, warningInfo) => (allWarnings.concat(warningInfo.identifiers.reduce((warnings, identifier) => {
+        const warning = this.$store.getters.warnings[identifier];
+        if (warning != null) {
+          warnings.push(warning);
+        }
+        return warnings;
+      }, []))), []);
     },
     buttonLabel() {
       return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
