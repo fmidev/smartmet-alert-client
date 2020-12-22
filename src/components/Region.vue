@@ -1,17 +1,19 @@
 <template>
-    <b-card no-body class="mb-1 current-warning-panel" tabindex="0">
+    <b-card no-body class="mb-1 current-warning-panel">
         <b-card-header header-tag="header" class="p-1" role="tab" header-class="current-warning-heading">
-            <span class="region-item-text">
+            <h3 class="region-item-text" :aria-label="ariaHeader" tabindex="0">
                 {{ regionName }}
-            </span>
-            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label=buttonLabel />
+            </h3>
+            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
             <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
         </b-card-header>
         <b-collapse
                 :id=identifier
+                class="accordion-item-region"
                 :accordion="`accordion-${type}`"
                 role="tabpanel"
-                :label=collapseLabel
+                tabindex="0"
+                :aria-label="ariaInfo"
         >
             <b-card-body body-class="p-0">
                 <div class="current-description">
@@ -75,11 +77,19 @@ export default {
         return warnings;
       }, []))), []);
     },
-    buttonLabel() {
-      return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
+    ariaHeader() {
+      return `${this.regionName}, ${i18n.t('regionAriaLabel')}: ${this.input.reduce((warningLabels, warningInfo) => {
+        if ((warningInfo != null) && (warningInfo.type != null)) {
+          warningLabels.push(i18n.t(warningInfo.type).toLocaleLowerCase());
+        }
+        return warningLabels;
+      }, []).join(', ')}`;
     },
-    collapseLabel() {
-      return this.warnings.map((warning) => `${i18n.t(warning.type)}. ${this.$options.filters.capitalize(i18n.t('valid'))} ${warning.validInterval}. ${warning.info[i18n.locale]} ${i18n.t('description')}: ${i18n.t(`${warning.type}DescriptionLevel${warning.severity}`)}`);
+    ariaButton() {
+      return i18n.t('infoButtonAriaLabel');
+    },
+    ariaInfo() {
+      return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
     },
   },
   filters: {
@@ -102,10 +112,6 @@ export default {
         margin-right: 0;
     }
 
-    .current-warning-panel:focus:not([data-focus-visible-added]) {
-        outline: none;
-    }
-
     .current-warning-heading {
         background-color: #f8f8f8;
         height: $current-warning-height;
@@ -114,13 +120,16 @@ export default {
         border: none;
     }
 
-    .btn-info {
+    button.btn-info {
         border: none;
     }
 
     .region-item-text {
         position: absolute;
         line-height: $current-warning-height;
+        &:focus:not([data-focus-visible-added]) {
+            outline: none !important;
+        }
     }
 
     .current-warning-toggle {
@@ -144,6 +153,10 @@ export default {
             background-color: #e8e8e8;
             position: relative;
             z-index: 1;
+            box-shadow: none !important;
+            &:not([data-focus-visible-added]) {
+                outline: none !important;
+            }
         }
 
         &:active {
@@ -165,6 +178,10 @@ export default {
         display: table;
         border-spacing: 10px;
         width: 100%;
+    }
+
+    div.accordion-item-region:focus:not([data-focus-visible-added]) {
+        outline: none !important;
     }
 
 </style>

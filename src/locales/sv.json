@@ -168,5 +168,11 @@
     "selectDisabledWarningTooltipLine2": "kartan",
     "description": "Effektbeskrivningen",
     "zoomIn": "Zooma in",
-    "zoomOut": "Zooma ut"
+    "zoomOut": "Zooma ut",
+    "moveMap": "Siirrä karttaa",
+    "mapAriaLabel": "Zoomattava kartta",
+    "visibileAriaLabel": "näkyvissä",
+    "hiddenAriaLabel": "piilotettuna",
+    "regionAriaLabel": "voimassa olevat varoitukset",
+    "infoButtonAriaLabel": "Avaa voimassa olevien varoitusten lisätiedot"
 }

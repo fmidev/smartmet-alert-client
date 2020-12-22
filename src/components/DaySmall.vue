@@ -50,7 +50,7 @@ export default {
       return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
     },
     ariaLabel() {
-      return `${this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''} ${this.input.day}.${this.input.month}.${this.input.year}`;
+      return `${this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''} ${this.input.day}.${this.input.month}`;
     },
   },
 };
@@ -89,14 +89,11 @@ div.date-selector-cell.active .date-selector-cell-footer:after {
 
 div.map-container {
   text-align: center;
-  background-color: #f8f8f8;
   margin-left: 0;
   margin-right: 0;
-  position: relative;
 }
 
 .date-selector-text {
-  background-color: #f8f8f8;
   text-align: center;
   display: table-cell;
   vertical-align: middle;

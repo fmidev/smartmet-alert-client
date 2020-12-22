@@ -1,6 +1,6 @@
 <template>
   <div class="current-description-row">
-    <div class="current-description-image-cell">
+    <div class="current-description-image-cell" aria-hidden="true">
       <div
         :class="`current-description-image warning-image symbol-image symbol-image-rotate-${rotation} level-${input.severity} ${typeClass}`"
       >
@@ -12,8 +12,7 @@
     </div>
     <div class="current-description-text-cell ">
       <div class="description-info">
-        <span class="font-weight-bold" v-html="`${warningTitle} — ${validText} ${input.validInterval}`"></span
-        ><br />
+        <h2 class="warning-valid" v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
         {{ info }}
       </div>
       <div
@@ -66,36 +65,36 @@ export default {
   @import "../scss/constants.scss";
   @import "../scss/warningImages.scss";
 
-    div.current-description-row {
-      display: table-row;
-    }
+  div.current-description-row {
+    display: table-row;
+  }
 
-    div.current-description-image-cell {
-      display: table-cell;
-      vertical-align: top;
-    }
+  div.current-description-image-cell {
+    display: table-cell;
+    vertical-align: top;
+  }
 
-    div.current-description-image {
-      background-size: $symbol-list-image-size $symbol-list-image-size;
-      width: $current-description-image-height;
-      height: $current-description-image-height;
-    }
+  div.current-description-image {
+    background-size: $symbol-list-image-size $symbol-list-image-size;
+    width: $current-description-image-height;
+    height: $current-description-image-height;
+  }
 
-    div.warning-image {
-      border-radius: 50%;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
+  div.warning-image {
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 
-    span.region-warning-symbol-text {
-      font-size: 12px;
-    }
+  span.region-warning-symbol-text {
+    font-size: 12px;
+  }
 
-    div.current-description-text-cell {
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 10px;
-    }
+  div.current-description-text-cell {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 10px;
+  }
 
   .description-info {
     width: 100%;
@@ -136,6 +135,14 @@ export default {
     background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
       right;
     margin-right: 2px;
+  }
+
+  h2.warning-valid {
+    font-family: $font-family;
+    font-size: $font-size;
+    font-weight: bold;
+    color: black;
+    margin-top: 0;
   }
 
 </style>

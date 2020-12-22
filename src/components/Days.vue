@@ -85,22 +85,15 @@ export default {
 }
 
 ::v-deep a.day {
-  background-color: $light-gray !important;
   border-radius: 0;
   border: 0;
   padding: 0;
   margin: 0;
-  outline: none;
   text-align: center;
   color: transparent;
-}
-
-::v-deep a.day:focus {
-  background-color: $dark-gray !important;
-}
-
-::v-deep a.day:focus:not([data-focus-visible-added]) {
-  background-color: $light-gray !important;
+  &:focus:not([data-focus-visible-added]) {
+    outline: none !important;
+  }
 }
 
 ::v-deep a.day.day0 {
@@ -133,6 +126,10 @@ export default {
     border-left: 1px solid $white !important;
     border-right: none !important;
   }
+}
+
+::v-deep .nav-tabs a.day.nav-link.active {
+  background: transparent !important;
 }
 
 @media (max-width: 575px) {

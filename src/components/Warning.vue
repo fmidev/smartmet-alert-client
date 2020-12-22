@@ -9,7 +9,7 @@
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
             <div class="symbol-list-text-select">
-                <div class="item-text symbol-list-text">
+                <div class="item-text symbol-list-text" :aria-label="ariaTitle" tabindex="0">
                     {{ title }}
                 </div>
                 <div class="symbol-list-select-container d-none d-md-table-cell">
@@ -29,6 +29,8 @@
                         @mousedown="toggle"
                         @mouseenter="openTooltip"
                         @mouseleave="closeTooltip"
+                        @keydown.enter="toggle"
+                        @keydown.space="toggle"
                     />
                     <b-tooltip id="fmi-warnings-toggle-tooltip" :show.sync="showTooltip" triggers="" :target="id" placement="top" delay=0 :fallback-placement="[]" :container="`fmi-warnings-flag-${input.type}`" >
                         <span>
@@ -65,6 +67,9 @@ export default {
     },
     title() {
       return i18n.t(this.input.type);
+    },
+    ariaTitle() {
+      return `${i18n.t(this.input.type)} ${this.showTooltip ? i18n.t('visibileAriaLabel') : i18n.t('hiddenAriaLabel')}`;
     },
     tooltipFirstLine() {
       return this.input.visible ? i18n.t('selectWarningTooltipLine1') : i18n.t('selectDisabledWarningTooltipLine1');
@@ -178,6 +183,9 @@ export default {
     div.symbol-list-text {
         display: table-cell;
         height: $symbol-list-line-height;
+        &:focus:not([data-focus-visible-added]) {
+            outline: none !important;
+        }
     }
 
     .symbol-list-select-container {
