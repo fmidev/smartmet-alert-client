@@ -26,7 +26,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@panzoom/panzoom": "4.3.2",
-    "axios": "0.21.0",
+    "axios": "0.21.1",
     "bootstrap": "4.5.3",
     "bootstrap-vue": "2.18.1",
     "date-fns": "2.16.1",
