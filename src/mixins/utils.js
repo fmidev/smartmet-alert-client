@@ -233,7 +233,7 @@ export default {
           [warning.properties.language.substr(0, 2).toLowerCase()]: JSON.parse(
             decodeURIComponent(
               warning.properties.description != null ? warning.properties.description : '[%22%22]',
-            ).replace(/\n/g, ' '),
+            ).replace(/[\n|\t]/g, ' '),
           )[0],
         },
         link: i18n.t('floodLink'),
