@@ -3,12 +3,13 @@
 def packageVersion = "undefined"
 def deployUserAndHost = "${params.deployUserAndHost}"
 def deployBaseDirectory = "${params.deployBaseDirectory}"
+def buildNode = "${params.buildNode}"
 
 pipeline {
 
     agent {
         node {
-            label 'master'
+            label "${buildNode}"
         }
     }
 
@@ -53,14 +54,9 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "npm test || echo \"Some or all tests failed\""
+                sh "docker stop docker_chromium_1 || true && docker rm docker_chromium_1 || true"
+                sh "npm test"
             }
-            // This syntax requires a newer Pipeline plugin
-            /*steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh "npm test"
-                }
-            }*/
         }
 
         stage('Determine version from package.json') {
