@@ -89,14 +89,14 @@ div.date-selector-cell.active .date-selector-cell-footer:after {
 
 div.map-container {
   text-align: center;
-  background-color: #f8f8f8;
+  background-color: $light-gray;
   margin-left: 0;
   margin-right: 0;
   position: relative;
 }
 
 .date-selector-text {
-  background-color: #f8f8f8;
+  background-color: $light-gray;
   text-align: center;
   display: table-cell;
   vertical-align: middle;

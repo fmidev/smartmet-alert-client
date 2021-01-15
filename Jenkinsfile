@@ -47,7 +47,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "npm run release"
+                sh "npm run build"
             }
         }
 

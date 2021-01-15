@@ -70,7 +70,7 @@ export default {
 @import "../scss/constants.scss";
 
 .date-selector {
-  background-color: #f8f8f8;
+  background-color: $light-gray;
   margin: 0;
 }
 
