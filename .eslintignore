@@ -12,7 +12,6 @@ dist
 # env file
 .env
 
-
 static
 staticS3
 assets

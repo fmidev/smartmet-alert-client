@@ -107,7 +107,7 @@ export default {
     }
 
     .current-warning-heading {
-        background-color: #f8f8f8;
+        background-color: $light-gray;
         height: $current-warning-height;
         padding: 0 0 0 15px !important;
         line-height: $current-warning-height;
