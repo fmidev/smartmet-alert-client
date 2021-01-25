@@ -122,22 +122,36 @@ export default {
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`);
       }
-      axios.all([this.weatherUpdatedQuery, this.floodUpdatedQuery, this.weatherWarningsQuery, this.floodWarningsQuery]
-        .map((queryType) => axios.get(`${this.baseUrl}${queryType}`))).then(async (responses) => {
-        const responseData = [this.weatherUpdatedType, this.floodUpdatedType, this.weatherWarningsType, this.floodWarningsType]
-          .reduce((data, typeName, index) => {
-            // eslint-disable-next-line no-param-reassign
-            data[typeName] = responses[index].data;
-            return data;
-          }, {});
+      const queries = {
+        [this.weatherUpdatedType]: `${this.baseUrl}${this.weatherUpdatedQuery}`,
+        [this.floodUpdatedType]: `${this.baseUrl}${this.floodUpdatedQuery}`,
+        [this.weatherWarningsType]: `${this.baseUrl}${this.weatherWarningsQuery}`,
+        [this.floodWarningsType]: `${this.baseUrl}${this.floodWarningsQuery}`,
+      };
+      Promise.allSettled([
+        this.weatherUpdatedType,
+        this.floodUpdatedType,
+        this.weatherWarningsType,
+        this.floodWarningsType,
+      ].map((queryType) => axios.get(queries[queryType], {
+        fmiWarningsQueryType: queryType,
+      }))).then(async (responses) => {
+        const responseData = {};
+        const responseQueryTypes = Object.keys(queries);
+        responses.forEach((response) => {
+          if ((response != null) && (response.value != null) && (response.value.config != null)) {
+            const responseQueryType = response.value.config.fmiWarningsQueryType;
+            if ((responseQueryType != null) && (responseQueryTypes.includes(responseQueryType))) {
+              responseData[responseQueryType] = response.value.data;
+            }
+          }
+        });
         const currentTime = Date.now();
         if (this.updatedAt != null) {
           this.refreshedAt = currentTime;
         }
         this.updatedAt = currentTime;
         this.warningsData = responseData;
-      }).catch(() => {
-        this.warningsData = null;
       });
     },
   },
