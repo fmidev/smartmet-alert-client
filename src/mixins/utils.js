@@ -212,6 +212,16 @@ export default {
       };
     },
     createFloodWarning(warning) {
+      let info = '';
+      try {
+        info = JSON.parse(
+          decodeURIComponent(
+            warning.properties.description != null ? warning.properties.description : '[%22%22]',
+          ).replace(/[\n|\t]/g, ' '),
+        )[0];
+      } catch (e) {
+        this.handleError(e.name);
+      }
       return {
         type: this.FLOOD_LEVEL_TYPE,
         id: warning.properties.identifier,
@@ -230,11 +240,7 @@ export default {
         value: 0,
         text: '',
         info: {
-          [warning.properties.language.substr(0, 2).toLowerCase()]: JSON.parse(
-            decodeURIComponent(
-              warning.properties.description != null ? warning.properties.description : '[%22%22]',
-            ).replace(/[\n|\t]/g, ' '),
-          )[0],
+          [warning.properties.language.substr(0, 2).toLowerCase()]: info,
         },
         link: i18n.t('floodLink'),
         linkText: i18n.t('floodLinkText'),
@@ -250,8 +256,8 @@ export default {
           month: getMonth(date) + 1,
           year: getYear(date),
           severity: Object.values(warnings).reduce((maxSeverity, warning) => (warning.effectiveDays[index] ? Math.max(warning.severity, maxSeverity) : maxSeverity), 0),
-          updatedDate: format(this.updatedAt, this.DATE_FORMAT),
-          updatedTime: format(this.updatedAt, this.TIME_FORMAT),
+          updatedDate: this.updatedAt != null ? format(this.updatedAt, this.DATE_FORMAT) : '',
+          updatedTime: this.updatedAt != null ? format(this.updatedAt, this.TIME_FORMAT) : '',
         };
       });
     },
@@ -443,16 +449,30 @@ export default {
     async handleMapWarnings(data) {
       const warnings = {};
       const parents = {};
-      this.updatedAt = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
-        .map((updateTime) => new Date(data[updateTime].features[0].properties[this.UPDATE_TIME]))
-        .sort(compareDesc)[0];
+      this.errors = [];
+      const allUpdateTimes = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME].reduce((updateTimes, warningUpdateTime) => {
+        if ((data[warningUpdateTime] != null) && (data[warningUpdateTime].features != null) &&
+          (data[warningUpdateTime].features.length > 0) && (data[warningUpdateTime].features[0].properties != null)) {
+          updateTimes.push(new Date(data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]));
+        } else {
+          this.handleError(warningUpdateTime);
+        }
+        return updateTimes;
+      }, []).sort(compareDesc);
+      this.updatedAt = (allUpdateTimes.length > 0) ? allUpdateTimes[0] : null;
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
         [this.FLOOD_WARNINGS]: this.createFloodWarning,
       };
       const warningTypes = Object.keys(createWarnings);
       for (const warningType of warningTypes) {
-        const features = data[warningType].features;
+        let features = [];
+        if (data[warningType] == null) {
+          this.handleError(warningType);
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        features = data[warningType].features;
         for (const warning of features) {
           if (this.isValid(warning)) {
             let regionId;

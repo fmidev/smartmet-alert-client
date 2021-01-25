@@ -1,5 +1,6 @@
 <template>
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
+    <div id="fmi-warnings-errors" :class=errors />
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
@@ -61,6 +62,7 @@ export default {
       legend: [],
       // eslint-disable-next-line no-undef
       version: VERSION,
+      errors: [],
     };
   },
   computed: {
@@ -142,6 +144,12 @@ export default {
     },
     update() {
       this.$emit('update-warnings');
+    },
+    handleError(error) {
+      if (!this.errors.includes(error)) {
+        this.errors.push(error);
+      }
+      console.log(error);
     },
   },
 };
