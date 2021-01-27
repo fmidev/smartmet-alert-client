@@ -95,8 +95,8 @@ export default {
     },
     overlayPaths() {
       return this.regionIds.reduce((regions, regionId) => {
-        if ((this.geometries[regionId].pathLarge) && ((this.geometries[regionId].type === 'land') ||
-          (this.geometries[regionId].subType === 'lake'))) {
+        if ((this.geometries[this.geometryId][regionId].pathLarge) && ((this.geometries[this.geometryId][regionId].type === 'land') ||
+          (this.geometries[this.geometryId][regionId].subType === 'lake'))) {
           const visualization = this.regionVisualization(regionId);
           regions.push({
             key: `${regionId}${this.size}${this.index}Overlay`,
@@ -188,7 +188,7 @@ export default {
       return {
         type: this.warningType(warning.properties),
         id: warning.properties.identifier,
-        regions: this.geometries[regionId] ? {
+        regions: this.geometries[this.geometryId][regionId] ? {
           [this.regionFromReference(warning.properties.reference)]: true,
         } : {},
         covRegions: {},
@@ -313,13 +313,13 @@ export default {
             warningsByType.forEach((key) => {
               this.regionIds.forEach((regionId, regionIndex) => {
                 if (warnings[key].regions[regionId]) {
-                  const regionItems = regionWarnings[day][this.geometries[regionId].type];
+                  const regionItems = regionWarnings[day][this.geometries[this.geometryId][regionId].type];
                   let regionItem = regionItems.find((regionWarning) => regionWarning.key === regionId);
                   if (regionItem == null) {
                     regionItem = {
                       key: regionId,
                       regionIndex,
-                      name: this.geometries[regionId].name,
+                      name: this.geometries[this.geometryId][regionId].name,
                       warnings: [],
                     };
                     regionItems.push(regionItem);
@@ -353,12 +353,12 @@ export default {
         return false;
       }
       const regionId = this.regionFromReference(warning.properties.reference);
-      if ((!warning.properties.coverage_references) && (this.geometries[regionId] == null)) {
+      if ((!warning.properties.coverage_references) && (this.geometries[this.geometryId][regionId] == null)) {
         return false;
       }
       const warningType = warning.properties.warning_context != null ?
         this.warningType(warning.properties) : 'floodLevel';
-      if ((this.geometries[regionId] != null) && (this.warningTypes.get(warningType) !== this.geometries[regionId].type)) {
+      if ((this.geometries[this.geometryId][regionId] != null) && (this.warningTypes.get(warningType) !== this.geometries[this.geometryId][regionId].type)) {
         return false;
       }
       // Valid flood warning
@@ -485,7 +485,7 @@ export default {
               }
             } else {
               regionId = this.regionFromReference(warning.properties.reference);
-              if (this.geometries[regionId]) {
+              if (this.geometries[this.geometryId][regionId]) {
                 warnings[warningId].regions[regionId] = true;
               }
             }
@@ -494,7 +494,7 @@ export default {
               warning.properties.coverage_references.split(', ')
                 .filter((reference) => reference.length > 0).forEach((reference) => {
                   regionId = this.regionFromReference(reference);
-                  if (this.geometries[regionId]) {
+                  if (this.geometries[this.geometryId][regionId]) {
                     warnings[warningId].regions[regionId] = true;
                     warnings[warningId].covRegions[regionId] = true;
                   }
@@ -508,11 +508,11 @@ export default {
                 warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
               }
             }
-            if (this.geometries[regionId]) {
-              this.geometries[regionId].children.forEach((id) => {
+            if (this.geometries[this.geometryId][regionId]) {
+              this.geometries[this.geometryId][regionId].children.forEach((id) => {
                 warnings[warningId].regions[id] = true;
               });
-              const parentId = this.geometries[regionId].parent;
+              const parentId = this.geometries[this.geometryId][regionId].parent;
               if (parentId) {
                 if (parents[parentId] == null) {
                   parents[parentId] = [false, false, false, false, false];
@@ -543,7 +543,7 @@ export default {
       return ((typeof document !== 'undefined') && (document));
     },
     regionData(regionId) {
-      const regionType = this.geometries[regionId].type;
+      const regionType = this.geometries[this.geometryId][regionId].type;
       return this.input[regionType].find((regionData) => regionData.key === regionId);
     },
     regionSeverity(regionId) {
@@ -556,16 +556,16 @@ export default {
           severity = this.allWarnings[topWarning.identifiers[0]].severity;
         }
       }
-      const parentId = this.geometries[regionId].parent;
+      const parentId = this.geometries[this.geometryId][regionId].parent;
       if (parentId) {
         severity = Math.max(severity, this.regionSeverity(parentId));
       }
       return severity;
     },
     regionVisualization(regionId) {
-      const geom = this.geometries[regionId];
+      const geom = this.geometries[this.geometryId][regionId];
       const severity = this.regionSeverity(regionId);
-      const isLand = (this.geometries[regionId].type === this.REGION_LAND);
+      const isLand = (this.geometries[this.geometryId][regionId].type === this.REGION_LAND);
       const color = ((severity) || (isLand) ? this.colors.levels[severity] : this.colors.sea);
       const visible = ((severity > 0) || (geom.subType !== this.REGION_LAKE));
       return {

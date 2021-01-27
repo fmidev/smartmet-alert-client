@@ -110,6 +110,9 @@ export default {
     input: {
       type: Object,
     },
+    geometryId: {
+      type: Number,
+    },
   },
   mixins: [config, utils],
   computed: {
@@ -153,7 +156,7 @@ export default {
       const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
-        if ((region != null) && (this.geometries[regionId].children.length === 0) && (!this.mergedRegions.has(regionId))) {
+        if ((region != null) && (this.geometries[this.geometryId][regionId].children.length === 0) && (!this.mergedRegions.has(regionId))) {
           const iconSizes = [];
           const aspectRatios = [];
           const keys = [];
@@ -174,7 +177,7 @@ export default {
               }
             });
           let offsetX = -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2;
-          const coords = this.geometries[regionId].center;
+          const coords = this.geometries[this.geometryId][regionId].center;
           iconSizes.forEach((iconSize, index) => {
             data.push({
               key: keys[index],
@@ -241,7 +244,7 @@ export default {
       const map = new Map();
       const warnings = this.$store.getters.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
-      this.input.land.filter((regionItem) => this.geometries[regionItem.key].neighbours.length > 0)
+      this.input.land.filter((regionItem) => this.geometries[this.geometryId][regionItem.key].neighbours.length > 0)
         .forEach((regionItem) => {
           const serialized = regionItem.warnings.reduce((reduced, warning) => {
             if (!visibleWarnings.includes(warning.type)) {
@@ -287,16 +290,16 @@ export default {
     networkCenters() {
       return this.networks.map((network) => {
         const arrayNetwork = Array.from(network);
-        const weightSum = arrayNetwork.reduce((sum, region) => sum + this.geometries[region].weight, 0);
+        const weightSum = arrayNetwork.reduce((sum, region) => sum + this.geometries[this.geometryId][region].weight, 0);
         return arrayNetwork.reduce((sum, region) => {
-          const geom = this.geometries[region];
+          const geom = this.geometries[this.geometryId][region];
           return sum.map((sumByIndex, index) => sumByIndex + geom.weight * geom.center[index]);
         }, [0, 0])
           .map((weightedSumByIndex) => weightedSumByIndex / weightSum);
       });
     },
     networkReps() {
-      return this.networks.map((network, networkIndex) => network[this.indexOfSmallest(network.map((region) => [0, 1].reduce((sum, coordIndex) => sum + (this.geometries[region].center[coordIndex] - this.networkCenters[networkIndex][coordIndex]) ** 2, 0) / this.geometries[region].weight))]);
+      return this.networks.map((network, networkIndex) => network[this.indexOfSmallest(network.map((region) => [0, 1].reduce((sum, coordIndex) => sum + (this.geometries[this.geometryId][region].center[coordIndex] - this.networkCenters[networkIndex][coordIndex]) ** 2, 0) / this.geometries[this.geometryId][region].weight))]);
     },
     mergedRegions() {
       const merged = new Set();
@@ -360,8 +363,8 @@ export default {
   methods: {
     paths(options) {
       return this.regionIds.reduce((regions, regionId) => {
-        if ((this.geometries[regionId].pathLarge) &&
-            ((this.geometries[regionId].type === options.type) === (this.geometries[regionId].subType == null))) {
+        if ((this.geometries[this.geometryId][regionId].pathLarge) &&
+            ((this.geometries[this.geometryId][regionId].type === options.type) === (this.geometries[this.geometryId][regionId].subType == null))) {
           const visualization = this.regionVisualization(regionId);
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
@@ -371,8 +374,8 @@ export default {
               opacity: '1',
               dataRegion: regionId,
               dataSeverity: visualization.severity,
-              strokeWidth: ((this.geometries[regionId].type === 'sea') &&
-                  (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
+              strokeWidth: ((this.geometries[this.geometryId][regionId].type === 'sea') &&
+                  (this.geometries[this.geometryId][regionId].subType !== 'lake')) ? this.strokeWidth : 0,
             });
           }
         }
@@ -387,7 +390,7 @@ export default {
         severity = this.coverageRegions[regionId];
       }
       this.popupLevel = `level-${severity}`;
-      this.popupRegion = this.geometries[regionId];
+      this.popupRegion = this.geometries[this.geometryId][regionId];
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
@@ -430,7 +433,7 @@ export default {
           if (!activeIconRegions[covRegion]) {
             return false;
           }
-          const center = this.geometries[covRegion].center;
+          const center = this.geometries[this.geometryId][covRegion].center;
           return (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 < this.minIconDistSqr;
         });
     },
@@ -438,7 +441,7 @@ export default {
       return networks.some((network1, index1) => {
         const neighbours = Array.from(network1.keys())
           .reduce((reduced, region) => {
-            this.geometries[region].neighbours.forEach((neighbour) => {
+            this.geometries[this.geometryId][region].neighbours.forEach((neighbour) => {
               reduced.add(neighbour);
             });
             return reduced;
