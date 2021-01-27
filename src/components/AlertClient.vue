@@ -188,11 +188,12 @@ div#fmi-warnings {
   width: 690px;
   padding-top: 20px;
   margin-bottom: 20px;
-}
 
-div.container-fluid {
-  padding: 0;
-  margin: 0;
+  div.container-fluid {
+    padding: 0;
+    margin: 0;
+  }
+
 }
 
 .row {
