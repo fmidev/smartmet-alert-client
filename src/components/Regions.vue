@@ -27,6 +27,7 @@ export default {
   props: {
     input: Array,
     parents: Object,
+    geometryId: Number,
   },
   mixins: [config, utils],
   computed: {
@@ -43,7 +44,7 @@ export default {
       return [this.REGION_LAND, this.REGION_SEA].reduce((regionData, regionType) => {
         // eslint-disable-next-line no-param-reassign
         regionData[regionType] = this.input[this.selectedDay][regionType].reduce((regions, region) => {
-          const parentId = this.geometries[region.key].parent;
+          const parentId = this.geometries[this.geometryId][region.key].parent;
           if ((!overriddenIds.includes(region.key)) && ((!parentId) || (overriddenIds.includes(parentId)))) {
             regions.push(region);
           }

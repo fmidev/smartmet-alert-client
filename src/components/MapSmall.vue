@@ -47,6 +47,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    geometryId: {
+      type: Number,
+    },
   },
   mixins: [config, utils, vueWindowSizeMixin],
   data() {
@@ -79,8 +82,8 @@ export default {
   methods: {
     paths(options) {
       return this.pathsNeeded ? this.regionIds.reduce((regions, regionId) => {
-        if ((this.geometries[regionId].pathSmall) &&
-          ((this.geometries[regionId].type === options.type) === (this.geometries[regionId].subType == null))) {
+        if ((this.geometries[this.geometryId][regionId].pathSmall) &&
+          ((this.geometries[this.geometryId][regionId].type === options.type) === (this.geometries[this.geometryId][regionId].subType == null))) {
           const visualization = this.regionVisualization(regionId);
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
@@ -88,8 +91,8 @@ export default {
               fill: visualization.color,
               d: visualization.geom.pathSmall,
               opacity: visualization.visible ? '1' : '0',
-              strokeWidth: ((this.geometries[regionId].type === 'sea') &&
-                (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
+              strokeWidth: ((this.geometries[this.geometryId][regionId].type === 'sea') &&
+                (this.geometries[this.geometryId][regionId].subType !== 'lake')) ? this.strokeWidth : 0,
             });
           }
         }

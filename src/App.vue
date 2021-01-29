@@ -1,5 +1,5 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :language="language" :sleep="sleep" />
+    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
@@ -44,6 +44,10 @@ export default {
     refreshInterval: {
       type: Number,
       default: 1000 * 60 * 15,
+    },
+    geometryId: {
+      type: Number,
+      default: 2020,
     },
     language: {
       type: String,
