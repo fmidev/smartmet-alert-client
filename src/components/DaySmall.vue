@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="date-selector-cell-body map-container">
-      <MapSmall :index="index" :input="regions" />
+      <MapSmall :index="index" :input="regions" :geometryId="geometryId" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -34,6 +34,9 @@ export default {
     regions: {
       type: Object,
       default: () => ({}),
+    },
+    geometryId: {
+      type: Number,
     },
     active: {
       type: Boolean,

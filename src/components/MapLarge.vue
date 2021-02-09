@@ -1,4 +1,4 @@
- <template>
+<template>
     <div class="map-large" tabindex="0">
         <div class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
@@ -112,6 +112,9 @@ export default {
     input: {
       type: Object,
     },
+    geometryId: {
+      type: Number,
+    },
   },
   mixins: [config, utils],
   computed: {
@@ -161,27 +164,28 @@ export default {
       const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
-        if ((region != null) && (this.geometries[regionId].children.length === 0) && (!this.mergedRegions.has(regionId))) {
+        if ((region != null) && (this.geometries[this.geometryId][regionId].children.length === 0) && (!this.mergedRegions.has(regionId))) {
           const iconSizes = [];
           const aspectRatios = [];
           const keys = [];
           const geoms = [];
-          region.warnings.filter((warning) => !warning.coverage && visibleWarnings.includes(warning.type)).forEach((regionWarning, index, regionWarnings) => {
-            const identifier = regionWarning.identifiers[0];
-            if ((visibleWarnings.includes(regionWarning.type)) && (Object.keys(warnings[identifier].covRegions).length === 0) && (iconSizes.length < maxWarningIcons)) {
-              const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
-                this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
-              const scale = icon.scale ? icon.scale : 1;
-              const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
-              const height = scale * icon.scale * this.iconSize;
-              iconSizes.push([width, height]);
-              aspectRatios.push(icon.aspectRatio);
-              geoms.push(icon.geom);
-              keys.push(`${regionId}-${identifier}`);
-            }
-          });
+          region.warnings.filter((warning) => !warning.coverage && visibleWarnings.includes(warning.type))
+            .forEach((regionWarning, index, regionWarnings) => {
+              const identifier = regionWarning.identifiers[0];
+              if ((visibleWarnings.includes(regionWarning.type)) && (Object.keys(warnings[identifier].covRegions).length === 0) && (iconSizes.length < maxWarningIcons)) {
+                const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
+                  this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
+                const scale = icon.scale ? icon.scale : 1;
+                const width = (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1];
+                const height = scale * icon.scale * this.iconSize;
+                iconSizes.push([width, height]);
+                aspectRatios.push(icon.aspectRatio);
+                geoms.push(icon.geom);
+                keys.push(`${regionId}-${identifier}`);
+              }
+            });
           let offsetX = -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2;
-          const coords = this.geometries[regionId].center;
+          const coords = this.geometries[this.geometryId][regionId].center;
           iconSizes.forEach((iconSize, index) => {
             data.push({
               key: keys[index],
@@ -248,27 +252,28 @@ export default {
       const map = new Map();
       const warnings = this.$store.getters.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
-      this.input.land.filter((regionItem) => this.geometries[regionItem.key].neighbours.length > 0).forEach((regionItem) => {
-        const serialized = regionItem.warnings.reduce((reduced, warning) => {
-          if (!visibleWarnings.includes(warning.type)) {
-            return reduced;
+      this.input.land.filter((regionItem) => this.geometries[this.geometryId][regionItem.key].neighbours.length > 0)
+        .forEach((regionItem) => {
+          const serialized = regionItem.warnings.reduce((reduced, warning) => {
+            if (!visibleWarnings.includes(warning.type)) {
+              return reduced;
+            }
+            const warningIdentifier = warning.identifiers.find((identifier) => {
+              const warningById = warnings[identifier];
+              return Object.keys(warningById.regions).length > Object.keys(warningById.covRegions).length;
+            });
+            if (warningIdentifier == null) {
+              return reduced;
+            }
+            const w = warnings[warningIdentifier];
+            return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`;
+          }, '');
+          if (serialized) {
+            const set = map.has(serialized) ? map.get(serialized) : new Set();
+            set.add(regionItem.key);
+            map.set(serialized, set);
           }
-          const warningIdentifier = warning.identifiers.find((identifier) => {
-            const warningById = warnings[identifier];
-            return Object.keys(warningById.regions).length > Object.keys(warningById.covRegions).length;
-          });
-          if (warningIdentifier == null) {
-            return reduced;
-          }
-          const w = warnings[warningIdentifier];
-          return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`;
-        }, '');
-        if (serialized) {
-          const set = map.has(serialized) ? map.get(serialized) : new Set();
-          set.add(regionItem.key);
-          map.set(serialized, set);
-        }
-      });
+        });
       return map;
     },
     networks() {
@@ -293,15 +298,16 @@ export default {
     networkCenters() {
       return this.networks.map((network) => {
         const arrayNetwork = Array.from(network);
-        const weightSum = arrayNetwork.reduce((sum, region) => sum + this.geometries[region].weight, 0);
+        const weightSum = arrayNetwork.reduce((sum, region) => sum + this.geometries[this.geometryId][region].weight, 0);
         return arrayNetwork.reduce((sum, region) => {
-          const geom = this.geometries[region];
+          const geom = this.geometries[this.geometryId][region];
           return sum.map((sumByIndex, index) => sumByIndex + geom.weight * geom.center[index]);
-        }, [0, 0]).map((weightedSumByIndex) => weightedSumByIndex / weightSum);
+        }, [0, 0])
+          .map((weightedSumByIndex) => weightedSumByIndex / weightSum);
       });
     },
     networkReps() {
-      return this.networks.map((network, networkIndex) => network[this.indexOfSmallest(network.map((region) => [0, 1].reduce((sum, coordIndex) => sum + (this.geometries[region].center[coordIndex] - this.networkCenters[networkIndex][coordIndex]) ** 2, 0) / this.geometries[region].weight))]);
+      return this.networks.map((network, networkIndex) => network[this.indexOfSmallest(network.map((region) => [0, 1].reduce((sum, coordIndex) => sum + (this.geometries[this.geometryId][region].center[coordIndex] - this.networkCenters[networkIndex][coordIndex]) ** 2, 0) / this.geometries[this.geometryId][region].weight))]);
     },
     mergedRegions() {
       const merged = new Set();
@@ -366,8 +372,8 @@ export default {
   methods: {
     paths(options) {
       return this.regionIds.reduce((regions, regionId) => {
-        if ((this.geometries[regionId].pathLarge) &&
-          ((this.geometries[regionId].type === options.type) === (this.geometries[regionId].subType == null))) {
+        if ((this.geometries[this.geometryId][regionId].pathLarge) &&
+            ((this.geometries[this.geometryId][regionId].type === options.type) === (this.geometries[this.geometryId][regionId].subType == null))) {
           const visualization = this.regionVisualization(regionId);
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
@@ -377,8 +383,8 @@ export default {
               opacity: '1',
               dataRegion: regionId,
               dataSeverity: visualization.severity,
-              strokeWidth: ((this.geometries[regionId].type === 'sea') &&
-                (this.geometries[regionId].subType !== 'lake')) ? this.strokeWidth : 0,
+              strokeWidth: ((this.geometries[this.geometryId][regionId].type === 'sea') &&
+                  (this.geometries[this.geometryId][regionId].subType !== 'lake')) ? this.strokeWidth : 0,
             });
           }
         }
@@ -393,22 +399,23 @@ export default {
         severity = this.coverageRegions[regionId];
       }
       this.popupLevel = `level-${severity}`;
-      this.popupRegion = this.geometries[regionId];
+      this.popupRegion = this.geometries[this.geometryId][regionId];
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
-        region.warnings.filter((warning) => visibleWarnings.includes(warning.type)).forEach((warningByType) => {
-          warningByType.identifiers.forEach((identifier) => {
-            const warning = this.$store.getters.warnings[identifier];
-            popupWarnings.push({
-              type: warningByType.type,
-              severity: warning.severity,
-              direction: warning.direction,
-              text: warning.text != null ? warning.text : '',
-              interval: warning.validInterval,
+        region.warnings.filter((warning) => visibleWarnings.includes(warning.type))
+          .forEach((warningByType) => {
+            warningByType.identifiers.forEach((identifier) => {
+              const warning = this.$store.getters.warnings[identifier];
+              popupWarnings.push({
+                type: warningByType.type,
+                severity: warning.severity,
+                direction: warning.direction,
+                text: warning.text != null ? warning.text : '',
+                interval: warning.validInterval,
+              });
             });
           });
-        });
       } else {
         popupWarnings = [{
           type: '',
@@ -430,27 +437,30 @@ export default {
       this.icons.forEach((icon) => {
         activeIconRegions[icon.regionId] = true;
       });
-      return !Object.keys(warning.covRegions).some((covRegion) => {
-        if (!activeIconRegions[covRegion]) {
-          return false;
-        }
-        const center = this.geometries[covRegion].center;
-        return (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 < this.minIconDistSqr;
-      });
+      return !Object.keys(warning.covRegions)
+        .some((covRegion) => {
+          if (!activeIconRegions[covRegion]) {
+            return false;
+          }
+          const center = this.geometries[this.geometryId][covRegion].center;
+          return (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 < this.minIconDistSqr;
+        });
     },
     mergeNetworks(networks) {
       return networks.some((network1, index1) => {
-        const neighbours = Array.from(network1.keys()).reduce((reduced, region) => {
-          this.geometries[region].neighbours.forEach((neighbour) => {
-            reduced.add(neighbour);
-          });
-          return reduced;
-        }, new Set());
+        const neighbours = Array.from(network1.keys())
+          .reduce((reduced, region) => {
+            this.geometries[this.geometryId][region].neighbours.forEach((neighbour) => {
+              reduced.add(neighbour);
+            });
+            return reduced;
+          }, new Set());
         return networks.some((network2, index2) => {
           if (index2 <= index1) {
             return false;
           }
-          const ngbrIndex = Array.from(neighbours.keys()).findIndex((neighbour) => network2.has(neighbour));
+          const ngbrIndex = Array.from(neighbours.keys())
+            .findIndex((neighbour) => network2.has(neighbour));
           if (ngbrIndex >= 0) {
             network2.forEach(networks[index1].add, networks[index1]);
             networks.splice(index2, 1);
@@ -570,6 +580,7 @@ export default {
         width: $map-large-width;
         height: 100%;
         background-color: rgba(0, 0, 0, 0);
+
         &:focus:not([data-focus-visible-added]) {
             outline: none;
         }
@@ -593,16 +604,18 @@ export default {
         }
     }
 
-    button#fmi-warnings-zoom-in {
-        top: 10px;
-        border-radius: 2px 2px 0 0;
-        background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzUzQjlFNiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
-    }
+    div.map-large div.day-map-large button {
+        &#fmi-warnings-zoom-in {
+            top: 10px;
+            border-radius: 2px 2px 0 0;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzUzQjlFNiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+        }
 
-    button#fmi-warnings-zoom-out {
-        top: 46px;
-        border-radius: 0 0 2px 2px;
-        background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjNTNCOUU2IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+        &#fmi-warnings-zoom-out {
+            top: 46px;
+            border-radius: 0 0 2px 2px;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjNTNCOUU2IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+        }
     }
 
     button#fmi-warnings-move {
@@ -618,7 +631,7 @@ export default {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z'/%3E%3C/svg%3E");
     }
 
-    #fmi-warnings-region-tooltip {
+    div.day-map-large div#fmi-warnings-region-tooltip-reference > div#fmi-warnings-region-tooltip.tooltip.b-tooltip {
         opacity: 1;
     }
 

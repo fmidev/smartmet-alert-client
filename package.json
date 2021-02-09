@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.2.0-beta.0",
+  "version": "3.2.0",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -12,11 +12,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name SmartMetAlertClient",
-    "release": "run-s build simplify-style",
     "lint": "vue-cli-service lint",
-    "test": "cross-env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true jest",
-    "serve-json": "json-server test/data/db.json -p 3030",
-    "simplify-style": "shx head -n 1 dist/SmartMetAlertClient.css > dist/SmartMetAlertClient-without-Bootstrap.css"
+    "test": "cross-env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true DOCKER_CHROMIUM_MAX_ATTEMPTS=10 DOCKER_CHROMIUM_RETRY_INTERVAL=2000 jest",
+    "serve-json": "json-server test/data/db.json -p 3030"
   },
   "jest": {
     "preset": "jest-puppeteer-docker",
@@ -26,7 +24,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@panzoom/panzoom": "4.3.2",
-    "axios": "0.21.0",
+    "axios": "0.21.1",
     "bootstrap": "4.5.3",
     "bootstrap-vue": "2.18.1",
     "date-fns": "2.16.1",
@@ -65,14 +63,13 @@
     "jest-puppeteer": "4.4.0",
     "jest-puppeteer-docker": "1.4.2",
     "json-server": "0.16.2",
-    "npm-run-all": "4.1.5",
     "popper.js": "1.16.1",
     "portal-vue": "2.1.7",
+    "postcss-prefixwrap": "1.20.0",
     "prettier": "2.1.2",
     "puppeteer": "5.4.1",
     "sass": "1.29.0",
     "sass-loader": "10.0.5",
-    "shx": "0.3.3",
     "string.prototype.replaceall": "1.0.4",
     "svg64": "1.1.0",
     "vue-cli-plugin-bootstrap-vue": "0.7.0",

@@ -15,9 +15,9 @@
         :title-link-class="['day', `day${i}`]"
       >
         <template v-slot:title>
-          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :active="i === selectedDay" />
+          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :active="i === selectedDay" />
         </template>
-        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" />
+        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" />
       </b-tab>
     </b-tabs>
   </div>
@@ -47,6 +47,7 @@ export default {
       },
     },
     regions: Array,
+    geometryId: Number,
   },
   data() {
     return {
@@ -70,7 +71,7 @@ export default {
 @import "../scss/constants.scss";
 
 .date-selector {
-  background-color: #f8f8f8;
+  background-color: $light-gray;
   margin: 0;
 }
 

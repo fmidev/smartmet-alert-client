@@ -1,10 +1,11 @@
 <template>
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
+    <div id="fmi-warnings-errors" :class=errors />
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-          <Days :input="days" :defaultDay="selectedDay" :regions="regions" />
-          <Regions :input="regions" :parents="parents" />
+          <Days :input="days" :defaultDay="selectedDay" :regions="regions" :geometryId="geometryId" />
+          <Regions :input="regions" :parents="parents" :geometryId="geometryId" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
           <Warnings v-show="validData" :input="legend" />
@@ -38,6 +39,10 @@ export default {
       default: Date.now(),
     },
     warningsData: Object,
+    geometryId: {
+      type: Number,
+      default: 2020,
+    },
     language: String,
     sleep: {
       type: Boolean,
@@ -61,6 +66,7 @@ export default {
       legend: [],
       // eslint-disable-next-line no-undef
       version: VERSION,
+      errors: [],
     };
   },
   computed: {
@@ -143,6 +149,12 @@ export default {
     update() {
       this.$emit('update-warnings');
     },
+    handleError(error) {
+      if (!this.errors.includes(error)) {
+        this.errors.push(error);
+      }
+      console.log(error);
+    },
   },
 };
 </script>
@@ -186,11 +198,12 @@ div#fmi-warnings {
   width: 690px;
   padding-top: 20px;
   margin-bottom: 20px;
-}
 
-div.container-fluid {
-  padding: 0;
-  margin: 0;
+  div.container-fluid {
+    padding: 0;
+    margin: 0;
+  }
+
 }
 
 .row {

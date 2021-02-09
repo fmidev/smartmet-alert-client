@@ -18,7 +18,7 @@
       ><br />
       <span>{{ dataProviderSecond }}</span>
     </div>
-    <MapLarge :index="index" :input="regions" :aria-label="mapAriaLabel" />
+    <MapLarge :index="index" :input="regions" :geometryId="geometryId" :aria-label="mapAriaLabel" />
   </div>
 </template>
 
@@ -39,6 +39,9 @@ export default {
     },
     regions: {
       type: Object,
+    },
+    geometryId: {
+      type: Number,
     },
   },
   computed: {
