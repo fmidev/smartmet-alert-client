@@ -169,10 +169,10 @@
     "description": "Impact description",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "moveMap": "Siirrä karttaa",
-    "mapAriaLabel": "Zoomattava kartta",
-    "visibileAriaLabel": "näkyvissä",
-    "hiddenAriaLabel": "piilotettuna",
-    "regionAriaLabel": "voimassa olevat varoitukset",
-    "infoButtonAriaLabel": "Avaa voimassa olevien varoitusten lisätiedot"
+    "moveMap": "Move the map",
+    "mapAriaLabel": "Magnifiable map",
+    "visibleAriaLabel": "visible",
+    "hiddenAriaLabel": "hidden",
+    "regionAriaLabel": "warnings in effect",
+    "infoButtonAriaLabel": "Open more information about warnings in effect"
 }

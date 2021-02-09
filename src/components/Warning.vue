@@ -69,7 +69,7 @@ export default {
       return i18n.t(this.input.type);
     },
     ariaTitle() {
-      return `${i18n.t(this.input.type)} ${this.showTooltip ? i18n.t('visibileAriaLabel') : i18n.t('hiddenAriaLabel')}`;
+      return `${i18n.t(this.input.type)} ${this.showTooltip ? i18n.t('visibleAriaLabel') : i18n.t('hiddenAriaLabel')}`;
     },
     tooltipFirstLine() {
       return this.input.visible ? i18n.t('selectWarningTooltipLine1') : i18n.t('selectDisabledWarningTooltipLine1');
