@@ -171,8 +171,5 @@
     "zoomOut": "Zoom out",
     "moveMap": "Move the map",
     "mapAriaLabel": "Magnifiable map",
-    "visibleAriaLabel": "visible",
-    "hiddenAriaLabel": "hidden",
-    "regionAriaLabel": "warnings in effect",
     "infoButtonAriaLabel": "Open more information about warnings in effect"
 }

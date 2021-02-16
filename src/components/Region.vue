@@ -78,7 +78,7 @@ export default {
       }, []))), []);
     },
     ariaHeader() {
-      return `${this.regionName}, ${i18n.t('regionAriaLabel')}: ${this.input.reduce((warningLabels, warningInfo) => {
+      return `${this.regionName} ${this.input.reduce((warningLabels, warningInfo) => {
         if ((warningInfo != null) && (warningInfo.type != null)) {
           warningLabels.push(i18n.t(warningInfo.type).toLocaleLowerCase());
         }

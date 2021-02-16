@@ -18,7 +18,7 @@
       ><br />
       <span>{{ dataProviderSecond }}</span>
     </div>
-    <MapLarge :index="index" :input="regions" :geometryId="geometryId" :aria-label="mapAriaLabel" />
+    <MapLarge :index="index" :input="regions" :geometryId="geometryId" />
   </div>
 </template>
 
@@ -68,9 +68,6 @@ export default {
     },
     dataProviderSecond() {
       return i18n.t('dataProviderSecond');
-    },
-    mapAriaLabel() {
-      return i18n.t('mapAriaLabel') || '';
     },
   },
 };

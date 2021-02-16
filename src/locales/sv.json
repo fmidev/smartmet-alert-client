@@ -171,8 +171,5 @@
     "zoomOut": "Zooma ut",
     "moveMap": "Flytta kartan",
     "mapAriaLabel": "Förstorande karta",
-    "visibleAriaLabel": "i sikte",
-    "hiddenAriaLabel": "gömd",
-    "regionAriaLabel": "varningar i kraft",
     "infoButtonAriaLabel": "Öppna mer information om varningar i kraft"
 }

@@ -9,7 +9,7 @@
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
             <div class="symbol-list-text-select">
-                <div class="item-text symbol-list-text" :aria-label="ariaTitle" tabindex="0">
+                <div class="item-text symbol-list-text">
                     {{ title }}
                 </div>
                 <div class="symbol-list-select-container d-none d-md-table-cell">
@@ -67,9 +67,6 @@ export default {
     },
     title() {
       return i18n.t(this.input.type);
-    },
-    ariaTitle() {
-      return `${i18n.t(this.input.type)} ${this.showTooltip ? i18n.t('visibleAriaLabel') : i18n.t('hiddenAriaLabel')}`;
     },
     tooltipFirstLine() {
       return this.input.visible ? i18n.t('selectWarningTooltipLine1') : i18n.t('selectDisabledWarningTooltipLine1');
