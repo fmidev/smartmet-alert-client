@@ -584,6 +584,7 @@ export default {
         display: inline-block;
         width: $map-large-width;
         height: 100%;
+        max-height: $map-large-height;
         background-color: rgba(0, 0, 0, 0);
 
         &:focus:not([data-focus-visible-added]) {
