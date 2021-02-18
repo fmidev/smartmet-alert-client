@@ -169,7 +169,7 @@
     "description": "Effektbeskrivningen",
     "zoomIn": "Zooma in",
     "zoomOut": "Zooma ut",
-    "moveMap": "Flytta kartan",
+    "moveMap": "Använd piltangenterna för att flytta kartan",
     "mapAriaLabel": "Förstorande karta",
     "infoButtonAriaLabel": "Öppna mer information om varningar i kraft"
 }

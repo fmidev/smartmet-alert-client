@@ -169,7 +169,7 @@
     "description": "Impact description",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "moveMap": "Move the map",
+    "moveMap": "Use the arrow keys to move the map",
     "mapAriaLabel": "Magnifiable map",
     "infoButtonAriaLabel": "Open more information about warnings in effect"
 }
