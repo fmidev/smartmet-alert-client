@@ -1,9 +1,10 @@
+// Modified from https://github.com/gidztech/jest-puppeteer-docker
 const path = require('path');
 const fs = require('fs');
 
 module.exports = () => {
   // use the existing Chromium WebSocket for tests
-  const endpointPath = path.join(__dirname, '../', 'wsEndpoint');
+  const endpointPath = path.join(__dirname, 'wsEndpoint');
   let wsEndpoint = '';
 
   if (!fs.existsSync(endpointPath)) {

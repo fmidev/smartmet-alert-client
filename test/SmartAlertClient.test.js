@@ -65,10 +65,10 @@ const getHtml = (index, language, date) => `<!DOCTYPE html>
               currentDate: '${date}',
               warnings: {
                 weather_update_time: ${JSON.stringify(data[`womlTime-${index}.json`])},
-                weather_finland_active_all: ${JSON.stringify(data[`woml-${index}.json`])},              
-                flood_update_time: ${JSON.stringify(data[`capTime-${index}.json`])},         
-                flood_finland_active_all: ${JSON.stringify(data[`cap-${index}.json`])}     
-              },  
+                weather_finland_active_all: ${JSON.stringify(data[`woml-${index}.json`])},
+                flood_update_time: ${JSON.stringify(data[`capTime-${index}.json`])},
+                flood_finland_active_all: ${JSON.stringify(data[`cap-${index}.json`])}
+              },
               language: '${language}'
             }
           });
