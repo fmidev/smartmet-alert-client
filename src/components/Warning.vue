@@ -29,6 +29,8 @@
                         @mousedown="toggle"
                         @mouseenter="openTooltip"
                         @mouseleave="closeTooltip"
+                        @keydown.enter="toggle"
+                        @keydown.space="toggle"
                     />
                     <b-tooltip id="fmi-warnings-toggle-tooltip" :show.sync="showTooltip" triggers="" :target="id" placement="top" delay=0 :fallback-placement="[]" :container="`fmi-warnings-flag-${input.type}`" >
                         <span>
@@ -178,6 +180,9 @@ export default {
     div.symbol-list-text {
         display: table-cell;
         height: $symbol-list-line-height;
+        &:focus:not([data-focus-visible-added]) {
+            outline: none !important;
+        }
     }
 
     .symbol-list-select-container {

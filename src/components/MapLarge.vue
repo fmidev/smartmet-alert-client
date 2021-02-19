@@ -3,7 +3,8 @@
         <div class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
-                 style="max-height:550px;">
+                 style="max-height:550px;" aria-labelledby="finland-large-title" role="img">
+                <title id="finland-large-title">{{ mapText }}</title>
                 <g>
                     <path v-for="path in bluePaths" :key="path.key" :id="path.key" :stroke="strokeColor"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
@@ -46,16 +47,19 @@
                           style="cursor: pointer;pointer-events: none"/>
                 </g>
                 <svg version="1.2" v-for="icon in icons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
-                     :width="icon.width"
-                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none"/>
+                     :width="icon.width" :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom"
+                     pointer-events="none" aria-hidden="true"/>
                 <svg version="1.2" v-for="icon in coverageIcons" v-bind:key="icon.key" :x="icon.x" :y="icon.y"
-                     :width="icon.width"
-                     :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom" pointer-events="none"/>
+                     :width="icon.width" :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom"
+                     pointer-events="none" aria-hidden="true"/>
             </svg>
-            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-zoom" v-on:click="zoomIn"
-                      :aria-label="zoomInText"></b-button>
-            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-zoom" v-on:click="zoomOut"
-                      :aria-label="zoomOutText"></b-button>
+            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-map-tool" @click="zoomIn"
+                      :disabled="scale > 2" :aria-label="zoomInText"></b-button>
+            <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-map-tool" @click="zoomOut"
+                      :disabled="scale < 2" :aria-label="zoomOutText"></b-button>
+            <b-button id="fmi-warnings-move" class="fmi-warnings-map-tool" :aria-label="moveText"
+                      :disabled="scale < 2" @keydown.left="moveWest" @keydown.right="moveEast"
+                      @keydown.up="moveNorth" @keydown.down="moveSouth"></b-button>
             <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle"></div>
             <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
                        target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
@@ -64,7 +68,7 @@
                         :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
                         id="day-map-large-base-popup-closer"
                         href="#"
-                        v-on:click="closeTooltip"
+                        @click="closeTooltip"
                 ></a>
                     <div id="day-map-large-base-popup-content">
                         <div class="region-popup">
@@ -116,6 +120,9 @@ export default {
   },
   mixins: [config, utils],
   computed: {
+    moveStep() {
+      return 25;
+    },
     minIconDistSqr() {
       return 500;
     },
@@ -125,11 +132,17 @@ export default {
     iconMaxIter() {
       return 40;
     },
+    mapText() {
+      return i18n.t('mapAriaLabel') || '';
+    },
     zoomInText() {
       return i18n.t('zoomIn');
     },
     zoomOutText() {
       return i18n.t('zoomOut');
+    },
+    moveText() {
+      return i18n.t('moveMap');
     },
     tooltipStyle() {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`;
@@ -322,6 +335,7 @@ export default {
       updatedTime: '',
       dataProviderFirst: '',
       dataProviderSecond: '',
+      actionStarted: false,
       dragging: false,
       showTooltip: false,
       tooltipX: 0,
@@ -486,6 +500,30 @@ export default {
       event.preventDefault();
       this.showTooltip = false;
     },
+    moveWest(event) {
+      event.preventDefault();
+      this.panzoom.pan(this.moveStep, 0, {
+        relative: true,
+      });
+    },
+    moveEast(event) {
+      event.preventDefault();
+      this.panzoom.pan(-this.moveStep, 0, {
+        relative: true,
+      });
+    },
+    moveNorth(event) {
+      event.preventDefault();
+      this.panzoom.pan(0, this.moveStep, {
+        relative: true,
+      });
+    },
+    moveSouth(event) {
+      event.preventDefault();
+      this.panzoom.pan(0, -this.moveStep, {
+        relative: true,
+      });
+    },
   },
   mounted() {
     if (this.isClientSide()) {
@@ -505,6 +543,10 @@ export default {
           this.showTooltip = false;
         });
         finlandLarge.addEventListener('panzoompan', (event) => {
+          // Skip programmatical pan
+          if (!this.actionStarted) {
+            return;
+          }
           const eventDetail = event.detail;
           if (eventDetail == null) {
             return;
@@ -521,7 +563,11 @@ export default {
             this.dragging = true;
           }
         });
+        finlandLarge.addEventListener('panzoomstart', () => {
+          this.actionStarted = true;
+        });
         finlandLarge.addEventListener('panzoomend', () => {
+          this.actionStarted = false;
           this.dragging = false;
         });
       }
@@ -538,6 +584,7 @@ export default {
         display: inline-block;
         width: $map-large-width;
         height: 100%;
+        max-height: $map-large-height;
         background-color: rgba(0, 0, 0, 0);
 
         &:focus:not([data-focus-visible-added]) {
@@ -549,7 +596,7 @@ export default {
         height: 100%;
     }
 
-    button.fmi-warnings-zoom {
+    button.fmi-warnings-map-tool {
         position: absolute;
         right: 10px;
         border-color: #53b9e6;
@@ -558,6 +605,9 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         cursor: pointer;
+        &:focus:not([data-focus-visible-added]) {
+            outline: none !important;
+        }
     }
 
     div.map-large div.day-map-large button {
@@ -565,12 +615,43 @@ export default {
             top: 10px;
             border-radius: 2px 2px 0 0;
             background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzUzQjlFNiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+
+            &:disabled {
+                border-color: $disabled-color;
+                background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzk3OTc5NyIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+                cursor: default;
+            }
         }
 
         &#fmi-warnings-zoom-out {
             top: 46px;
             border-radius: 0 0 2px 2px;
             background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjNTNCOUU2IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+
+            &:disabled {
+                border-color: $disabled-color;
+                background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjOTc5Nzk3IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+                cursor: default;
+            }
+        }
+
+        &#fmi-warnings-move {
+            top: 90px;
+            border: none;
+            background-color: Transparent;
+            pointer-events: none;
+
+            &:focus {
+                border-radius: 2px;
+                background-color: #53b9e6;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z'/%3E%3C/svg%3E");
+
+                &:disabled {
+                    border-color: $disabled-color;
+                    background-color: $disabled-color;
+                    cursor: default;
+                }
+            }
         }
     }
 
@@ -596,8 +677,6 @@ export default {
         bottom: 12px;
         left: -50px;
         min-width: $popup-width;
-        width: $popup-width;
-        max-width: $popup-width;
         z-index: 9;
     }
 
@@ -644,6 +723,10 @@ export default {
             border-bottom: 0 none transparent;
             z-index: 8;
             pointer-events: auto;
+            outline: none !important;
+            &:focus {
+                outline: none;
+            }
         }
     }
 
@@ -668,6 +751,7 @@ export default {
     span.region-popup-header-text {
         display: table-cell;
         vertical-align: middle;
+        margin-right: 45px;
     }
 
     .region-popup-wrapper {
@@ -683,10 +767,6 @@ export default {
         width: 100%;
         background-color: white;
         padding: 0 0 0 0;
-    }
-
-    #day-map-large-base-popup {
-        margin-right: 20px;
     }
 
     .shadow-level-0 {
@@ -778,7 +858,7 @@ export default {
     }
 
     @media (max-width: 575px) {
-        button.fmi-warnings-zoom {
+        button.fmi-warnings-map-tool {
             display: none;
         }
 

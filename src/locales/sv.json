@@ -168,5 +168,8 @@
     "selectDisabledWarningTooltipLine2": "kartan",
     "description": "Effektbeskrivningen",
     "zoomIn": "Zooma in",
-    "zoomOut": "Zooma ut"
+    "zoomOut": "Zooma ut",
+    "moveMap": "Använd piltangenterna för att flytta kartan",
+    "mapAriaLabel": "Förstorande karta",
+    "infoButtonAriaLabel": "Öppna mer information om varningar i kraft"
 }

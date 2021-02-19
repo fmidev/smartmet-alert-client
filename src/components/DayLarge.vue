@@ -1,6 +1,6 @@
 <template>
   <div class="map-container">
-    <div class="warning-map-status">
+    <div class="warning-map-status" aria-hidden="true">
       <p>
         <span class="bold-text">{{ warnings }}</span
         ><br />
@@ -13,7 +13,7 @@
         {{ atTime }} {{ updatedTime }}
       </p>
     </div>
-    <div class="data-providers noselect">
+    <div class="data-providers noselect" aria-hidden="true">
       <span>{{ dataProviderFirst }}</span
       ><br />
       <span>{{ dataProviderSecond }}</span>
