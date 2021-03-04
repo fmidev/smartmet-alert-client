@@ -304,11 +304,11 @@ export default {
               const effectiveFrom1 = (new Date(warnings[key1].effectiveFrom)).getTime();
               const effectiveFrom2 = (new Date(warnings[key2].effectiveFrom)).getTime();
               if (effectiveFrom1 !== effectiveFrom2) {
-                return effectiveFrom2 - effectiveFrom1;
+                return effectiveFrom1 - effectiveFrom2;
               }
               const effectiveUntil1 = (new Date(warnings[key1].effectiveUntil)).getTime();
               const effectiveUntil2 = (new Date(warnings[key2].effectiveUntil)).getTime();
-              return effectiveUntil2 - effectiveUntil1;
+              return effectiveUntil1 - effectiveUntil2;
             });
             warningsByType.forEach((key) => {
               this.regionIds.forEach((regionId, regionIndex) => {
