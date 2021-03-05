@@ -421,7 +421,8 @@ export default {
               });
             });
           });
-      } else {
+      }
+      if (popupWarnings.length === 0) {
         popupWarnings = [{
           type: '',
           severity: 0,
