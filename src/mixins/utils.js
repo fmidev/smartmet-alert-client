@@ -353,7 +353,7 @@ export default {
         return false;
       }
       const regionId = this.regionFromReference(warning.properties.reference);
-      if ((!warning.properties.coverage_references) && (this.geometries[this.geometryId][regionId] == null)) {
+      if ((warning.geometry == null) && (this.geometries[this.geometryId][regionId] == null)) {
         return false;
       }
       const warningType = warning.properties.warning_context != null ?
@@ -479,9 +479,9 @@ export default {
             const warningId = warning.properties.identifier;
             if (warnings[warningId] == null) {
               warnings[warningId] = createWarnings[warningType](warning);
-              const regions = Object.keys(warnings[warningId].regions);
-              if (regions.length > 0) {
-                regionId = regions[0];
+              const warningRegions = Object.keys(warnings[warningId].regions);
+              if (warningRegions.length > 0) {
+                regionId = warningRegions[0];
               }
             } else {
               regionId = this.regionFromReference(warning.properties.reference);

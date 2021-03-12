@@ -1,6 +1,6 @@
 <template>
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
-    <div id="fmi-warnings-errors" :class=errors />
+    <div id="fmi-warnings-errors" :class="errors" />
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
