@@ -98,6 +98,7 @@
 
 <script>
 import 'focus-visible';
+import { vueWindowSizeMixin } from 'vue-window-size';
 import Panzoom from '@panzoom/panzoom';
 import i18n from '../i18n';
 import config from '../mixins/config';
@@ -118,7 +119,7 @@ export default {
       type: Number,
     },
   },
-  mixins: [config, utils],
+  mixins: [config, utils, vueWindowSizeMixin],
   computed: {
     moveStep() {
       return 25;
@@ -164,7 +165,7 @@ export default {
     },
     icons() {
       const data = [];
-      const warnings = this.$store.getters.warnings;
+      const warnings = this.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
       const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
@@ -210,7 +211,7 @@ export default {
       return data;
     },
     coverageIcons() {
-      const warnings = this.$store.getters.warnings;
+      const warnings = this.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
       return this.coverageWarnings.reduce((iconData, warningId) => {
         const warning = warnings[warningId];
@@ -255,7 +256,7 @@ export default {
     },
     regionSets() {
       const map = new Map();
-      const warnings = this.$store.getters.warnings;
+      const warnings = this.warnings;
       const visibleWarnings = this.$store.getters.visibleWarnings;
       this.input.land.filter((regionItem) => this.geometries[this.geometryId][regionItem.key].neighbours.length > 0)
         .forEach((regionItem) => {
@@ -325,6 +326,9 @@ export default {
       });
       return merged;
     },
+    warnings() {
+      return this.$store.getters.warnings;
+    },
   },
   data() {
     return {
@@ -373,6 +377,12 @@ export default {
       this.coverageRegions = {};
       this.coverageWarnings = [];
     },
+    warnings() {
+      this.showTooltip = false;
+    },
+    windowWidth() {
+      this.showTooltip = false;
+    },
   },
   methods: {
     paths(options) {
@@ -411,7 +421,7 @@ export default {
         region.warnings.filter((warning) => visibleWarnings.includes(warning.type))
           .forEach((warningByType) => {
             warningByType.identifiers.forEach((identifier) => {
-              const warning = this.$store.getters.warnings[identifier];
+              const warning = this.warnings[identifier];
               popupWarnings.push({
                 type: warningByType.type,
                 severity: warning.severity,
@@ -437,7 +447,7 @@ export default {
       this.showTooltip = true;
     },
     validIconLocation(coord, warningId) {
-      const warnings = this.$store.getters.warnings;
+      const warnings = this.warnings;
       const warning = warnings[warningId];
       const activeIconRegions = {};
       this.icons.forEach((icon) => {
@@ -589,7 +599,7 @@ export default {
         background-color: rgba(0, 0, 0, 0);
 
         &:focus:not([data-focus-visible-added]) {
-            outline: none;
+            outline: none !important;
         }
     }
 
@@ -658,6 +668,9 @@ export default {
 
     div.day-map-large div#fmi-warnings-region-tooltip-reference > div#fmi-warnings-region-tooltip.tooltip.b-tooltip {
         opacity: 1;
+        &:focus {
+            outline: none !important;
+        }
     }
 
     #fmi-warnings-region-tooltip-reference {
@@ -852,7 +865,7 @@ export default {
             max-width: 100%;
         }
 
-        div#fmi-warnings-region-tooltip-reference {
+        div#fmi-warnings-region-tooltip.tooltip.b-tooltip {
             display: none;
         }
 
