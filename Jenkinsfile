@@ -75,11 +75,11 @@ pipeline {
         }
 
         stage('Deploy') {
-            when { environment name: 'BRANCH_NAME', value: 'main' }
             steps {
                 sh "chmod --verbose --recursive u+r+w+X,g+r-w+X,o-r-w-x dist/"
                 sh "ssh ${deployUserAndHost} \"mkdir --parents --mode=750 ${deployBaseDirectory}/${packageVersion}\""
                 sh "scp -rp dist/* ${deployUserAndHost}:${deployBaseDirectory}/${packageVersion}/"
+                # TODO: Add symlink 'latest'
             }
         }
 
