@@ -47,7 +47,7 @@ export default {
     },
     geometryId: {
       type: Number,
-      default: 2020,
+      default: 2021,
     },
     language: {
       type: String,
