@@ -7,6 +7,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 import utils from './mixins/utils';
+import config from './mixins/config';
 import AlertClient from './components/AlertClient.vue';
 import store from './store';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -47,7 +48,7 @@ export default {
     },
     geometryId: {
       type: Number,
-      default: 2021,
+      default: config.props.defaultGeometryId,
     },
     language: {
       type: String,
@@ -62,7 +63,7 @@ export default {
       default: false,
     },
   },
-  mixins: [utils],
+  mixins: [config, utils],
   data() {
     return {
       updatedAt: null,
