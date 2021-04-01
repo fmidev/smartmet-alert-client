@@ -1,6 +1,9 @@
 import svgpath from 'svgpath';
 
 export default {
+  props: {
+    defaultGeometryId: 2021,
+  },
   data() {
     return {
       warningTypes: new Map(

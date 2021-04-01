@@ -21,6 +21,7 @@ import Days from './Days.vue';
 import Regions from './Regions.vue';
 import Warnings from './Warnings.vue';
 import module from '../store/module';
+import config from '../mixins/config';
 import utils from '../mixins/utils';
 
 export default {
@@ -41,7 +42,7 @@ export default {
     warningsData: Object,
     geometryId: {
       type: Number,
-      default: 2021,
+      default: config.props.defaultGeometryId,
     },
     language: String,
     sleep: {
@@ -49,7 +50,7 @@ export default {
       default: true,
     },
   },
-  mixins: [utils],
+  mixins: [config, utils],
   components: {
     Days,
     Regions,
