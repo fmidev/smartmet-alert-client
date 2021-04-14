@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import config from '@/mixins/config';
 import i18n from '../i18n';
 import 'focus-visible';
 import RegionWarning from './RegionWarning.vue';
@@ -35,6 +36,7 @@ import DescriptionWarning from './DescriptionWarning.vue';
 export default {
   name: 'Region',
   components: { RegionWarning, DescriptionWarning },
+  mixins: [config],
   props: {
     type: {
       type: String,
@@ -59,7 +61,7 @@ export default {
     },
     warningsSummary() {
       return this.input.reduce((warnings, warningInfo) => {
-        if ((warningInfo != null) && (warningInfo.identifiers != null) && (warningInfo.identifiers.length > 0)) {
+        if ((warningInfo != null) && (warningInfo.identifiers != null) && (warningInfo.identifiers.length > 0) && (warningInfo.coverage >= this.coverageCriterion)) {
           const warning = this.$store.getters.warnings[warningInfo.identifiers[0]];
           if (warning != null) {
             warnings.push(warning);
@@ -71,7 +73,7 @@ export default {
     warnings() {
       return this.input.reduce((allWarnings, warningInfo) => (allWarnings.concat(warningInfo.identifiers.reduce((warnings, identifier) => {
         const warning = this.$store.getters.warnings[identifier];
-        if (warning != null) {
+        if ((warning != null) && (this.warningsSummary.some((summaryWarning) => summaryWarning.type === warning.type))) {
           warnings.push(warning);
         }
         return warnings;

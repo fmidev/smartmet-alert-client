@@ -6,6 +6,7 @@ export default {
   },
   data() {
     return {
+      coverageCriterion: 0.2,
       warningTypes: new Map(
         [
           ['thunderStorm', 'land'],

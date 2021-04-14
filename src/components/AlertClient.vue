@@ -127,7 +127,7 @@ export default {
       }
     },
     visibilityChange() {
-      if (this.isClientSide()) {
+      if ((this.isClientSide()) && (this.refreshInterval)) {
         if (document.hidden) {
           this.cancelTimer();
         } else {

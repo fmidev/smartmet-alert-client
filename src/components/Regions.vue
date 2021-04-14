@@ -45,7 +45,7 @@ export default {
         // eslint-disable-next-line no-param-reassign
         regionData[regionType] = this.input[this.selectedDay][regionType].reduce((regions, region) => {
           const parentId = this.geometries[this.geometryId][region.key].parent;
-          if ((!overriddenIds.includes(region.key)) && ((!parentId) || (overriddenIds.includes(parentId)))) {
+          if ((!overriddenIds.includes(region.key)) && ((!parentId) || (overriddenIds.includes(parentId))) && (region.warnings.some((warning) => warning.coverage >= this.coverageCriterion))) {
             regions.push(region);
           }
           return regions;
@@ -65,8 +65,8 @@ export default {
     },
   },
   methods: {
-    anyRegionWarnings(region) {
-      return ((this.input.length > 0) && (this.input[this.selectedDay][region].reduce((numObjKeys, warning) => numObjKeys + Object.keys(warning).length, 0) > 0));
+    anyRegionWarnings(regionType) {
+      return ((this.regions != null) && (this.regions[regionType] != null) && (this.regions[regionType].length > 0));
     },
   },
 };

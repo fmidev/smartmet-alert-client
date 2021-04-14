@@ -16,6 +16,7 @@ import xpath from 'xpath';
 import { DOMParser } from 'xmldom';
 import config from './config';
 import i18n from '../i18n';
+import 'url-search-params-polyfill';
 
 export default {
   mixins: [config],
@@ -137,6 +138,23 @@ export default {
           .join(''))
       );
     },
+    relativeCoverageFromReference(reference) {
+      if (reference == null) {
+        return 0;
+      }
+      let paramString = '';
+      const urlSplit = reference.split('?');
+      if (urlSplit.length <= 1) {
+        return 0;
+      }
+      paramString = urlSplit[1].split('#')[0];
+      const searchParams = new URLSearchParams(paramString);
+      const relativeCoverage = searchParams.get('c');
+      if (relativeCoverage == null) {
+        return 0;
+      }
+      return Number(relativeCoverage);
+    },
     regionFromReference(reference) {
       return reference.split(',').map((url) => {
         let subUrl = url.substring(url.lastIndexOf('#') + 1);
@@ -191,7 +209,7 @@ export default {
         regions: this.geometries[this.geometryId][regionId] ? {
           [this.regionFromReference(warning.properties.reference)]: true,
         } : {},
-        covRegions: {},
+        covRegions: new Map(),
         coveragesLarge: [],
         coveragesSmall: [],
         effectiveFrom: warning.properties[this.EFFECTIVE_FROM],
@@ -228,7 +246,7 @@ export default {
         regions: {
           [this.regionFromReference(warning.properties.reference)]: true,
         },
-        covRegions: {},
+        covRegions: new Map(),
         coveragesLarge: [],
         coveragesSmall: [],
         effectiveFrom: warning.properties[this.ONSET],
@@ -329,12 +347,18 @@ export default {
                     warningItem = {
                       type: warningType,
                       identifiers: [],
-                      coverage: Object.keys(warnings[key].covRegions).length > 0,
+                      coverage: 0,
                     };
                     regionItem.warnings.push(warningItem);
                   }
                   if (!warningItem.identifiers.includes(key)) {
                     warningItem.identifiers.push(key);
+                  }
+                  const covRegions = warnings[key].covRegions;
+                  if (covRegions.has(regionId)) {
+                    warningItem.coverage += covRegions.get(regionId);
+                  } else {
+                    warningItem.coverage = 1;
                   }
                 }
               });
@@ -379,7 +403,7 @@ export default {
           (warnings[key].effectiveDays[this.index]) && (visibleWarnings.includes(warnings[key].type)) &&
           (warnings[key].coveragesLarge.length > 0)) {
           if (!this.coverageWarnings.includes(key)) {
-            Object.keys(warnings[key].covRegions).forEach((covRegion) => {
+            [...warnings[key].covRegions.keys()].forEach((covRegion) => {
               if ((this.coverageRegions[covRegion] == null) || (this.coverageRegions[covRegion] < warnings[key].severity)) {
                 this.coverageRegions[covRegion] = warnings[key].severity;
               }
@@ -494,9 +518,10 @@ export default {
               warning.properties.coverage_references.split(', ')
                 .filter((reference) => reference.length > 0).forEach((reference) => {
                   regionId = this.regionFromReference(reference);
+                  const regionCoverage = this.relativeCoverageFromReference(reference) / 100;
                   if (this.geometries[this.geometryId][regionId]) {
                     warnings[warningId].regions[regionId] = true;
-                    warnings[warningId].covRegions[regionId] = true;
+                    warnings[warningId].covRegions.set(regionId, regionCoverage);
                   }
                 });
               if (warning.geometry != null) {
@@ -547,14 +572,20 @@ export default {
       return this.input[regionType].find((regionData) => regionData.key === regionId);
     },
     regionSeverity(regionId) {
+      const warnings = this.allWarnings;
       const region = this.regionData(regionId);
       let severity = 0;
       if (region != null) {
-        const visibleWarnings = this.visibleWarnings;
-        const topWarning = region.warnings.find((warning) => !warning.coverage && visibleWarnings.includes(warning.type));
-        if (topWarning != null) {
-          severity = this.allWarnings[topWarning.identifiers[0]].severity;
-        }
+        region.warnings.find((warning) => {
+          if (this.visibleWarnings.includes(warning.type)) {
+            const topIdentifier = warning.identifiers.find((id) => warnings[id] && warnings[id].covRegions.size === 0);
+            if (topIdentifier != null) {
+              severity = warnings[topIdentifier].severity;
+              return true;
+            }
+          }
+          return false;
+        });
       }
       const parentId = this.geometries[this.geometryId][regionId].parent;
       if (parentId) {
