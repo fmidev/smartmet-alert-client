@@ -4,6 +4,7 @@ const replaceAll = require('string.prototype.replaceall');
 const svg64 = require('svg64');
 const data = require('./data/db.json');
 
+// TODO: replace TEST_DATES with the corresponding updated time value
 const TEST_DATES = [
   '2020-05-27T13:18:42Z',
   '2020-09-04T08:35:43Z',
@@ -21,6 +22,11 @@ const TEST_DATES = [
   '2020-09-04T08:35:43.746Z',
   '2020-11-19T15:34:43.726Z',
   '2021-01-11T20:31:59.375Z',
+  '2021-03-17T18:16:03.143Z',
+  '2021-03-18T04:41:40.457Z',
+  '2021-03-18T11:02:18.843Z',
+  '2021-04-10T06:08:44.957Z',
+  '2021-03-31T06:48:18.960Z',
 ];
 const TIMEOUT = 60000;
 const VIEWPORT_WIDTH = 1000;

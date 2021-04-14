@@ -175,10 +175,10 @@ export default {
           const aspectRatios = [];
           const keys = [];
           const geoms = [];
-          region.warnings.filter((warning) => !warning.coverage && visibleWarnings.includes(warning.type))
+          region.warnings.filter((warning) => visibleWarnings.includes(warning.type))
             .forEach((regionWarning, index, regionWarnings) => {
-              const identifier = regionWarning.identifiers[0];
-              if ((visibleWarnings.includes(regionWarning.type)) && (Object.keys(warnings[identifier].covRegions).length === 0) && (iconSizes.length < maxWarningIcons)) {
+              const identifier = regionWarning.identifiers.find((id) => warnings[id] && warnings[id].covRegions.size === 0);
+              if ((identifier) && (iconSizes.length < maxWarningIcons)) {
                 const icon = ((iconSizes.length === maxWarningIcons - 1) && (regionWarnings.length > maxWarningIcons)) ?
                   this.warningIcon({ type: this.MULTIPLE }) : this.warningIcon(warnings[identifier]);
                 const scale = icon.scale ? icon.scale : 1;
@@ -266,7 +266,7 @@ export default {
             }
             const warningIdentifier = warning.identifiers.find((identifier) => {
               const warningById = warnings[identifier];
-              return Object.keys(warningById.regions).length > Object.keys(warningById.covRegions).length;
+              return Object.keys(warningById.regions).length > warningById.covRegions.size;
             });
             if (warningIdentifier == null) {
               return reduced;
@@ -410,15 +410,11 @@ export default {
       const visibleWarnings = this.$store.getters.visibleWarnings;
       const regionId = event.target.getAttribute('data-region');
       let severity = Number(event.target.getAttribute('data-severity'));
-      if ((this.coverageRegions[regionId] != null) && (this.coverageRegions[regionId] > severity)) {
-        severity = this.coverageRegions[regionId];
-      }
-      this.popupLevel = `level-${severity}`;
       this.popupRegion = this.geometries[this.geometryId][regionId];
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
-        region.warnings.filter((warning) => visibleWarnings.includes(warning.type))
+        region.warnings.filter((warning) => visibleWarnings.includes(warning.type) && warning.coverage >= this.coverageCriterion)
           .forEach((warningByType) => {
             warningByType.identifiers.forEach((identifier) => {
               const warning = this.warnings[identifier];
@@ -440,7 +436,10 @@ export default {
           text: '',
           interval: i18n.t('popupNoWarnings'),
         }];
+      } else if ((this.coverageRegions[regionId] != null) && (this.coverageRegions[regionId] > severity)) {
+        severity = this.coverageRegions[regionId];
       }
+      this.popupLevel = `level-${severity}`;
       this.popupWarnings = popupWarnings;
       this.tooltipX = event.layerX;
       this.tooltipY = event.layerY;
@@ -453,7 +452,7 @@ export default {
       this.icons.forEach((icon) => {
         activeIconRegions[icon.regionId] = true;
       });
-      return !Object.keys(warning.covRegions)
+      return ![...warning.covRegions.keys()]
         .some((covRegion) => {
           if (!activeIconRegions[covRegion]) {
             return false;
