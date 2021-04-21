@@ -500,6 +500,7 @@ export default {
         for (const warning of features) {
           if (this.isValid(warning)) {
             let regionId;
+            const regionIds = [];
             const warningId = warning.properties.identifier;
             if (warnings[warningId] == null) {
               warnings[warningId] = createWarnings[warningType](warning);
@@ -517,11 +518,12 @@ export default {
               // Space after comma is needed for merged areas
               warning.properties.coverage_references.split(', ')
                 .filter((reference) => reference.length > 0).forEach((reference) => {
-                  regionId = this.regionFromReference(reference);
+                  const refRegionId = this.regionFromReference(reference);
                   const regionCoverage = this.relativeCoverageFromReference(reference) / 100;
-                  if (this.geometries[this.geometryId][regionId]) {
-                    warnings[warningId].regions[regionId] = true;
-                    warnings[warningId].covRegions.set(regionId, regionCoverage);
+                  if (this.geometries[this.geometryId][refRegionId]) {
+                    warnings[warningId].regions[refRegionId] = true;
+                    warnings[warningId].covRegions.set(refRegionId, regionCoverage);
+                    regionIds.push(refRegionId);
                   }
                 });
               if (warning.geometry != null) {
@@ -533,11 +535,16 @@ export default {
                 warnings[warningId].coveragesSmall = this.coverageData(coverageSmall[this.COVERAGE_SVG]);
               }
             }
-            if (this.geometries[this.geometryId][regionId]) {
+            if ((regionId != null) && (this.geometries[this.geometryId][regionId])) {
               this.geometries[this.geometryId][regionId].children.forEach((id) => {
                 warnings[warningId].regions[id] = true;
               });
-              const parentId = this.geometries[this.geometryId][regionId].parent;
+              if (regionIds.length === 0) {
+                regionIds.push(regionId);
+              }
+            }
+            regionIds.forEach((id) => {
+              const parentId = this.geometries[this.geometryId][id].parent;
               if (parentId) {
                 if (parents[parentId] == null) {
                   parents[parentId] = [false, false, false, false, false];
@@ -548,7 +555,7 @@ export default {
                   }
                 });
               }
-            }
+            });
           }
         }
       }
