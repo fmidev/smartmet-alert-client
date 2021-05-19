@@ -477,7 +477,11 @@ export default {
       const allUpdateTimes = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME].reduce((updateTimes, warningUpdateTime) => {
         if ((data[warningUpdateTime] != null) && (data[warningUpdateTime].features != null) &&
           (data[warningUpdateTime].features.length > 0) && (data[warningUpdateTime].features[0].properties != null)) {
-          updateTimes.push(new Date(data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]));
+          const updateTime = new Date(data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]);
+          updateTimes.push(updateTime);
+          if (this.currentTime - updateTime.getTime() > this.maxUpdateDelay[warningUpdateTime]) {
+            this.handleError(`${warningUpdateTime}_outdated`);
+          }
         } else {
           this.handleError(warningUpdateTime);
         }
