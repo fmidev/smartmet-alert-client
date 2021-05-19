@@ -121,6 +121,9 @@ export default {
   },
   mixins: [config, utils, vueWindowSizeMixin],
   computed: {
+    visibleWarnings() {
+      return this.$store.getters.visibleWarnings;
+    },
     moveStep() {
       return 25;
     },
@@ -132,9 +135,6 @@ export default {
     },
     iconMaxIter() {
       return 40;
-    },
-    mapText() {
-      return i18n.t('mapAriaLabel') || '';
     },
     zoomInText() {
       return i18n.t('zoomIn');
@@ -166,7 +166,6 @@ export default {
     icons() {
       const data = [];
       const warnings = this.warnings;
-      const visibleWarnings = this.$store.getters.visibleWarnings;
       const maxWarningIcons = this.maxWarningIcons;
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId);
@@ -175,7 +174,7 @@ export default {
           const aspectRatios = [];
           const keys = [];
           const geoms = [];
-          region.warnings.filter((warning) => visibleWarnings.includes(warning.type))
+          region.warnings.filter((warning) => this.visibleWarnings.includes(warning.type))
             .forEach((regionWarning, index, regionWarnings) => {
               const identifier = regionWarning.identifiers.find((id) => warnings[id] && warnings[id].covRegions.size === 0);
               if ((identifier) && (iconSizes.length < maxWarningIcons)) {
@@ -212,10 +211,9 @@ export default {
     },
     coverageIcons() {
       const warnings = this.warnings;
-      const visibleWarnings = this.$store.getters.visibleWarnings;
       return this.coverageWarnings.reduce((iconData, warningId) => {
         const warning = warnings[warningId];
-        if ((visibleWarnings.includes(warning.type)) && (warning.coveragesLarge.length > 0)) {
+        if ((this.visibleWarnings.includes(warning.type)) && (warning.coveragesLarge.length > 0)) {
           let reference = warning.coveragesLarge[0].reference;
           let iterIndex = 0;
           let radius;
@@ -257,11 +255,10 @@ export default {
     regionSets() {
       const map = new Map();
       const warnings = this.warnings;
-      const visibleWarnings = this.$store.getters.visibleWarnings;
       this.input.land.filter((regionItem) => this.geometries[this.geometryId][regionItem.key].neighbours.length > 0)
         .forEach((regionItem) => {
           const serialized = regionItem.warnings.reduce((reduced, warning) => {
-            if (!visibleWarnings.includes(warning.type)) {
+            if (!this.visibleWarnings.includes(warning.type)) {
               return reduced;
             }
             const warningIdentifier = warning.identifiers.find((identifier) => {
@@ -380,6 +377,9 @@ export default {
     warnings() {
       this.showTooltip = false;
     },
+    visibleWarnings() {
+      this.showTooltip = false;
+    },
     windowWidth() {
       this.showTooltip = false;
     },
@@ -407,14 +407,13 @@ export default {
       }, []);
     },
     regionClicked(event) {
-      const visibleWarnings = this.$store.getters.visibleWarnings;
       const regionId = event.target.getAttribute('data-region');
       let severity = Number(event.target.getAttribute('data-severity'));
       this.popupRegion = this.geometries[this.geometryId][regionId];
       const region = this.input[this.popupRegion.type].find((regionWarning) => regionWarning.key === regionId);
       let popupWarnings = [];
       if (region != null) {
-        region.warnings.filter((warning) => visibleWarnings.includes(warning.type) && warning.coverage >= this.coverageCriterion)
+        region.warnings.filter((warning) => this.visibleWarnings.includes(warning.type) && warning.coverage >= this.coverageCriterion)
           .forEach((warningByType) => {
             warningByType.identifiers.forEach((identifier) => {
               const warning = this.warnings[identifier];
