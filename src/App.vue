@@ -1,5 +1,5 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
+  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
@@ -69,6 +69,7 @@ export default {
       updatedAt: null,
       refreshedAt: null,
       warningsData: null,
+      visible: true,
     };
   },
   computed: {
@@ -158,6 +159,12 @@ export default {
         this.updatedAt = currentTime;
         this.warningsData = responseData;
       });
+    },
+    show() {
+      this.visible = true;
+    },
+    hide() {
+      this.visible = false;
     },
   },
 };
