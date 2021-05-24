@@ -5,7 +5,6 @@
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 import utils from './mixins/utils';
 import config from './mixins/config';
 import AlertClient from './components/AlertClient.vue';
@@ -27,7 +26,6 @@ export default {
   props: {
     currentDate: {
       type: String,
-      default: formatISO(new Date()),
     },
     baseUrl: {
       type: String,
@@ -114,7 +112,13 @@ export default {
       })[this.language];
     },
     currentTime() {
-      return this.refreshedAt ? this.refreshedAt : (new Date(this.currentDate)).getTime();
+      if (this.refreshedAt) {
+        return this.refreshedAt;
+      }
+      if (this.currentDate) {
+        return (new Date(this.currentDate)).getTime();
+      }
+      return Date.now();
     },
   },
   created() {
