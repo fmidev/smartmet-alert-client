@@ -1,15 +1,4 @@
-import {
-  addDays,
-  compareDesc,
-  format,
-  getDate,
-  getDay,
-  getMonth,
-  getYear,
-  isAfter,
-  isBefore,
-  startOfDay,
-} from 'date-fns';
+import spacetime from 'spacetime';
 import he from 'he';
 import mapshaper from 'mapshaper';
 import xpath from 'xpath';
@@ -173,16 +162,16 @@ export default {
       }, '');
     },
     validInterval(start, end) {
-      const effectiveFrom = new Date(start);
-      const effectiveUntil = new Date(end);
-      return `${format(effectiveFrom, this.DATE_TIME_FORMAT)} - ${format(effectiveUntil, this.DATE_TIME_FORMAT)}`;
+      const effectiveFrom = spacetime(start);
+      const effectiveUntil = spacetime(end);
+      return `${effectiveFrom.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)} - ${effectiveUntil.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)}`;
     },
     effectiveDays(start, end) {
-      const effectiveFrom = new Date(start);
-      const effectiveUntil = new Date(end);
-      const currentDate = new Date(this.currentTime);
-      return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((isBefore(effectiveFrom, startOfDay(addDays(currentDate, index + 1)))) &&
-        (isAfter(effectiveUntil, startOfDay(addDays(currentDate, index))))));
+      const effectiveFrom = spacetime(start);
+      const effectiveUntil = spacetime(end);
+      const currentDate = spacetime(this.currentTime);
+      return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((effectiveFrom.goto(this.timezone).isBefore((currentDate.add(index + 1, 'days').goto(this.timezone).startOf('day')))) &&
+          (effectiveUntil.goto(this.timezone).isAfter(currentDate.add(index, 'days').goto(this.timezone).startOf('day')))));
     },
     text(properties) {
       return properties[this.WARNING_CONTEXT] === this.SEA_WIND ? properties[this.PHYSICAL_VALUE] : '';
@@ -265,17 +254,17 @@ export default {
       };
     },
     createDays(warnings) {
-      const currentDate = new Date(this.currentTime);
+      const currentDate = spacetime(this.currentTime);
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = addDays(currentDate, index);
+        const date = currentDate.add(index, 'days').goto(this.timezone);
         return {
-          weekdayName: this.WEEKDAY_NAMES[getDay(date)],
-          day: getDate(date),
-          month: getMonth(date) + 1,
-          year: getYear(date),
+          weekdayName: this.WEEKDAY_NAMES[date.weekStart('monday').day()],
+          day: date.date(),
+          month: date.month() + 1,
+          year: date.year(),
           severity: Object.values(warnings).reduce((maxSeverity, warning) => (warning.effectiveDays[index] ? Math.max(warning.severity, maxSeverity) : maxSeverity), 0),
-          updatedDate: this.updatedAt != null ? format(this.updatedAt, this.DATE_FORMAT) : '',
-          updatedTime: this.updatedAt != null ? format(this.updatedAt, this.TIME_FORMAT) : '',
+          updatedDate: this.updatedAt != null ? this.updatedAt.unixFmt(this.DATE_FORMAT) : '',
+          updatedTime: this.updatedAt != null ? this.updatedAt.unixFmt(this.TIME_FORMAT) : '',
         };
       });
     },
@@ -319,13 +308,13 @@ export default {
               if (warnings[key1].value !== warnings[key2].value) {
                 return warnings[key2].value - warnings[key1].value;
               }
-              const effectiveFrom1 = (new Date(warnings[key1].effectiveFrom)).getTime();
-              const effectiveFrom2 = (new Date(warnings[key2].effectiveFrom)).getTime();
+              const effectiveFrom1 = spacetime(warnings[key1].effectiveFrom, this.timezone).epoch;
+              const effectiveFrom2 = spacetime(warnings[key2].effectiveFrom, this.timezone).epoch;
               if (effectiveFrom1 !== effectiveFrom2) {
                 return effectiveFrom1 - effectiveFrom2;
               }
-              const effectiveUntil1 = (new Date(warnings[key1].effectiveUntil)).getTime();
-              const effectiveUntil2 = (new Date(warnings[key2].effectiveUntil)).getTime();
+              const effectiveUntil1 = spacetime(warnings[key1].effectiveUntil, this.timezone).epoch;
+              const effectiveUntil2 = spacetime(warnings[key2].effectiveUntil, this.timezone).epoch;
               return effectiveUntil1 - effectiveUntil2;
             });
             warningsByType.forEach((key) => {
@@ -477,16 +466,16 @@ export default {
       const allUpdateTimes = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME].reduce((updateTimes, warningUpdateTime) => {
         if ((data[warningUpdateTime] != null) && (data[warningUpdateTime].features != null) &&
           (data[warningUpdateTime].features.length > 0) && (data[warningUpdateTime].features[0].properties != null)) {
-          const updateTime = new Date(data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]);
-          updateTimes.push(updateTime);
-          if (this.currentTime - updateTime.getTime() > this.maxUpdateDelay[warningUpdateTime]) {
+          const updateTime = spacetime(data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]);
+          updateTimes.push(updateTime.goto(this.timezone));
+          if (updateTime.diff(spacetime(this.currentTime, this.timezone), 'millisecond') > this.maxUpdateDelay[warningUpdateTime]) {
             this.handleError(`${warningUpdateTime}_outdated`);
           }
         } else {
           this.handleError(warningUpdateTime);
         }
         return updateTimes;
-      }, []).sort(compareDesc);
+      }, []).sort(this.compareDesc);
       this.updatedAt = (allUpdateTimes.length > 0) ? allUpdateTimes[0] : null;
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
@@ -640,6 +629,15 @@ export default {
           sea: [],
         },
       ];
+    },
+    compareDesc(spacetimeA, spacetimeB) {
+      if (spacetimeA.isBefore(spacetimeB)) {
+        return 1;
+      }
+      if (spacetimeA.isAfter(spacetimeB)) {
+        return -1;
+      }
+      return 0;
     },
   },
 };

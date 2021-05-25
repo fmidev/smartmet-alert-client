@@ -5,6 +5,7 @@
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
 import axios from 'axios';
+import spacetime from 'spacetime';
 import utils from './mixins/utils';
 import config from './mixins/config';
 import AlertClient from './components/AlertClient.vue';
@@ -117,7 +118,7 @@ export default {
         return this.refreshedAt;
       }
       if (this.currentDate) {
-        return (new Date(this.currentDate)).getTime();
+        return spacetime(this.currentDate, this.timezone).epoch;
       }
       return Date.now();
     },
