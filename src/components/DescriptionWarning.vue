@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import 'focus-visible';
 import fields from '../mixins/fields';
 import utils from '../mixins/utils';
 import i18n from '../i18n';
@@ -135,6 +136,9 @@ export default {
     background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
       right;
     margin-right: 2px;
+    &:focus:not([data-focus-visible-added]) {
+      outline: none !important;
+    }
   }
 
   h2.warning-valid {
