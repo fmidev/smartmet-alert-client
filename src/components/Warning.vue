@@ -33,7 +33,7 @@
                         @keydown.space="toggle"
                     />
                     <b-tooltip id="fmi-warnings-toggle-tooltip" :show.sync="showTooltip" triggers="" :target="id" placement="top" delay=0 :fallback-placement="[]" :container="`fmi-warnings-flag-${input.type}`" >
-                        <span>
+                        <span @mouseenter="closeTooltip">
                             {{ tooltipFirstLine }}
                         <br>
                             {{ tooltipSecondLine }}
