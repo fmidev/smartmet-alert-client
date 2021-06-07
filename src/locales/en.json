@@ -160,7 +160,7 @@
     "metoclientLanguage": "en",
     "dataProviderFirst": "Finnish Meteorological Institute",
     "dataProviderSecond": "Flood Centre",
-    "floodLink": "https://wwwi2.ymparisto.fi/i2/yleisoEnnusteetJaVaroitukset/#homeEn",
+    "floodLink": "https://www.vesi.fi/",
     "floodLinkText": "Watershed forecasts and flood warnings",
     "selectWarningTooltipLine1": "Hide from",
     "selectWarningTooltipLine2": "the map",
