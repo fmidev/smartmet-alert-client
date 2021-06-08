@@ -6,7 +6,12 @@ export default {
   },
   data() {
     return {
+      timezone: 'Europe/Helsinki',
       coverageCriterion: 0.2,
+      maxUpdateDelay: {
+        weather_update_time: 12 * 60 * 60 * 1000,
+        flood_update_time: 12 * 60 * 60 * 1000,
+      },
       warningTypes: new Map(
         [
           ['thunderStorm', 'land'],

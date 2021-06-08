@@ -1,11 +1,11 @@
 <template>
-    <AlertClient @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
+  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
 import Vue from 'vue';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
+import spacetime from 'spacetime';
 import utils from './mixins/utils';
 import config from './mixins/config';
 import AlertClient from './components/AlertClient.vue';
@@ -27,7 +27,6 @@ export default {
   props: {
     currentDate: {
       type: String,
-      default: formatISO(new Date()),
     },
     baseUrl: {
       type: String,
@@ -69,6 +68,7 @@ export default {
       updatedAt: null,
       refreshedAt: null,
       warningsData: null,
+      visible: true,
     };
   },
   computed: {
@@ -114,7 +114,13 @@ export default {
       })[this.language];
     },
     currentTime() {
-      return this.refreshedAt ? this.refreshedAt : (new Date(this.currentDate)).getTime();
+      if (this.refreshedAt) {
+        return this.refreshedAt;
+      }
+      if (this.currentDate) {
+        return spacetime(this.currentDate, this.timezone).epoch;
+      }
+      return Date.now();
     },
   },
   created() {
@@ -158,6 +164,12 @@ export default {
         this.updatedAt = currentTime;
         this.warningsData = responseData;
       });
+    },
+    show() {
+      this.visible = true;
+    },
+    hide() {
+      this.visible = false;
     },
   },
 };
