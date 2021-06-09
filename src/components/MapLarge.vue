@@ -1,6 +1,6 @@
 <template>
     <div class="map-large" tabindex="0">
-        <div class="day-map-large">
+        <div ref="dayMapLarge" class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
                  style="max-height:550px;" aria-labelledby="finland-large-title" role="img">
@@ -336,6 +336,7 @@ export default {
       updatedTime: '',
       dataProviderFirst: '',
       dataProviderSecond: '',
+      mapText: '',
       actionStarted: false,
       dragging: false,
       showTooltip: false,
@@ -440,9 +441,12 @@ export default {
       }
       this.popupLevel = `level-${severity}`;
       this.popupWarnings = popupWarnings;
-      this.tooltipX = event.layerX;
-      this.tooltipY = event.layerY;
-      this.showTooltip = true;
+      const mapRect = this.$refs.dayMapLarge.getBoundingClientRect();
+      if (mapRect != null) {
+        this.tooltipX = event.pageX - mapRect.x;
+        this.tooltipY = event.pageY - mapRect.y;
+        this.showTooltip = true;
+      }
     },
     validIconLocation(coord, warningId) {
       const warnings = this.warnings;

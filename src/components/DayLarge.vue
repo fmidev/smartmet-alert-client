@@ -107,6 +107,7 @@ div.warning-map-status {
   margin-left: 15px;
   text-align: left;
   z-index: 6;
+  pointer-events: none;
 }
 
 div.data-providers {
@@ -115,6 +116,7 @@ div.data-providers {
   right: 16px;
   text-align: left;
   z-index: 5;
+  pointer-events: none;
 }
 
 @media screen and (orientation:landscape) {
