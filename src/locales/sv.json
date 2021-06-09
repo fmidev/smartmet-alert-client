@@ -160,7 +160,7 @@
     "metoclientLanguage": "sv",
     "dataProviderFirst": "Meteorologiska institutet",
     "dataProviderSecond": "Översvämningscentret",
-    "floodLink": "https://wwwi2.ymparisto.fi/i2/yleisoEnnusteetJaVaroitukset/#homeSv",
+    "floodLink": "https://www.vesi.fi/",
     "floodLinkText": "Vattenföringsprognoser och översvämningsvarningar",
     "selectWarningTooltipLine1": "Dölj på",
     "selectWarningTooltipLine2": "kartan",
