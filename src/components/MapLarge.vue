@@ -443,8 +443,8 @@ export default {
       this.popupWarnings = popupWarnings;
       const mapRect = this.$refs.dayMapLarge.getBoundingClientRect();
       if (mapRect != null) {
-        this.tooltipX = event.pageX - mapRect.x;
-        this.tooltipY = event.pageY - mapRect.y;
+        this.tooltipX = event.pageX - mapRect.x - window.scrollX;
+        this.tooltipY = event.pageY - mapRect.y - window.scrollY;
         this.showTooltip = true;
       }
     },

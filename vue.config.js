@@ -37,5 +37,5 @@ module.exports = {
       },
     },
   },
-  transpileDependencies: ['mapshaper', 'flatqueue', 'flatbush', 'xmldom', 'xpath'],
+  transpileDependencies: ['mapshaper', 'flatqueue', 'flatbush', 'xmldom', 'xpath', 'spacetime'],
 };
