@@ -442,7 +442,7 @@ export default {
       this.popupLevel = `level-${severity}`;
       this.popupWarnings = popupWarnings;
       const mapRect = this.$refs.dayMapLarge.getBoundingClientRect();
-      if (mapRect != null) {
+      if ([mapRect, mapRect.x, mapRect.y, window, window.scrollX, window.scrollY].every((item) => item != null)) {
         this.tooltipX = event.pageX - mapRect.x - window.scrollX;
         this.tooltipY = event.pageY - mapRect.y - window.scrollY;
         this.showTooltip = true;

@@ -178,7 +178,7 @@ export default {
   *:focus {
     outline: dashed 2px $outline-color !important;
     outline-offset: 2px;
-    z-index: 1000;
+    z-index: 10;
   }
 
   .bold-text {
