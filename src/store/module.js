@@ -1,5 +1,6 @@
 import {
-  SET_CURRENT_TIME,
+  SET_LOADING,
+  SET_TIME_OFFSET,
   SET_SELECTED_DAY,
   SET_WARNINGS,
   SET_VISIBLE_WARNINGS,
@@ -8,21 +9,29 @@ import {
 
 export default {
   state: () => ({
+    loading: false,
+    timeOffset: 0,
     selectedDay: 0,
-    currentTime: null,
     warnings: {},
     visibleWarnings: [],
   }),
   getters: {
+    loading: (state) => (state != null ? state.loading : false),
+    timeOffset: (state) => (state != null ? state.timeOffset : 0),
     selectedDay: (state) => (state != null ? state.selectedDay : 0),
     currentTime: (state) => (state != null ? state.currentTime : null),
     warnings: (state) => (state != null ? state.warnings : {}),
     visibleWarnings: (state) => (state != null ? state.visibleWarnings : []),
   },
   mutations: {
-    [SET_CURRENT_TIME]: (state, currentTime) => {
+    [SET_LOADING]: (state, loading) => {
       if (state != null) {
-        state.currentTime = currentTime;
+        state.loading = loading;
+      }
+    },
+    [SET_TIME_OFFSET]: (state, timeOffset) => {
+      if (state != null) {
+        state.timeOffset = timeOffset;
       }
     },
     [SET_SELECTED_DAY]: (state, selectedDay) => {
@@ -54,6 +63,12 @@ export default {
     },
   },
   actions: {
+    setLoading({ commit }, loading) {
+      commit(SET_LOADING, loading);
+    },
+    setTimeOffset({ commit }, timeOffset) {
+      commit(SET_TIME_OFFSET, timeOffset);
+    },
     setSelectedDay({ commit }, selectedDay) {
       commit(SET_SELECTED_DAY, selectedDay);
     },
