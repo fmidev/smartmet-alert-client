@@ -1,5 +1,5 @@
 <template>
-  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
+  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :regionListVisible="regionListVisible" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue } from 'bootstrap-vue';
@@ -35,6 +35,10 @@ export default {
     selectedDay: {
       type: Number,
       default: 0,
+    },
+    regionListVisible: {
+      type: Boolean,
+      default: true,
     },
     weatherUpdated: String,
     floodUpdated: String,
