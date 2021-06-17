@@ -53,7 +53,7 @@
                      :width="icon.width" :height="icon.height" :viewBox="icon.viewBox" v-html="icon.geom"
                      pointer-events="none" aria-hidden="true"/>
             </svg>
-            <b-button id="fmi-warnings-zoom-in" class="fmi-warnings-map-tool" @click="zoomIn"
+            <b-button ref="zoomButton" id="fmi-warnings-zoom-in" class="fmi-warnings-map-tool" @click="zoomIn"
                       :disabled="scale > 2" :aria-label="zoomInText"></b-button>
             <b-button id="fmi-warnings-zoom-out" class="fmi-warnings-map-tool" @click="zoomOut"
                       :disabled="scale < 2" :aria-label="zoomOutText"></b-button>
@@ -383,6 +383,9 @@ export default {
     },
     windowWidth() {
       this.showTooltip = false;
+      if ((this.$refs.zoomButton.clientHeight === 0) && (this.scale > 1)) {
+        this.scale = 1;
+      }
     },
   },
   methods: {
@@ -582,6 +585,20 @@ export default {
         finlandLarge.addEventListener('panzoomend', () => {
           this.actionStarted = false;
           this.dragging = false;
+          const pan = this.panzoom.getPan();
+          let panChanged = false;
+          ['x', 'y'].forEach((coord) => {
+            if (pan[coord] > this.panLimits[coord]) {
+              pan[coord] = this.panLimits[coord];
+              panChanged = true;
+            } else if (pan[coord] < -this.panLimits[coord]) {
+              pan[coord] = -this.panLimits[coord];
+              panChanged = true;
+            }
+          });
+          if (panChanged) {
+            this.panzoom.pan(pan.x, pan.y);
+          }
         });
       }
     }
@@ -681,6 +698,7 @@ export default {
         height: 1px;
         background-color: rgba(0, 0, 0, 0);
         pointer-events: none;
+        z-index: 10;
     }
 
     .fmi-warnings-popup {

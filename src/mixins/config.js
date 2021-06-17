@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       timezone: 'Europe/Helsinki',
+      panLimits: { x: 175, y: 275 },
       coverageCriterion: 0.2,
       maxUpdateDelay: {
         weather_update_time: 12 * 60 * 60 * 1000,
