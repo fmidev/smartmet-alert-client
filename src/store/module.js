@@ -19,7 +19,6 @@ export default {
     loading: (state) => (state != null ? state.loading : false),
     timeOffset: (state) => (state != null ? state.timeOffset : 0),
     selectedDay: (state) => (state != null ? state.selectedDay : 0),
-    currentTime: (state) => (state != null ? state.currentTime : null),
     warnings: (state) => (state != null ? state.warnings : {}),
     visibleWarnings: (state) => (state != null ? state.visibleWarnings : []),
   },

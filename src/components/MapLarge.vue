@@ -1,5 +1,8 @@
 <template>
     <div class="map-large" tabindex="0">
+        <div v-if="loading" class="text-center">
+            <b-spinner></b-spinner>
+        </div>
         <div ref="dayMapLarge" class="day-map-large">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
                  viewBox="0 0 440 550" stroke-linecap="round" stroke-linejoin="round" id="finland-large"
@@ -123,6 +126,9 @@ export default {
   computed: {
     visibleWarnings() {
       return this.$store.getters.visibleWarnings;
+    },
+    loading() {
+      return this.$store.getters.loading;
     },
     moveStep() {
       return 25;
@@ -602,6 +608,9 @@ export default {
         });
       }
     }
+  },
+  updated() {
+    this.$store.dispatch('setLoading', false);
   },
 };
 </script>
