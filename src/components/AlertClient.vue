@@ -4,8 +4,8 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-          <Days :input="days" :defaultDay="selectedDay" :regions="regions" :geometryId="geometryId" />
-          <Regions :input="regions" :parents="parents" :geometryId="geometryId" />
+          <Days :input="days" :defaultDay="selectedDay" :staticDays="staticDays" :regions="regions" :geometryId="geometryId" />
+          <Regions v-if="regionListEnabled" :input="regions" :parents="parents" :geometryId="geometryId" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
           <Warnings v-show="validData" :input="legend" />
@@ -34,6 +34,14 @@ export default {
     selectedDay: {
       type: Number,
       default: 0,
+    },
+    staticDays: {
+      type: Boolean,
+      default: true,
+    },
+    regionListEnabled: {
+      type: Boolean,
+      default: true,
     },
     currentTime: {
       type: Number,

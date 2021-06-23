@@ -1,8 +1,8 @@
 <template>
-  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
+  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :staticDays="staticDays" :regionListEnabled="regionListEnabled" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
 </template>
 <script>
-import { BootstrapVue } from 'bootstrap-vue';
+import { BootstrapVue, BSpinner } from 'bootstrap-vue';
 import Vue from 'vue';
 import axios from 'axios';
 import spacetime from 'spacetime';
@@ -14,9 +14,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 Vue.config.productionTip = false;
-
 Vue.use(BootstrapVue);
-
+Vue.component('b-spinner', BSpinner);
 Vue.prototype.$store = store;
 
 export default {
@@ -35,6 +34,18 @@ export default {
     selectedDay: {
       type: Number,
       default: 0,
+    },
+    regionListEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    spinnerEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    staticDays: {
+      type: Boolean,
+      default: true,
     },
     weatherUpdated: String,
     floodUpdated: String,
@@ -130,6 +141,9 @@ export default {
   },
   methods: {
     async fetchWarnings() {
+      if (this.spinnerEnabled) {
+        store.dispatch('setLoading', true);
+      }
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`);
       }

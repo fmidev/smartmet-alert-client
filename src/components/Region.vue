@@ -1,11 +1,15 @@
 <template>
     <b-card no-body class="mb-1 current-warning-panel">
         <b-card-header header-tag="header" class="p-1" role="tab" header-class="current-warning-heading">
-            <h3 class="region-item-text" :aria-label="ariaHeader" tabindex="0">
+            <div class="region-header">
+              <div>
+                <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
+              </div>
+              <h3 class="region-item-text" :aria-label="ariaHeader" tabindex="0">
                 {{ regionName }}
-            </h3>
+              </h3>
+            </div>
             <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
-            <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
         </b-card-header>
         <b-collapse
                 :id=identifier
@@ -94,13 +98,6 @@ export default {
       return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
     },
   },
-  filters: {
-    capitalize(value) {
-      if (!value) return '';
-      const stringValue = value.toString();
-      return stringValue.charAt(0).toUpperCase() + stringValue.slice(1);
-    },
-  },
 };
 </script>
 
@@ -126,17 +123,31 @@ export default {
         border: none;
     }
 
+    .region-header {
+      position: absolute;
+      left: 0;
+      right: 38px;
+    }
+
     .region-item-text {
-        position: absolute;
         line-height: $current-warning-height;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color:rgba(248, 248, 248, 1);
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
+            overflow: visible;
+            position: absolute;
+            z-index: 1;
+            padding-right: 3px;
         }
     }
 
     .current-warning-toggle {
         height: $current-warning-height;
         width: $current-warning-height;
+        min-width: $current-warning-height;
         background-image: url($ui-image-path + 'arrow-up.svg');
         background-color: #e8e8e8;
         background-repeat: no-repeat;

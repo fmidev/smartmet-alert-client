@@ -477,6 +477,11 @@ export default {
         return updateTimes;
       }, []).sort(this.compareDesc);
       this.updatedAt = (allUpdateTimes.length > 0) ? allUpdateTimes[0] : null;
+      if (!this.staticDays) {
+        const weatherUpdateDay = this.updatedAt.startOf('day');
+        const timeOffset = weatherUpdateDay.diff(this.updatedAt, 'millisecond');
+        this.$store.dispatch('setTimeOffset', timeOffset);
+      }
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
         [this.FLOOD_WARNINGS]: this.createFloodWarning,

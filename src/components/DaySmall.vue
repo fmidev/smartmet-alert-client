@@ -2,8 +2,8 @@
   <div :class="['date-selector-cell', { active: active }]" :aria-label="ariaLabel" >
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
-        <span class="bold-text weekday-text">{{ weekday }}</span>
-        <br class="d-inline d-sm-none">
+        <span v-if="staticDays" class="bold-text weekday-text">{{ weekday }}</span>
+        <br v-if="staticDays" class="d-inline d-sm-none">
         {{ date }}
       </div>
     </div>
@@ -41,6 +41,10 @@ export default {
     active: {
       type: Boolean,
     },
+    staticDays: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     weekday() {
@@ -50,6 +54,9 @@ export default {
       return this.input.severity;
     },
     date() {
+      if (!this.staticDays) {
+        return ['0...24 h', '24...48 h', '48...72 h', '72...96 h', '96...120 h'][this.index];
+      }
       return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
     },
     ariaLabel() {
