@@ -4,7 +4,7 @@
       <p>
         <span class="bold-text">{{ warnings }}</span
         ><br />
-        {{ warningsDate }}
+        <span v-html="warningsDate"></span>
       </p>
       <p>
         <span class="bold-text">{{ updated }}</span
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import spacetime from 'spacetime';
 import i18n from '../i18n';
 import MapLarge from './MapLarge.vue';
 
@@ -43,6 +44,10 @@ export default {
     geometryId: {
       type: Number,
     },
+    staticDays: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     warnings() {
@@ -55,7 +60,20 @@ export default {
       return i18n.t('atTime') || '';
     },
     warningsDate() {
-      return ((this.input.day != null) && (this.input.month != null) && (this.input.year != null)) ? `${this.input.day}.${this.input.month}.${this.input.year}` : '';
+      if ((this.input.day == null) || (this.input.month == null) || (this.input.year == null)) {
+        return '';
+      }
+      if (this.staticDays) {
+        return `${this.input.day}.${this.input.month}.${this.input.year}`;
+      }
+      const date = spacetime([this.input.year, this.input.month - 1, this.input.day], this.timezone);
+      const nextDate = date.add(1, 'day');
+      const offset = this.$store.getters.timeOffset;
+      const offsetDate = date.add(offset, 'milliseconds');
+      const hours = offsetDate.hour();
+      const minutes = (`0${offsetDate.minute()}`).slice(-2);
+      return `${this.input.day}.${this.input.month}.${this.input.year} ${this.atTime} ${hours}:${minutes} -
+      <br> ${nextDate.date()}.${nextDate.month() + 1}.${nextDate.year()} ${this.atTime} ${hours}:${minutes}`;
     },
     updatedDate() {
       return this.input.updatedDate || '';

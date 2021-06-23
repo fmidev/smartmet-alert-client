@@ -15,9 +15,9 @@
         :title-link-class="['day', `day${i}`]"
       >
         <template v-slot:title>
-          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :active="i === selectedDay" />
+          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :active="i === selectedDay" :staticDays="staticDays" />
         </template>
-        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" />
+        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :staticDays="staticDays" />
       </b-tab>
     </b-tabs>
   </div>
@@ -45,6 +45,10 @@ export default {
       validator(value) {
         return [0, 1, 2, 3, 4].includes(value);
       },
+    },
+    staticDays: {
+      type: Boolean,
+      default: true,
     },
     regions: Array,
     geometryId: Number,
