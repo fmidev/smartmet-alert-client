@@ -1581,6 +1581,7 @@ export default {
           '#f9bf2e',
           '#ff0909',
         ],
+        missing: '#f8f8f8',
       },
       bbox: {
         type: 'Feature',

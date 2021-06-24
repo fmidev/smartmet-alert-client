@@ -1,5 +1,6 @@
 import {
   SET_LOADING,
+  SET_INITIALIZED,
   SET_TIME_OFFSET,
   SET_SELECTED_DAY,
   SET_WARNINGS,
@@ -10,6 +11,7 @@ import {
 export default {
   state: () => ({
     loading: false,
+    initialized: false,
     timeOffset: 0,
     selectedDay: 0,
     warnings: {},
@@ -17,6 +19,7 @@ export default {
   }),
   getters: {
     loading: (state) => (state != null ? state.loading : false),
+    initialized: (state) => (state != null ? state.initialized : false),
     timeOffset: (state) => (state != null ? state.timeOffset : 0),
     selectedDay: (state) => (state != null ? state.selectedDay : 0),
     warnings: (state) => (state != null ? state.warnings : {}),
@@ -26,6 +29,11 @@ export default {
     [SET_LOADING]: (state, loading) => {
       if (state != null) {
         state.loading = loading;
+      }
+    },
+    [SET_INITIALIZED]: (state, initialized) => {
+      if (state != null) {
+        state.initialized = initialized;
       }
     },
     [SET_TIME_OFFSET]: (state, timeOffset) => {
@@ -64,6 +72,9 @@ export default {
   actions: {
     setLoading({ commit }, loading) {
       commit(SET_LOADING, loading);
+    },
+    setInitialized({ commit }, initialized) {
+      commit(SET_INITIALIZED, initialized);
     },
     setTimeOffset({ commit }, timeOffset) {
       commit(SET_TIME_OFFSET, timeOffset);

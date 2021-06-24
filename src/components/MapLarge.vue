@@ -130,6 +130,9 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
+    initialized() {
+      return this.$store.getters.initialized;
+    },
     moveStep() {
       return 25;
     },
@@ -403,7 +406,7 @@ export default {
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
               key: `${regionId}${this.size}${this.index}Path`,
-              fill: visualization.color,
+              fill: this.initialized ? visualization.color : this.colors.missing,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',
               dataRegion: regionId,
@@ -611,6 +614,7 @@ export default {
   },
   updated() {
     this.$store.dispatch('setLoading', false);
+    this.$store.dispatch('setInitialized', true);
   },
 };
 </script>
