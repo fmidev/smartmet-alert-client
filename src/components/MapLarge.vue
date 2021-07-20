@@ -130,9 +130,6 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
-    initialized() {
-      return this.$store.getters.initialized;
-    },
     moveStep() {
       return 25;
     },

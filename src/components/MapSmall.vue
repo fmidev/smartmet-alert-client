@@ -88,7 +88,7 @@ export default {
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
               key: `${regionId}${this.size}${this.index}Path`,
-              fill: visualization.color,
+              fill: this.initialized ? visualization.color : this.colors.missing,
               d: visualization.geom.pathSmall,
               opacity: visualization.visible ? '1' : '0',
               strokeWidth: ((this.geometries[this.geometryId][regionId].type === 'sea') &&
