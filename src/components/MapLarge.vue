@@ -527,24 +527,44 @@ export default {
       this.panzoom.pan(this.moveStep, 0, {
         relative: true,
       });
+      this.limitPan();
     },
     moveEast(event) {
       event.preventDefault();
       this.panzoom.pan(-this.moveStep, 0, {
         relative: true,
       });
+      this.limitPan();
     },
     moveNorth(event) {
       event.preventDefault();
       this.panzoom.pan(0, this.moveStep, {
         relative: true,
       });
+      this.limitPan();
     },
     moveSouth(event) {
       event.preventDefault();
       this.panzoom.pan(0, -this.moveStep, {
         relative: true,
       });
+      this.limitPan();
+    },
+    limitPan() {
+      const pan = this.panzoom.getPan();
+      let panChanged = false;
+      ['x', 'y'].forEach((coord) => {
+        if (pan[coord] > this.panLimits[coord]) {
+          pan[coord] = this.panLimits[coord];
+          panChanged = true;
+        } else if (pan[coord] < -this.panLimits[coord]) {
+          pan[coord] = -this.panLimits[coord];
+          panChanged = true;
+        }
+      });
+      if (panChanged) {
+        this.panzoom.pan(pan.x, pan.y);
+      }
     },
   },
   mounted() {
@@ -591,20 +611,7 @@ export default {
         finlandLarge.addEventListener('panzoomend', () => {
           this.actionStarted = false;
           this.dragging = false;
-          const pan = this.panzoom.getPan();
-          let panChanged = false;
-          ['x', 'y'].forEach((coord) => {
-            if (pan[coord] > this.panLimits[coord]) {
-              pan[coord] = this.panLimits[coord];
-              panChanged = true;
-            } else if (pan[coord] < -this.panLimits[coord]) {
-              pan[coord] = -this.panLimits[coord];
-              panChanged = true;
-            }
-          });
-          if (panChanged) {
-            this.panzoom.pan(pan.x, pan.y);
-          }
+          this.limitPan();
         });
       }
     }
