@@ -1,6 +1,6 @@
 <template>
     <div class="map-large" tabindex="0">
-        <div v-if="loading" class="text-center">
+        <div v-if="loading" class="spinner-container text-center">
             <b-spinner></b-spinner>
         </div>
         <div ref="dayMapLarge" class="day-map-large">
@@ -636,6 +636,10 @@ export default {
 
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
+        }
+
+        div.spinner-container {
+          height: 0;
         }
     }
 
