@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import config from '@/mixins/config';
+import config from '../mixins/config';
 import i18n from '../i18n';
 import 'focus-visible';
 import RegionWarning from './RegionWarning.vue';

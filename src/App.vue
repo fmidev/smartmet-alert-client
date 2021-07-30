@@ -142,7 +142,7 @@ export default {
   methods: {
     async fetchWarnings() {
       if (this.spinnerEnabled) {
-        store.dispatch('setLoading', true);
+        this.$store.dispatch('setLoading', true);
       }
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`);
