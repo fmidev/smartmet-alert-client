@@ -173,8 +173,9 @@ export default {
       const effectiveFrom = spacetime(start);
       const effectiveUntil = spacetime(end);
       const currentDate = spacetime(this.currentTime);
-      return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((effectiveFrom.goto(this.timezone).isBefore((currentDate.add(index + 1, 'days').goto(this.timezone).startOf('day')))) &&
-          (effectiveUntil.goto(this.timezone).isAfter(currentDate.add(index, 'days').goto(this.timezone).startOf('day')))));
+      const offset = this.$store.getters.timeOffset;
+      return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => ((effectiveFrom.goto(this.timezone).isBefore((currentDate.add(index + 1, 'days').goto(this.timezone).startOf('day').add(offset, 'milliseconds')))) &&
+          (effectiveUntil.goto(this.timezone).isAfter(currentDate.add(index, 'days').goto(this.timezone).startOf('day').add(offset, 'milliseconds')))));
     },
     text(properties) {
       return properties[this.WARNING_CONTEXT] === this.SEA_WIND ? properties[this.PHYSICAL_VALUE] : '';
@@ -481,8 +482,8 @@ export default {
       }, []).sort(this.compareDesc);
       this.updatedAt = (allUpdateTimes.length > 0) ? allUpdateTimes[0] : null;
       if (!this.staticDays) {
-        const weatherUpdateDay = this.updatedAt.startOf('day');
-        const timeOffset = weatherUpdateDay.diff(this.updatedAt, 'millisecond');
+        const currentDate = spacetime(this.currentTime);
+        const timeOffset = currentDate.startOf('day').diff(currentDate, 'millisecond');
         this.$store.dispatch('setTimeOffset', timeOffset);
       }
       const createWarnings = {
