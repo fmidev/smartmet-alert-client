@@ -630,7 +630,6 @@ export default {
     div.map-large {
         display: inline-block;
         width: $map-large-width;
-        height: 100%;
         max-height: $map-large-height;
         background-color: rgba(0, 0, 0, 0);
 
@@ -641,10 +640,6 @@ export default {
         div.spinner-container {
           height: 0;
         }
-    }
-
-    div.day-map-large {
-        height: 100%;
     }
 
     button.fmi-warnings-map-tool {
