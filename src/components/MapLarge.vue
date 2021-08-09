@@ -12,15 +12,15 @@
                     <path v-for="path in bluePaths" :key="path.key" :id="path.key" :stroke="strokeColor"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
-                          @click="regionClicked" style="cursor: pointer"/>
+                          @click="regionClicked" class="region-path"/>
                     <path v-for="path in greenPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
-                          @click="regionClicked" style="cursor: pointer"/>
+                          @click="regionClicked" class="region-path"/>
                     <path v-for="path in yellowPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
-                          @click="regionClicked" style="cursor: pointer"/>
+                          @click="regionClicked" class="region-path"/>
                     <path v-for="coverage in yellowCoverages" :key="coverage.key" :id="coverage.key"
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
@@ -28,7 +28,7 @@
                     <path v-for="path in orangePaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
-                          @click="regionClicked" style="cursor: pointer"/>
+                          @click="regionClicked" class="region-path"/>
                     <path v-for="coverage in orangeCoverages" :key="coverage.key" :id="coverage.key"
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
@@ -36,7 +36,7 @@
                     <path v-for="path in redPaths" :key="path.key" :id="path.key"
                           :stroke-width="path.strokeWidth" :fill="path.fill" :d="path.d" :opacity="path.opacity"
                           pointer-events="fill" :data-region="path.dataRegion" :data-severity="path.dataSeverity"
-                          @click="regionClicked" style="cursor: pointer"/>
+                          @click="regionClicked" class="region-path"/>
                     <path v-for="coverage in redCoverages" :key="coverage.key" :id="coverage.key"
                           stroke="#000000" :stroke-width="coverage.strokeWidth"
                           :fill="coverage.fill" :d="coverage.d" :fill-opacity="coverage.fillOpacity"
@@ -890,6 +890,10 @@ export default {
         z-index: 10;
     }
 
+    path.region-path {
+      cursor: pointer;
+    }
+
     svg#finland-large {
         cursor: default !important;
     }
@@ -905,6 +909,9 @@ export default {
             display: none;
         }
 
+        path.region-path {
+          cursor: default;
+        }
     }
 
     @media (max-width: 575px) {
