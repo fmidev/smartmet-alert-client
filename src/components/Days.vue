@@ -6,7 +6,8 @@
       :lazy="true"
       :no-fade="true"
       nav-class="fmi-warnings-date-nav"
-      justified
+      nav-wrapper-class="fmi-warnings-date-wrapper"
+      :justified="true"
     >
       <b-tab
         v-for="(n, i) in numberOfDays"
@@ -87,6 +88,11 @@ export default {
 
 ::v-deep .fmi-warnings-date-nav {
   border-bottom: none;
+  flex-wrap: nowrap;
+}
+
+::v-deep .fmi-warnings-date-wrapper {
+  overflow-x: auto;
 }
 
 ::v-deep a.day {

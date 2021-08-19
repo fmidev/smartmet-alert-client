@@ -135,6 +135,7 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         background-color:rgba(248, 248, 248, 1);
+        margin-left: 15px;
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
             overflow: visible;

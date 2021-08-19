@@ -12,7 +12,7 @@
                 <div class="item-text symbol-list-text">
                     {{ title }}
                 </div>
-                <div class="symbol-list-select-container d-none d-md-table-cell">
+                <div class="symbol-list-select-container d-none d-md-table-cell" v-observe-visibility="flagVisibilityChanged">
                     <div
                         :id="id"
                         :class="[
@@ -47,10 +47,14 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import VueObserveVisibility from 'vue-observe-visibility';
 import i18n from '../i18n';
 import fields from '../mixins/fields';
 import utils from '../mixins/utils';
 import 'focus-visible';
+
+Vue.use(VueObserveVisibility);
 
 export default {
   name: 'Warning',
@@ -84,11 +88,14 @@ export default {
   methods: {
     toggle(event) {
       event.preventDefault();
+      this.setWarningVisibility(!this.input.visible);
+    },
+    setWarningVisibility(visible) {
       this.$store.dispatch('setWarningVisibility', {
         warning: this.input.type,
-        visible: !this.input.visible,
+        visible,
       });
-      this.closeTooltip(event);
+      this.closeTooltip();
     },
     openTooltip() {
       this.showTooltip = true;
@@ -98,6 +105,11 @@ export default {
     },
     preventEvents(event) {
       event.preventDefault();
+    },
+    flagVisibilityChanged(isVisible) {
+      if (!isVisible) {
+        this.setWarningVisibility(true);
+      }
     },
   },
 };

@@ -20,7 +20,7 @@ module.exports = {
       new CopyPlugin({
         patterns: [
           {
-            from: 'public/index.??.html',
+            from: 'public/index.*.html',
             flatten: true,
           },
         ],
