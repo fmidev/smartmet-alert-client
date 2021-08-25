@@ -91,10 +91,6 @@ export default {
   flex-wrap: nowrap;
 }
 
-::v-deep .fmi-warnings-date-wrapper {
-  overflow-x: auto;
-}
-
 ::v-deep a.day {
   border-radius: 0;
   border: 0;
@@ -150,4 +146,11 @@ export default {
     margin-bottom: 0;
   }
 }
+
+@media (max-width: 499px) {
+  ::v-deep .fmi-warnings-date-wrapper {
+    overflow-x: auto;
+  }
+}
+
 </style>
