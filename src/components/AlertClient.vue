@@ -1,6 +1,12 @@
 <template>
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
+    <div v-if="regionListEnabled">
+      <a v-if="numWarnings" href="#regionWarnings" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
+        toContentText
+      }}</a>
+      <div v-else :aria-label="noWarningsText"></div>
+    </div>
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
@@ -23,6 +29,7 @@ import Warnings from './Warnings.vue';
 import module from '../store/module';
 import config from '../mixins/config';
 import utils from '../mixins/utils';
+import 'focus-visible';
 
 export default {
   name: 'AlertClient',
@@ -79,6 +86,15 @@ export default {
     };
   },
   computed: {
+    toContentText() {
+      return i18n.t('toContent') || '';
+    },
+    noWarningsText() {
+      return i18n.t('noWarnings');
+    },
+    numWarnings() {
+      return Object.keys(this.warnings).length;
+    },
     validData() {
       return ((this.days != null) && (this.days.length === 5) && (this.days[0].updatedDate != null) &&
         (this.days[0].updatedDate.length > 0));
@@ -205,14 +221,27 @@ export default {
 
 div#fmi-warnings {
   width: 690px;
-  padding-top: 20px;
+  padding: 0;
   margin-bottom: 20px;
 
   div.container-fluid {
     padding: 0;
-    margin: 0;
+    margin: 5px 0 0;
   }
 
+  a#fmi-warnings-to-text-content {
+    font-family: $font-family;
+    font-size: $font-size;
+    color: #000;
+    height: 20px;
+    &:focus {
+      outline: dashed 2px $outline-color !important;
+      outline-offset: 2px;
+      &:not([data-focus-visible-added]) {
+          outline: none !important;
+      }
+    }
+  }
 }
 
 .row {
