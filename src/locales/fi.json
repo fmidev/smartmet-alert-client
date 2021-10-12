@@ -172,5 +172,6 @@
     "moveMap": "Siirrä karttaa nuolinäppäimillä",
     "mapAriaLabel": "Zoomattava kartta",
     "infoButtonAriaLabel": "Avaa voimassa olevien varoitusten lisätiedot",
-    "toContent": "Siirry tekstimuotoisiin varoituksiin"
+    "toContent": "Siirry tekstimuotoisiin varoituksiin",
+    "toNextContent": " alueella varoituksia. Siirry seuraavaan kappaleeseen."
 }

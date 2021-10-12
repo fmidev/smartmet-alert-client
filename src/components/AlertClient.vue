@@ -2,7 +2,7 @@
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
     <div v-if="regionListEnabled">
-      <a v-if="numWarnings" href="#regionWarnings" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
+      <a v-if="numWarnings" href="#fmi-warnings-region-content" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
         toContentText
       }}</a>
       <div v-else :aria-label="noWarningsText"></div>
