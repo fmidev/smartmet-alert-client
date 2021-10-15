@@ -217,7 +217,7 @@ div.symbol-list-main-row {
   margin-top: 5px;
   margin-bottom: 5px;
   float: right;
-  color: #53b9e6;
+  color: $dark-blue;
   cursor: pointer;
   white-space: nowrap;
 }
