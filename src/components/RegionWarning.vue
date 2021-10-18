@@ -1,6 +1,6 @@
 <template>
   <div :class="['symbol-image', 'warning-image', 'current-warning-image', `symbol-image-rotate-${rotation}`, `symbol-rotate-${rotation}`, `level-${input.severity}`, `${typeClass}`]">
-    <span :class="['warning-symbol-text', 'symbol-text', `symbol-text-rotate-${rotation}`]">{{ input.text }}</span>
+    <span aria-hidden='true' :class="['warning-symbol-text', 'symbol-text', `symbol-text-rotate-${rotation}`]">{{ input.text }}</span>
   </div>
 </template>
 
@@ -30,7 +30,6 @@ export default {
     height: $current-warning-image-height;
     width: $current-warning-image-height;
     margin-top: ($current-warning-height - $current-warning-image-height) / 2;
-    display: inline-block;
     float: right;
     margin-left: 5px;
     margin-right: 5px;
