@@ -1,6 +1,6 @@
 <template>
     <b-card no-body class="mb-1 current-warning-panel">
-        <b-card-header header-tag="header" class="p-1" role="tab" header-class="current-warning-heading">
+        <b-card-header header-tag="header" class="p-1" header-class="current-warning-heading">
             <div class="region-header">
               <div>
                 <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
@@ -15,7 +15,6 @@
                 :id=identifier
                 class="accordion-item-region"
                 :accordion="`accordion-${type}`"
-                role="tabpanel"
                 tabindex="0"
                 :aria-label="ariaInfo"
                 v-model="visible"
