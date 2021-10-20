@@ -807,6 +807,7 @@ export default {
         display: table-cell;
         vertical-align: middle;
         margin-right: 45px;
+        margin-top: 3px;
     }
 
     .region-popup-wrapper {
