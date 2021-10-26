@@ -2,8 +2,7 @@
     "failed": "Lataus epäonnistui.",
     "regionLand": "Varoituksia voimassa seuraavilla maa-alueilla",
     "regionSea": "Varoituksia voimassa seuraavilla merialueilla",
-    "warningSymbols": "Voimassa olevat varoitukset,",
-    "warningSymbolDays": "5 vrk",
+    "validWarnings": "Voimassa olevat varoitukset, 5 vrk",
     "showWarnings": "Näytä kaikki varoitukset",
     "monday": "ma",
     "tuesday": "ti",
@@ -175,5 +174,8 @@
     "toNextContent": " alueella varoituksia. Siirry seuraavaan kappaleeseen.",
     "infoButtonAriaLabelShowRegion": "Näytä alueen",
     "infoButtonAriaLabelCloseRegion": "Sulje alueen",
-    "infoButtonAriaLabelValidWarnings": "voimassaolevat varoitukset"
+    "infoButtonAriaLabelValidWarnings": "voimassaolevat varoitukset",
+    "legends": "Karttaselitteet",
+    "showLegends": "Näytä selitteet",
+    "hideLegends": "Piilota selitteet"
 }

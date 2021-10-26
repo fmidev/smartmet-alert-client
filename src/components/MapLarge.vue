@@ -857,7 +857,7 @@ export default {
     }
 
     .popup-table-heading {
-        background-color: #EEE;
+        background-color: $background-grey;
         display: table-header-group;
     }
 
@@ -868,13 +868,13 @@ export default {
     }
 
     .popup-table-heading {
-        background-color: #EEE;
+        background-color: $background-grey;
         display: table-header-group;
         font-weight: bold;
     }
 
     .popup-table-foot {
-        background-color: #EEE;
+        background-color: $background-grey;
         display: table-footer-group;
         font-weight: bold;
     }

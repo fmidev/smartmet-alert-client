@@ -5,9 +5,9 @@
               <div>
                 <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
               </div>
-              <h3 class="region-item-text">
+              <span class="region-item-text">
                 {{ regionName }}
-              </h3>
+              </span>
             </div>
             <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
         </b-card-header>

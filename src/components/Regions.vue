@@ -1,7 +1,7 @@
 <template>
   <div id="region-warnings" class="row">
     <div v-if="anyLandWarnings" class="region-type-container">
-      <h2 id="header-land" class="header-region">{{ landText }}</h2>
+      <h3 id="header-land" class="header-region">{{ landText }}</h3>
       <a :href="fromLandToNextContentHref" tabindex="0" id="fmi-warnings-region-content" class="fmi-warnings-to-next-content sr-only sr-only-focusable">{{
           fromLandtoNextContentText
       }}</a>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div v-if="anySeaWarnings" class="region-type-container">
-      <h2 id="header-sea" class="header-region">{{ seaText }}</h2>
+      <h3 id="header-sea" class="header-region">{{ seaText }}</h3>
       <a href="#fmi-warnings-end-of-regions" tabindex="0" :id="fromSeaToNextContentId" class="fmi-warnings-to-next-content sr-only sr-only-focusable">{{
           fromSeatoNextContentText
       }}</a>
@@ -98,7 +98,7 @@ export default {
 <style scoped lang="scss">
   @import "../scss/constants.scss";
 
-h2 {
+h3 {
   width: 100%;
   font-weight: bold;
   margin-top: 15px;
@@ -109,8 +109,8 @@ h2 {
   color: black;
 }
 
-h2#header-land,
-h2#header-sea {
+h3#header-land,
+h3#header-sea {
   margin-left: 0;
 }
 
@@ -119,7 +119,7 @@ div.accordion-region {
   margin-top: 10px;
 }
 
-h2.header-region {
+h3.header-region {
     font-size: $font-size;
     font-weight: bold;
     line-height: 1.1;
