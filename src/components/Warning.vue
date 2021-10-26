@@ -164,9 +164,9 @@ export default {
     hr {
         padding: 0;
         margin: 0;
-        background-color: #eee;
+        background-color: $background-grey;
         border: 0 none;
-        color: #eee;
+        color: $background-grey;
         height: 2px;
     }
 

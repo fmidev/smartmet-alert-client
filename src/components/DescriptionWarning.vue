@@ -12,8 +12,10 @@
     </div>
     <div class="current-description-text-cell ">
       <div class="description-info">
-        <h2 class="warning-valid" v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
-        {{ info }}
+        <span class="warning-valid bold-text" v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
+        <span>
+            {{ info }}
+        </span>
       </div>
       <div
         class="description-indent-text"
@@ -141,12 +143,14 @@ export default {
     }
   }
 
-  h2.warning-valid {
+  span.warning-valid {
+    display:block;
     font-family: $font-family;
     font-size: $font-size;
     font-weight: bold;
     color: black;
     margin-top: 0;
+    margin-bottom: 5px;
   }
 
 </style>

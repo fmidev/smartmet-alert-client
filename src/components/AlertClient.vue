@@ -1,20 +1,21 @@
 <template>
   <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
-    <div v-if="regionListEnabled">
-      <a v-if="numWarnings" href="#fmi-warnings-region-content" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
-        toContentText
-      }}</a>
-      <div v-else :aria-label="noWarningsText"></div>
-    </div>
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
+          <h3>{{ validWarningsText }}</h3>
+          <div v-if="regionListEnabled">
+            <a v-if="numWarnings" href="#fmi-warnings-region-content" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
+              toContentText
+            }}</a>
+            <div v-else :aria-label="noWarningsText"></div>
+          </div>
           <Days :input="days" :defaultDay="selectedDay" :staticDays="staticDays" :regions="regions" :geometryId="geometryId" />
           <Regions v-if="regionListEnabled" :input="regions" :parents="parents" :geometryId="geometryId" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-          <Warnings v-show="validData" :input="legend" />
+          <Legend v-show="validData" :input="legend" />
         </div>
       </div>
     </div>
@@ -25,7 +26,7 @@
 import i18n from '../i18n';
 import Days from './Days.vue';
 import Regions from './Regions.vue';
-import Warnings from './Warnings.vue';
+import Legend from './Legend.vue';
 import module from '../store/module';
 import config from '../mixins/config';
 import utils from '../mixins/utils';
@@ -69,7 +70,7 @@ export default {
   components: {
     Days,
     Regions,
-    Warnings,
+    Legend,
   },
   data() {
     return {
@@ -91,6 +92,11 @@ export default {
     },
     noWarningsText() {
       return i18n.t('noWarnings');
+    },
+    validWarningsText() {
+      return this.legend.length > 0 ?
+        i18n.t('validWarnings') :
+        i18n.t('noWarnings');
     },
     numWarnings() {
       return Object.keys(this.warnings).length;
@@ -216,6 +222,10 @@ export default {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently not supported by any browser */
     cursor: pointer;
+  }
+
+  h3 {
+    font-weight: bold;
   }
 }
 
