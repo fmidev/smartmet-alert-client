@@ -142,7 +142,7 @@ export default {
         }
     }
 
-    .current-warning-toggle {
+    .current-warning-toggle.btn-info {
         height: $current-warning-height;
         width: $current-warning-height;
         min-width: $current-warning-height;
@@ -170,8 +170,8 @@ export default {
             }
         }
 
-        &:active {
-            background-color: #e8e8e8;
+        &:not(:disabled):not(.disabled):active {
+            background-color: $dark-blue;
         }
 
         &.collapsed {
