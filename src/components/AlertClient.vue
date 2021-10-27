@@ -12,10 +12,16 @@
             <div v-else :aria-label="noWarningsText"></div>
           </div>
           <Days :input="days" :defaultDay="selectedDay" :staticDays="staticDays" :regions="regions" :geometryId="geometryId" />
-          <Regions v-if="regionListEnabled" :input="regions" :parents="parents" :geometryId="geometryId" />
         </div>
         <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
           <Legend v-show="validData" :input="legend" />
+        </div>
+      </div>
+      <div v-if="regionListEnabled" class="row">
+        <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
+          <Regions :input="regions" :parents="parents" :geometryId="geometryId" />
+        </div>
+        <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list ">
         </div>
       </div>
     </div>
@@ -290,8 +296,8 @@ div.symbol-list {
   div.symbol-list {
     position: static;
     padding-left: 0;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
     min-width: 100%;
     width: 100%;
     max-width: 100%;
