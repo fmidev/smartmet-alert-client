@@ -170,5 +170,13 @@
     "zoomOut": "Zooma ut",
     "moveMap": "Använd piltangenterna för att flytta kartan",
     "mapAriaLabel": "Förstorande karta",
-    "infoButtonAriaLabel": "Öppna mer information om varningar i kraft"
+    "toContent": "Gå till varningar i text format",
+    "warningsIn": "Varningar i",
+    "toNextContent": "områden. Gå till nästa stycke.",
+    "infoButtonAriaLabelShowRegion": "Visa giltiga varningar för",
+    "infoButtonAriaLabelCloseRegion": "Stäng giltiga varningar för",
+    "infoButtonAriaLabelValidWarnings": ".",
+    "legends": "Kartanmärkningar",
+    "showLegends": "Visa anmärkningar",
+    "hideLegends": "Dölj anmärkningar"
 }

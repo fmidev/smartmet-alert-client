@@ -49,10 +49,10 @@ export default {
       return i18n.t('regionSea');
     },
     fromLandtoNextContentText() {
-      return this.regions.land.length + i18n.t('toNextContent');
+      return `${i18n.t('warningsIn')} ${this.regions.land.length} ${i18n.t('toNextContent')}`;
     },
     fromSeatoNextContentText() {
-      return this.regions.sea.length + i18n.t('toNextContent');
+      return `${i18n.t('warningsIn')} ${this.regions.sea.length} ${i18n.t('toNextContent')}`;
     },
     fromLandToNextContentHref() {
       return this.anySeaWarnings ? '#fmi-warnings-from-sea-to-next-content' : '#fmi-warnings-end-of-regions';
