@@ -128,9 +128,6 @@ export default {
     if (this.language) {
       i18n.locale = this.language;
     }
-    this.$store.dispatch('setSelectedDay', this.selectedDay);
-    this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type));
-    this.$store.dispatch('setWarnings', this.warnings);
     this.createDataForChildren();
     if (this.warningsData == null) {
       this.update();
@@ -149,17 +146,23 @@ export default {
     this.cancelTimer();
     this.$store.unregisterModule('warningsStore');
   },
+  async serverPrefetch() {
+    await this.createDataForChildren();
+  },
   methods: {
-    createDataForChildren() {
+    async createDataForChildren() {
       if (this.warningsData != null) {
-        this.handleMapWarnings(this.warningsData).then((result) => {
-          this.warnings = result.warnings;
-          this.days = result.days;
-          this.regions = result.regions;
-          this.parents = result.parents;
-          this.legend = result.legend;
-          this.$store.dispatch('setWarnings', this.warnings);
-        });
+        const result = await this.handleMapWarnings(this.warningsData);
+        this.warnings = result.warnings;
+        this.days = result.days;
+        this.regions = result.regions;
+        this.parents = result.parents;
+        this.legend = result.legend;
+        await Promise.all([
+          this.$store.dispatch('setSelectedDay', this.selectedDay),
+          this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type)),
+          this.$store.dispatch('setWarnings', this.warnings),
+        ]);
       }
     },
     visibilityChange() {

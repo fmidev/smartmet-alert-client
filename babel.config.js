@@ -11,5 +11,6 @@ module.exports = {
   ],
   plugins: [
     '@babel/plugin-transform-classes',
+    '@babel/plugin-proposal-optional-chaining',
   ],
 };

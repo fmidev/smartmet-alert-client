@@ -403,7 +403,7 @@ export default {
           if ((options.severity == null) || (visualization.severity === options.severity)) {
             regions.push({
               key: `${regionId}${this.size}${this.index}Path`,
-              fill: this.initialized ? visualization.color : this.colors.missing,
+              fill: (this.initialized || !this.isClientSide()) ? visualization.color : this.colors.missing,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',
               dataRegion: regionId,
