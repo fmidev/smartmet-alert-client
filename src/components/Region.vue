@@ -1,13 +1,13 @@
 <template>
     <b-card no-body class="mb-1 current-warning-panel">
-        <b-card-header header-tag="header" class="p-1" role="tab" header-class="current-warning-heading">
+        <b-card-header header-tag="header" class="p-1" header-class="current-warning-heading">
             <div class="region-header">
               <div>
                 <RegionWarning v-for="warning in warningsSummary" :key="warning.key" :input="warning"></RegionWarning>
               </div>
-              <h3 class="region-item-text" :aria-label="ariaHeader" tabindex="0">
+              <span class="region-item-text">
                 {{ regionName }}
-              </h3>
+              </span>
             </div>
             <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
         </b-card-header>
@@ -15,9 +15,9 @@
                 :id=identifier
                 class="accordion-item-region"
                 :accordion="`accordion-${type}`"
-                role="tabpanel"
                 tabindex="0"
                 :aria-label="ariaInfo"
+                v-model="visible"
         >
             <b-card-body body-class="p-0">
                 <div class="current-description">
@@ -56,6 +56,11 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      visible: false,
+    };
+  },
   computed: {
     identifier() {
       return `accordion-item-${this.code}`;
@@ -83,16 +88,8 @@ export default {
         return warnings;
       }, []))), []);
     },
-    ariaHeader() {
-      return `${this.regionName} ${this.input.reduce((warningLabels, warningInfo) => {
-        if ((warningInfo != null) && (warningInfo.type != null)) {
-          warningLabels.push(i18n.t(warningInfo.type).toLocaleLowerCase());
-        }
-        return warningLabels;
-      }, []).join(', ')}`;
-    },
     ariaButton() {
-      return i18n.t('infoButtonAriaLabel');
+      return `${this.visible ? i18n.t('infoButtonAriaLabelCloseRegion') : i18n.t('infoButtonAriaLabelShowRegion')} ${this.regionName} ${i18n.t('infoButtonAriaLabelValidWarnings')}`;
     },
     ariaInfo() {
       return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
@@ -145,7 +142,7 @@ export default {
         }
     }
 
-    .current-warning-toggle {
+    .current-warning-toggle.btn-info {
         height: $current-warning-height;
         width: $current-warning-height;
         min-width: $current-warning-height;
@@ -173,8 +170,8 @@ export default {
             }
         }
 
-        &:active {
-            background-color: #e8e8e8;
+        &:not(:disabled):not(.disabled):active {
+            background-color: $dark-blue;
         }
 
         &.collapsed {

@@ -1,17 +1,28 @@
 <template>
-  <div class="row">
-    <h2 v-if="anyLandWarnings" id="header-land" class="header-region">{{ landText }}</h2>
-    <div id="accordion-land" class="accordion-region" role="tablist">
-        <div v-for="region in this.regions.land" :key="region.key" >
-            <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
-        </div>
+  <div id="region-warnings" class="row">
+    <div v-if="anyLandWarnings" class="region-type-container">
+      <h3 id="header-land" class="header-region">{{ landText }}</h3>
+      <a :href="fromLandToNextContentHref" tabindex="0" id="fmi-warnings-region-content" class="fmi-warnings-to-next-content sr-only sr-only-focusable">{{
+          fromLandtoNextContentText
+      }}</a>
+      <div id="accordion-land" class="accordion-region" role="tablist">
+          <div v-for="region in this.regions.land" :key="region.key" >
+              <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
+          </div>
+      </div>
     </div>
-    <h2 v-if="anySeaWarnings" id="header-sea" class="header-region">{{ seaText }}</h2>
-    <div id="accordion-sea" class="accordion-region" role="tablist">
-        <div v-for="region in this.regions.sea" :key="region.key" >
-            <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
-        </div>
+    <div v-if="anySeaWarnings" class="region-type-container">
+      <h3 id="header-sea" class="header-region">{{ seaText }}</h3>
+      <a href="#fmi-warnings-end-of-regions" tabindex="0" :id="fromSeaToNextContentId" class="fmi-warnings-to-next-content sr-only sr-only-focusable">{{
+          fromSeatoNextContentText
+      }}</a>
+      <div id="accordion-sea" class="accordion-region" role="tablist">
+          <div v-for="region in this.regions.sea" :key="region.key" >
+              <Region v-if="region.warnings.length" type="land" :code="region.key" :name="region.name" :input="region.warnings" />
+          </div>
+      </div>
     </div>
+    <div id="fmi-warnings-end-of-regions"></div>
   </div>
 </template>
 
@@ -36,6 +47,18 @@ export default {
     },
     seaText() {
       return i18n.t('regionSea');
+    },
+    fromLandtoNextContentText() {
+      return `${i18n.t('warningsIn')} ${this.regions.land.length} ${i18n.t('toNextContent')}`;
+    },
+    fromSeatoNextContentText() {
+      return `${i18n.t('warningsIn')} ${this.regions.sea.length} ${i18n.t('toNextContent')}`;
+    },
+    fromLandToNextContentHref() {
+      return this.anySeaWarnings ? '#fmi-warnings-from-sea-to-next-content' : '#fmi-warnings-end-of-regions';
+    },
+    fromSeaToNextContentId() {
+      return this.anyLandWarnings ? 'fmi-warnings-from-sea-to-next-content' : 'fmi-warnings-region-content';
     },
     regions() {
       const compareRegions = (region1, region2) => region1.regionIndex - region2.regionIndex;
@@ -75,7 +98,7 @@ export default {
 <style scoped lang="scss">
   @import "../scss/constants.scss";
 
-h2 {
+h3 {
   width: 100%;
   font-weight: bold;
   margin-top: 15px;
@@ -86,21 +109,26 @@ h2 {
   color: black;
 }
 
-h2#header-land,
-h2#header-sea {
+h3#header-land,
+h3#header-sea {
   margin-left: 0;
 }
 
 div.accordion-region {
   width: 100%;
+  margin-top: 10px;
 }
 
-h2.header-region {
+h3.header-region {
     font-size: $font-size;
     font-weight: bold;
     line-height: 1.1;
     margin-top: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+}
+
+div.region-type-container {
+  width: 100%;
 }
 
 </style>

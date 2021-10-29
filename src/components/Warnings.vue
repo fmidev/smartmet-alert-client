@@ -1,8 +1,5 @@
 <template>
-  <div id="fmi-warnings-view" class="sticky-top">
-    <div class="row symbol-list-header-row">
-      <h2>{{ warningSymbolsText }} <br v-if="input.length > 0" class="symbol-list-header-line-break"> {{ warningSymbolDaysText }} </h2>
-    </div>
+  <div id="fmi-warnings-view">
     <div
       v-if="input.length > 0"
       :class="[
@@ -185,7 +182,7 @@ export default {
 @import "../scss/constants.scss";
 @import "../scss/warningImages.scss";
 
-h2 {
+h3 {
   font-family: $font-family;
   font-size: $font-size;
   font-weight: bold;
@@ -199,59 +196,63 @@ h2 {
   margin-left: 0;
   margin-right: 0;
 }
-div.symbol-list-header-row {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 5px;
-  span {
-    white-space: nowrap;
-  }
-}
+
 div.symbol-list-main-row {
   padding-left: 0;
 }
+
 .show-text-row {
   height: 30px;
 }
+
 .show-text {
   margin-top: 5px;
   margin-bottom: 5px;
   float: right;
-  color: #53b9e6;
+  color: $dark-blue;
   cursor: pointer;
   white-space: nowrap;
 }
+
 hr.symbol-block-separator {
   margin-left: 59px;
   margin-right: 0;
 }
+
 hr.legend-separator {
   margin-top: 55px;
 }
+
 div.symbol-list-table {
   display: table;
   border-spacing: 0;
   width: 100%;
 }
+
 div.symbol-list-cell {
   display: table-cell;
   vertical-align: middle;
   line-height: $symbol-list-line-height;
   text-align: left;
 }
+
 div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
+
 .gray {
   background-color: $gray;
 }
+
 .several {
   background-image: url($warning-image-path + 'several' + $image-extension);
 }
+
 div.symbol-list-image-column {
   width: 44px;
   margin-top: 2px;
 }
+
 .symbol-list-image {
   height: $symbol-list-image-size;
   background-size: $symbol-list-image-size $symbol-list-image-size;
@@ -259,21 +260,25 @@ div.symbol-list-image-column {
     background-image: url($warning-image-path + 'sea-wind-legend' + $image-extension);
   }
 }
+
 div.warning-image {
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
 }
+
 div.symbol-list-cell-text {
   padding-left: 15px;
   padding-right: 0;
 }
+
 div#fmi-warnings-list div.symbol-list-cell-text {
   padding-right: 0;
   hr {
     margin-right: 0;
   }
 }
+
 div#fmi-warnings-view {
   div.symbol-list-table {
     div.symbol-list-cell.symbol-list-cell-text {
@@ -284,30 +289,37 @@ div#fmi-warnings-view {
     }
   }
 }
+
 .item-text {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;
 }
+
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
 }
+
 hr {
   padding: 0;
   margin: 0;
-  background-color: #eee;
+  background-color: $background-grey;
   border: 0 none;
-  color: #eee;
+  color: $background-grey;
   height: 2px;
 }
+
 @media (max-width: 767px) {
+
   hr.symbol-block-separator {
     margin-right: 0;
   }
+
   div.show-text-row {
     display: none;
   }
+
   ::v-deep br.symbol-list-header-line-break {
     display: none;
   }

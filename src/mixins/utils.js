@@ -167,7 +167,7 @@ export default {
     validInterval(start, end) {
       const effectiveFrom = spacetime(start);
       const effectiveUntil = spacetime(end);
-      return `${effectiveFrom.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)} - ${effectiveUntil.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)}`;
+      return `${effectiveFrom.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)} – ${effectiveUntil.goto(this.timezone).unixFmt(this.DATE_TIME_FORMAT)}`;
     },
     effectiveDays(start, end) {
       const effectiveFrom = spacetime(start);

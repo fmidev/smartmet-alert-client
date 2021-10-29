@@ -4,8 +4,8 @@
 <script>
 import { BootstrapVue, BSpinner } from 'bootstrap-vue';
 import Vue from 'vue';
-import axios from 'axios';
 import spacetime from 'spacetime';
+import fetch from 'cross-fetch';
 import utils from './mixins/utils';
 import config from './mixins/config';
 import AlertClient from './components/AlertClient.vue';
@@ -139,45 +139,38 @@ export default {
       this.warningsData = this.warnings;
     }
   },
+  serverPrefetch() {
+    return this.fetchWarnings();
+  },
   methods: {
-    async fetchWarnings() {
+    fetchWarnings() {
       if (this.spinnerEnabled) {
         this.$store.dispatch('setLoading', true);
       }
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`);
       }
-      const queries = {
-        [this.weatherUpdatedType]: `${this.baseUrl}${this.weatherUpdatedQuery}`,
-        [this.floodUpdatedType]: `${this.baseUrl}${this.floodUpdatedQuery}`,
-        [this.weatherWarningsType]: `${this.baseUrl}${this.weatherWarningsQuery}`,
-        [this.floodWarningsType]: `${this.baseUrl}${this.floodWarningsQuery}`,
-      };
-      Promise.allSettled([
-        this.weatherUpdatedType,
-        this.floodUpdatedType,
-        this.weatherWarningsType,
-        this.floodWarningsType,
-      ].map((queryType) => axios.get(queries[queryType], {
-        fmiWarningsQueryType: queryType,
-      }))).then(async (responses) => {
-        const responseData = {};
-        const responseQueryTypes = Object.keys(queries);
-        responses.forEach((response) => {
-          if ((response != null) && (response.value != null) && (response.value.config != null)) {
-            const responseQueryType = response.value.config.fmiWarningsQueryType;
-            if ((responseQueryType != null) && (responseQueryTypes.includes(responseQueryType))) {
-              responseData[responseQueryType] = response.value.data;
-            }
-          }
+      const queries = new Map()
+        .set(`${this.baseUrl}${this.weatherUpdatedQuery}`, this.weatherUpdatedType)
+        .set(`${this.baseUrl}${this.floodUpdatedQuery}`, this.floodUpdatedType)
+        .set(`${this.baseUrl}${this.weatherWarningsQuery}`, this.weatherWarningsType)
+        .set(`${this.baseUrl}${this.floodWarningsQuery}`, this.floodWarningsType);
+      const responseData = {};
+      return Promise.allSettled([...queries.keys()]
+        .map(async (query) => fetch(query)
+          .then((response) => response
+            .json()
+            .then((json) => {
+              const currentTime = Date.now();
+              if (this.updatedAt != null) {
+                this.refreshedAt = currentTime;
+              }
+              this.updatedAt = currentTime;
+              responseData[queries.get(query)] = json;
+            }))))
+        .then(() => {
+          this.warningsData = responseData;
         });
-        const currentTime = Date.now();
-        if (this.updatedAt != null) {
-          this.refreshedAt = currentTime;
-        }
-        this.updatedAt = currentTime;
-        this.warningsData = responseData;
-      });
     },
     show() {
       this.visible = true;

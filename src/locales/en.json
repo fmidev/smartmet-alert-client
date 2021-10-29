@@ -2,8 +2,7 @@
     "failed": "Loading failed.",
     "regionLand": "Warnings for following land areas",
     "regionSea": "Warnings for following sea areas",
-    "warningSymbols": "Warnings in effect,",
-    "warningSymbolDays": "5 days",
+    "validWarnings": "Warnings in effect, 5 days",
     "showWarnings": "Show all warnings",
     "monday": "Mon",
     "tuesday": "Tue",
@@ -171,5 +170,13 @@
     "zoomOut": "Zoom out",
     "moveMap": "Use the arrow keys to move the map",
     "mapAriaLabel": "Magnifiable map",
-    "infoButtonAriaLabel": "Open more information about warnings in effect"
+    "toContent": "Go to text-formatted warnings",
+    "warningsIn": "Warnings in",
+    "toNextContent": "areas. Go to next paragraph.",
+    "infoButtonAriaLabelShowRegion": "Show current warnings for",
+    "infoButtonAriaLabelCloseRegion": "Close current warnings for",
+    "infoButtonAriaLabelValidWarnings": ".",
+    "legends": "Map legends",
+    "showLegends": "Show legends",
+    "hideLegends": "Hide legends"
 }

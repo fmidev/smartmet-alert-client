@@ -16,6 +16,7 @@ module.exports = {
     plugins: [
       new webpack.DefinePlugin({
         VERSION: JSON.stringify(PACKAGE.version),
+        'process.execArgv': JSON.stringify(process.execArgv),
       }),
       new CopyPlugin({
         patterns: [

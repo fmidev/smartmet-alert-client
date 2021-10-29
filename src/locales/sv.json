@@ -2,8 +2,7 @@
     "failed": "Lastning misslyckades.",
     "regionLand": "Varningar är i kraft i följande landområden",
     "regionSea": "Varningar är i kraft i följande havsområden",
-    "warningSymbols": "Varningar i kraft,",
-    "warningSymbolDays": "5 dygn",
+    "validWarnings": "Varningar i kraft, 5 dygn",
     "showWarnings": "Visa alla varningar",
     "monday": "må",
     "tuesday": "ti",
@@ -171,5 +170,13 @@
     "zoomOut": "Zooma ut",
     "moveMap": "Använd piltangenterna för att flytta kartan",
     "mapAriaLabel": "Förstorande karta",
-    "infoButtonAriaLabel": "Öppna mer information om varningar i kraft"
+    "toContent": "Gå till varningar i text format",
+    "warningsIn": "Varningar i",
+    "toNextContent": "områden. Gå till nästa stycke.",
+    "infoButtonAriaLabelShowRegion": "Visa giltiga varningar för",
+    "infoButtonAriaLabelCloseRegion": "Stäng giltiga varningar för",
+    "infoButtonAriaLabelValidWarnings": ".",
+    "legends": "Kartanmärkningar",
+    "showLegends": "Visa anmärkningar",
+    "hideLegends": "Dölj anmärkningar"
 }
