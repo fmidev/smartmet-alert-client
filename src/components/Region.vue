@@ -9,7 +9,7 @@
                 {{ regionName }}
               </span>
             </div>
-            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
+            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" role="button" />
         </b-card-header>
         <b-collapse
                 :id=identifier
