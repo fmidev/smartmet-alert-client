@@ -2,7 +2,7 @@ import spacetime from 'spacetime';
 import he from 'he';
 import mapshaper from 'mapshaper';
 import xpath from 'xpath';
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 import config from './config';
 import i18n from '../i18n';
 import 'url-search-params-polyfill';
