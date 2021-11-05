@@ -206,8 +206,7 @@ div.symbol-list-main-row {
 }
 
 .show-text {
-  margin-top: 5px;
-  margin-bottom: 5px;
+  line-height: 30px;
   float: right;
   color: $dark-blue;
   cursor: pointer;
