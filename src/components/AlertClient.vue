@@ -158,11 +158,14 @@ export default {
         this.regions = result.regions;
         this.parents = result.parents;
         this.legend = result.legend;
-        await Promise.all([
-          this.$store.dispatch('setSelectedDay', this.selectedDay),
+        const dispatches = [
           this.$store.dispatch('setVisibleWarnings', this.legend.filter((legendWarning) => legendWarning.visible).map((legendWarning) => legendWarning.type)),
           this.$store.dispatch('setWarnings', this.warnings),
-        ]);
+        ];
+        if (!this.initialized) {
+          dispatches.unshift(this.$store.dispatch('setSelectedDay', this.selectedDay));
+        }
+        await Promise.all(dispatches);
       }
     },
     visibilityChange() {
