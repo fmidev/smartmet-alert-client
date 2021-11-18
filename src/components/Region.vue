@@ -127,6 +127,7 @@ export default {
     }
 
     .region-item-text {
+        display: block;
         line-height: $current-warning-height;
         white-space: nowrap;
         overflow: hidden;
