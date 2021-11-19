@@ -1,7 +1,7 @@
 <template>
   <div class="sticky-top">
     <div class="row symbol-list-header-row">
-      <nav class="bold-text">{{ warningSymbolsText }} <br v-if="input.length > 0" class="symbol-list-header-line-break"> </nav>
+      <nav class="symbol-list-header bold-text">{{ warningSymbolsText }} <br v-if="input.length > 0" class="symbol-list-header-line-break"> </nav>
     </div>
     <b-card no-body class="mb-1 d-md-none legends-panel">
         <b-card-header header-tag="header" class="p-1" header-class="legends-heading">
@@ -129,7 +129,7 @@ div.symbol-list-header-row {
     }
 }
 
-.legends-toggle {
+.legends-toggle.btn-info {
     height: $current-warning-height;
     width: $current-warning-height;
     min-width: $current-warning-height;
@@ -161,6 +161,10 @@ div.symbol-list-header-row {
         background-color: $gray;
     }
 
+    &:not(:disabled):not(.disabled):active {
+        background-color: $dark-blue;
+    }
+
     &.collapsed {
         background-image: url($ui-image-path + 'arrow-down.svg');
     }
@@ -174,6 +178,12 @@ div.legends-collapse-item:focus:not([data-focus-visible-added]) {
     background-color: $white;
     border-top: 2px solid $background-grey;
     padding: 15px;
+}
+
+@media (max-width: 767px) {
+  nav.symbol-list-header {
+    margin-top: 15px;
+  }
 }
 
 </style>

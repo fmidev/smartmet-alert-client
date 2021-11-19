@@ -93,6 +93,9 @@ export default {
     };
   },
   computed: {
+    loading() {
+      return this.$store.getters.loading;
+    },
     toContentText() {
       return i18n.t('toContent') || '';
     },
@@ -100,6 +103,9 @@ export default {
       return i18n.t('noWarnings');
     },
     validWarningsText() {
+      if (this.loading) {
+        return '';
+      }
       return this.legend.length > 0 ?
         i18n.t('validWarnings') :
         i18n.t('noWarnings');

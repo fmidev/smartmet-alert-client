@@ -106,8 +106,8 @@ export default {
     preventEvents(event) {
       event.preventDefault();
     },
-    flagVisibilityChanged(isVisible) {
-      if (!isVisible) {
+    flagVisibilityChanged(isVisible, entry) {
+      if (!isVisible && !entry?.boundingClientRect?.width) {
         this.setWarningVisibility(true);
       }
     },

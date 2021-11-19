@@ -9,7 +9,7 @@
                 {{ regionName }}
               </span>
             </div>
-            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" role="button" />
+            <b-button block v-b-toggle="identifier" variant="info" class="current-warning-toggle" :aria-label="ariaButton" />
         </b-card-header>
         <b-collapse
                 :id=identifier
@@ -127,6 +127,7 @@ export default {
     }
 
     .region-item-text {
+        display: block;
         line-height: $current-warning-height;
         white-space: nowrap;
         overflow: hidden;
