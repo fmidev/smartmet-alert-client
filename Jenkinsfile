@@ -42,6 +42,7 @@ pipeline {
                 sh "env"
                 sh "npm --version"
                 sh "nodejs --version"
+                sh "rm --recursive --force node_modules"
                 sh "npm install"
             }
         }
