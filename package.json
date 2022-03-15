@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.4.37",
+  "version": "3.4.38",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name SmartMetAlertClient",
+    "build": "vue-cli-service build --target lib --name SmartMetAlertClient && cp node_modules/vue/dist/vue.js dist/.",
     "lint": "vue-cli-service lint",
     "test": "cross-env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true DOCKER_CHROMIUM_MAX_ATTEMPTS=10 DOCKER_CHROMIUM_RETRY_INTERVAL=2000 jest",
     "serve-json": "json-server test/data/db.json -p 3030"
