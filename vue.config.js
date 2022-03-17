@@ -24,6 +24,10 @@ module.exports = {
             from: 'public/index.*.html',
             flatten: true,
           },
+          {
+            from: 'node_modules/vue/dist/vue.js',
+            flatten: true,
+          },
         ],
       }),
       new webpack.BannerPlugin({

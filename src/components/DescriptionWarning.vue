@@ -1,5 +1,5 @@
 <template>
-  <div class="current-description-row">
+  <div class="current-description-row" :class="currentTheme">
     <div class="current-description-image-cell" aria-hidden="true">
       <div
         :class="`current-description-image warning-image symbol-image symbol-image-rotate-${rotation} level-${input.severity} ${typeClass}`"
@@ -133,7 +133,6 @@ export default {
   }
 
   a.ext-link {
-    color: #303193;
     padding-right: 14px;
     background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
       right;
@@ -143,12 +142,19 @@ export default {
     }
   }
 
+  .light a.ext-link {
+    color: $light-ext-link-color;
+  }
+
+  .dark a.ext-link {
+    color: $light-ext-link-color;
+  }
+
   span.warning-valid {
-    display:block;
+    display: block;
     font-family: $font-family;
     font-size: $font-size;
     font-weight: bold;
-    color: black;
     margin-top: 0;
     margin-bottom: 5px;
   }

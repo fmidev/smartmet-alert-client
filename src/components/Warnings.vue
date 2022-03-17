@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings-view">
+  <div id="fmi-warnings-view" :class="currentTheme">
     <div
       v-if="input.length > 0"
       :class="[
@@ -27,7 +27,7 @@
       />
     </div>
     <div class="row symbol-list-main-row">
-      <hr class="symbol-block-separator legend-separator" />
+      <hr class="symbol-block-separator legend-separator" :class="noWarnings ? 'no-warnings' : ''" />
     </div>
     <div class="row symbol-list-main-row">
       <div class="symbol-list-table">
@@ -141,15 +141,18 @@ export default {
     hiddenWarnings() {
       return this.visibleWarnings.length !== this.input.length;
     },
+    noWarnings() {
+      return this.warnings.length === 0;
+    },
     warningSymbolsText() {
-      return this.warnings.length > 0 ?
-        i18n.t('warningSymbols') :
-        i18n.t('noWarnings');
+      return this.noWarnings ?
+        i18n.t('noWarnings') :
+        i18n.t('warningSymbols');
     },
     warningSymbolDaysText() {
-      return this.warnings.length > 0 ?
-        i18n.t('warningSymbolDays') :
-        '';
+      return this.noWarnings ?
+        '' :
+        i18n.t('warningSymbolDays');
     },
     showWarningsText() {
       return i18n.t('showWarnings');
@@ -169,6 +172,9 @@ export default {
     warningLevel4Text() {
       return i18n.t('warningLevel4');
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
   methods: {
     showAll() {
@@ -186,7 +192,6 @@ h3 {
   font-family: $font-family;
   font-size: $font-size;
   font-weight: bold;
-  color: black;
   white-space: nowrap;
   margin-top: 0;
 }
@@ -220,6 +225,9 @@ hr.symbol-block-separator {
 
 hr.legend-separator {
   margin-top: 55px;
+  &.no-warnings {
+    margin-top: 10px;
+  }
 }
 
 div.symbol-list-table {
@@ -239,8 +247,12 @@ div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
 
-.gray {
-  background-color: $gray;
+.light .gray {
+  background-color: $light-legend-toggle-background-color;
+}
+
+.dark .gray {
+  background-color: $dark-legend-toggle-background-color;
 }
 
 .several {
@@ -303,10 +315,18 @@ div.symbol-list-text {
 hr {
   padding: 0;
   margin: 0;
-  background-color: $background-grey;
   border: 0 none;
-  color: $background-grey;
   height: 2px;
+}
+
+.light hr {
+    background-color: $light-horizontal-rule-color;
+    color: $light-horizontal-rule-color;
+}
+
+.dark hr {
+    background-color: $dark-horizontal-rule-color;
+    color: $dark-horizontal-rule-color;
 }
 
 @media (max-width: 767px) {

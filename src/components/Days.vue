@@ -1,5 +1,5 @@
 <template>
-  <div class="row date-selector">
+  <div class="row date-selector" :class="currentTheme">
     <b-tabs
       v-model="selectedDay"
       id="fmi-warnings-date-selector"
@@ -68,6 +68,9 @@ export default {
     numberOfDays() {
       return 5;
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
 };
 </script>
@@ -76,8 +79,13 @@ export default {
 @import "../scss/constants.scss";
 
 .date-selector {
-  background-color: $light-gray;
   margin: 0;
+  &.light {
+    background-color: $light-date-selector-background-color;
+  }
+  &.dark {
+    background-color: $dark-date-selector-background-color;
+  }
 }
 
 .row {
@@ -105,11 +113,19 @@ export default {
 
 ::v-deep a.day.day0 {
   border: none !important;
-  div.date-selector-cell > div {
-    border-top: none !important;
-    border-bottom: none !important;
-    border-right: 1px solid $white !important;
-    border-left: none !important;
+  div.date-selector-cell {
+    > div {
+      border-top: none !important;
+      border-bottom: none !important;
+      border-left: none !important;
+      border-right: none !important;
+    }
+    &.light > div {
+      border-right: 1px solid $light-border-color !important;
+    }
+    &.dark > div {
+      border-right: 1px solid $dark-border-color !important;
+    }
   }
 }
 
@@ -117,21 +133,39 @@ export default {
 ::v-deep a.day.day2,
 ::v-deep a.day.day3 {
   border: none !important;
-  div.date-selector-cell > div {
-    border-top: none !important;
-    border-bottom: none !important;
-    border-left: 1px solid $white !important;
-    border-right: 1px solid $white !important;
+  div.date-selector-cell {
+    > div {
+      border-top: none !important;
+      border-bottom: none !important;
+      border-left: none !important;
+      border-right: none !important;
+    }
+    &.light > div {
+      border-left: 1px solid $light-border-color !important;
+      border-right: 1px solid $light-border-color !important;
+    }
+    &.dark > div {
+      border-left: 1px solid $dark-border-color !important;
+      border-right: 1px solid $dark-border-color !important;
+    }
   }
 }
 
 ::v-deep a.day.day4 {
   border: none !important;
-  div.date-selector-cell > div {
-    border-top: none !important;
-    border-bottom: none !important;
-    border-left: 1px solid $white !important;
-    border-right: none !important;
+  div.date-selector-cell {
+    > div {
+      border-top: none !important;
+      border-bottom: none !important;
+      border-left: none !important;
+      border-right: none !important;
+    }
+    &.light > div {
+      border-left: 1px solid $light-border-color !important;
+    }
+    &.dark > div {
+      border-left: 1px solid $dark-border-color !important;
+    }
   }
 }
 

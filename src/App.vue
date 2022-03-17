@@ -1,5 +1,5 @@
 <template>
-  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :staticDays="staticDays" :regionListEnabled="regionListEnabled" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :sleep="sleep" />
+  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :staticDays="staticDays" :regionListEnabled="regionListEnabled" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :theme="theme" :sleep="sleep" />
 </template>
 <script>
 import { BootstrapVue, BSpinner } from 'bootstrap-vue';
@@ -63,6 +63,10 @@ export default {
     language: {
       type: String,
       default: process.env.VUE_APP_I18N_LOCALE || 'en',
+    },
+    theme: {
+      type: String,
+      default: 'light',
     },
     sleep: {
       type: Boolean,

@@ -61,7 +61,7 @@ export default {
         text-align: center;
         margin: 0 auto;
         font-family: $font-family;
-        color: #ffffff;
+        color: $white;
         text-anchor: middle;
         font-weight: 700;
     }

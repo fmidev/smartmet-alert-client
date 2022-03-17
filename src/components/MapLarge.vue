@@ -1,5 +1,5 @@
 <template>
-    <div class="map-large" tabindex="0">
+    <div class="map-large" :class="currentTheme" tabindex="0">
         <div v-if="loading" class="spinner-container text-center">
             <b-spinner></b-spinner>
         </div>
@@ -66,7 +66,7 @@
             <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle"></div>
             <b-tooltip id="fmi-warnings-region-tooltip" :show.sync="showTooltip" triggers=""
                        target="fmi-warnings-region-tooltip-reference" placement="top" delay=0
-                       container="fmi-warnings-region-tooltip-reference">
+                       container="fmi-warnings-region-tooltip-reference" :custom-class="currentTheme">
                 <div class="fmi-warnings-popup" id="day-map-large-base-popup"><a
                         :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
                         id="day-map-large-base-popup-closer"
@@ -632,7 +632,7 @@ export default {
         width: $map-large-width;
         height: 100%;
         max-height: $map-large-height;
-        background-color: rgba(0, 0, 0, 0);
+        background-color: transparent;
 
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
@@ -640,6 +640,14 @@ export default {
 
         div.spinner-container {
           height: 0;
+        }
+
+        &.light div.day-map-large button#fmi-warnings-move:focus {
+          background-color: $light-button-focus-color;
+        }
+
+        &.dark div.day-map-large button#fmi-warnings-move:focus {
+          background-color: $dark-button-focus-color;
         }
     }
 
@@ -650,7 +658,6 @@ export default {
     button.fmi-warnings-map-tool {
         position: absolute;
         right: 10px;
-        border-color: $dark-blue;
         height: 35px;
         width: 35px;
         background-repeat: no-repeat;
@@ -659,6 +666,14 @@ export default {
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
         }
+    }
+
+    .light button.fmi-warnings-map-tool {
+      border-color: $light-button-border-color;
+    }
+
+    .dark button.fmi-warnings-map-tool {
+      border-color: $dark-button-border-color;
     }
 
     div.map-large div.day-map-large button {
@@ -689,12 +704,11 @@ export default {
         &#fmi-warnings-move {
             top: 90px;
             border: none;
-            background-color: Transparent;
+            background-color: transparent;
             pointer-events: none;
 
             &:focus {
                 border-radius: 2px;
-                background-color: $dark-blue;
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z'/%3E%3C/svg%3E");
 
                 &:disabled {
@@ -717,22 +731,31 @@ export default {
         position: absolute;
         width: 1px;
         height: 1px;
-        background-color: rgba(0, 0, 0, 0);
+        background-color: transparent;
         pointer-events: none;
         z-index: 10;
     }
 
     .fmi-warnings-popup {
         position: absolute;
-        background-color: white;
-        -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
         padding: 0;
         border-radius: 1px;
         bottom: 12px;
         left: -50px;
         min-width: $popup-width;
         z-index: 9;
+    }
+
+    .light .fmi-warnings-popup {
+        background-color: $light-popup-background-color;
+        -webkit-filter: drop-shadow(0 1px 4px $light-popup-filter-color);
+        filter: drop-shadow(0 1px 4px $light-popup-filter-color);
+    }
+
+    .dark .fmi-warnings-popup {
+        background-color: $dark-popup-background-color;
+        -webkit-filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
+        filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
     }
 
     ::v-deep .tooltip.bs-tooltip-top {
@@ -749,7 +772,6 @@ export default {
             padding: 0;
             border-radius: 1px;
             border: 11px solid transparent;
-            border-top-color: $dark-gray;
             left: 60px;
             margin-left: -11px;
             top: 0;
@@ -758,10 +780,29 @@ export default {
 
         .arrow::before {
             border: 10px solid transparent;
-            border-top-color: $white;
             left: -10px;
             top: -11px;
             z-index: 9;
+        }
+
+        &.light {
+          .arrow {
+            border-top-color: $light-popup-border-color;
+          }  
+
+          .arrow::before {
+            border-top-color: $light-popup-background-color;
+          }
+        }
+
+        &.dark {
+          .arrow {
+            border-top-color: $dark-popup-border-color;
+          }  
+
+          .arrow::before {
+            border-top-color: $dark-popup-background-color;
+          }
         }
     }
 
@@ -787,8 +828,15 @@ export default {
 
     .region-popup {
         width: 100%;
-        background-color: white;
         cursor: default;
+    }
+
+    .light .region-popup {
+        background-color: $light-popup-background-color;
+    }
+
+    .dark .region-popup {
+        background-color: $dark-popup-background-color;
     }
 
     div.region-popup-header {
@@ -810,6 +858,14 @@ export default {
         margin-top: 3px;
     }
 
+    .light span.region-popup-header-text {
+      color: $light-popup-header-text-color; 
+    }  
+
+    .dark span.region-popup-header-text {
+      color: $dark-popup-header-text-color; 
+    }  
+
     .region-popup-wrapper {
         width: 100%;
         max-height: 300px;
@@ -821,28 +877,59 @@ export default {
     .region-popup-body {
         top: 40px;
         width: 100%;
-        background-color: white;
         padding: 0 0 0 0;
     }
 
-    .shadow-level-0 {
-        background-color: $green-shadow !important;
+    .light .region-popup-body {
+        background-color: $light-popup-background-color;
+    }  
+
+    .dark .region-popup-body {
+        background-color: $dark-popup-background-color;
+    }  
+    
+    .light {
+      .shadow-level-0 {
+          background-color: $light-green-shadow !important;
+      }
+
+      .shadow-level-1 {
+          background-color: $light-green-shadow !important;
+      }
+
+      .shadow-level-2 {
+          background-color: $light-yellow-shadow !important;
+      }
+
+      .shadow-level-3 {
+          background-color: $light-orange-shadow !important;
+      }
+
+      .shadow-level-4 {
+          background-color: $light-red-shadow !important;
+      }
     }
 
-    .shadow-level-1 {
-        background-color: $green-shadow !important;
-    }
+    .dark {
+      .shadow-level-0 {
+          background-color: $dark-green-shadow !important;
+      }
 
-    .shadow-level-2 {
-        background-color: $yellow-shadow !important;
-    }
+      .shadow-level-1 {
+          background-color: $dark-green-shadow !important;
+      }
 
-    .shadow-level-3 {
-        background-color: $orange-shadow !important;
-    }
+      .shadow-level-2 {
+          background-color: $dark-yellow-shadow !important;
+      }
 
-    .shadow-level-4 {
-        background-color: $red-shadow !important;
+      .shadow-level-3 {
+          background-color: $dark-orange-shadow !important;
+      }
+
+      .shadow-level-4 {
+          background-color: $dark-red-shadow !important;
+      }
     }
 
     ::v-deep div.tooltip-inner {
@@ -857,8 +944,15 @@ export default {
     }
 
     .popup-table-heading {
-        background-color: $background-grey;
         display: table-header-group;
+    }
+
+    .light .popup-table-heading {
+        background-color: $light-popup-table-background-color;
+    }
+
+    .dark .popup-table-heading {
+        background-color: $dark-popup-table-background-color;
     }
 
     .popup-table-head {
@@ -868,15 +962,29 @@ export default {
     }
 
     .popup-table-heading {
-        background-color: $background-grey;
         display: table-header-group;
         font-weight: bold;
     }
 
+    .light .popup-table-heading {
+        background-color: $light-popup-table-background-color;
+    }
+
+    .dark .popup-table-heading {
+        background-color: $dark-popup-table-background-color;
+    }
+
     .popup-table-foot {
-        background-color: $background-grey;
         display: table-footer-group;
         font-weight: bold;
+    }
+
+    .light .popup-table-foot {
+        background-color: $light-popup-table-background-color;
+    }
+
+    .dark .popup-table-foot {
+        background-color: $dark-popup-table-background-color;
     }
 
     .popup-table-body {
@@ -924,6 +1032,5 @@ export default {
         button.fmi-warnings-map-tool {
             display: none;
         }
-
     }
 </style>
