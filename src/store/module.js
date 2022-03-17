@@ -6,6 +6,7 @@ import {
   SET_WARNINGS,
   SET_VISIBLE_WARNINGS,
   SET_WARNING_VISIBILITY,
+  SET_THEME,
 } from './mutation-types';
 
 export default {
@@ -16,6 +17,7 @@ export default {
     selectedDay: 0,
     warnings: {},
     visibleWarnings: [],
+    theme: '',
   }),
   getters: {
     loading: (state) => (state != null ? state.loading : false),
@@ -24,6 +26,7 @@ export default {
     selectedDay: (state) => (state != null ? state.selectedDay : 0),
     warnings: (state) => (state != null ? state.warnings : {}),
     visibleWarnings: (state) => (state != null ? state.visibleWarnings : []),
+    theme: (state) => (state != null ? state.theme : ''),
   },
   mutations: {
     [SET_LOADING]: (state, loading) => {
@@ -61,11 +64,15 @@ export default {
         if (visible && !state.visibleWarnings.includes(warning)) {
           state.visibleWarnings.push(warning);
         } else if (!visible) {
-          state.visibleWarnings =
-            state.visibleWarnings.filter(
-              (visibleWarningType) => visibleWarningType !== warning,
-            );
+          state.visibleWarnings = state.visibleWarnings.filter(
+            (visibleWarningType) => visibleWarningType !== warning,
+          );
         }
+      }
+    },
+    [SET_THEME]: (state, theme) => {
+      if (state != null) {
+        state.theme = theme;
       }
     },
   },
@@ -89,7 +96,13 @@ export default {
       commit(SET_VISIBLE_WARNINGS, visibleWarnings);
     },
     setWarningVisibility({ commit }, { warning, visible }) {
-      commit(SET_WARNING_VISIBILITY, { warning, visible });
+      commit(SET_WARNING_VISIBILITY, {
+        warning,
+        visible,
+      });
+    },
+    setTheme({ commit }, theme) {
+      commit(SET_THEME, theme);
     },
   },
 };

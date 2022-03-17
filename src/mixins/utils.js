@@ -110,6 +110,9 @@ export default {
     overlayCoverages() {
       return this.coverageGeom(`coverages${this.size}`, this.strokeWidth, 0);
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
     initialized() {
       return this.$store.getters.initialized;
     },

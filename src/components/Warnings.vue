@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings-view">
+  <div id="fmi-warnings-view" :class="currentTheme">
     <div
       v-if="input.length > 0"
       :class="[
@@ -172,6 +172,9 @@ export default {
     warningLevel4Text() {
       return i18n.t('warningLevel4');
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
   methods: {
     showAll() {
@@ -189,7 +192,6 @@ h3 {
   font-family: $font-family;
   font-size: $font-size;
   font-weight: bold;
-  color: black;
   white-space: nowrap;
   margin-top: 0;
 }
@@ -245,8 +247,12 @@ div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
 
-.gray {
-  background-color: $gray;
+.light .gray {
+  background-color: $light-legend-toggle-background-color;
+}
+
+.dark .gray {
+  background-color: $dark-legend-toggle-background-color;
 }
 
 .several {
@@ -309,10 +315,18 @@ div.symbol-list-text {
 hr {
   padding: 0;
   margin: 0;
-  background-color: $background-grey;
   border: 0 none;
-  color: $background-grey;
   height: 2px;
+}
+
+.light hr {
+    background-color: $light-horizontal-rule-color;
+    color: $light-horizontal-rule-color;
+}
+
+.dark hr {
+    background-color: $dark-horizontal-rule-color;
+    color: $dark-horizontal-rule-color;
 }
 
 @media (max-width: 767px) {

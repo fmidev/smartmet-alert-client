@@ -1,5 +1,5 @@
 <template>
-  <div :class="['date-selector-cell', { active: active }]" :aria-label="ariaLabel" >
+  <div :class="['date-selector-cell', currentTheme, { active: active } ]" :aria-label="ariaLabel" >
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
         <span v-if="staticDays" class="bold-text weekday-text">{{ weekday }}</span>
@@ -62,6 +62,9 @@ export default {
     ariaLabel() {
       return `${this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''} ${this.input.day}.${this.input.month}`;
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
 };
 </script>
@@ -69,57 +72,76 @@ export default {
 <style scoped lang="scss">
 @import "../scss/constants.scss";
 
-div.active div.date-selector-cell-footer {
-  background-color: $black;
-}
+div.date-selector-cell {
+  &.active {
+    div.date-selector-cell-footer {
+      background-color: $black;
+    }
 
-div.date-selector-cell.active .date-selector-cell-footer:after {
-  display: inline;
-  content: "";
-  position: absolute;
-  border-left: solid 5px transparent;
-  border-right: solid 5px transparent;
-  border-top: solid 7px $black;
-  top: 4px;
-  left: -webkit-calc(50% - 5px);
-  left: -moz-calc(50% - 5px);
-  left: calc(50% - 5px);
-}
+    .date-selector-cell-footer:after {
+      display: inline;
+      content: "";
+      position: absolute;
+      border-left: solid 5px transparent;
+      border-right: solid 5px transparent;
+      border-top: solid 7px $black;
+      top: 4px;
+      left: -webkit-calc(50% - 5px);
+      left: -moz-calc(50% - 5px);
+      left: calc(50% - 5px);
+    }
+  }
 
-.date-selector-cell-footer {
-  position: relative;
-  background-color: $dark-gray;
-  height: 4px;
-  margin-bottom: 20px;
-}
+  .date-selector-cell-footer {
+    position: relative;
+    height: 4px;
+    margin-bottom: 20px;
+  }
 
-.date-selector-cell-body {
-  height: 130px;
-}
+  &.light > .date-selector-cell-footer {
+    background-color: $light-date-selector-footer-color;
+  }
 
-div.map-container {
-  text-align: center;
-  margin-left: 0;
-  margin-right: 0;
-}
+  &.dark > .date-selector-cell-footer {
+    background-color: $dark-date-selector-footer-color;
+  }
 
-.date-selector-text {
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  white-space: nowrap;
-}
+  .date-selector-cell-body {
+    height: 130px;
+  }
 
-.date-selector-cell-header {
-  width: 100%;
-  display: table;
-  height: 30px;
+  div.map-container {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .date-selector-text {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .date-selector-cell-header {
+    width: 100%;
+    display: table;
+    height: 30px;
+  }
 }
 
 @media (max-width: 575px) {
   .map-small,
   .map-container {
     display: none;
+  }
+
+  .light div.date-selector-cell-header * {
+    color: $light-date-selector-mobile-text-color !important;
+  }
+
+  .dark div.date-selector-cell-header * {
+    color: $dark-date-selector-mobile-text-color !important;
   }
 
   div.date-selector-cell-header {

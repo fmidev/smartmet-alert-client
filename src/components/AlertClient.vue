@@ -1,27 +1,29 @@
 <template>
-  <div id="fmi-warnings" :data-smartmet-alert-client-version="version">
+  <div id="fmi-warnings" :class="currentTheme" :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-          <h3>{{ validWarningsText }}</h3>
-          <div v-if="regionListEnabled">
-            <a v-if="numWarnings" href="#fmi-warnings-region-content" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
-              toContentText
-            }}</a>
-            <div v-else :aria-label="noWarningsText"></div>
+    <div>
+      <div class="container-fluid" :class="currentTheme">
+        <div class="row">
+          <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
+            <h3>{{ validWarningsText }}</h3>
+            <div v-if="regionListEnabled">
+              <a v-if="numWarnings" href="#fmi-warnings-region-content" id="fmi-warnings-to-text-content" tabindex="0" class="sr-only sr-only-focusable">{{
+                toContentText
+              }}</a>
+              <div v-else :aria-label="noWarningsText"></div>
+            </div>
+            <Days :input="days" :defaultDay="selectedDay" :staticDays="staticDays" :regions="regions" :geometryId="geometryId" />
           </div>
-          <Days :input="days" :defaultDay="selectedDay" :staticDays="staticDays" :regions="regions" :geometryId="geometryId" />
+          <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
+            <Legend v-show="validData" :input="legend" />
+          </div>
         </div>
-        <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-          <Legend v-show="validData" :input="legend" />
-        </div>
-      </div>
-      <div v-if="regionListEnabled" class="row">
-        <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-          <Regions :input="regions" :parents="parents" :geometryId="geometryId" />
-        </div>
-        <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list ">
+        <div v-if="regionListEnabled" class="row">
+          <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
+            <Regions :input="regions" :parents="parents" :geometryId="geometryId" />
+          </div>
+          <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list ">
+          </div>
         </div>
       </div>
     </div>
@@ -67,6 +69,10 @@ export default {
       default: config.props.defaultGeometryId,
     },
     language: String,
+    theme: {
+      type: String,
+      default: 'light',
+    },
     sleep: {
       type: Boolean,
       default: true,
@@ -140,6 +146,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch('setTheme', this.theme);
     this.initTimer();
     if (this.sleep) {
       this.visibilityListener = document.addEventListener('visibilitychange', this.visibilityChange);
@@ -219,12 +226,10 @@ export default {
   font-family: $font-family;
   font-size: $font-size;
   line-height: 1.42857143;
-  color: #000;
   background-color: transparent;
   font-weight: normal;
 
   *:focus {
-    outline: dashed 2px $outline-color !important;
     outline-offset: 2px;
     z-index: 10;
   }
@@ -247,10 +252,22 @@ export default {
   }
 }
 
+::v-deep .light * {
+  color: $light-text-color;
+}
+
+::v-deep .dark * {
+  color: $dark-text-color;
+}
+
 div#fmi-warnings {
   width: 690px;
   padding: 0;
   margin-bottom: 20px;
+
+  div {
+    background-color: transparent;
+  }
 
   div.container-fluid {
     padding: 0;
@@ -260,13 +277,33 @@ div#fmi-warnings {
   a#fmi-warnings-to-text-content {
     font-family: $font-family;
     font-size: $font-size;
-    color: #000;
     height: 20px;
     &:focus {
-      outline: dashed 2px $outline-color !important;
       outline-offset: 2px;
       &:not([data-focus-visible-added]) {
           outline: none !important;
+      }
+    }
+  }
+
+  &.light {
+    *:focus {
+      outline: dashed 2px $light-outline-color !important;
+    }
+    a#fmi-warnings-to-text-content {
+      &:focus {
+        outline: dashed 2px $light-outline-color !important;
+      }
+    }
+  }
+
+  &.dark {
+    *:focus {
+      outline: dashed 2px $dark-outline-color !important;
+    }
+    a#fmi-warnings-to-text-content {
+      &:focus {
+        outline: dashed 2px $dark-outline-color !important;
       }
     }
   }

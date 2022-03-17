@@ -1,5 +1,5 @@
 <template>
-    <div class="symbol-list-table">
+    <div class="symbol-list-table" :class="currentTheme">
         <div class="symbol-list-cell symbol-list-cell-image">
             <div
                     :class="
@@ -164,10 +164,18 @@ export default {
     hr {
         padding: 0;
         margin: 0;
-        background-color: $background-grey;
         border: 0 none;
-        color: $background-grey;
         height: 2px;
+    }
+
+    .light hr {
+        background-color: $light-horizontal-rule-color;
+        color: $light-horizontal-rule-color;
+    }
+
+    .dark hr {
+        background-color: $dark-horizontal-rule-color;
+        color: $dark-horizontal-rule-color;
     }
 
     div#fmi-warnings-list div.symbol-list-cell-text {

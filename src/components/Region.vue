@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body class="mb-1 current-warning-panel">
+    <b-card no-body class="mb-1 current-warning-panel" :class="currentTheme">
         <b-card-header header-tag="header" class="p-1" header-class="current-warning-heading">
             <div class="region-header">
               <div>
@@ -94,6 +94,9 @@ export default {
     ariaInfo() {
       return this.warnings.map((warning, index) => `${(index > 0 ? ' ' : '')}${i18n.t(warning.type)}: ${i18n.t(`warningLevel${warning.severity}`)}.`);
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
 };
 </script>
@@ -106,14 +109,22 @@ export default {
         border: none;
         margin-left: 0;
         margin-right: 0;
+        background-color: transparent;
     }
 
     .current-warning-heading {
-        background-color: $light-gray;
         height: $current-warning-height;
         padding: 0 0 0 15px !important;
         line-height: $current-warning-height;
         border: none;
+    }
+
+    .light .current-warning-heading {
+        background-color: $light-current-warning-heading-color;
+    }
+
+    .dark .current-warning-heading {
+        background-color: $dark-current-warning-heading-color;
     }
 
     button.btn-info {
@@ -132,7 +143,6 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background-color:rgba(248, 248, 248, 1);
         margin-left: 15px;
         &:focus:not([data-focus-visible-added]) {
             outline: none !important;
@@ -143,12 +153,19 @@ export default {
         }
     }
 
+    .light .region-item-text {
+      background-color: $light-current-warning-heading-color;
+    }
+
+    .dark .region-item-text {
+      background-color: $dark-current-warning-heading-color;
+    }
+
     .current-warning-toggle.btn-info {
         height: $current-warning-height;
         width: $current-warning-height;
         min-width: $current-warning-height;
         background-image: url($ui-image-path + 'arrow-up.svg');
-        background-color: #e8e8e8;
         background-repeat: no-repeat;
         background-position: center;
         border-radius: 0;
@@ -157,12 +174,7 @@ export default {
         padding: $image-padding;
         margin-left: 5px;
 
-        &:hover {
-            background-color: #e8e8e8;
-        }
-
         &:focus {
-            background-color: #e8e8e8;
             position: relative;
             z-index: 1;
             box-shadow: none !important;
@@ -171,19 +183,55 @@ export default {
             }
         }
 
-        &:not(:disabled):not(.disabled):active {
-            background-color: $dark-blue;
-        }
-
         &.collapsed {
             background-image: url($ui-image-path + 'arrow-down.svg');
         }
     }
 
+    .light .current-warning-toggle.btn-info {
+        background-color: $light-current-warning-toggle-color;
+
+        &:hover {
+            background-color: $light-current-warning-toggle-color;
+        }
+
+        &:focus {
+            background-color: $light-current-warning-toggle-color;
+        }    
+
+        &:not(:disabled):not(.disabled):active {
+            background-color: $light-current-warning-toggle-active-color;
+        }
+    }
+
+    .dark .current-warning-toggle.btn-info {
+        background-color: $dark-current-warning-toggle-color;
+
+        &:hover {
+            background-color: $dark-current-warning-toggle-color;
+        }
+
+        &:focus {
+            background-color: $dark-current-warning-toggle-color;
+        }    
+
+        &:not(:disabled):not(.disabled):active {
+            background-color: $dark-current-warning-toggle-active-color;
+        }
+    }
+
     .current-description {
-        background-color: #f3f3f3;
-        border-top: 1px solid #ddd;
         padding: 15px;
+    }
+
+    .light .current-description {
+        border-top: 1px solid $light-description-border-color;
+        background-color: $light-description-background-color;
+    }
+
+    .dark .current-description {
+        border-top: 1px solid $dark-description-border-color;
+        background-color: $dark-description-background-color;
     }
 
     div.current-description-table {

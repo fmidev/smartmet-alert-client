@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky-top">
+  <div class="sticky-top" :class="currentTheme">
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">{{ warningSymbolsText }} <br v-if="input.length > 0" class="symbol-list-header-line-break"> </nav>
     </div>
@@ -70,6 +70,9 @@ export default {
     toggleLegendsText() {
       return this.visible ? i18n.t('hideLegends') : i18n.t('showLegends');
     },
+    currentTheme() {
+      return this.$store.getters.theme;
+    },
   },
   methods: {
     showAll() {
@@ -94,17 +97,31 @@ div.symbol-list-header-row {
 
 .legends-panel {
     border-radius: 0;
-    border: 2px solid $background-grey;
     margin-left: 0;
     margin-right: 0;
 }
 
+.light .legends-panel {
+    border: 2px solid $light-legend-background-color;
+}  
+
+.dark .legends-panel {
+    border: 2px solid $dark-legend-background-color;
+}  
+
 .legends-heading {
-    background-color: $white;
     height: $current-warning-height;
     padding: 0 0 0 15px !important;
     line-height: $current-warning-height;
     border: none;
+}
+
+.light .legends-heading {
+    background-color: $light-legend-heading-background-color;
+}
+
+.dark .legends-heading {
+    background-color: $dark-legend-heading-background-color;
 }
 
 .legends-header {
@@ -113,12 +130,19 @@ div.symbol-list-header-row {
   right: 38px;
 }
 
+.light .legends-header {
+  background: $light-legend-heading-background-color
+}  
+
+.dark .legends-header {
+  background: $dark-legend-heading-background-color
+}  
+
 .legends-text {
     line-height: $current-warning-height;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background-color: $white;
     margin-left: 15px;
     &:focus:not([data-focus-visible-added]) {
         outline: none !important;
@@ -129,12 +153,19 @@ div.symbol-list-header-row {
     }
 }
 
+.light .legends-text {
+    background-color: $light-legend-heading-background-color;
+}
+
+.dark .legends-text {
+    background-color: $dark-legend-heading-background-color;
+}
+
 .legends-toggle.btn-info {
     height: $current-warning-height;
     width: $current-warning-height;
     min-width: $current-warning-height;
     background-image: url($ui-image-path + 'arrow-up.svg');
-    background-color: $gray;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 0;
@@ -143,12 +174,7 @@ div.symbol-list-header-row {
     padding: $image-padding;
     margin-left: 5px;
 
-    &:hover {
-        background-color: $gray;
-    }
-
     &:focus {
-        background-color: $gray;
         position: relative;
         z-index: 1;
         box-shadow: none !important;
@@ -157,28 +183,69 @@ div.symbol-list-header-row {
         }
     }
 
-    &:active {
-        background-color: $gray;
-    }
-
-    &:not(:disabled):not(.disabled):active {
-        background-color: $dark-blue;
-    }
-
     &.collapsed {
         background-image: url($ui-image-path + 'arrow-down.svg');
     }
 }
+
+.light .legends-toggle.btn-info {
+    background-color: $light-legend-toggle-background-color;
+
+    &:hover {
+        background-color: $light-legend-toggle-background-color;
+    }
+
+    &:focus {
+        background-color: $light-legend-toggle-background-color;
+    }
+
+    &:active {
+        background-color: $light-legend-toggle-background-color;
+    }
+
+    &:not(:disabled):not(.disabled):active {
+        background-color: $light-current-warning-toggle-active-color;
+    }
+}
+
+.dark .legends-toggle.btn-info {
+    background-color: $dark-legend-toggle-background-color;
+
+    &:hover {
+        background-color: $dark-legend-toggle-background-color;
+    }
+
+    &:focus {
+        background-color: $dark-legend-toggle-background-color;
+    }
+
+    &:active {
+        background-color: $dark-legend-toggle-background-color;
+    }
+
+    &:not(:disabled):not(.disabled):active {
+        background-color: $dark-current-warning-toggle-active-color;
+    }
+}
+
 
 div.legends-collapse-item:focus:not([data-focus-visible-added]) {
     outline: none !important;
 }
 
 .legends-container {
-    background-color: $white;
-    border-top: 2px solid $background-grey;
     padding: 15px;
 }
+
+.light .legends-container {
+    background-color: $light-legend-container-background-color;
+    border-top: 2px solid $light-legend-background-color;
+}  
+
+.dark .legends-container {
+    background-color: $dark-legend-container-background-color;
+    border-top: 2px solid $dark-legend-background-color;
+}  
 
 @media (max-width: 767px) {
   nav.symbol-list-header {
