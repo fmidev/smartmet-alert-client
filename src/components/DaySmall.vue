@@ -74,17 +74,25 @@ export default {
 
 div.date-selector-cell {
   &.active {
-    div.date-selector-cell-footer {
-      background-color: $black;
+    &.light div.date-selector-cell-footer {
+      background-color: $light-text-color;
+      &:after {
+        border-top: solid 7px $light-text-color;
+      }
+    }
+    &.dark div.date-selector-cell-footer {
+      background-color: $dark-text-color;
+      &:after {
+        border-top: solid 7px $dark-text-color;
+      }
     }
 
     .date-selector-cell-footer:after {
       display: inline;
-      content: "";
+      content: '';
       position: absolute;
       border-left: solid 5px transparent;
       border-right: solid 5px transparent;
-      border-top: solid 7px $black;
       top: 4px;
       left: -webkit-calc(50% - 5px);
       left: -moz-calc(50% - 5px);

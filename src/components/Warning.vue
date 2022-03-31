@@ -222,7 +222,14 @@ export default {
 
     .flag-selected {
         cursor: pointer;
-        background-image: url($ui-image-path + 'flag-selected' + $image-extension);
+    }
+
+    .light .flag-selected {
+        background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
+    }
+
+    .dark .flag-selected {
+        background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
     }
 
     .flag-unselected:focus:not([data-focus-visible-added]), .flag-selected:focus:not([data-focus-visible-added]) {
@@ -231,7 +238,14 @@ export default {
 
     .flag-unselected {
         cursor: pointer;
-        background-image: url($ui-image-path + 'flag-unselected' + $image-extension);
+    }
+
+    .light .flag-unselected {
+        background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+    }
+
+    .dark .flag-unselected {
+        background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
     }
 
     ::v-deep .tooltip.bs-tooltip-top {
