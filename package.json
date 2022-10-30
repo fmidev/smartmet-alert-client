@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@panzoom/panzoom": "4.4.3",
-    "@xmldom/xmldom": "0.7.5",
+    "@xmldom/xmldom": "0.7.6",
     "bootstrap": "4.6.1",
     "bootstrap-vue": "2.22.0",
     "cross-fetch": "3.1.5",
