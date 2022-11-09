@@ -1,13 +1,13 @@
 import {
-  SET_LOADING,
   SET_INITIALIZED,
-  SET_TIME_OFFSET,
+  SET_LOADING,
   SET_SELECTED_DAY,
-  SET_WARNINGS,
+  SET_THEME,
+  SET_TIME_OFFSET,
   SET_VISIBLE_WARNINGS,
   SET_WARNING_VISIBILITY,
-  SET_THEME,
-} from './mutation-types';
+  SET_WARNINGS,
+} from './mutation-types'
 
 export default {
   state: () => ({
@@ -31,78 +31,78 @@ export default {
   mutations: {
     [SET_LOADING]: (state, loading) => {
       if (state != null) {
-        state.loading = loading;
+        state.loading = loading
       }
     },
     [SET_INITIALIZED]: (state, initialized) => {
       if (state != null) {
-        state.initialized = initialized;
+        state.initialized = initialized
       }
     },
     [SET_TIME_OFFSET]: (state, timeOffset) => {
       if (state != null) {
-        state.timeOffset = timeOffset;
+        state.timeOffset = timeOffset
       }
     },
     [SET_SELECTED_DAY]: (state, selectedDay) => {
       if (state != null) {
-        state.selectedDay = selectedDay;
+        state.selectedDay = selectedDay
       }
     },
     [SET_WARNINGS]: (state, warnings) => {
       if (state != null) {
-        state.warnings = warnings;
+        state.warnings = warnings
       }
     },
     [SET_VISIBLE_WARNINGS]: (state, visibleWarnings) => {
       if (state != null) {
-        state.visibleWarnings = visibleWarnings;
+        state.visibleWarnings = visibleWarnings
       }
     },
     [SET_WARNING_VISIBILITY]: (state, { warning, visible }) => {
       if (state != null) {
         if (visible && !state.visibleWarnings.includes(warning)) {
-          state.visibleWarnings.push(warning);
+          state.visibleWarnings.push(warning)
         } else if (!visible) {
           state.visibleWarnings = state.visibleWarnings.filter(
-            (visibleWarningType) => visibleWarningType !== warning,
-          );
+            (visibleWarningType) => visibleWarningType !== warning
+          )
         }
       }
     },
     [SET_THEME]: (state, theme) => {
       if (state != null) {
-        state.theme = theme;
+        state.theme = theme
       }
     },
   },
   actions: {
     setLoading({ commit }, loading) {
-      commit(SET_LOADING, loading);
+      commit(SET_LOADING, loading)
     },
     setInitialized({ commit }, initialized) {
-      commit(SET_INITIALIZED, initialized);
+      commit(SET_INITIALIZED, initialized)
     },
     setTimeOffset({ commit }, timeOffset) {
-      commit(SET_TIME_OFFSET, timeOffset);
+      commit(SET_TIME_OFFSET, timeOffset)
     },
     setSelectedDay({ commit }, selectedDay) {
-      commit(SET_SELECTED_DAY, selectedDay);
+      commit(SET_SELECTED_DAY, selectedDay)
     },
     setWarnings({ commit }, warnings) {
-      commit(SET_WARNINGS, warnings);
+      commit(SET_WARNINGS, warnings)
     },
     setVisibleWarnings({ commit }, visibleWarnings) {
-      commit(SET_VISIBLE_WARNINGS, visibleWarnings);
+      commit(SET_VISIBLE_WARNINGS, visibleWarnings)
     },
     setWarningVisibility({ commit }, { warning, visible }) {
       commit(SET_WARNING_VISIBILITY, {
         warning,
         visible,
-      });
+      })
     },
     setTheme({ commit }, theme) {
-      commit(SET_THEME, theme);
+      commit(SET_THEME, theme)
     },
   },
-};
+}

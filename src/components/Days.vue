@@ -1,33 +1,43 @@
 <template>
   <div class="row date-selector" :class="currentTheme">
     <b-tabs
-      v-model="selectedDay"
       id="fmi-warnings-date-selector"
+      v-model="selectedDay"
       :lazy="true"
       :no-fade="true"
       nav-class="fmi-warnings-date-nav"
       nav-wrapper-class="fmi-warnings-date-wrapper"
-      :justified="true"
-    >
+      :justified="true">
       <b-tab
         v-for="(n, i) in numberOfDays"
         :key="i"
         :active="i === selectedDay"
-        :title-link-class="['day', `day${i}`]"
-      >
-        <template v-slot:title>
-          <DaySmall :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :active="i === selectedDay" :staticDays="staticDays" />
+        :title-link-class="['day', `day${i}`]">
+        <template #title>
+          <DaySmall
+            :index="i"
+            :input="input[i]"
+            :regions="regions[i]"
+            :geometry-id="geometryId"
+            :active="i === selectedDay"
+            :static-days="staticDays" />
         </template>
-        <DayLarge :index="i" :input="input[i]" :regions="regions[i]" :geometryId="geometryId" :staticDays="staticDays" />
+        <DayLarge
+          :index="i"
+          :input="input[i]"
+          :regions="regions[i]"
+          :geometry-id="geometryId"
+          :static-days="staticDays" />
       </b-tab>
     </b-tabs>
   </div>
 </template>
 
 <script>
-import 'focus-visible';
-import DaySmall from './DaySmall.vue';
-import DayLarge from './DayLarge.vue';
+import 'focus-visible'
+
+import DayLarge from './DayLarge.vue'
+import DaySmall from './DaySmall.vue'
 
 export default {
   name: 'Days',
@@ -44,7 +54,7 @@ export default {
       type: Number,
       default: 0,
       validator(value) {
-        return [0, 1, 2, 3, 4].includes(value);
+        return [0, 1, 2, 3, 4].includes(value)
       },
     },
     staticDays: {
@@ -57,26 +67,26 @@ export default {
   data() {
     return {
       selectedDay: this.defaultDay,
-    };
-  },
-  watch: {
-    selectedDay(newValue) {
-      this.$store.dispatch('setSelectedDay', newValue);
-    },
+    }
   },
   computed: {
     numberOfDays() {
-      return 5;
+      return 5
     },
     currentTheme() {
-      return this.$store.getters.theme;
+      return this.$store.getters.theme
     },
   },
-};
+  watch: {
+    selectedDay(newValue) {
+      this.$store.dispatch('setSelectedDay', newValue)
+    },
+  },
+}
 </script>
 
 <style scoped lang="scss">
-@import "../scss/constants.scss";
+@import '../scss/constants.scss';
 
 .date-selector {
   margin: 0;
@@ -186,5 +196,4 @@ export default {
     overflow-x: auto;
   }
 }
-
 </style>
