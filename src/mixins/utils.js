@@ -644,10 +644,14 @@ export default {
         .sort(this.compareDesc)
       this.updatedAt = allUpdateTimes.length > 0 ? allUpdateTimes[0] : null
       if (!this.staticDays) {
-        const currentDate = spacetime(this.currentTime)
-        const timeOffset = currentDate
+        const startTime =
+          this.startFrom === 'updated'
+            ? this.updatedAt
+            : spacetime(this.currentTime)
+
+        const timeOffset = startTime
           .startOf('day')
-          .diff(currentDate, 'millisecond')
+          .diff(startTime, 'millisecond')
         this.$store.dispatch('setTimeOffset', timeOffset)
       }
       const createWarnings = {

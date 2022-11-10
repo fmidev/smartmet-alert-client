@@ -4,14 +4,15 @@
     :refresh-interval="refreshInterval"
     :selected-day="selectedDay"
     :static-days="staticDays"
+    :start-from="startFrom"
     :region-list-enabled="regionListEnabled"
     :current-time="currentTime"
     :warnings-data="warningsData"
     :geometry-id="geometryId"
     :language="language"
     :theme="theme"
-    @update-warnings="fetchWarnings"
-    :sleep="sleep" />
+    :sleep="sleep"
+    @update-warnings="fetchWarnings" />
 </template>
 <script>
 import 'bootstrap/dist/css/bootstrap.css'
@@ -61,6 +62,10 @@ export default {
     staticDays: {
       type: Boolean,
       default: true,
+    },
+    startFrom: {
+      type: String,
+      default: '',
     },
     weatherUpdated: String,
     floodUpdated: String,

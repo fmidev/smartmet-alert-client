@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SmartMetAlertClient demo</title>
+<script src="./vue.js"></script>
+<script src="./SmartMetAlertClient.umd.js"></script>
+
+<link rel="stylesheet" href="./SmartMetAlertClient.css">
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+new Vue({
+  el: '#app',
+  render: function(h) {
+    return h(SmartMetAlertClient, {
+      props: {
+        language: 'en',
+        staticDays: false,
+        startFrom: 'updated',
+        regionListEnabled: false
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -71,6 +71,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    startFrom: {
+      type: String,
+      default: '',
+    },
     regionListEnabled: {
       type: Boolean,
       default: true,
