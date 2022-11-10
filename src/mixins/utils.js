@@ -647,8 +647,7 @@ export default {
         const startTime =
           this.startFrom === 'updated'
             ? this.updatedAt
-            : spacetime(this.currentTime)
-
+            : spacetime(this.currentTime, this.timezone)
         const timeOffset = startTime
           .startOf('day')
           .diff(startTime, 'millisecond')
