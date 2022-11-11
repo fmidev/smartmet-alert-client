@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.5.4",
+  "version": "3.5.9",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
-    "build": "vue-cli-service build --target lib --name SmartMetAlertClient --skip-plugins @vue/cli-plugin-eslint",
+    "build": "vue-cli-service build --target lib --name SmartMetAlertClient --skip-plugins @vue/cli-plugin-eslint && rm ./dist/demo.html",
     "lint": "vue-cli-service lint",
     "test": "cross-env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true DOCKER_CHROMIUM_MAX_ATTEMPTS=10 DOCKER_CHROMIUM_RETRY_INTERVAL=2000 jest",
     "serve-json": "json-server test/data/db.json -p 3030"
@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@panzoom/panzoom": "4.4.3",
-    "@xmldom/xmldom": "0.7.5",
+    "@xmldom/xmldom": "0.8.6",
     "bootstrap": "4.6.1",
     "bootstrap-vue": "2.22.0",
     "cross-fetch": "3.1.5",
@@ -43,21 +43,25 @@
     "@babel/plugin-transform-classes": "7.16.0",
     "@vue/cli": "4.5.15",
     "@vue/cli-plugin-babel": "4.5.15",
-    "@vue/cli-plugin-eslint": "4.5.15",
+    "@vue/cli-plugin-eslint": "5.0.8",
     "@vue/cli-plugin-vuex": "4.5.15",
     "@vue/cli-service": "4.5.15",
     "@vue/eslint-config-prettier": "6.0.0",
+    "@vue/eslint-config-standard": "5.1.2",
     "babel-eslint": "10.1.0",
     "copy-webpack-plugin": "6.4.0",
     "cross-env": "7.0.3",
     "docker-chromium": "1.4.2",
-    "eslint": "6.8.0",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-config-prettier": "6.15.0",
+    "eslint": "7.8.1",
+    "eslint-config-prettier": "8.5.0",
     "eslint-loader": "4.0.2",
     "eslint-plugin-import": "2.23.2",
-    "eslint-plugin-prettier": "3.4.0",
-    "eslint-plugin-vue": "7.9.0",
+    "eslint-plugin-prettier": "3.4.1",
+    "eslint-plugin-vue": "7.20.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-simple-import-sort": "8.0.0",
+    "eslint-plugin-sonarjs": "0.16.0",
+    "eslint-plugin-standard": "5.0.0",
     "find-node-modules": "2.1.2",
     "jest": "27.3.1",
     "jest-html-reporter": "3.4.1",
@@ -68,7 +72,7 @@
     "portal-vue": "2.1.7",
     "postcss-prefixwrap": "1.25.0",
     "prettier": "2.4.1",
-    "puppeteer": "10.4.0",
+    "puppeteer": "19.2.2",
     "puppeteer-extensions": "1.0.3",
     "sass": "1.32.13",
     "sass-loader": "10.0.5",
@@ -80,6 +84,29 @@
     "vue-template-compiler": "2.6.14",
     "webpack": "4.46.0",
     "xmlhttprequest-ssl": "2.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@vue/standard",
+      "plugin:vue/recommended",
+      "plugin:sonarjs/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "simple-import-sort"
+    ],
+    "rules": {
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error"
+    }
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "bracketSameLine": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "semi": false
   },
   "bugs": {
     "url": "https://github.com/fmidev/smartmet-alert-client/issues"

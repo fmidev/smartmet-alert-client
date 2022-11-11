@@ -1,28 +1,44 @@
 <template>
-  <AlertClient v-if="visible" @update-warnings="fetchWarnings" :refreshInterval="refreshInterval" :selectedDay="selectedDay" :staticDays="staticDays" :regionListEnabled="regionListEnabled" :currentTime="currentTime" :warningsData="warningsData" :geometryId="geometryId" :language="language" :theme="theme" :sleep="sleep" />
+  <AlertClient
+    v-if="visible"
+    :refresh-interval="refreshInterval"
+    :selected-day="selectedDay"
+    :static-days="staticDays"
+    :start-from="startFrom"
+    :region-list-enabled="regionListEnabled"
+    :current-time="currentTime"
+    :warnings-data="warningsData"
+    :geometry-id="geometryId"
+    :language="language"
+    :theme="theme"
+    :sleep="sleep"
+    @update-warnings="fetchWarnings" />
 </template>
 <script>
-import { BootstrapVue, BSpinner } from 'bootstrap-vue';
-import Vue from 'vue';
-import spacetime from 'spacetime';
-import fetch from 'cross-fetch';
-import utils from './mixins/utils';
-import config from './mixins/config';
-import AlertClient from './components/AlertClient.vue';
-import store from './store';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-Vue.config.productionTip = false;
-Vue.use(BootstrapVue);
-Vue.component('b-spinner', BSpinner);
-Vue.prototype.$store = store;
+import { BootstrapVue, BSpinner } from 'bootstrap-vue'
+import fetch from 'cross-fetch'
+import spacetime from 'spacetime'
+import Vue from 'vue'
+
+import AlertClient from './components/AlertClient.vue'
+import config from './mixins/config'
+import utils from './mixins/utils'
+import store from './store'
+
+Vue.config.productionTip = false
+Vue.use(BootstrapVue)
+Vue.component('BSpinner', BSpinner)
+Vue.prototype.$store = store
 
 export default {
   name: 'App',
   components: {
     AlertClient,
   },
+  mixins: [config, utils],
   props: {
     currentDate: {
       type: String,
@@ -46,6 +62,10 @@ export default {
     staticDays: {
       type: Boolean,
       default: true,
+    },
+    startFrom: {
+      type: String,
+      default: '',
     },
     weatherUpdated: String,
     floodUpdated: String,
@@ -77,111 +97,127 @@ export default {
       default: false,
     },
   },
-  mixins: [config, utils],
   data() {
     return {
       updatedAt: null,
       refreshedAt: null,
       warningsData: null,
       visible: true,
-    };
+    }
   },
   computed: {
     weatherUpdatedType() {
-      return 'weather_update_time';
+      return 'weather_update_time'
     },
     floodUpdatedType() {
-      return 'flood_update_time';
+      return 'flood_update_time'
     },
     weatherWarningsType() {
-      return 'weather_finland_active_all';
+      return 'weather_finland_active_all'
     },
     floodWarningsType() {
-      return 'flood_finland_active_all';
+      return 'flood_finland_active_all'
     },
     weatherUpdatedQuery() {
-      return this.weatherUpdated || `${this.query}${this.weatherUpdatedType}`;
+      return this.weatherUpdated || `${this.query}${this.weatherUpdatedType}`
     },
     floodUpdatedQuery() {
-      return this.floodUpdated || `${this.query}${this.floodUpdatedType}`;
+      return this.floodUpdated || `${this.query}${this.floodUpdatedType}`
     },
     weatherWarningsQuery() {
-      return this.weatherWarnings || `${this.query}${this.weatherWarningsType}`;
+      return this.weatherWarnings || `${this.query}${this.weatherWarningsType}`
     },
     floodWarningsQuery() {
-      return this.floodWarnings || `${this.query}${this.floodWarningsType}${this.floodFilter}`;
+      return (
+        this.floodWarnings ||
+        `${this.query}${this.floodWarningsType}${this.floodFilter}`
+      )
     },
     query() {
-      return '?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=1000&outputFormat=application%2Fjson&typeName=';
+      return '?service=WFS&version=1.0.0&request=GetFeature&maxFeatures=1000&outputFormat=application%2Fjson&typeName='
     },
     floodSupportedSeverities() {
-      return ['moderate', 'severe', 'extreme'];
+      return ['moderate', 'severe', 'extreme']
     },
     floodFilter() {
-      return `${this.floodSupportedSeverities.reduce((filter, severity, index) => (`${filter + (index === 0 ? '' : ',')}%27${severity.toUpperCase()}%27`),
-        '&cql_filter=severity%20IN%20(')})%20AND%20language=%27${this.capLanguage()}%27`;
+      return `${this.floodSupportedSeverities.reduce(
+        (filter, severity, index) =>
+          `${filter + (index === 0 ? '' : ',')}%27${severity.toUpperCase()}%27`,
+        '&cql_filter=severity%20IN%20('
+      )})%20AND%20language=%27${this.capLanguage()}%27`
     },
     capLanguage() {
-      return () => ({
-        fi: 'fi-FI',
-        sv: 'sv-SV',
-        en: 'en-US',
-      })[this.language];
+      return () =>
+        ({
+          fi: 'fi-FI',
+          sv: 'sv-SV',
+          en: 'en-US',
+        }[this.language])
     },
     currentTime() {
       if (this.refreshedAt) {
-        return this.refreshedAt;
+        return this.refreshedAt
       }
       if (this.currentDate) {
-        return spacetime(this.currentDate, this.timezone).epoch;
+        return spacetime(this.currentDate, this.timezone).epoch
       }
-      return Date.now();
+      return Date.now()
     },
   },
   created() {
     if (this.warnings) {
-      this.warningsData = this.warnings;
+      this.warningsData = this.warnings
     }
   },
   serverPrefetch() {
-    return this.fetchWarnings();
+    return this.fetchWarnings()
   },
   methods: {
     fetchWarnings() {
       if (this.spinnerEnabled) {
-        this.$store.dispatch('setLoading', true);
+        this.$store.dispatch('setLoading', true)
       }
       if (this.debugMode) {
-        console.log(`Updating warnings at ${new Date()}`);
+        console.log(`Updating warnings at ${new Date()}`)
       }
       const queries = new Map()
-        .set(`${this.baseUrl}${this.weatherUpdatedQuery}`, this.weatherUpdatedType)
+        .set(
+          `${this.baseUrl}${this.weatherUpdatedQuery}`,
+          this.weatherUpdatedType
+        )
         .set(`${this.baseUrl}${this.floodUpdatedQuery}`, this.floodUpdatedType)
-        .set(`${this.baseUrl}${this.weatherWarningsQuery}`, this.weatherWarningsType)
-        .set(`${this.baseUrl}${this.floodWarningsQuery}`, this.floodWarningsType);
-      const responseData = {};
-      return Promise.allSettled([...queries.keys()]
-        .map(async (query) => fetch(query)
-          .then((response) => response
-            .json()
-            .then((json) => {
-              const currentTime = Date.now();
+        .set(
+          `${this.baseUrl}${this.weatherWarningsQuery}`,
+          this.weatherWarningsType
+        )
+        .set(
+          `${this.baseUrl}${this.floodWarningsQuery}`,
+          this.floodWarningsType
+        )
+      const responseData = {}
+      return Promise.allSettled(
+        [...queries.keys()].map(async (query) =>
+          fetch(query).then((response) =>
+            response.json().then((json) => {
+              const currentTime = Date.now()
               if (this.updatedAt != null) {
-                this.refreshedAt = currentTime;
+                this.refreshedAt = currentTime
               }
-              this.updatedAt = currentTime;
-              responseData[queries.get(query)] = json;
-            }))))
-        .then(() => {
-          this.warningsData = responseData;
-        });
+              this.updatedAt = currentTime
+              responseData[queries.get(query)] = json
+            })
+          )
+        )
+      ).then(() => {
+        this.warningsData = responseData
+      })
     },
     show() {
-      this.visible = true;
+      this.visible = true
     },
     hide() {
-      this.visible = false;
+      this.visible = false
     },
   },
-};
+}
 </script>

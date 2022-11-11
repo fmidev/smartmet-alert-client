@@ -1,22 +1,26 @@
 <template>
-  <div :class="['date-selector-cell', currentTheme, { active: active } ]" :aria-label="ariaLabel" >
+  <div
+    :class="['date-selector-cell', currentTheme, { active: active }]"
+    :aria-label="ariaLabel">
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
-        <span v-if="staticDays" class="bold-text weekday-text">{{ weekday }}</span>
-        <br v-if="staticDays" class="d-inline d-sm-none">
+        <span v-if="staticDays" class="bold-text weekday-text">{{
+          weekday
+        }}</span>
+        <br v-if="staticDays" class="d-inline d-sm-none" />
         {{ date }}
       </div>
     </div>
     <div class="date-selector-cell-body map-container">
-      <MapSmall :index="index" :input="regions" :geometryId="geometryId" />
+      <MapSmall :index="index" :input="regions" :geometry-id="geometryId" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
 </template>
 
 <script>
-import MapSmall from './MapSmall.vue';
-import i18n from '../i18n';
+import i18n from '../i18n'
+import MapSmall from './MapSmall.vue'
 
 export default {
   name: 'DaySmall',
@@ -48,29 +52,39 @@ export default {
   },
   computed: {
     weekday() {
-      return i18n.t(this.input.weekdayName) || '';
+      return i18n.t(this.input.weekdayName) || ''
     },
     severity() {
-      return this.input.severity;
+      return this.input.severity
     },
     date() {
       if (!this.staticDays) {
-        return ['0...24 h', '24...48 h', '48...72 h', '72...96 h', '96...120 h'][this.index];
+        return [
+          '0...24 h',
+          '24...48 h',
+          '48...72 h',
+          '72...96 h',
+          '96...120 h',
+        ][this.index]
       }
-      return ((this.input.day != null) && (this.input.month != null)) ? `${this.input.day}.${this.input.month}.` : '';
+      return this.input.day != null && this.input.month != null
+        ? `${this.input.day}.${this.input.month}.`
+        : ''
     },
     ariaLabel() {
-      return `${this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''} ${this.input.day}.${this.input.month}`;
+      return `${
+        this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''
+      } ${this.input.day}.${this.input.month}`
     },
     currentTheme() {
-      return this.$store.getters.theme;
+      return this.$store.getters.theme
     },
   },
-};
+}
 </script>
 
 <style scoped lang="scss">
-@import "../scss/constants.scss";
+@import '../scss/constants.scss';
 
 div.date-selector-cell {
   &.active {

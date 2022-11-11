@@ -2,39 +2,39 @@
   <div id="fmi-warnings-view" :class="currentTheme">
     <div
       v-if="input.length > 0"
-      :class="[
-        'row',
-        'symbol-list-main-row',
-        'show-text-row',
-      ]"
-    >
+      :class="['row', 'symbol-list-main-row', 'show-text-row']">
       <span
         class="bold-text show-text d-none"
         :class="{ 'd-sm-block': hiddenWarnings }"
-        v-on:click="showAll"
+        @click="showAll"
         >{{ showWarningsText }}</span
       >
     </div>
     <div v-if="input.length > 0" class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
     </div>
-    <div id="fmi-warnings-list" >
+    <div id="fmi-warnings-list">
       <Warning
         v-for="warning in warnings"
         :key="warning.key"
         :input="warning"
-        :hideable="warnings.length > 1"
-      />
+        :hideable="warnings.length > 1" />
     </div>
     <div class="row symbol-list-main-row">
-      <hr class="symbol-block-separator legend-separator" :class="noWarnings ? 'no-warnings' : ''" />
+      <hr
+        class="symbol-block-separator legend-separator"
+        :class="noWarnings ? 'no-warnings' : ''" />
     </div>
     <div class="row symbol-list-main-row">
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="gray several symbol-list-image-column symbol-list-image warning-image"
-          ></div>
+            class="
+              gray
+              several
+              symbol-list-image-column symbol-list-image
+              warning-image
+            "></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -48,8 +48,11 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-1 symbol-list-image-column symbol-list-image warning-image"
-          ></div>
+            class="
+              level-1
+              symbol-list-image-column symbol-list-image
+              warning-image
+            "></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -63,8 +66,11 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-2 symbol-list-image-column symbol-list-image warning-image"
-          ></div>
+            class="
+              level-2
+              symbol-list-image-column symbol-list-image
+              warning-image
+            "></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -78,8 +84,11 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-3 symbol-list-image-column symbol-list-image warning-image"
-          ></div>
+            class="
+              level-3
+              symbol-list-image-column symbol-list-image
+              warning-image
+            "></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -93,8 +102,11 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-4 symbol-list-image-column symbol-list-image warning-image"
-          ></div>
+            class="
+              level-4
+              symbol-list-image-column symbol-list-image
+              warning-image
+            "></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -108,9 +120,10 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import Warning from './Warning.vue';
-import i18n from '../i18n';
+import Vue from 'vue'
+
+import i18n from '../i18n'
+import Warning from './Warning.vue'
 
 export default {
   name: 'Warnings',
@@ -118,75 +131,77 @@ export default {
     Warning,
   },
   props: ['input'],
+  computed: {
+    warnings() {
+      return this.input
+    },
+    visibleWarnings() {
+      return this.$store.getters.visibleWarnings
+    },
+    hiddenWarnings() {
+      return this.visibleWarnings.length !== this.input.length
+    },
+    noWarnings() {
+      return this.warnings.length === 0
+    },
+    warningSymbolsText() {
+      return this.noWarnings ? i18n.t('noWarnings') : i18n.t('warningSymbols')
+    },
+    warningSymbolDaysText() {
+      return this.noWarnings ? '' : i18n.t('warningSymbolDays')
+    },
+    showWarningsText() {
+      return i18n.t('showWarnings')
+    },
+    severalWarningsText() {
+      return i18n.t('severalWarnings')
+    },
+    warningLevel1Text() {
+      return i18n.t('warningLevel1')
+    },
+    warningLevel2Text() {
+      return i18n.t('warningLevel2')
+    },
+    warningLevel3Text() {
+      return i18n.t('warningLevel3')
+    },
+    warningLevel4Text() {
+      return i18n.t('warningLevel4')
+    },
+    currentTheme() {
+      return this.$store.getters.theme
+    },
+  },
   watch: {
     input() {
-      this.showAll();
+      this.showAll()
     },
     visibleWarnings(newVisibleWarnings) {
       this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type);
+        const isVisible = newVisibleWarnings.includes(warning.type)
         if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible);
+          Vue.set(warning, 'visible', isVisible)
         }
-      });
-    },
-  },
-  computed: {
-    warnings() {
-      return this.input;
-    },
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings;
-    },
-    hiddenWarnings() {
-      return this.visibleWarnings.length !== this.input.length;
-    },
-    noWarnings() {
-      return this.warnings.length === 0;
-    },
-    warningSymbolsText() {
-      return this.noWarnings ?
-        i18n.t('noWarnings') :
-        i18n.t('warningSymbols');
-    },
-    warningSymbolDaysText() {
-      return this.noWarnings ?
-        '' :
-        i18n.t('warningSymbolDays');
-    },
-    showWarningsText() {
-      return i18n.t('showWarnings');
-    },
-    severalWarningsText() {
-      return i18n.t('severalWarnings');
-    },
-    warningLevel1Text() {
-      return i18n.t('warningLevel1');
-    },
-    warningLevel2Text() {
-      return i18n.t('warningLevel2');
-    },
-    warningLevel3Text() {
-      return i18n.t('warningLevel3');
-    },
-    warningLevel4Text() {
-      return i18n.t('warningLevel4');
-    },
-    currentTheme() {
-      return this.$store.getters.theme;
+      })
     },
   },
   methods: {
     showAll() {
-      this.$store.dispatch('setVisibleWarnings', this.warnings.reduce((types, warning) => types.concat([warning.type]), []));
+      this.$store.dispatch(
+        'setVisibleWarnings',
+        this.warnings.reduce(
+          (types, warning) => types.concat([warning.type]),
+          []
+        )
+      )
     },
   },
-};
+}
 </script>
 
 <style scoped lang="scss">
-@import "../scss/constants.scss";
-@import "../scss/warningImages.scss";
+@import '../scss/constants.scss';
+@import '../scss/warningImages.scss';
 
 h3 {
   font-family: $font-family;
@@ -320,17 +335,16 @@ hr {
 }
 
 .light hr {
-    background-color: $light-horizontal-rule-color;
-    color: $light-horizontal-rule-color;
+  background-color: $light-horizontal-rule-color;
+  color: $light-horizontal-rule-color;
 }
 
 .dark hr {
-    background-color: $dark-horizontal-rule-color;
-    color: $dark-horizontal-rule-color;
+  background-color: $dark-horizontal-rule-color;
+  color: $dark-horizontal-rule-color;
 }
 
 @media (max-width: 767px) {
-
   hr.symbol-block-separator {
     margin-right: 0;
   }
