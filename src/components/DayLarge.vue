@@ -78,7 +78,7 @@ export default {
       const nextDate = date.add(1, 'day')
       const offset = this.$store.getters.timeOffset
       const offsetDate = date.add(offset, 'milliseconds')
-      const hours = offsetDate.hour()
+      const hours = `0${offsetDate.hour()}`.slice(-2)
       const minutes = `0${offsetDate.minute()}`.slice(-2)
       return `${this.input.day}.${this.input.month}.${this.input.year} ${
         this.atTime
