@@ -1,15 +1,10 @@
-const webpack = require('webpack');
-const CopyPlugin = require('copy-webpack-plugin');
-const PACKAGE = require('./package.json');
+const webpack = require('webpack')
+const CopyPlugin = require('copy-webpack-plugin')
+const PACKAGE = require('./package.json')
 
-const banner =
-  `${PACKAGE.name
-  } - ${
-    PACKAGE.version
-  } | ${
-    PACKAGE.author
-  } ${
-    new Date().getFullYear()}`;
+const banner = `${PACKAGE.name} - ${PACKAGE.version} | ${
+  PACKAGE.author
+} ${new Date().getFullYear()}`
 
 module.exports = {
   configureWebpack: {
@@ -42,5 +37,12 @@ module.exports = {
       },
     },
   },
-  transpileDependencies: ['mapshaper', 'flatqueue', 'flatbush', 'xmldom', 'xpath', 'spacetime'],
-};
+  transpileDependencies: [
+    'mapshaper',
+    'flatqueue',
+    'flatbush',
+    'xmldom',
+    'xpath',
+    'spacetime',
+  ],
+}

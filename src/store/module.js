@@ -15,7 +15,7 @@ export default {
     initialized: false,
     timeOffset: 0,
     selectedDay: 0,
-    warnings: {},
+    warnings: null,
     visibleWarnings: [],
     theme: '',
   }),
