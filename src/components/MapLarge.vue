@@ -633,7 +633,9 @@ export default {
   },
   updated() {
     this.$store.dispatch('setLoading', false)
-    this.$store.dispatch('setInitialized', true)
+    if (this.$store.getters.warnings != null) {
+      this.$store.dispatch('setInitialized', true)
+    }
   },
   methods: {
     paths(options) {

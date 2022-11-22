@@ -59,7 +59,7 @@ export default {
     COVERAGE_JSON: () => 'coverage.json',
     COVERAGE_SVG: () => 'coverage.svg',
     allWarnings() {
-      return this.$store.getters.warnings
+      return this.$store.getters.warnings ?? {}
     },
     visibleWarnings() {
       return this.$store.getters.visibleWarnings
