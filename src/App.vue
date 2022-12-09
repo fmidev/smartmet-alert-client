@@ -170,7 +170,9 @@ export default {
     }
   },
   serverPrefetch() {
-    return this.fetchWarnings()
+    if (this.warnings == null) {
+      return this.fetchWarnings()
+    }
   },
   methods: {
     fetchWarnings() {
