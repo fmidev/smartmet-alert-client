@@ -135,3 +135,10 @@ pinegrow.json
 # Visual Studio Code
 .vscode
 .history
+
+# Test data
+test/__snapshots__
+test/svg
+
+# Environmet variables
+.env

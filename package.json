@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "3.5.11",
+  "version": "3.5.13",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -13,8 +13,7 @@
     "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
     "build": "vue-cli-service build --target lib --name SmartMetAlertClient --skip-plugins @vue/cli-plugin-eslint && rm ./dist/demo.html",
     "lint": "vue-cli-service lint",
-    "test": "cross-env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true DOCKER_CHROMIUM_MAX_ATTEMPTS=10 DOCKER_CHROMIUM_RETRY_INTERVAL=2000 jest",
-    "serve-json": "json-server test/data/db.json -p 3030"
+    "test": "vitest"
   },
   "dependencies": {
     "@babel/polyfill": "7.12.1",
@@ -51,38 +50,33 @@
     "babel-eslint": "10.1.0",
     "copy-webpack-plugin": "6.4.0",
     "cross-env": "7.0.3",
-    "docker-chromium": "1.4.2",
     "eslint": "7.8.1",
     "eslint-config-prettier": "8.5.0",
     "eslint-loader": "4.0.2",
     "eslint-plugin-import": "2.23.2",
-    "eslint-plugin-prettier": "3.4.1",
-    "eslint-plugin-vue": "7.20.0",
     "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "3.4.1",
     "eslint-plugin-simple-import-sort": "8.0.0",
     "eslint-plugin-sonarjs": "0.16.0",
     "eslint-plugin-standard": "5.0.0",
+    "eslint-plugin-vue": "7.20.0",
     "find-node-modules": "2.1.2",
-    "jest": "27.3.1",
-    "jest-html-reporter": "3.4.1",
-    "jest-image-snapshot": "4.5.1",
-    "jest-puppeteer": "6.0.0",
-    "json-server": "0.17.0",
     "popper.js": "1.16.1",
     "portal-vue": "2.1.7",
     "postcss-prefixwrap": "1.25.0",
     "prettier": "2.4.1",
-    "puppeteer": "19.2.2",
-    "puppeteer-extensions": "1.0.3",
     "sass": "1.32.13",
     "sass-loader": "10.0.5",
     "string.prototype.replaceall": "1.0.5",
     "svg64": "1.1.0",
+    "vite": "4.0.0",
+    "vitest": "0.25.6",
     "vue-cli-plugin-bootstrap-vue": "0.8.2",
     "vue-eslint-parser": "8.0.1",
     "vue-server-renderer": "2.6.14",
     "vue-template-compiler": "2.6.14",
     "webpack": "4.46.0",
+    "xml-formatter": "2.6.1",
     "xmlhttprequest-ssl": "2.0.0"
   },
   "eslintConfig": {
@@ -114,6 +108,10 @@
   "homepage": "https://github.com/fmidev/smartmet-alert-client#readme",
   "directories": {
     "test": "test"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": "^16"
   },
   "keywords": [
     "smartmet",
