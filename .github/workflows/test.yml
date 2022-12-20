@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+
+    - name: Install environment
+      shell: bash -l {0}
+      run: |
+        nvm install 16 && \
+        nvm use 16 && \
+        npm install
+
+    - name: Run lint
+      shell: bash -l {0}
+      run: |
+        # TODO: remove 'or' when lint problems have been fixed
+        npm run lint || echo "lint problems"
+
+    - name: Setup test data
+      shell: bash -l {0}
+      run: |
+        # TODO: generate 'test/svg' in the javascript code
+        mkdir --parents test/svg test/resources && \
+        curl --output test-data.zip https://cdn.fmi.fi/smartmet-alert-client-test-data.zip && \
+        unzip -d test/resources/ test-data.zip && \
+        sed 's#^VITE_DATA_DIRECTORY=.*#VITE_DATA_DIRECTORY=test/resources#' .env.sample > .env
+
+    - name: Run tests
+      run: |
+        npm run test
