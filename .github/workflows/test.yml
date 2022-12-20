@@ -20,12 +20,12 @@ jobs:
       run: |
         nvm install 16 && \
         nvm use 16 && \
-        npm install
+        npm ci
 
     - name: Run lint
       shell: bash -l {0}
       run: |
-        # TODO: remove 'or' when lint problems have been fixed
+        # TODO: remove '||' when lint problems have been fixed
         npm run lint || echo "lint problems"
 
     - name: Setup test data
@@ -39,4 +39,4 @@ jobs:
 
     - name: Run tests
       run: |
-        npm run test
+        npm test

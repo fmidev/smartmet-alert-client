@@ -138,7 +138,7 @@ pinegrow.json
 
 # Test data
 test/__snapshots__
-test/svg
+#test/svg
 
 # Environmet variables
 .env
