@@ -1,4 +1,4 @@
-import fs, { readFileSync, writeFileSync } from 'fs'
+import fs, { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { JSDOM } from 'jsdom'
 import path from 'path'
 import { expect, it } from 'vitest'
@@ -10,6 +10,11 @@ import XMLHttpRequest from 'xmlhttprequest-ssl'
 import SmartMetAlertClient from '../dist/SmartMetAlertClient.umd'
 
 global.XMLHttpRequest = XMLHttpRequest
+
+const svgPath = './test/svg'
+if (!existsSync(svgPath)) {
+  mkdirSync(svgPath)
+}
 
 const dateTimes = new Set()
 
@@ -107,7 +112,7 @@ for (let i = 0; i < data.length; i++) {
     const dom = new JSDOM(html)
     const element = dom.window.document.getElementById('finland-large')
     const svg = format(element.outerHTML)
-    writeFileSync(`./test/svg/${data[i].dateTime}.svg`, svg)
+    writeFileSync(path.join(svgPath, `${data[i].dateTime}.svg`), svg)
     expect(svg).toMatchSnapshot()
   })
 }
