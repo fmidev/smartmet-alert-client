@@ -64,7 +64,7 @@ export default {
   height: $current-warning-image-height;
   width: $current-warning-image-height;
   min-width: $current-warning-image-height;
-  margin-top: ($current-warning-height - $current-warning-image-height) / 2;
+  margin-top: calc(($current-warning-height - $current-warning-image-height) / 2);
   margin-left: 2px;
   margin-right: 0;
 }

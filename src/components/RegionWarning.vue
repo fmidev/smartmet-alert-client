@@ -46,7 +46,7 @@ div.warning-image {
   background-size: 28px 28px;
   height: $current-warning-image-height;
   width: $current-warning-image-height;
-  margin-top: ($current-warning-height - $current-warning-image-height) / 2;
+  margin-top: calc(($current-warning-height - $current-warning-image-height) / 2);
   float: right;
   margin-left: 5px;
   margin-right: 5px;
