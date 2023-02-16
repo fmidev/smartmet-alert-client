@@ -225,7 +225,7 @@ div.symbol-list-main-row {
   height: 30px;
 }
 
-.show-text {
+span.show-text {
   line-height: 30px;
   float: right;
   color: $dark-blue;

@@ -354,17 +354,16 @@ export default {
                     : this.warningIcon(warnings[identifier])
                 const scale = icon.scale ? icon.scale : 1
                 const width =
-                  (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) /
+                  (scale * icon.aspectRatio[0] * this.iconSize) /
                   icon.aspectRatio[1]
-                const height = scale * icon.scale * this.iconSize
+                const height = scale * this.iconSize
                 iconSizes.push([width, height])
                 aspectRatios.push(icon.aspectRatio)
                 geoms.push(icon.geom)
                 keys.push(`${regionId}-${identifier}`)
               }
             })
-          let offsetX =
-            -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
+          let offsetX = this.geometries[this.geometryId][regionId].align === 'right' ? -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], -iconSizes[iconSizes.length - 1][0] / 2) : -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
           const coords = this.geometries[this.geometryId][regionId].center
           iconSizes.forEach((iconSize, index) => {
             data.push({

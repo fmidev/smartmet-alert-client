@@ -82,7 +82,7 @@ export default {
       const minutes = `0${offsetDate.minute()}`.slice(-2)
       return `${this.input.day}.${this.input.month}.${this.input.year} ${
         this.atTime
-      } ${hours}:${minutes} -
+      } ${hours}:${minutes} –
       <br> ${nextDate.date()}.${nextDate.month() + 1}.${nextDate.year()} ${
         this.atTime
       } ${hours}:${minutes}`
