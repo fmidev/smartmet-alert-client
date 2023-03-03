@@ -363,7 +363,13 @@ export default {
                 keys.push(`${regionId}-${identifier}`)
               }
             })
-          let offsetX = this.geometries[this.geometryId][regionId].align === 'right' ? -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], -iconSizes[iconSizes.length - 1][0] / 2) : -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
+          let offsetX =
+            this.geometries[this.geometryId][regionId].align === 'right'
+              ? -iconSizes.reduce(
+                  (acc, iconSize) => acc + iconSize[0],
+                  -iconSizes[iconSizes.length - 1][0] / 2
+                )
+              : -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
           const coords = this.geometries[this.geometryId][regionId].center
           iconSizes.forEach((iconSize, index) => {
             data.push({
