@@ -3,7 +3,6 @@ import 'url-search-params-polyfill'
 import { DOMParser } from '@xmldom/xmldom'
 import he from 'he'
 import mapshaper from 'mapshaper'
-import spacetime from 'spacetime'
 import xpath from 'xpath'
 
 import i18n from '../i18n'
@@ -13,15 +12,6 @@ export default {
   mixins: [config],
   computed: {
     NUMBER_OF_DAYS: () => 5,
-    WEEKDAY_NAMES: () => [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ],
     REGION_LAND: () => 'land',
     REGION_SEA: () => 'sea',
     REGION_LAKE: () => 'lake',
@@ -42,9 +32,6 @@ export default {
     WARNING_CONTEXT: () => 'warning_context',
     SEVERITY: () => 'severity',
     CONTEXT_EXTENSION: () => 'context_extension',
-    DATE_TIME_FORMAT: () => 'd.M. HH:mm',
-    DATE_FORMAT: () => 'd.M.y',
-    TIME_FORMAT: () => 'HH:mm',
     WIND: () => 'wind',
     SEA_WIND: () => 'sea-wind',
     FLOOD_LEVEL_TYPE: () => 'floodLevel',
@@ -189,38 +176,42 @@ export default {
         }, '')
     },
     validInterval(start, end) {
-      const effectiveFrom = spacetime(start)
-      const effectiveUntil = spacetime(end)
-      return `${effectiveFrom
-        .goto(this.timezone)
-        .unixFmt(this.DATE_TIME_FORMAT)} – ${effectiveUntil
-        .goto(this.timezone)
-        .unixFmt(this.DATE_TIME_FORMAT)}`
+      return [this.toTimeZone(start), this.toTimeZone(end)]
+        .map(
+          (moment) =>
+            `${moment.day}.${moment.month}. ${this.twoDigits(
+              moment.hour
+            )}:${this.twoDigits(moment.minute)}`
+        )
+        .join(' – ')
+    },
+    msSinceStartOfDay(timestamp) {
+      const moment = this.toTimeZone(timestamp)
+      return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
     },
     effectiveDays(start, end) {
-      const effectiveFrom = spacetime(start)
-      const effectiveUntil = spacetime(end)
-      const currentDate = spacetime(this.currentTime)
       const offset = this.$store.getters.timeOffset
-      return [...Array(this.NUMBER_OF_DAYS).keys()].map(
-        (index) =>
-          effectiveFrom.goto(this.timezone).isBefore(
-            currentDate
-              .add(index + 1, 'days')
-              .goto(this.timezone)
-              .startOf('day')
-              .add(offset, 'milliseconds')
-          ) &&
-          effectiveUntil
-            .goto(this.timezone)
-            .isAfter(
-              currentDate
-                .add(index, 'days')
-                .goto(this.timezone)
-                .startOf('day')
-                .add(offset, 'milliseconds')
-            )
-      )
+      return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
+        const date = new Date(this.currentTime)
+        date.setDate(date.getDate() + index)
+        const day = this.toTimeZone(date)
+        const startOfDay = new Date(day.year, day.month - 1, day.day)
+        startOfDay.setMilliseconds(offset)
+
+        const nextDate = new Date(this.currentTime)
+        nextDate.setDate(nextDate.getDate() + index + 1)
+        const nextDay = this.toTimeZone(nextDate)
+        const startOfNextDay = new Date(
+          nextDay.year,
+          nextDay.month - 1,
+          nextDay.day
+        )
+        startOfNextDay.setMilliseconds(offset)
+        return (
+          new Date(start).getTime() < startOfNextDay.getTime() &&
+          new Date(end).getTime() > startOfDay.getTime()
+        )
+      })
     },
     text(properties) {
       return properties[this.WARNING_CONTEXT] === this.SEA_WIND
@@ -330,14 +321,26 @@ export default {
       }
     },
     createDays(warnings) {
-      const currentDate = spacetime(this.currentTime)
+      const updatedAtTz = this.toTimeZone(this.updatedAt)
+      const updatedDate =
+        this.updatedAt != null
+          ? `${updatedAtTz.day}.${updatedAtTz.month}.${updatedAtTz.year}`
+          : ''
+      const updatedTime =
+        this.updatedAt != null
+          ? `${this.twoDigits(updatedAtTz.hour)}:${this.twoDigits(
+              updatedAtTz.minute
+            )}`
+          : ''
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = currentDate.add(index, 'days').goto(this.timezone)
+        const date = new Date(this.currentTime)
+        date.setDate(date.getDate() + index)
+        const moment = this.toTimeZone(date)
         return {
-          weekdayName: this.WEEKDAY_NAMES[date.weekStart('monday').day()],
-          day: date.date(),
-          month: date.month() + 1,
-          year: date.year(),
+          weekdayName: moment.weekday,
+          day: moment.day,
+          month: moment.month,
+          year: moment.year,
           severity: Object.values(warnings).reduce(
             (maxSeverity, warning) =>
               warning.effectiveDays[index]
@@ -345,14 +348,8 @@ export default {
                 : maxSeverity,
             0
           ),
-          updatedDate:
-            this.updatedAt != null
-              ? this.updatedAt.unixFmt(this.DATE_FORMAT)
-              : '',
-          updatedTime:
-            this.updatedAt != null
-              ? this.updatedAt.unixFmt(this.TIME_FORMAT)
-              : '',
+          updatedDate,
+          updatedTime,
         }
       })
     },
@@ -409,25 +406,21 @@ export default {
                 if (warnings[key1].value !== warnings[key2].value) {
                   return warnings[key2].value - warnings[key1].value
                 }
-                const effectiveFrom1 = spacetime(
-                  warnings[key1].effectiveFrom,
-                  this.timezone
-                ).epoch
-                const effectiveFrom2 = spacetime(
-                  warnings[key2].effectiveFrom,
-                  this.timezone
-                ).epoch
+                const effectiveFrom1 = new Date(
+                  warnings[key1].effectiveFrom
+                ).getTime()
+                const effectiveFrom2 = new Date(
+                  warnings[key2].effectiveFrom
+                ).getTime()
                 if (effectiveFrom1 !== effectiveFrom2) {
                   return effectiveFrom1 - effectiveFrom2
                 }
-                const effectiveUntil1 = spacetime(
-                  warnings[key1].effectiveUntil,
-                  this.timezone
-                ).epoch
-                const effectiveUntil2 = spacetime(
-                  warnings[key2].effectiveUntil,
-                  this.timezone
-                ).epoch
+                const effectiveUntil1 = new Date(
+                  warnings[key1].effectiveUntil
+                ).getTime()
+                const effectiveUntil2 = new Date(
+                  warnings[key2].effectiveUntil
+                ).getTime()
                 return effectiveUntil1 - effectiveUntil2
               })
               warningsByType.forEach((key) => {
@@ -624,15 +617,13 @@ export default {
             data[warningUpdateTime].features.length > 0 &&
             data[warningUpdateTime].features[0].properties != null
           ) {
-            const updateTime = spacetime(
+            const updateTime = new Date(
               data[warningUpdateTime].features[0].properties[this.UPDATE_TIME]
-            )
-            updateTimes.push(updateTime.goto(this.timezone))
+            ).getTime()
+            updateTimes.push(updateTime)
             if (
-              updateTime.diff(
-                spacetime(this.currentTime, this.timezone),
-                'millisecond'
-              ) > this.maxUpdateDelay[warningUpdateTime]
+              this.currentTime - updateTime >
+              this.maxUpdateDelay[warningUpdateTime]
             ) {
               this.handleError(`${warningUpdateTime}_outdated`)
             }
@@ -641,16 +632,13 @@ export default {
           }
           return updateTimes
         }, [])
-        .sort(this.compareDesc)
+        .sort()
+        .reverse()
       this.updatedAt = allUpdateTimes.length > 0 ? allUpdateTimes[0] : null
       if (!this.staticDays) {
         const startTime =
-          this.startFrom === 'updated'
-            ? this.updatedAt
-            : spacetime(this.currentTime, this.timezone)
-        const timeOffset = startTime
-          .startOf('day')
-          .diff(startTime, 'millisecond')
+          this.startFrom === 'updated' ? this.updatedAt : this.currentTime
+        const timeOffset = this.msSinceStartOfDay(startTime)
         this.$store.dispatch('setTimeOffset', timeOffset)
       }
       const createWarnings = {
@@ -834,14 +822,54 @@ export default {
         },
       ]
     },
-    compareDesc(spacetimeA, spacetimeB) {
-      if (spacetimeA.isBefore(spacetimeB)) {
-        return 1
-      }
-      if (spacetimeA.isAfter(spacetimeB)) {
-        return -1
-      }
-      return 0
+    twoDigits(value) {
+      return `0${value}`.slice(-2)
+    },
+    toTimeZone(date) {
+      date = new Date(date)
+      var parts = new Intl.DateTimeFormat(this.dateTimeFormatLocale, {
+        timeZoneName: 'shortOffset',
+        timeZone: this.timeZone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'short',
+        hour12: false,
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        fractionalSecondDigits: 3,
+      }).formatToParts(date)
+      var whole = this.partsToWhole(parts)
+      whole.timeZone = this.timeZone
+      return whole
+    },
+    partsToWhole(parts) {
+      var whole = { millisecond: 0 }
+      parts.forEach(function (part) {
+        var val = part.value
+        switch (part.type) {
+          case 'literal':
+            return
+          case 'timeZoneName':
+            break
+          case 'month':
+            val = parseInt(val, 10)
+            break
+          case 'weekday':
+            break
+          case 'hour':
+            val = parseInt(val, 10) % 24
+            break
+          case 'fractionalSecond':
+            whole.millisecond = parseInt(val, 10)
+            return
+          default:
+            val = parseInt(val, 10)
+        }
+        whole[part.type] = val
+      })
+      return whole
     },
   },
 }

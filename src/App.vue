@@ -20,7 +20,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import { BootstrapVue, BSpinner } from 'bootstrap-vue'
 import fetch from 'cross-fetch'
-import spacetime from 'spacetime'
 import Vue from 'vue'
 
 import AlertClient from './components/AlertClient.vue'
@@ -159,7 +158,7 @@ export default {
         return this.refreshedAt
       }
       if (this.currentDate) {
-        return spacetime(this.currentDate, this.timezone).epoch
+        return new Date(this.currentDate).getTime()
       }
       return Date.now()
     },
