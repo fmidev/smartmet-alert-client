@@ -269,7 +269,7 @@ export default {
   }
 
   .bold-text {
-    font-weight: bold;
+    font-weight: bold !important;
   }
 
   .noselect {
