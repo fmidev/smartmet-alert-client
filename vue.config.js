@@ -7,6 +7,7 @@ const banner = `${PACKAGE.name} - ${PACKAGE.version} | ${
 } ${new Date().getFullYear()}`
 
 module.exports = {
+  publicPath: '',
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
@@ -17,11 +18,11 @@ module.exports = {
         patterns: [
           {
             from: 'public/index.*.html',
-            flatten: true,
+            to: "[name][ext]",
           },
           {
             from: 'node_modules/vue/dist/vue.js',
-            flatten: true,
+            to: "[name][ext]",
           },
         ],
       }),
@@ -34,6 +35,11 @@ module.exports = {
     resolve: {
       alias: {
         flatbush: 'flatbush/flatbush',
+      },
+      fallback: {
+        "child_process": false,
+        "fs": false,
+        "path": false,
       },
     },
   },
