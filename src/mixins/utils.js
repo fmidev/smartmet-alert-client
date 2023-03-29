@@ -189,14 +189,13 @@ export default {
       const moment = this.toTimeZone(timestamp)
       return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
     },
-    effectiveDays(start, end) {
+    effectiveDays(start, end, dailyWarning) {
       const offset = this.$store.getters.timeOffset
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
         const date = new Date(this.currentTime)
         date.setDate(date.getDate() + index)
         const day = this.toTimeZone(date)
         const startOfDay = new Date(day.year, day.month - 1, day.day)
-        startOfDay.setMilliseconds(offset)
 
         const nextDate = new Date(this.currentTime)
         nextDate.setDate(nextDate.getDate() + index + 1)
@@ -206,7 +205,10 @@ export default {
           nextDay.month - 1,
           nextDay.day
         )
-        startOfNextDay.setMilliseconds(offset)
+        if (!dailyWarning) {
+          startOfDay.setMilliseconds(offset)
+          startOfNextDay.setMilliseconds(offset)
+        }
         return (
           new Date(start).getTime() < startOfNextDay.getTime() &&
           new Date(end).getTime() > startOfDay.getTime()
@@ -234,8 +236,9 @@ export default {
         default:
       }
       const regionId = this.regionFromReference(warning.properties.reference)
+      const type = this.warningType(warning.properties)
       return {
-        type: this.warningType(warning.properties),
+        type,
         id: warning.properties.identifier,
         regions: this.geometries[this.geometryId][regionId]
           ? {
@@ -249,7 +252,8 @@ export default {
         effectiveUntil: warning.properties[this.EFFECTIVE_UNTIL],
         effectiveDays: this.effectiveDays(
           warning.properties[this.EFFECTIVE_FROM],
-          warning.properties[this.EFFECTIVE_UNTIL]
+          warning.properties[this.EFFECTIVE_UNTIL],
+          this.dailyWarningTypes.includes(type)
         ),
         validInterval: this.validInterval(
           warning.properties[this.EFFECTIVE_FROM],
@@ -303,7 +307,8 @@ export default {
         effectiveUntil: warning.properties[this.EXPIRES],
         effectiveDays: this.effectiveDays(
           warning.properties[this.ONSET],
-          warning.properties[this.EXPIRES]
+          warning.properties[this.EXPIRES],
+          this.dailyWarningTypes.includes(this.FLOOD_LEVEL_TYPE)
         ),
         validInterval: this.validInterval(
           warning.properties[this.ONSET],
@@ -665,6 +670,9 @@ export default {
               if (warningRegions.length > 0) {
                 regionId = warningRegions[0]
               }
+              if (this.dailyWarningTypes.includes(warnings[warningId].type)) {
+                warnings[warningId].dailyWarning = true
+              }
             } else {
               regionId = this.regionFromReference(warning.properties.reference)
               if (this.geometries[this.geometryId][regionId]) {
@@ -827,7 +835,7 @@ export default {
     },
     toTimeZone(date) {
       date = new Date(date)
-      var parts = new Intl.DateTimeFormat(this.dateTimeFormatLocale, {
+      const parts = new Intl.DateTimeFormat(this.dateTimeFormatLocale, {
         timeZoneName: 'shortOffset',
         timeZone: this.timeZone,
         year: 'numeric',
@@ -840,14 +848,14 @@ export default {
         second: 'numeric',
         fractionalSecondDigits: 3,
       }).formatToParts(date)
-      var whole = this.partsToWhole(parts)
+      const whole = this.partsToWhole(parts)
       whole.timeZone = this.timeZone
       return whole
     },
     partsToWhole(parts) {
-      var whole = { millisecond: 0 }
+      const whole = { millisecond: 0 }
       parts.forEach(function (part) {
-        var val = part.value
+        let val = part.value
         switch (part.type) {
           case 'literal':
             return

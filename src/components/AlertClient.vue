@@ -84,6 +84,10 @@ export default {
       default: Date.now(),
     },
     warningsData: Object,
+    dailyWarningTypes: {
+      type: Array,
+      default: () => [],
+    },
     geometryId: {
       type: Number,
       default: config.props.defaultGeometryId,
