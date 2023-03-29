@@ -237,7 +237,9 @@ export default {
       }
     },
     update() {
-      this.$emit('update-warnings')
+      if (this.refreshInterval > 0) {
+        this.$emit('update-warnings')
+      }
     },
     handleError(error) {
       if (!this.errors.includes(error)) {
