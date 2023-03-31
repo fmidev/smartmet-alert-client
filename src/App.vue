@@ -8,6 +8,7 @@
     :region-list-enabled="regionListEnabled"
     :current-time="currentTime"
     :warnings-data="warningsData"
+    :daily-warning-types="dailyWarningTypes"
     :geometry-id="geometryId"
     :language="language"
     :theme="theme"
@@ -71,6 +72,10 @@ export default {
     weatherWarnings: String,
     floodWarnings: String,
     warnings: Object,
+    dailyWarningTypes: {
+      type: Array,
+      default: () => [],
+    },
     refreshInterval: {
       type: Number,
       default: 1000 * 60 * 15,

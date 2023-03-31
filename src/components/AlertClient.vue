@@ -84,6 +84,10 @@ export default {
       default: Date.now(),
     },
     warningsData: Object,
+    dailyWarningTypes: {
+      type: Array,
+      default: () => [],
+    },
     geometryId: {
       type: Number,
       default: config.props.defaultGeometryId,
@@ -237,7 +241,9 @@ export default {
       }
     },
     update() {
-      this.$emit('update-warnings')
+      if (this.refreshInterval > 0) {
+        this.$emit('update-warnings')
+      }
     },
     handleError(error) {
       if (!this.errors.includes(error)) {
