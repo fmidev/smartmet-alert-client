@@ -1,4 +1,5 @@
 {
+    "notInitialized": "Varoituksia ladataan. Mikäli varoitukset eivät päivity, varmista verkkoyhteytesi. Tarkista myös, että käytät tuettua selainta ja selaimesta tuoretta versiota.",
     "failed": "Lataus epäonnistui.",
     "regionLand": "Varoituksia voimassa seuraavilla maa-alueilla",
     "regionSea": "Varoituksia voimassa seuraavilla merialueilla",

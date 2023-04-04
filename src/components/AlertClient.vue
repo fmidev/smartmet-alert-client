@@ -136,6 +136,9 @@ export default {
       if (this.loading) {
         return ''
       }
+      if (!this.initialized) {
+        return i18n.t('notInitialized')
+      }
       return this.legend.length > 0
         ? i18n.t('validWarnings')
         : i18n.t('noWarnings')
