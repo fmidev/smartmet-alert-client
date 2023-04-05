@@ -1,5 +1,5 @@
 {
-    "notInitialized": "Varningar laddas. Om varningarna inte uppdateras, kolla din nätverksanslutning. Kontrollera även att du använder en webbläsare som stöds och en ny version av webbläsaren.",
+    "notInitialized": "Varningar laddas. Om varningarna inte uppdateras, kontrollera din nätverksanslutning. Kolla även att du använder en webbläsare som stöds och en ny version av webbläsaren.",
     "failed": "Lastning misslyckades.",
     "regionLand": "Varningar är i kraft i följande landområden",
     "regionSea": "Varningar är i kraft i följande havsområden",
