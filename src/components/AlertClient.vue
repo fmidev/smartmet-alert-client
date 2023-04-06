@@ -8,7 +8,9 @@
       <div class="container-fluid" :class="currentTheme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h3>{{ validWarningsText }}</h3>
+            <h3 class="valid-warnings" :class="initialized && 'initialized'">
+              {{ validWarningsText }}
+            </h3>
             <div v-if="regionListEnabled">
               <a
                 v-if="numWarnings"
@@ -307,6 +309,13 @@ div#fmi-warnings {
   width: 690px;
   padding: 0;
   margin-bottom: 20px;
+
+  h3.valid-warnings {
+    font-weight: normal;
+    &.initialized {
+      font-weight: bold;
+    }
+  }
 
   div {
     background-color: transparent;
