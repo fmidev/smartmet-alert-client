@@ -8,6 +8,7 @@
     :region-list-enabled="regionListEnabled"
     :current-time="currentTime"
     :warnings-data="warningsData"
+    :daily-warning-types="dailyWarningTypes"
     :geometry-id="geometryId"
     :language="language"
     :theme="theme"
@@ -20,7 +21,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import { BootstrapVue, BSpinner } from 'bootstrap-vue'
 import fetch from 'cross-fetch'
-import spacetime from 'spacetime'
 import Vue from 'vue'
 
 import AlertClient from './components/AlertClient.vue'
@@ -72,6 +72,10 @@ export default {
     weatherWarnings: String,
     floodWarnings: String,
     warnings: Object,
+    dailyWarningTypes: {
+      type: Array,
+      default: () => [],
+    },
     refreshInterval: {
       type: Number,
       default: 1000 * 60 * 15,
@@ -159,7 +163,7 @@ export default {
         return this.refreshedAt
       }
       if (this.currentDate) {
-        return spacetime(this.currentDate, this.timezone).epoch
+        return new Date(this.currentDate).getTime()
       }
       return Date.now()
     },

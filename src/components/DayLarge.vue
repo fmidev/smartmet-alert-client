@@ -23,14 +23,14 @@
 </template>
 
 <script>
-import spacetime from 'spacetime'
-
 import i18n from '../i18n'
+import utils from '../mixins/utils'
 import MapLarge from './MapLarge.vue'
 
 export default {
   name: 'DayLarge',
   components: { MapLarge },
+  mixins: [utils],
   props: {
     index: {
       type: Number,
@@ -71,21 +71,24 @@ export default {
       if (this.staticDays) {
         return `${this.input.day}.${this.input.month}.${this.input.year}`
       }
-      const date = spacetime(
-        [this.input.year, this.input.month - 1, this.input.day],
-        this.timezone
+      const date = new Date(
+        this.input.year,
+        this.input.month - 1,
+        this.input.day
       )
-      const nextDate = date.add(1, 'day')
+      const nextDate = new Date(date.getTime())
+      nextDate.setDate(nextDate.getDate() + 1)
       const offset = this.$store.getters.timeOffset
-      const offsetDate = date.add(offset, 'milliseconds')
-      const hours = `0${offsetDate.hour()}`.slice(-2)
-      const minutes = `0${offsetDate.minute()}`.slice(-2)
+      const offsetDate = new Date(date.getTime())
+      offsetDate.setMilliseconds(offset)
+      const hours = this.twoDigits(offsetDate.getHours())
+      const minutes = this.twoDigits(offsetDate.getMinutes())
       return `${this.input.day}.${this.input.month}.${this.input.year} ${
         this.atTime
       } ${hours}:${minutes} –
-      <br> ${nextDate.date()}.${nextDate.month() + 1}.${nextDate.year()} ${
-        this.atTime
-      } ${hours}:${minutes}`
+      <br> ${nextDate.getDate()}.${
+        nextDate.getMonth() + 1
+      }.${nextDate.getFullYear()} ${this.atTime} ${hours}:${minutes}`
     },
     updatedDate() {
       return this.input.updatedDate || ''
