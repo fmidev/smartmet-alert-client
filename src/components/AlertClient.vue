@@ -8,7 +8,19 @@
       <div class="container-fluid" :class="currentTheme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h3>{{ validWarningsText }}</h3>
+            <h3 class="valid-warnings" :class="initialized && 'initialized'">
+              {{ validWarningsText }}
+              <span v-if="!initialized"
+                ><a
+                  :href="supportedBrowsersLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="supported-browsers">
+                  {{ supportedBrowsers }}</a
+                >
+                {{ additionalWarningsText }}
+              </span>
+            </h3>
             <div v-if="regionListEnabled">
               <a
                 v-if="numWarnings"
@@ -132,9 +144,21 @@ export default {
       if (this.loading) {
         return ''
       }
+      if (!this.initialized) {
+        return i18n.t('notInitializedStart')
+      }
       return this.legend.length > 0
         ? i18n.t('validWarnings')
         : i18n.t('noWarnings')
+    },
+    supportedBrowsersLink() {
+      return i18n.t('supportedBrowsersLink')
+    },
+    supportedBrowsers() {
+      return i18n.t('supportedBrowsers')
+    },
+    additionalWarningsText() {
+      return i18n.t('notInitializedEnd')
     },
     numWarnings() {
       return Object.keys(this.warnings).length
@@ -299,6 +323,13 @@ div#fmi-warnings {
   padding: 0;
   margin-bottom: 20px;
 
+  h3.valid-warnings {
+    font-weight: normal;
+    &.initialized {
+      font-weight: bold;
+    }
+  }
+
   div {
     background-color: transparent;
   }
@@ -364,6 +395,14 @@ div.symbol-list {
   width: $symbol-list-width;
   max-width: $symbol-list-width;
   min-width: $symbol-list-width;
+}
+
+.light a.supported-browsers {
+  color: $light-ext-link-color;
+}
+
+.dark a.supported-browsers {
+  color: $light-ext-link-color;
 }
 
 @media (max-width: 767px) {

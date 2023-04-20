@@ -1,4 +1,8 @@
 {
+    "notInitializedStart": "Varoituksia ladataan. Mikäli varoitukset eivät päivity, varmista verkkoyhteytesi. Tarkista myös, että käytät ",
+    "supportedBrowsers": "tuettua selainta",
+    "supportedBrowsersLink": "https://www.ilmatieteenlaitos.fi/tietoa-sivustosta",
+    "notInitializedEnd": " ja selaimesta tuoretta versiota.",
     "failed": "Lataus epäonnistui.",
     "regionLand": "Varoituksia voimassa seuraavilla maa-alueilla",
     "regionSea": "Varoituksia voimassa seuraavilla merialueilla",
