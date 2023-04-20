@@ -18,11 +18,11 @@ module.exports = {
         patterns: [
           {
             from: 'public/index.*.html',
-            to: "[name][ext]",
+            to: '[name][ext]',
           },
           {
             from: 'node_modules/vue/dist/vue.js',
-            to: "[name][ext]",
+            to: '[name][ext]',
           },
         ],
       }),
@@ -37,9 +37,9 @@ module.exports = {
         flatbush: 'flatbush/flatbush',
       },
       fallback: {
-        "child_process": false,
-        "fs": false,
-        "path": false,
+        child_process: false,
+        fs: false,
+        path: false,
       },
     },
   },
