@@ -328,6 +328,25 @@ div#fmi-warnings {
     &.initialized {
       font-weight: bold;
     }
+    &:not(.initialized) {
+      text-align: center;
+      width: 100%;
+      background-color: #e7f0fa;
+      border: 1px solid #303193;
+      color: #303193;
+      padding: 15px;
+    }
+    span {
+      color: #303193;
+      a {
+        font-weight: bold;
+        text-decoration: none;
+        border-bottom: 1px solid #02b8ce;
+      }
+      a:hover {
+        border-color: #303193;
+      }
+    }
   }
 
   div {
