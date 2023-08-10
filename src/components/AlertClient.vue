@@ -37,10 +37,11 @@
               :default-day="selectedDay"
               :static-days="staticDays"
               :regions="regions"
-              :geometry-id="geometryId" />
+              :geometry-id="geometryId"
+              :language="language" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-            <Legend v-show="validData" :input="legend" />
+            <Legend v-show="validData" :input="legend" :language="language" />
           </div>
         </div>
         <div v-if="regionListEnabled" class="row">
@@ -48,7 +49,8 @@
             <Regions
               :input="regions"
               :parents="parents"
-              :geometry-id="geometryId" />
+              :geometry-id="geometryId"
+              :language="language" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list"></div>
         </div>
@@ -60,8 +62,8 @@
 <script>
 import 'focus-visible'
 
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import module from '../store/module'
 import Days from './Days.vue'
@@ -119,7 +121,7 @@ export default {
     Regions,
     Legend,
   },
-  mixins: [config, utils],
+  mixins: [config, i18n, utils],
   data() {
     return {
       timer: null,
@@ -139,30 +141,30 @@ export default {
       return this.$store.getters.loading
     },
     toContentText() {
-      return i18n.t('toContent') || ''
+      return this.t('toContent') || ''
     },
     noWarningsText() {
-      return i18n.t('noWarnings')
+      return this.t('noWarnings')
     },
     validWarningsText() {
       if (this.loading) {
         return ''
       }
       if (!this.initialized) {
-        return i18n.t('notInitializedStart')
+        return this.t('notInitializedStart')
       }
       return this.legend.length > 0
-        ? i18n.t('validWarnings')
-        : i18n.t('noWarnings')
+        ? this.t('validWarnings')
+        : this.t('noWarnings')
     },
     supportedBrowsersLink() {
-      return i18n.t('supportedBrowsersLink')
+      return this.t('supportedBrowsersLink')
     },
     supportedBrowsers() {
-      return i18n.t('supportedBrowsers')
+      return this.t('supportedBrowsers')
     },
     additionalWarningsText() {
-      return i18n.t('notInitializedEnd')
+      return this.t('notInitializedEnd')
     },
     numWarnings() {
       return Object.keys(this.warnings).length
@@ -189,9 +191,6 @@ export default {
     }
   },
   created() {
-    if (this.language) {
-      i18n.locale = this.language
-    }
     this.createDataForChildren()
     if (this.warningsData == null) {
       this.update()

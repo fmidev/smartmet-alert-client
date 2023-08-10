@@ -20,14 +20,16 @@
             :regions="regions[i]"
             :geometry-id="geometryId"
             :active="i === selectedDay"
-            :static-days="staticDays" />
+            :static-days="staticDays"
+            :language="language" />
         </template>
         <DayLarge
           :index="i"
           :input="input[i]"
           :regions="regions[i]"
           :geometry-id="geometryId"
-          :static-days="staticDays" />
+          :static-days="staticDays"
+          :language="language" />
       </b-tab>
     </b-tabs>
   </div>
@@ -63,6 +65,9 @@ export default {
     },
     regions: Array,
     geometryId: Number,
+    language: {
+      type: String,
+    },
   },
   data() {
     return {

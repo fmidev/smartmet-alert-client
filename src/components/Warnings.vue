@@ -18,7 +18,8 @@
         v-for="warning in warnings"
         :key="warning.key"
         :input="warning"
-        :hideable="warnings.length > 1" />
+        :hideable="warnings.length > 1"
+        :language="language" />
     </div>
     <div class="row symbol-list-main-row">
       <hr
@@ -122,7 +123,7 @@
 <script>
 import Vue from 'vue'
 
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import Warning from './Warning.vue'
 
 export default {
@@ -130,7 +131,8 @@ export default {
   components: {
     Warning,
   },
-  props: ['input'],
+  mixins: [i18n],
+  props: ['input', 'language'],
   computed: {
     warnings() {
       return this.input
@@ -145,28 +147,28 @@ export default {
       return this.warnings.length === 0
     },
     warningSymbolsText() {
-      return this.noWarnings ? i18n.t('noWarnings') : i18n.t('warningSymbols')
+      return this.noWarnings ? this.t('noWarnings') : this.t('warningSymbols')
     },
     warningSymbolDaysText() {
-      return this.noWarnings ? '' : i18n.t('warningSymbolDays')
+      return this.noWarnings ? '' : this.t('warningSymbolDays')
     },
     showWarningsText() {
-      return i18n.t('showWarnings')
+      return this.t('showWarnings')
     },
     severalWarningsText() {
-      return i18n.t('severalWarnings')
+      return this.t('severalWarnings')
     },
     warningLevel1Text() {
-      return i18n.t('warningLevel1')
+      return this.t('warningLevel1')
     },
     warningLevel2Text() {
-      return i18n.t('warningLevel2')
+      return this.t('warningLevel2')
     },
     warningLevel3Text() {
-      return i18n.t('warningLevel3')
+      return this.t('warningLevel3')
     },
     warningLevel4Text() {
-      return i18n.t('warningLevel4')
+      return this.t('warningLevel4')
     },
     currentTheme() {
       return this.$store.getters.theme

@@ -39,29 +39,29 @@
 <script>
 import 'focus-visible'
 
-import i18n from '../i18n'
 import fields from '../mixins/fields'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 
 export default {
   name: 'DescriptionWarning',
-  mixins: [fields, utils],
-  props: ['input'],
+  mixins: [fields, i18n, utils],
+  props: ['input', 'language'],
   computed: {
     warningTitle() {
-      return i18n.t(this.input.type)
+      return this.t(this.input.type)
     },
     info() {
-      return this.input.info[i18n.locale]
+      return this.input.info[this.language]
     },
     validText() {
-      return i18n.t('valid')
+      return this.t('valid')
     },
     linkHidden() {
       return this.input.link == null || this.input.link.length === 0
     },
     description() {
-      return i18n.t(`${this.input.type}DescriptionLevel${this.input.severity}`)
+      return this.t(`${this.input.type}DescriptionLevel${this.input.severity}`)
     },
   },
 }

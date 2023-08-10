@@ -58,16 +58,16 @@ import 'focus-visible'
 import Vue from 'vue'
 import VueObserveVisibility from 'vue-observe-visibility'
 
-import i18n from '../i18n'
 import fields from '../mixins/fields'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 
 Vue.use(VueObserveVisibility)
 
 export default {
   name: 'Warning',
-  mixins: [fields, utils],
-  props: ['input', 'hideable'],
+  mixins: [fields, i18n, utils],
+  props: ['input', 'hideable', 'language'],
   data() {
     return {
       showTooltip: false,
@@ -78,29 +78,29 @@ export default {
       return `fmi-warnings-flag-${this.input.type}`
     },
     title() {
-      return i18n.t(this.input.type)
+      return this.t(this.input.type)
     },
     tooltipFirstLine() {
       return this.input.visible
-        ? i18n.t('selectWarningTooltipLine1')
-        : i18n.t('selectDisabledWarningTooltipLine1')
+        ? this.t('selectWarningTooltipLine1')
+        : this.t('selectDisabledWarningTooltipLine1')
     },
     tooltipSecondLine() {
       return this.input.visible
-        ? i18n.t('selectWarningTooltipLine2')
-        : i18n.t('selectDisabledWarningTooltipLine2')
+        ? this.t('selectWarningTooltipLine2')
+        : this.t('selectDisabledWarningTooltipLine2')
     },
     showLabel() {
-      return `${i18n.t(
+      return `${this.t(
         'selectDisabledWarningTooltipLine1'
-      )} ${this.uncapitalize(this.title)} ${i18n.t(
+      )} ${this.uncapitalize(this.title)} ${this.t(
         'selectDisabledWarningTooltipLine2'
       )}`
     },
     hideLabel() {
-      return `${i18n.t('selectWarningTooltipLine1')} ${this.uncapitalize(
+      return `${this.t('selectWarningTooltipLine1')} ${this.uncapitalize(
         this.title
-      )} ${i18n.t('selectWarningTooltipLine2')}`
+      )} ${this.t('selectWarningTooltipLine2')}`
     },
   },
   methods: {

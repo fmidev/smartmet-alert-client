@@ -35,7 +35,8 @@
             <DescriptionWarning
               v-for="warning in warnings"
               :key="warning.identification"
-              :input="warning" />
+              :input="warning"
+              :language="language" />
           </div>
         </div>
       </b-card-body>
@@ -46,15 +47,15 @@
 <script>
 import 'focus-visible'
 
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import DescriptionWarning from './DescriptionWarning.vue'
 import RegionWarning from './RegionWarning.vue'
 
 export default {
   name: 'Region',
   components: { RegionWarning, DescriptionWarning },
-  mixins: [config],
+  mixins: [i18n, config],
   props: {
     type: {
       type: String,
@@ -69,6 +70,9 @@ export default {
       type: Array,
       default: () => [],
     },
+    language: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -80,7 +84,7 @@ export default {
       return `accordion-item-${this.code}`
     },
     regionName() {
-      return i18n.t(this.name)
+      return this.t(this.name)
     },
     warningsSummary() {
       return this.input.reduce((warnings, warningInfo) => {
@@ -122,14 +126,14 @@ export default {
     ariaButton() {
       return `${
         this.visible
-          ? i18n.t('infoButtonAriaLabelCloseRegion')
-          : i18n.t('infoButtonAriaLabelShowRegion')
-      } ${this.regionName} ${i18n.t('infoButtonAriaLabelValidWarnings')}`
+          ? this.t('infoButtonAriaLabelCloseRegion')
+          : this.t('infoButtonAriaLabelShowRegion')
+      } ${this.regionName} ${this.t('infoButtonAriaLabelValidWarnings')}`
     },
     ariaInfo() {
       return this.warnings.map(
         (warning, index) =>
-          `${index > 0 ? ' ' : ''}${i18n.t(warning.type)}: ${i18n.t(
+          `${index > 0 ? ' ' : ''}${this.t(warning.type)}: ${this.t(
             `warningLevel${warning.severity}`
           )}.`
       )

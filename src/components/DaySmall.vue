@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import MapSmall from './MapSmall.vue'
 
 export default {
@@ -27,6 +27,7 @@ export default {
   components: {
     MapSmall,
   },
+  mixins: [i18n],
   props: {
     index: {
       type: Number,
@@ -49,10 +50,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    language: {
+      type: String,
+    },
   },
   computed: {
     weekday() {
-      return i18n.t(this.input.weekdayName) || ''
+      return this.t(this.input.weekdayName) || ''
     },
     severity() {
       return this.input.severity
@@ -73,7 +77,7 @@ export default {
     },
     ariaLabel() {
       return `${
-        this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''
+        this.input.weekdayName ? this.t(`${this.input.weekdayName}Full`) : ''
       } ${this.input.day}.${this.input.month}`
     },
     currentTheme() {

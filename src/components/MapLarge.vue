@@ -232,15 +232,15 @@ import 'focus-visible'
 import Panzoom from '@panzoom/panzoom'
 import { vueWindowSizeMixin } from 'vue-window-size'
 
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import PopupRow from './PopupRow.vue'
 
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, utils, vueWindowSizeMixin],
+  mixins: [config, i18n, utils, vueWindowSizeMixin],
   props: {
     index: {
       type: Number,
@@ -250,6 +250,9 @@ export default {
     },
     geometryId: {
       type: Number,
+    },
+    language: {
+      type: String,
     },
   },
   data() {
@@ -299,13 +302,13 @@ export default {
       return 40
     },
     zoomInText() {
-      return i18n.t('zoomIn')
+      return this.t('zoomIn')
     },
     zoomOutText() {
-      return i18n.t('zoomOut')
+      return this.t('zoomOut')
     },
     moveText() {
-      return i18n.t('moveMap')
+      return this.t('moveMap')
     },
     tooltipStyle() {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`
@@ -438,7 +441,7 @@ export default {
       }, [])
     },
     regionTitle() {
-      return i18n.t(this.popupRegion.name)
+      return this.t(this.popupRegion.name)
     },
     regionSets() {
       const map = new Map()
@@ -711,7 +714,7 @@ export default {
             severity: 0,
             direction: 0,
             text: '',
-            interval: i18n.t('popupNoWarnings'),
+            interval: this.t('popupNoWarnings'),
           },
         ]
       } else if (

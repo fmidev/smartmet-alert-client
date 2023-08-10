@@ -16,7 +16,8 @@
             type="land"
             :code="region.key"
             :name="region.name"
-            :input="region.warnings" />
+            :input="region.warnings"
+            :language="language" />
         </div>
       </div>
     </div>
@@ -36,7 +37,8 @@
             type="land"
             :code="region.key"
             :name="region.name"
-            :input="region.warnings" />
+            :input="region.warnings"
+            :language="language" />
         </div>
       </div>
     </div>
@@ -45,34 +47,35 @@
 </template>
 
 <script>
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import Region from './Region.vue'
 
 export default {
   name: 'Regions',
   components: { Region },
-  mixins: [config, utils],
+  mixins: [config, i18n, utils],
   props: {
     input: Array,
     parents: Object,
     geometryId: Number,
+    language: String,
   },
   computed: {
     landText() {
-      return i18n.t('regionLand')
+      return this.t('regionLand')
     },
     seaText() {
-      return i18n.t('regionSea')
+      return this.t('regionSea')
     },
     fromLandtoNextContentText() {
-      return `${i18n.t('warningsIn')} ${this.regions.land.length} ${i18n.t(
+      return `${this.t('warningsIn')} ${this.regions.land.length} ${this.t(
         'toNextContent'
       )}`
     },
     fromSeatoNextContentText() {
-      return `${i18n.t('warningsIn')} ${this.regions.sea.length} ${i18n.t(
+      return `${this.t('warningsIn')} ${this.regions.sea.length} ${this.t(
         'toNextContent'
       )}`
     },

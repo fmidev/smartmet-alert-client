@@ -29,13 +29,13 @@
         tabindex="0">
         <b-card-body body-class="p-0">
           <div class="legends-container">
-            <Warnings :input="input" />
+            <Warnings :input="input" :language="language" />
           </div>
         </b-card-body>
       </b-collapse>
     </b-card>
     <div class="d-md-block d-none">
-      <Warnings :input="input" />
+      <Warnings :input="input" :language="language" />
     </div>
   </div>
 </template>
@@ -43,7 +43,7 @@
 <script>
 import Vue from 'vue'
 
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import Warnings from './Warnings.vue'
 
 export default {
@@ -51,7 +51,8 @@ export default {
   components: {
     Warnings,
   },
-  props: ['input'],
+  mixins: [i18n],
+  props: ['input', 'language'],
   data() {
     return {
       visible: false,
@@ -62,10 +63,10 @@ export default {
       return this.input
     },
     warningSymbolsText() {
-      return i18n.t('legends')
+      return this.t('legends')
     },
     toggleLegendsText() {
-      return this.visible ? i18n.t('hideLegends') : i18n.t('showLegends')
+      return this.visible ? this.t('hideLegends') : this.t('showLegends')
     },
     currentTheme() {
       return this.$store.getters.theme

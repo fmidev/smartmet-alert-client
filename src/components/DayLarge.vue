@@ -18,19 +18,23 @@
       ><br />
       <span>{{ dataProviderSecond }}</span>
     </div>
-    <MapLarge :index="index" :input="regions" :geometry-id="geometryId" />
+    <MapLarge
+      :index="index"
+      :input="regions"
+      :geometry-id="geometryId"
+      :language="language" />
   </div>
 </template>
 
 <script>
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import MapLarge from './MapLarge.vue'
 
 export default {
   name: 'DayLarge',
   components: { MapLarge },
-  mixins: [utils],
+  mixins: [i18n, utils],
   props: {
     index: {
       type: Number,
@@ -49,16 +53,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    language: {
+      type: String,
+    },
   },
   computed: {
     warnings() {
-      return i18n.t('warnings') || ''
+      return this.t('warnings') || ''
     },
     updated() {
-      return i18n.t('updated') || ''
+      return this.t('updated') || ''
     },
     atTime() {
-      return i18n.t('atTime') || ''
+      return this.t('atTime') || ''
     },
     warningsDate() {
       if (
@@ -97,10 +104,10 @@ export default {
       return this.input.updatedTime || ''
     },
     dataProviderFirst() {
-      return i18n.t('dataProviderFirst')
+      return this.t('dataProviderFirst')
     },
     dataProviderSecond() {
-      return i18n.t('dataProviderSecond')
+      return this.t('dataProviderSecond')
     },
   },
 }
