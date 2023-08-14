@@ -2,7 +2,7 @@
   <AlertClient
     v-if="visible"
     :refresh-interval="refreshInterval"
-    :selected-day="selectedDay"
+    :default-day="selectedDay"
     :static-days="staticDays"
     :start-from="startFrom"
     :region-list-enabled="regionListEnabled"
@@ -13,6 +13,8 @@
     :language="language"
     :theme="theme"
     :sleep="sleep"
+    :loading="loading"
+    @loaded="onLoaded"
     @update-warnings="fetchWarnings" />
 </template>
 <script>
@@ -26,12 +28,10 @@ import Vue from 'vue'
 import AlertClient from './components/AlertClient.vue'
 import config from './mixins/config'
 import utils from './mixins/utils'
-import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.component('BSpinner', BSpinner)
-Vue.prototype.$store = store
 
 export default {
   name: 'App',
@@ -103,6 +103,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       updatedAt: null,
       refreshedAt: null,
       warningsData: null,
@@ -179,9 +180,14 @@ export default {
     }
   },
   methods: {
+    onLoaded(loaded) {
+      if (loaded) {
+        this.loading = false
+      }
+    },
     fetchWarnings() {
       if (this.spinnerEnabled) {
-        this.$store.dispatch('setLoading', true)
+        this.loading = true
       }
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`)

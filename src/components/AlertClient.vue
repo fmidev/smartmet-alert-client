@@ -1,11 +1,11 @@
 <template>
   <div
     id="fmi-warnings"
-    :class="currentTheme"
+    :class="theme"
     :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
     <div>
-      <div class="container-fluid" :class="currentTheme">
+      <div class="container-fluid" :class="theme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <h3 class="valid-warnings" :class="initialized && 'initialized'">
@@ -34,22 +34,40 @@
             </div>
             <Days
               :input="days"
-              :default-day="selectedDay"
+              :visible-warnings="visibleWarnings"
+              :selected-day="selectedDay"
               :static-days="staticDays"
+              :time-offset="timeOffset"
+              :warnings="warnings"
               :regions="regions"
               :geometry-id="geometryId"
-              :language="language" />
+              :loading="loading"
+              :initialized="initialized"
+              :theme="theme"
+              :language="language"
+              @daySelected="onDaySelected"
+              @initialized="onInitialized"
+              @loaded="onLoaded" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-            <Legend v-show="validData" :input="legend" :language="language" />
+            <Legend
+              v-show="validData"
+              :input="legend"
+              :visible-warnings="visibleWarnings"
+              :theme="theme"
+              :language="language"
+              @warningsToggled="onWarningsToggled" />
           </div>
         </div>
         <div v-if="regionListEnabled" class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <Regions
               :input="regions"
+              :selected-day="selectedDay"
+              :warnings="warnings"
               :parents="parents"
               :geometry-id="geometryId"
+              :theme="theme"
               :language="language" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list"></div>
@@ -62,10 +80,11 @@
 <script>
 import 'focus-visible'
 
+import Vue from 'vue'
+
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
-import module from '../store/module'
 import Days from './Days.vue'
 import Legend from './Legend.vue'
 import Regions from './Regions.vue'
@@ -77,7 +96,7 @@ export default {
       type: Number,
       default: 1000 * 60 * 15,
     },
-    selectedDay: {
+    defaultDay: {
       type: Number,
       default: 0,
     },
@@ -111,6 +130,10 @@ export default {
       type: String,
       default: 'light',
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     sleep: {
       type: Boolean,
       default: true,
@@ -124,6 +147,8 @@ export default {
   mixins: [config, i18n, utils],
   data() {
     return {
+      selectedDay: this.defaultDay,
+      visibleWarnings: [],
       timer: null,
       visibilityListener: null,
       warnings: {},
@@ -131,15 +156,14 @@ export default {
       regions: this.regionsDefault(),
       parents: {},
       legend: [],
+      timeOffset: 0,
+      initialized: false,
       // eslint-disable-next-line no-undef
       version: VERSION,
       errors: [],
     }
   },
   computed: {
-    loading() {
-      return this.$store.getters.loading
-    },
     toContentText() {
       return this.t('toContent') || ''
     },
@@ -183,13 +207,6 @@ export default {
       this.createDataForChildren()
     },
   },
-  async beforeCreate() {
-    if (!this.$store.hasModule('warningsStore')) {
-      await this.$store.registerModule('warningsStore', module, {
-        preserveState: false,
-      })
-    }
-  },
   created() {
     this.createDataForChildren()
     if (this.warningsData == null) {
@@ -197,7 +214,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('setTheme', this.theme)
     this.initTimer()
     if (this.sleep) {
       this.visibilityListener = document.addEventListener(
@@ -211,12 +227,33 @@ export default {
       document.removeEventListener('visibilitychange', this.visibilityListener)
     }
     this.cancelTimer()
-    this.$store.unregisterModule('warningsStore')
   },
   async serverPrefetch() {
     await this.createDataForChildren()
   },
   methods: {
+    onDaySelected(newSelectedDay) {
+      this.selectedDay = newSelectedDay
+    },
+    onWarningsToggled(newVisibleWarnings) {
+      this.visibleWarnings = newVisibleWarnings
+      this.legend.forEach((warning, i) => {
+        const isVisible = newVisibleWarnings.includes(warning.type)
+        if (isVisible !== warning.visible) {
+          this.legend[i].visible = isVisible
+        }
+      })
+    },
+    onLoaded(loaded) {
+      if (loaded) {
+        this.$emit('loaded', true)
+      }
+    },
+    onInitialized(initialized) {
+      if (initialized) {
+        this.initialized = true
+      }
+    },
     async createDataForChildren() {
       if (this.warningsData != null) {
         const result = await this.handleMapWarnings(this.warningsData)
@@ -225,21 +262,9 @@ export default {
         this.regions = result.regions
         this.parents = result.parents
         this.legend = result.legend
-        const dispatches = [
-          this.$store.dispatch(
-            'setVisibleWarnings',
-            this.legend
-              .filter((legendWarning) => legendWarning.visible)
-              .map((legendWarning) => legendWarning.type)
-          ),
-          this.$store.dispatch('setWarnings', this.warnings),
-        ]
-        if (!this.initialized) {
-          dispatches.unshift(
-            this.$store.dispatch('setSelectedDay', this.selectedDay)
-          )
-        }
-        await Promise.all(dispatches)
+        this.visibleWarnings = this.legend
+          .filter((legendWarning) => legendWarning.visible)
+          .map((legendWarning) => legendWarning.type)
       }
     },
     visibilityChange() {

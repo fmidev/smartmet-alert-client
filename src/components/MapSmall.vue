@@ -115,8 +115,20 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
     geometryId: {
       type: Number,
+    },
+    initialized: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -17,6 +17,7 @@
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
+            :warnings="warnings"
             :language="language" />
         </div>
       </div>
@@ -38,6 +39,8 @@
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
+            :warnings="warnings"
+            :theme="theme"
             :language="language" />
         </div>
       </div>
@@ -58,8 +61,11 @@ export default {
   mixins: [config, i18n, utils],
   props: {
     input: Array,
+    selectedDay: Number,
+    warnings: Object,
     parents: Object,
     geometryId: Number,
+    theme: String,
     language: String,
   },
   computed: {
@@ -119,9 +125,6 @@ export default {
         },
         {}
       )
-    },
-    selectedDay() {
-      return this.$store.getters.selectedDay
     },
     anyLandWarnings() {
       return this.anyRegionWarnings('land')

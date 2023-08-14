@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky-top" :class="currentTheme">
+  <div class="sticky-top" :class="theme">
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">
         {{ warningSymbolsText }}
@@ -29,20 +29,28 @@
         tabindex="0">
         <b-card-body body-class="p-0">
           <div class="legends-container">
-            <Warnings :input="input" :language="language" />
+            <Warnings
+              :input="input"
+              :visible-warnings="visibleWarnings"
+              :theme="theme"
+              :language="language" />
           </div>
         </b-card-body>
       </b-collapse>
     </b-card>
     <div class="d-md-block d-none">
-      <Warnings :input="input" :language="language" />
+      <Warnings
+        :input="input"
+        :visible-warnings="visibleWarnings"
+        :theme="theme"
+        :language="language"
+        @warningsToggled="onWarningsToggled"
+        @showAllWarnings="onShowAllWarnings" />
     </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-
 import i18n from '../mixins/i18n'
 import Warnings from './Warnings.vue'
 
@@ -52,7 +60,7 @@ export default {
     Warnings,
   },
   mixins: [i18n],
-  props: ['input', 'language'],
+  props: ['input', 'language', 'theme', 'visibleWarnings'],
   data() {
     return {
       visible: false,
@@ -68,27 +76,14 @@ export default {
     toggleLegendsText() {
       return this.visible ? this.t('hideLegends') : this.t('showLegends')
     },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
-  },
-  watch: {
-    input() {
-      this.showAll()
-    },
-    visibleWarnings(newVisibleWarnings) {
-      this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type)
-        if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible)
-        }
-      })
-    },
   },
   methods: {
-    showAll() {
-      this.$store.dispatch(
-        'setVisibleWarnings',
+    onWarningsToggled(newVisibleWarnings) {
+      this.$emit('warningsToggled', newVisibleWarnings)
+    },
+    onShowAllWarnings() {
+      this.$emit(
+        'warningsToggled',
         this.warnings.reduce(
           (types, warning) => types.concat([warning.type]),
           []

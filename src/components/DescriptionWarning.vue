@@ -1,5 +1,5 @@
 <template>
-  <div class="current-description-row" :class="currentTheme">
+  <div class="current-description-row" :class="theme">
     <div class="current-description-image-cell" aria-hidden="true">
       <div
         :class="`current-description-image warning-image symbol-image symbol-image-rotate-${rotation} level-${input.severity} ${typeClass}`">
@@ -46,7 +46,7 @@ import utils from '../mixins/utils'
 export default {
   name: 'DescriptionWarning',
   mixins: [fields, i18n, utils],
-  props: ['input', 'language'],
+  props: ['input', 'language', 'theme'],
   computed: {
     warningTitle() {
       return this.t(this.input.type)

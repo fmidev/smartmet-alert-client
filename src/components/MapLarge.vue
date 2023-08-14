@@ -1,5 +1,5 @@
 <template>
-  <div class="map-large" :class="currentTheme" tabindex="0">
+  <div class="map-large" :class="theme" tabindex="0">
     <div v-if="loading" class="spinner-container text-center">
       <b-spinner></b-spinner>
     </div>
@@ -191,7 +191,7 @@
         placement="top"
         delay="0"
         container="fmi-warnings-region-tooltip-reference"
-        :custom-class="currentTheme">
+        :custom-class="theme">
         <div id="day-map-large-base-popup" class="fmi-warnings-popup">
           <a
             id="day-map-large-base-popup-closer"
@@ -248,8 +248,28 @@ export default {
     input: {
       type: Object,
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
     geometryId: {
       type: Number,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    initialized: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+      default: 'light',
     },
     language: {
       type: String,
@@ -283,12 +303,6 @@ export default {
     }
   },
   computed: {
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
-    },
-    loading() {
-      return this.$store.getters.loading
-    },
     moveStep() {
       return 25
     },
@@ -552,9 +566,6 @@ export default {
       })
       return merged
     },
-    warnings() {
-      return this.$store.getters.warnings
-    },
   },
   watch: {
     scale() {
@@ -640,9 +651,9 @@ export default {
     }
   },
   updated() {
-    this.$store.dispatch('setLoading', false)
-    if (this.$store.getters.warnings != null) {
-      this.$store.dispatch('setInitialized', true)
+    this.$emit('loaded', true)
+    if (this.warnings != null) {
+      this.$emit('initialized', true)
     }
   },
   methods: {

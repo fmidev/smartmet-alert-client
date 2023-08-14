@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="mb-1 current-warning-panel" :class="currentTheme">
+  <b-card no-body class="mb-1 current-warning-panel" :class="theme">
     <b-card-header
       header-tag="header"
       class="p-1"
@@ -33,9 +33,10 @@
         <div class="current-description">
           <div class="current-description-table">
             <DescriptionWarning
-              v-for="warning in warnings"
+              v-for="warning in reducedWarnings"
               :key="warning.identification"
               :input="warning"
+              :theme="theme"
               :language="language" />
           </div>
         </div>
@@ -70,6 +71,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
+    theme: {
+      type: String,
+      default: 'light',
+    },
     language: {
       type: String,
     },
@@ -87,37 +96,36 @@ export default {
       return this.t(this.name)
     },
     warningsSummary() {
-      return this.input.reduce((warnings, warningInfo) => {
+      return this.input.reduce((summaryWarnings, warningInfo) => {
         if (
           warningInfo != null &&
           warningInfo.identifiers != null &&
           warningInfo.identifiers.length > 0 &&
           warningInfo.coverage >= this.coverageCriterion
         ) {
-          const warning =
-            this.$store.getters.warnings[warningInfo.identifiers[0]]
+          const warning = this.warnings[warningInfo.identifiers[0]]
           if (warning != null) {
-            warnings.push(warning)
+            summaryWarnings.push(warning)
           }
         }
-        return warnings
+        return summaryWarnings
       }, [])
     },
-    warnings() {
+    reducedWarnings() {
       return this.input.reduce(
         (allWarnings, warningInfo) =>
           allWarnings.concat(
-            warningInfo.identifiers.reduce((warnings, identifier) => {
-              const warning = this.$store.getters.warnings[identifier]
+            warningInfo.identifiers.reduce((identifiers, identifier) => {
+              const warning = this.warnings[identifier]
               if (
                 warning != null &&
                 this.warningsSummary.some(
                   (summaryWarning) => summaryWarning.type === warning.type
                 )
               ) {
-                warnings.push(warning)
+                identifiers.push(warning)
               }
-              return warnings
+              return identifiers
             }, [])
           ),
         []
@@ -131,15 +139,12 @@ export default {
       } ${this.regionName} ${this.t('infoButtonAriaLabelValidWarnings')}`
     },
     ariaInfo() {
-      return this.warnings.map(
+      return this.reducedWarnings.map(
         (warning, index) =>
           `${index > 0 ? ' ' : ''}${this.t(warning.type)}: ${this.t(
             `warningLevel${warning.severity}`
           )}.`
       )
-    },
-    currentTheme() {
-      return this.$store.getters.theme
     },
   },
 }

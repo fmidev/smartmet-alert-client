@@ -1,8 +1,8 @@
 <template>
-  <div class="row date-selector" :class="currentTheme">
+  <div class="row date-selector" :class="theme">
     <b-tabs
       id="fmi-warnings-date-selector"
-      v-model="selectedDay"
+      v-model="day"
       :lazy="true"
       :no-fade="true"
       nav-class="fmi-warnings-date-nav"
@@ -11,25 +11,37 @@
       <b-tab
         v-for="(n, i) in numberOfDays"
         :key="i"
-        :active="i === selectedDay"
+        :active="i === day"
         :title-link-class="['day', `day${i}`]">
         <template #title>
           <DaySmall
             :index="i"
             :input="input[i]"
+            :visible-warnings="visibleWarnings"
+            :warnings="warnings"
             :regions="regions[i]"
             :geometry-id="geometryId"
-            :active="i === selectedDay"
+            :active="i === day"
             :static-days="staticDays"
+            :initialized="initialized"
+            :theme="theme"
             :language="language" />
         </template>
         <DayLarge
           :index="i"
           :input="input[i]"
+          :visible-warnings="visibleWarnings"
+          :warnings="warnings"
           :regions="regions[i]"
           :geometry-id="geometryId"
           :static-days="staticDays"
-          :language="language" />
+          :time-offset="timeOffset"
+          :loading="loading"
+          :initialized="initialized"
+          :theme="theme"
+          :language="language"
+          @loaded="onLoaded"
+          @initialized="onInitialized" />
       </b-tab>
     </b-tabs>
   </div>
@@ -52,7 +64,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    defaultDay: {
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    selectedDay: {
       type: Number,
       default: 0,
       validator(value) {
@@ -63,28 +79,60 @@ export default {
       type: Boolean,
       default: true,
     },
+    timeOffset: {
+      type: Number,
+      default: 0,
+    },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
     regions: Array,
     geometryId: Number,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    initialized: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+      default: 'light',
+    },
     language: {
       type: String,
     },
   },
   data() {
     return {
-      selectedDay: this.defaultDay,
+      day: this.selectedDay,
     }
   },
   computed: {
     numberOfDays() {
       return 5
     },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
   },
   watch: {
-    selectedDay(newValue) {
-      this.$store.dispatch('setSelectedDay', newValue)
+    day(newSelectedDay) {
+      this.onDaySelected(newSelectedDay)
+    },
+  },
+  methods: {
+    onDaySelected(newSelectedDay) {
+      this.$emit('daySelected', newSelectedDay)
+    },
+    onLoaded(loaded) {
+      if (loaded) {
+        this.$emit('loaded', true)
+      }
+    },
+    onInitialized(initialized) {
+      if (initialized) {
+        this.$emit('initialized', true)
+      }
     },
   },
 }

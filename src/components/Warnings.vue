@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings-view" :class="currentTheme">
+  <div id="fmi-warnings-view" :class="theme">
     <div
       v-if="input.length > 0"
       :class="['row', 'symbol-list-main-row', 'show-text-row']">
@@ -19,7 +19,9 @@
         :key="warning.key"
         :input="warning"
         :hideable="warnings.length > 1"
-        :language="language" />
+        :theme="theme"
+        :language="language"
+        @warningToggled="onWarningToggled" />
     </div>
     <div class="row symbol-list-main-row">
       <hr
@@ -85,11 +87,7 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-3
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-3 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -132,13 +130,10 @@ export default {
     Warning,
   },
   mixins: [i18n],
-  props: ['input', 'language'],
+  props: ['input', 'visibleWarnings', 'language', 'theme'],
   computed: {
     warnings() {
       return this.input
-    },
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
     },
     hiddenWarnings() {
       return this.visibleWarnings.length !== this.input.length
@@ -170,32 +165,21 @@ export default {
     warningLevel4Text() {
       return this.t('warningLevel4')
     },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
-  },
-  watch: {
-    input() {
-      this.showAll()
-    },
-    visibleWarnings(newVisibleWarnings) {
-      this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type)
-        if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible)
-        }
-      })
-    },
   },
   methods: {
-    showAll() {
-      this.$store.dispatch(
-        'setVisibleWarnings',
-        this.warnings.reduce(
-          (types, warning) => types.concat([warning.type]),
-          []
+    onWarningToggled({ warning, visible }) {
+      let newVisibleWarnings = this.visibleWarnings
+      if (visible && !this.visibleWarnings.includes(warning)) {
+        newVisibleWarnings.push(warning)
+      } else if (!visible) {
+        newVisibleWarnings = newVisibleWarnings.filter(
+          (visibleWarning) => visibleWarning !== warning
         )
-      )
+      }
+      this.$emit('warningsToggled', newVisibleWarnings)
+    },
+    showAll() {
+      this.$emit('showAllWarnings')
     },
   },
 }

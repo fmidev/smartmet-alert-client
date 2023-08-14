@@ -2,12 +2,12 @@
   <div class="map-container">
     <div class="warning-map-status" aria-hidden="true">
       <p>
-        <span class="bold-text">{{ warnings }}</span
+        <span class="bold-text">{{ warningsTitle }}</span
         ><br />
         <span v-html="warningsDate"></span>
       </p>
       <p>
-        <span class="bold-text">{{ updated }}</span
+        <span class="bold-text">{{ updatedTitle }}</span
         ><br />
         {{ updatedDate }}<br />
         {{ atTime }} {{ updatedTime }}
@@ -21,8 +21,15 @@
     <MapLarge
       :index="index"
       :input="regions"
+      :visible-warnings="visibleWarnings"
+      :warnings="warnings"
       :geometry-id="geometryId"
-      :language="language" />
+      :loading="loading"
+      :initialized="initialized"
+      :theme="theme"
+      :language="language"
+      @loaded="onLoaded"
+      @initialized="onInitialized" />
   </div>
 </template>
 
@@ -43,6 +50,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
     regions: {
       type: Object,
     },
@@ -53,15 +68,30 @@ export default {
       type: Boolean,
       default: true,
     },
+    timeOffset: {
+      type: Number,
+      default: 0,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    initialized: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+    },
     language: {
       type: String,
     },
   },
   computed: {
-    warnings() {
+    warningsTitle() {
       return this.t('warnings') || ''
     },
-    updated() {
+    updatedTitle() {
       return this.t('updated') || ''
     },
     atTime() {
@@ -85,7 +115,7 @@ export default {
       )
       const nextDate = new Date(date.getTime())
       nextDate.setDate(nextDate.getDate() + 1)
-      const offset = this.$store.getters.timeOffset
+      const offset = this.timeOffset
       const offsetDate = new Date(date.getTime())
       offsetDate.setMilliseconds(offset)
       const hours = this.twoDigits(offsetDate.getHours())
@@ -108,6 +138,18 @@ export default {
     },
     dataProviderSecond() {
       return this.t('dataProviderSecond')
+    },
+  },
+  methods: {
+    onLoaded(loaded) {
+      if (loaded) {
+        this.$emit('loaded', true)
+      }
+    },
+    onInitialized(initialized) {
+      if (initialized) {
+        this.$emit('initialized', true)
+      }
     },
   },
 }

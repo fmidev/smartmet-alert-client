@@ -1,5 +1,5 @@
 <template>
-  <div class="symbol-list-table" :class="currentTheme">
+  <div class="symbol-list-table" :class="theme">
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"></div>
@@ -67,7 +67,7 @@ Vue.use(VueObserveVisibility)
 export default {
   name: 'Warning',
   mixins: [fields, i18n, utils],
-  props: ['input', 'hideable', 'language'],
+  props: ['input', 'hideable', 'language', 'theme'],
   data() {
     return {
       showTooltip: false,
@@ -109,7 +109,7 @@ export default {
       this.setWarningVisibility(!this.input.visible)
     },
     setWarningVisibility(visible) {
-      this.$store.dispatch('setWarningVisibility', {
+      this.$emit('warningToggled', {
         warning: this.input.type,
         visible,
       })

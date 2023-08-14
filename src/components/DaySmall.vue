@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['date-selector-cell', currentTheme, { active: active }]"
+    :class="['date-selector-cell', theme, { active: active }]"
     :aria-label="ariaLabel">
     <div class="date-selector-cell-header">
       <div :class="`date-selector-text mobile-level-${severity}`">
@@ -12,7 +12,13 @@
       </div>
     </div>
     <div class="date-selector-cell-body map-container">
-      <MapSmall :index="index" :input="regions" :geometry-id="geometryId" />
+      <MapSmall
+        :index="index"
+        :input="regions"
+        :visible-warnings="visibleWarnings"
+        :warnings="warnings"
+        :geometry-id="geometryId"
+        :initialized="initialized" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -36,6 +42,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: () => {},
+    },
     regions: {
       type: Object,
       default: () => ({}),
@@ -49,6 +63,14 @@ export default {
     staticDays: {
       type: Boolean,
       default: true,
+    },
+    initialized: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+      default: 'light',
     },
     language: {
       type: String,
@@ -79,9 +101,6 @@ export default {
       return `${
         this.input.weekdayName ? this.t(`${this.input.weekdayName}Full`) : ''
       } ${this.input.day}.${this.input.month}`
-    },
-    currentTheme() {
-      return this.$store.getters.theme
     },
   },
 }

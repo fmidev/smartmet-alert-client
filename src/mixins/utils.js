@@ -44,12 +44,6 @@ export default {
     }),
     COVERAGE_JSON: () => 'coverage.json',
     COVERAGE_SVG: () => 'coverage.svg',
-    allWarnings() {
-      return this.$store.getters.warnings ?? {}
-    },
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
-    },
     bluePaths() {
       return this.paths({
         type: this.REGION_SEA,
@@ -110,12 +104,6 @@ export default {
     },
     overlayCoverages() {
       return this.coverageGeom(`coverages${this.size}`, this.strokeWidth, 0)
-    },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
-    initialized() {
-      return this.$store.getters.initialized
     },
   },
   methods: {
@@ -189,7 +177,7 @@ export default {
       return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
     },
     effectiveDays(start, end, dailyWarning) {
-      const offset = this.$store.getters.timeOffset
+      const offset = this.timeOffset
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
         const date = new Date(this.currentTime)
         date.setDate(date.getDate() + index)
@@ -520,33 +508,32 @@ export default {
 
     coverageGeom(coverageProperty, strokeWidth, fillOpacity, severity) {
       const coverageData = []
-      const warnings = this.allWarnings
       const visibleWarnings = this.visibleWarnings
-      Object.keys(warnings).forEach((key) => {
+      Object.keys(this.warnings).forEach((key) => {
         if (
-          (severity == null || warnings[key].severity === severity) &&
-          warnings[key].effectiveDays[this.index] &&
-          visibleWarnings.includes(warnings[key].type) &&
-          warnings[key].coveragesLarge.length > 0
+          (severity == null || this.warnings[key].severity === severity) &&
+          this.warnings[key].effectiveDays[this.index] &&
+          visibleWarnings.includes(this.warnings[key].type) &&
+          this.warnings[key].coveragesLarge.length > 0
         ) {
           if (!this.coverageWarnings.includes(key)) {
-            ;[...warnings[key].covRegions.keys()].forEach((covRegion) => {
+            ;[...this.warnings[key].covRegions.keys()].forEach((covRegion) => {
               if (
                 this.coverageRegions[covRegion] == null ||
-                this.coverageRegions[covRegion] < warnings[key].severity
+                this.coverageRegions[covRegion] < this.warnings[key].severity
               ) {
-                this.coverageRegions[covRegion] = warnings[key].severity
+                this.coverageRegions[covRegion] = this.warnings[key].severity
               }
             })
             this.coverageWarnings.push(key)
           }
-          warnings[key][coverageProperty].forEach((coverage) => {
+          this.warnings[key][coverageProperty].forEach((coverage) => {
             coverageData.push({
               key: `${key}${this.size}${this.index}${fillOpacity}Coverage`,
               d: coverage.path,
               fillOpacity,
               strokeWidth,
-              fill: this.colors.levels[warnings[key].severity],
+              fill: this.colors.levels[this.warnings[key].severity],
             })
           })
         }
@@ -642,8 +629,7 @@ export default {
       if (!this.staticDays) {
         const startTime =
           this.startFrom === 'updated' ? this.updatedAt : this.currentTime
-        const timeOffset = this.msSinceStartOfDay(startTime)
-        this.$store.dispatch('setTimeOffset', timeOffset)
+        this.timeOffset = this.msSinceStartOfDay(startTime)
       }
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
@@ -767,17 +753,17 @@ export default {
       )
     },
     regionSeverity(regionId) {
-      const warnings = this.allWarnings
       const region = this.regionData(regionId)
       let severity = 0
       if (region != null) {
         region.warnings.find((warning) => {
           if (this.visibleWarnings.includes(warning.type)) {
             const topIdentifier = warning.identifiers.find(
-              (id) => warnings[id] && warnings[id].covRegions.size === 0
+              (id) =>
+                this.warnings[id] && this.warnings[id].covRegions.size === 0
             )
             if (topIdentifier != null) {
-              severity = warnings[topIdentifier].severity
+              severity = this.warnings[topIdentifier].severity
               return true
             }
           }
