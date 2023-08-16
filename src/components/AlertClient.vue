@@ -333,22 +333,40 @@ div#fmi-warnings {
     }
     &:not(.initialized) {
       width: 100%;
-      background-color: #e7f0fa;
-      border: 1px solid #303193;
-      color: #303193;
+      background-color: $notification-color;
+      border: 1px solid $darker-blue;
+      color: $darker-blue;
       padding: 15px;
     }
     span {
-      color: #303193;
+      color: $darker-blue;
       a {
         font-weight: bold;
         text-decoration: none;
-        border-bottom: 1px solid #02b8ce;
+        border-bottom: 1px solid $light-ext-link-color;
       }
       a:hover {
-        border-color: #303193;
+        border-color: $darker-blue;
       }
     }
+  }
+
+  .dark h3.valid-warnings {
+    &:not(.initialized) {
+      background-color: $darkest-gray;
+      border: 1px solid $notification-color;
+      color: $white;
+    }
+    span {
+      color: $white;
+      a {
+        color: $white;
+        border-bottom: 1px solid $dark-ext-link-color;
+      }
+      a:hover {
+        border-color: $notification-color;
+      }  
+    }  
   }
 
   div {
