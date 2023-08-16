@@ -6,7 +6,7 @@ export default {
   },
   data() {
     return {
-      timezone: 'Europe/Helsinki',
+      timeZone: 'Europe/Helsinki',
       dateTimeFormatLocale: 'fi-FI',
       panLimits: { x: 175, y: 275 },
       coverageCriterion: 0.2,

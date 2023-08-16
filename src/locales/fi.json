@@ -1,8 +1,8 @@
 {
-    "notInitializedStart": "Varoituksia ladataan. Mikäli varoitukset eivät päivity, varmista verkkoyhteytesi. Tarkista myös, että käytät ",
-    "supportedBrowsers": "tuettua selainta",
+    "notInitializedStart": "Huom! Jos kartta on harmaa eikä kartalla näy päivämäärää, varoitukset eivät ole päivittyneet.",
+    "notInitializedEnd": "Varmista verkkoyhteys. Tarkista, että olet päivittänyt selaimen ja käyttöjärjestelmän.",
+    "supportedBrowsers": "Lista tuetuista selaimista",
     "supportedBrowsersLink": "https://www.ilmatieteenlaitos.fi/tietoa-sivustosta",
-    "notInitializedEnd": " ja selaimesta tuoretta versiota.",
     "failed": "Lataus epäonnistui.",
     "regionLand": "Varoituksia voimassa seuraavilla maa-alueilla",
     "regionSea": "Varoituksia voimassa seuraavilla merialueilla",
