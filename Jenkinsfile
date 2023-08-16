@@ -69,7 +69,8 @@ pipeline {
         }
 
         stage('Require unique deploy directory') {
-            when { environment name: 'BRANCH_NAME', value: 'main' }
+            // FIXME: enable 'when' condition if using the 'main' branch for production
+            // when { environment name: 'BRANCH_NAME', value: 'main' }
             steps {
                 sh "ssh ${deployUserAndHost} \"if [ -d ${deployBaseDirectory}/${packageVersion} ]; then echo deploy directory already exists; exit 1; fi\""
             }
@@ -85,7 +86,8 @@ pipeline {
         }
 
         stage('Publish package to npmjs.com') {
-            when { environment name: 'BRANCH_NAME', value: 'main' }
+            // FIXME: enable 'when' condition if using the 'main' branch for production
+            // when { environment name: 'BRANCH_NAME', value: 'main' }
             environment {
                 NPM_TOKEN = credentials('npm-token')
             }
