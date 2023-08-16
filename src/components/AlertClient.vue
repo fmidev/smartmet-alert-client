@@ -10,15 +10,17 @@
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <h3 class="valid-warnings" :class="initialized && 'initialized'">
               {{ validWarningsText }}
-              <span v-if="!initialized"
-                ><a
+              <span v-if="!initialized">
+                <br>
+                {{ additionalWarningsText }}
+                <br>
+                <a
                   :href="supportedBrowsersLink"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="supported-browsers">
                   {{ supportedBrowsers }}</a
                 >
-                {{ additionalWarningsText }}
               </span>
             </h3>
             <div v-if="regionListEnabled">
@@ -324,12 +326,12 @@ div#fmi-warnings {
   margin-bottom: 20px;
 
   h3.valid-warnings {
+    text-align: left;
     font-weight: normal;
     &.initialized {
       font-weight: bold;
     }
     &:not(.initialized) {
-      text-align: center;
       width: 100%;
       background-color: #e7f0fa;
       border: 1px solid #303193;
