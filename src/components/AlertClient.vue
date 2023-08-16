@@ -10,15 +10,17 @@
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <h3 class="valid-warnings" :class="initialized && 'initialized'">
               {{ validWarningsText }}
-              <span v-if="!initialized"
-                ><a
+              <span v-if="!initialized">
+                <br>
+                {{ additionalWarningsText }}
+                <br>
+                <a
                   :href="supportedBrowsersLink"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="supported-browsers">
                   {{ supportedBrowsers }}</a
                 >
-                {{ additionalWarningsText }}
               </span>
             </h3>
             <div v-if="regionListEnabled">
@@ -330,10 +332,47 @@ div#fmi-warnings {
   margin-bottom: 20px;
 
   h3.valid-warnings {
+    text-align: left;
     font-weight: normal;
     &.initialized {
       font-weight: bold;
     }
+    &:not(.initialized) {
+      width: 100%;
+      background-color: $notification-color;
+      border: 1px solid $darker-blue;
+      color: $darker-blue;
+      padding: 15px;
+    }
+    span {
+      color: $darker-blue;
+      a {
+        font-weight: bold;
+        text-decoration: none;
+        border-bottom: 1px solid $light-ext-link-color;
+      }
+      a:hover {
+        border-color: $darker-blue;
+      }
+    }
+  }
+
+  .dark h3.valid-warnings {
+    &:not(.initialized) {
+      background-color: $darkest-gray;
+      border: 1px solid $notification-color;
+      color: $white;
+    }
+    span {
+      color: $white;
+      a {
+        color: $white;
+        border-bottom: 1px solid $dark-ext-link-color;
+      }
+      a:hover {
+        border-color: $notification-color;
+      }  
+    }  
   }
 
   div {

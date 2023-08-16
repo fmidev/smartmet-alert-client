@@ -1,9 +1,8 @@
 {
-    "notInitialized": "Varningar laddas. Om varningarna inte uppdateras, kontrollera din nätverksanslutning. Kolla även att du använder en webbläsare som stöds och en ny version av webbläsaren.",
-    "notInitializedStart": "Varningar laddas. Om varningarna inte uppdateras, kontrollera din nätverksanslutning. Kolla även att du använder ",
-    "supportedBrowsers": "en webbläsare som stöds",
+    "notInitializedStart": "Obs! Om kartan är grå och inget datum visas på kartan har varningarna inte uppdaterats.",
+    "notInitializedEnd": "Säkerställ nätverksanslutning. Kontrollera att du har uppdaterat din webbläsare och operativsystem.",
+    "supportedBrowsers": "Lista över webbläsare som stöds",
     "supportedBrowsersLink": "https://sv.ilmatieteenlaitos.fi/information-om-sidorna",
-    "notInitializedEnd": " och en ny version av webbläsaren.",
     "failed": "Lastning misslyckades.",
     "regionLand": "Varningar är i kraft i följande landområden",
     "regionSea": "Varningar är i kraft i följande havsområden",

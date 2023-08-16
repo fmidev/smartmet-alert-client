@@ -1,9 +1,8 @@
 {
-    "notInitialized": "Warnings are loading. If the warnings are not updated, check your internet connection. Also make sure that you are using a supported and recent browser version.",
-    "notInitializedStart": "Warnings are loading. If the warnings are not updated, check your internet connection. Also make sure that you are using ",
-    "supportedBrowsers": "a supported",
+    "notInitializedStart": "Note! If the map is gray and no date is shown on the map, the warnings have not been updated.",
+    "notInitializedEnd": "Ensure network connection. Check that you have updated your browser and operating system.",
+    "supportedBrowsers": "List of supported browsers",
     "supportedBrowsersLink": "https://en.ilmatieteenlaitos.fi/site-information",
-    "notInitializedEnd": " and recent browser version.",
     "failed": "Loading failed.",
     "regionLand": "Warnings for following land areas",
     "regionSea": "Warnings for following sea areas",
