@@ -821,7 +821,7 @@ export default {
     toTimeZone(date) {
       date = new Date(date)
       const parts = new Intl.DateTimeFormat(this.dateTimeFormatLocale, {
-        timeZoneName: 'shortOffset',
+        timeZoneName: 'short',
         timeZone: this.timeZone,
         year: 'numeric',
         month: 'numeric',
