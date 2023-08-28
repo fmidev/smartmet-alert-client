@@ -142,3 +142,6 @@ test/svg
 
 # Environmet variables
 .env
+
+# Github
+.devcontainer/
