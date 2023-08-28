@@ -211,7 +211,7 @@ div.symbol-list-main-row {
   height: 30px;
 }
 
-span.show-text {
+div#fmi-warnings-view > div.row > span.show-text {
   line-height: 30px;
   float: right;
   color: $dark-blue;
