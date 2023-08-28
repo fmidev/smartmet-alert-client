@@ -1,3 +1,5 @@
+import * as DOMPurify from 'dompurify'
+
 import en from '../locales/en.json'
 import fi from '../locales/fi.json'
 import sv from '../locales/sv.json'
@@ -10,11 +12,11 @@ export default {
       }
       switch (this.language) {
         case 'en':
-          return en[key] ?? ''
+          return DOMPurify.sanitize(en[key]) ?? ''
         case 'fi':
-          return fi[key] ?? ''
+          return DOMPurify.sanitize(fi[key]) ?? ''
         case 'sv':
-          return sv[key] ?? ''
+          return DOMPurify.sanitize(sv[key]) ?? ''
         default:
           return ''
       }

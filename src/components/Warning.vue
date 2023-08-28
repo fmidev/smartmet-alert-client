@@ -6,9 +6,8 @@
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
-        <div class="item-text symbol-list-text">
-          {{ title }}
-        </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="item-text symbol-list-text" v-html="title"></div>
         <div
           v-observe-visibility="flagVisibilityChanged"
           class="symbol-list-select-container d-none d-md-table-cell">
@@ -218,6 +217,8 @@ div.symbol-list-text-select {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
+  max-width: 141px;
+  hyphens: auto;
   &:focus:not([data-focus-visible-added]) {
     outline: none !important;
   }
