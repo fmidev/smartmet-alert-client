@@ -308,8 +308,8 @@ export default {
         info: {
           [warning.properties.language.substr(0, 2).toLowerCase()]: info,
         },
-        link: i18n.t('floodLink'),
-        linkText: i18n.t('floodLinkText'),
+        link: this.t('floodLink'),
+        linkText: this.t('floodLinkText'),
       }
     },
     createDays(warnings) {
