@@ -1,4 +1,4 @@
-import * as DOMPurify from 'dompurify'
+import DOMPurify from 'dompurify'
 
 import en from '../locales/en.json'
 import fi from '../locales/fi.json'

@@ -11,9 +11,9 @@
             <h3 class="valid-warnings" :class="initialized && 'initialized'">
               {{ validWarningsText }}
               <span v-if="!initialized">
-                <br>
+                <br />
                 {{ additionalWarningsText }}
-                <br>
+                <br />
                 <a
                   :href="supportedBrowsersLink"
                   target="_blank"
@@ -161,7 +161,7 @@ export default {
       timeOffset: 0,
       initialized: false,
       // eslint-disable-next-line no-undef
-      version: VERSION,
+      version: __APP_VERSION__,
       errors: [],
     }
   },
@@ -395,8 +395,8 @@ div#fmi-warnings {
       }
       a:hover {
         border-color: $notification-color;
-      }  
-    }  
+      }
+    }
   }
 
   div {

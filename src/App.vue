@@ -86,7 +86,7 @@ export default {
     },
     language: {
       type: String,
-      default: process.env.VUE_APP_I18N_LOCALE || 'en',
+      default: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
     },
     theme: {
       type: String,

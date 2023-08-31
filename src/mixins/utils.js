@@ -2,7 +2,6 @@ import 'url-search-params-polyfill'
 
 import { DOMParser } from '@xmldom/xmldom'
 import he from 'he'
-import mapshaper from 'mapshaper'
 import xpath from 'xpath'
 
 import config from './config'
@@ -568,10 +567,7 @@ export default {
       const input = {
         [this.COVERAGE_JSON]: JSON.stringify(data),
       }
-      return mapshaper.applyCommands(
-        `-i coverage.json -o format=svg width=${width} height=${height}`,
-        input
-      )
+      return ''
     },
 
     coverageData(coverage) {
