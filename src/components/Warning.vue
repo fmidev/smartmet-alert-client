@@ -54,14 +54,12 @@
 <script>
 import 'focus-visible'
 
-import Vue from 'vue'
-import VueObserveVisibility from 'vue-observe-visibility'
-
+// import VueObserveVisibility from 'vue-observe-visibility'
 import fields from '../mixins/fields'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 
-Vue.use(VueObserveVisibility)
+// Vue.use(VueObserveVisibility)
 
 export default {
   name: 'Warning',
@@ -268,7 +266,7 @@ div.symbol-list-text {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
-::v-deep .tooltip.bs-tooltip-top {
+:deep(.tooltip.bs-tooltip-top) {
   opacity: 1;
   top: -9px !important;
   padding: 0;

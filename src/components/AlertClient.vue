@@ -82,8 +82,6 @@
 <script>
 import 'focus-visible'
 
-import Vue from 'vue'
-
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
@@ -308,7 +306,7 @@ export default {
 <style scoped lang="scss">
 @import '../scss/constants.scss';
 
-::v-deep * {
+:deep(*) {
   box-sizing: border-box;
   -webkit-hyphens: none;
   -ms-hyphens: none;
@@ -342,11 +340,11 @@ export default {
   }
 }
 
-::v-deep .light * {
+:deep(.light *) {
   color: $light-text-color;
 }
 
-::v-deep .dark * {
+:deep(.dark *) {
   color: $dark-text-color;
 }
 

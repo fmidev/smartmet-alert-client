@@ -19,19 +19,13 @@
 </template>
 <script>
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 
-import { BootstrapVue, BSpinner } from 'bootstrap-vue'
 import fetch from 'cross-fetch'
-import Vue from 'vue'
 
 import AlertClient from './components/AlertClient.vue'
 import config from './mixins/config'
 import utils from './mixins/utils'
-
-Vue.config.productionTip = false
-Vue.use(BootstrapVue)
-Vue.component('BSpinner', BSpinner)
 
 export default {
   name: 'App',

@@ -230,7 +230,7 @@
 import 'focus-visible'
 
 import Panzoom from '@panzoom/panzoom'
-import { vueWindowSizeMixin } from 'vue-window-size'
+import { vueWindowSizeMixin } from 'vue-window-size/mixin'
 
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
@@ -240,7 +240,7 @@ import PopupRow from './PopupRow.vue'
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, i18n, utils, vueWindowSizeMixin],
+  mixins: [config, i18n, utils, vueWindowSizeMixin()],
   props: {
     index: {
       type: Number,
@@ -1035,7 +1035,7 @@ div.day-map-large
   filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
 }
 
-::v-deep .tooltip.bs-tooltip-top {
+:deep(.tooltip.bs-tooltip-top) {
   .arrow,
   .arrow::before {
     content: ' ';
@@ -1209,7 +1209,7 @@ span.region-popup-header-text {
   }
 }
 
-::v-deep div.tooltip-inner {
+:deep(div.tooltip-inner) {
   padding: 0;
 }
 

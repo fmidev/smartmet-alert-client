@@ -32,12 +32,7 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              gray
-              several
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="gray several symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -51,11 +46,7 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-1
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-1 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -69,11 +60,7 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-2
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-2 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -101,11 +88,7 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-4
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-4 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
@@ -119,8 +102,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
-
 import i18n from '../mixins/i18n'
 import Warning from './Warning.vue'
 
@@ -339,7 +320,7 @@ hr {
     display: none;
   }
 
-  ::v-deep br.symbol-list-header-line-break {
+  :deep(br.symbol-list-header-line-break) {
     display: none;
   }
 }

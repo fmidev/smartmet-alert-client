@@ -99,14 +99,14 @@
 </template>
 
 <script>
-import { vueWindowSizeMixin } from 'vue-window-size'
+import { vueWindowSizeMixin } from 'vue-window-size/mixin'
 
 import config from '../mixins/config'
 import utils from '../mixins/utils'
 
 export default {
   name: 'MapSmall',
-  mixins: [config, utils, vueWindowSizeMixin],
+  mixins: [config, utils, vueWindowSizeMixin()],
   props: {
     index: {
       type: Number,

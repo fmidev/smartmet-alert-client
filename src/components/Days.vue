@@ -157,12 +157,12 @@ export default {
   margin-right: 0;
 }
 
-::v-deep .fmi-warnings-date-nav {
+:deep(.fmi-warnings-date-nav) {
   border-bottom: none;
   flex-wrap: nowrap;
 }
 
-::v-deep a.day {
+:deep(a.day) {
   border-radius: 0;
   border: 0;
   padding: 0;
@@ -174,7 +174,7 @@ export default {
   }
 }
 
-::v-deep a.day.day0 {
+:deep(a.day.day0) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -192,9 +192,9 @@ export default {
   }
 }
 
-::v-deep a.day.day1,
-::v-deep a.day.day2,
-::v-deep a.day.day3 {
+:deep(a.day.day1),
+:deep(a.day.day2),
+:deep(a.day.day3) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -214,7 +214,7 @@ export default {
   }
 }
 
-::v-deep a.day.day4 {
+:deep(a.day.day4) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -232,7 +232,7 @@ export default {
   }
 }
 
-::v-deep .nav-tabs a.day.nav-link.active {
+:deep(.nav-tabs a.day.nav-link.active) {
   background: transparent !important;
 }
 
@@ -245,7 +245,7 @@ export default {
 }
 
 @media (max-width: 499px) {
-  ::v-deep .fmi-warnings-date-wrapper {
+  :deep(.fmi-warnings-date-wrapper) {
     overflow-x: auto;
   }
 }
