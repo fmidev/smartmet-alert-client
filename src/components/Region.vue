@@ -1,9 +1,6 @@
 <template>
   <b-card no-body class="mb-1 current-warning-panel" :class="theme">
-    <b-card-header
-      header-tag="header"
-      class="p-1"
-      header-class="current-warning-heading">
+    <b-card-header header-tag="header" class="p-1">
       <div class="region-header">
         <div>
           <RegionWarning
@@ -159,13 +156,13 @@ export default {
   margin-left: 0;
   margin-right: 0;
   background-color: transparent;
-}
 
-.current-warning-heading {
-  height: $current-warning-height;
-  padding: 0 0 0 15px !important;
-  line-height: $current-warning-height;
-  border: none;
+  .card-header {
+    height: $current-warning-height;
+    padding: 0 0 0 15px !important;
+    line-height: $current-warning-height;
+    border: none;
+  }
 }
 
 .light .current-warning-heading {
@@ -289,7 +286,12 @@ div.current-description-table {
   width: 100%;
 }
 
-div.accordion-item-region:focus:not([data-focus-visible-added]) {
-  outline: none !important;
+div.accordion-item-region {
+  &:focus:not([data-focus-visible-added]) {
+    outline: none !important;
+  }
+  div.card-body {
+    padding: 0;
+  }
 }
 </style>

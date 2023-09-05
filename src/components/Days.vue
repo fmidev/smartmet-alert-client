@@ -141,6 +141,10 @@ export default {
 <style scoped lang="scss">
 @import '../scss/constants.scss';
 
+div#fmi-warnings-date-selector.tabs {
+  padding: 0;
+}
+
 .date-selector {
   margin: 0;
   &.light {
@@ -162,7 +166,7 @@ export default {
   flex-wrap: nowrap;
 }
 
-:deep(a.day) {
+:deep(button.day) {
   border-radius: 0;
   border: 0;
   padding: 0;
@@ -174,7 +178,7 @@ export default {
   }
 }
 
-:deep(a.day.day0) {
+:deep(button.day.day0) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -192,9 +196,9 @@ export default {
   }
 }
 
-:deep(a.day.day1),
-:deep(a.day.day2),
-:deep(a.day.day3) {
+:deep(button.day.day1),
+:deep(button.day.day2),
+:deep(button.day.day3) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -214,7 +218,7 @@ export default {
   }
 }
 
-:deep(a.day.day4) {
+:deep(button.day.day4) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -232,12 +236,12 @@ export default {
   }
 }
 
-:deep(.nav-tabs a.day.nav-link.active) {
+:deep(.nav-tabs button.day.nav-link.active) {
   background: transparent !important;
 }
 
 @media (max-width: 575px) {
-  a.day {
+  button.day {
     border-bottom: 0;
     border-radius: 0;
     margin-bottom: 0;
