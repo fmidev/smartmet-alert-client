@@ -6,7 +6,7 @@
         id="fmi-warnings-region-content"
         :href="fromLandToNextContentHref"
         tabindex="0"
-        class="fmi-warnings-to-next-content sr-only sr-only-focusable"
+        class="fmi-warnings-to-next-content visually-hidden visually-hidden-focusable"
         >{{ fromLandtoNextContentText }}</a
       >
       <div id="accordion-land" class="accordion-region" role="tablist">
@@ -28,7 +28,7 @@
         :id="fromSeaToNextContentId"
         href="#fmi-warnings-end-of-regions"
         tabindex="0"
-        class="fmi-warnings-to-next-content sr-only sr-only-focusable"
+        class="fmi-warnings-to-next-content visually-hidden visually-hidden-focusable"
         >{{ fromSeatoNextContentText }}</a
       >
       <div id="accordion-sea" class="accordion-region" role="tablist">

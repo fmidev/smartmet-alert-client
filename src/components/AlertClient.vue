@@ -29,7 +29,7 @@
                 id="fmi-warnings-to-text-content"
                 href="#fmi-warnings-region-content"
                 tabindex="0"
-                class="sr-only sr-only-focusable"
+                class="visually-hidden visually-hidden-focusable"
                 >{{ toContentText }}</a
               >
               <div v-else :aria-label="noWarningsText"></div>
