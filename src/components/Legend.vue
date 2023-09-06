@@ -7,10 +7,7 @@
       </nav>
     </div>
     <b-card no-body class="mb-1 d-md-none legends-panel">
-      <b-card-header
-        header-tag="header"
-        class="p-1"
-        header-class="legends-heading">
+      <b-card-header header-tag="header" class="legends-heading p-1">
         <div class="legends-header">
           <span class="legends-text">
             {{ toggleLegendsText }}
@@ -126,6 +123,7 @@ div.symbol-list-header-row {
   padding: 0 0 0 15px !important;
   line-height: $current-warning-height;
   border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .light .legends-heading {
@@ -256,6 +254,10 @@ div.legends-collapse-item:focus:not([data-focus-visible-added]) {
 .dark .legends-container {
   background-color: $dark-legend-container-background-color;
   border-top: 2px solid $dark-legend-background-color;
+}
+
+div#legends-collapse div.card-body {
+  padding: 0;
 }
 
 @media (max-width: 767px) {

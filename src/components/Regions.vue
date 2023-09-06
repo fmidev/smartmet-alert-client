@@ -179,5 +179,6 @@ h3.header-region {
 
 div.region-type-container {
   width: 100%;
+  padding: 0;
 }
 </style>

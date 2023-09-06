@@ -188,8 +188,12 @@ div.symbol-list-main-row {
   padding-left: 0;
 }
 
-.show-text-row {
+div.show-text-row {
   height: 30px;
+  span.show-text {
+    width: auto;
+    padding: 0;
+  }
 }
 
 div#fmi-warnings-view > div.row > span.show-text {
@@ -216,6 +220,7 @@ div.symbol-list-table {
   display: table;
   border-spacing: 0;
   width: 100%;
+  padding: 0;
 }
 
 div.symbol-list-cell {
@@ -299,6 +304,8 @@ hr {
   margin: 0;
   border: 0 none;
   height: 2px;
+  width: auto;
+  opacity: 1;
 }
 
 .light hr {

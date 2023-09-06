@@ -138,6 +138,7 @@ div.symbol-list-table {
   display: table;
   border-spacing: 0;
   width: 100%;
+  padding: 0;
 }
 
 div.symbol-list-cell {
@@ -181,6 +182,8 @@ hr {
   margin: 0;
   border: 0 none;
   height: 2px;
+  width: auto;
+  opacity: 1;
 }
 
 .light hr {
