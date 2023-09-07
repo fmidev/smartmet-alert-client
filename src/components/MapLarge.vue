@@ -1003,6 +1003,7 @@ div.day-map-large
   position: absolute;
   width: 1px;
   height: 1px;
+  background-color: transparent;
   pointer-events: none;
   z-index: 10;
 }
