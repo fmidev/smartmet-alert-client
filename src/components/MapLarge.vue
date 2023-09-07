@@ -1,7 +1,7 @@
 <template>
   <div class="map-large" :class="theme" tabindex="0">
     <div v-if="loading" class="spinner-container text-center">
-      <b-spinner></b-spinner>
+      <BSpinner />
     </div>
     <div ref="dayMapLarge" class="day-map-large">
       <svg
@@ -180,39 +180,34 @@
         @keydown.right="moveEast"
         @keydown.up="moveNorth"
         @keydown.down="moveSouth"></b-button>
-      <div
-        id="fmi-warnings-region-tooltip-reference"
-        :style="tooltipStyle"></div>
-      <b-tooltip
-        id="fmi-warnings-region-tooltip"
-        :show.sync="showTooltip"
-        triggers=""
-        target="fmi-warnings-region-tooltip-reference"
-        placement="top"
-        delay="0"
-        container="fmi-warnings-region-tooltip-reference"
-        :custom-class="theme">
-        <div id="day-map-large-base-popup" class="fmi-warnings-popup">
-          <a
-            id="day-map-large-base-popup-closer"
-            :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
-            href="#"
-            @click="closeTooltip"></a>
-          <div id="day-map-large-base-popup-content">
-            <div class="region-popup">
-              <div :class="['region-popup-header', `${popupLevel}`]">
-                <span class="region-popup-header-text bold-text">
-                  {{ regionTitle }}
-                </span>
-              </div>
-              <div class="region-popup-wrapper">
-                <div class="region-popup-body">
-                  <div class="popup-table">
-                    <div class="popup-table-body">
-                      <PopupRow
-                        v-for="popupWarning in popupWarnings"
-                        :key="popupWarning.id"
-                        :input="popupWarning"></PopupRow>
+      <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle">
+        <div
+          id="fmi-warnings-region-tooltip"
+          class="tooltip b-tooltip bs-tooltip-top"
+          :class="[showTooltip ? '' : 'd-none', theme]">
+          <div class="arrow" style="left: 0" />
+          <div id="day-map-large-base-popup" class="fmi-warnings-popup">
+            <a
+              id="day-map-large-base-popup-closer"
+              :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
+              href="#"
+              @click="closeTooltip"></a>
+            <div id="day-map-large-base-popup-content">
+              <div class="region-popup">
+                <div :class="['region-popup-header', `${popupLevel}`]">
+                  <span class="region-popup-header-text bold-text">
+                    {{ regionTitle }}
+                  </span>
+                </div>
+                <div class="region-popup-wrapper">
+                  <div class="region-popup-body">
+                    <div class="popup-table">
+                      <div class="popup-table-body">
+                        <PopupRow
+                          v-for="popupWarning in popupWarnings"
+                          :key="popupWarning.id"
+                          :input="popupWarning"></PopupRow>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -220,7 +215,7 @@
             </div>
           </div>
         </div>
-      </b-tooltip>
+      </div>
     </div>
     <div :class="{ 'prevent-tooltip': dragging }"></div>
   </div>
@@ -1008,7 +1003,6 @@ div.day-map-large
   position: absolute;
   width: 1px;
   height: 1px;
-  background-color: transparent;
   pointer-events: none;
   z-index: 10;
 }
@@ -1051,7 +1045,7 @@ div.day-map-large
     border: 11px solid transparent;
     left: 60px;
     margin-left: -11px;
-    top: 0;
+    top: -11px;
     z-index: 10;
   }
 
