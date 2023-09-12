@@ -219,6 +219,7 @@ div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
   max-width: 141px;
+  padding-right: 5px;
   hyphens: auto;
   &:focus:not([data-focus-visible-added]) {
     outline: none !important;
