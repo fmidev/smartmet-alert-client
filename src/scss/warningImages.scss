@@ -1,23 +1,11 @@
 @import "./constants.scss";
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-@for $i from 0 through 360 {
-  $imgRotationDeg: unquote($i + 'deg');
-  div.symbol-image.symbol-image-rotate-#{$i} {
-    -webkit-transform: rotate($imgRotationDeg);
-    -moz-transform: rotate($imgRotationDeg);
-    -ms-transform: rotate($imgRotationDeg);
-    -o-transform: rotate($imgRotationDeg);
-    transform: rotate($imgRotationDeg);
-  }
-  $txtRotation: 360 - $i;
-  $txtRotationDeg: unquote($txtRotation + 'deg');
-  span.symbol-text.symbol-text-rotate-#{$i} {
-    -webkit-transform: rotate($txtRotationDeg);
-    -moz-transform: rotate($txtRotationDeg);
-    -ms-transform: rotate($txtRotationDeg);
-    -o-transform: rotate($txtRotationDeg);
-    transform: rotate($txtRotationDeg);
+@for $i from 0 through 72 {
+  $angle: 5 * $i;
+  $rotationDegree: unquote($angle + 'deg');
+  .transform-rotate-#{$angle} {
+    transform: rotate($rotationDegree);
   }
 }
 

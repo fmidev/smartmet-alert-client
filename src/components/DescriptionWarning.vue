@@ -2,9 +2,9 @@
   <div class="current-description-row" :class="theme">
     <div class="current-description-image-cell" aria-hidden="true">
       <div
-        :class="`current-description-image warning-image symbol-image symbol-image-rotate-${rotation} level-${input.severity} ${typeClass}`">
+        :class="`current-description-image warning-image symbol-image transform-rotate-${rotation} level-${input.severity} ${typeClass}`">
         <span
-          :class="`symbol-text symbol-text-rotate-${rotation} region-warning-symbol-text`"
+          :class="`symbol-text transform-rotate-${invertedRotation} region-warning-symbol-text`"
           >{{ input.text }}</span
         >
       </div>

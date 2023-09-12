@@ -5,7 +5,7 @@
         'popup-table-cell',
         'popup-table-symbol-cell',
         'symbol-image',
-        `symbol-image-rotate-${rotation}`,
+        `transform-rotate-${rotation}`,
         `level-${severity}`,
         typeClass,
         'warning-image',
@@ -13,7 +13,7 @@
       <span
         :class="[
           'symbol-text',
-          `symbol-text-rotate-${rotation}`,
+          `transform-rotate-${invertedRotation}`,
           'warning-symbol-text',
         ]">
         {{ input.text }}

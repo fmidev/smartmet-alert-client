@@ -10,8 +10,11 @@ export default {
     },
     rotation() {
       return Number.isFinite(this.input.direction)
-        ? Math.round((this.input.direction + 360) % 360)
+        ? Math.round(Math.round((this.input.direction + 360) % 360) / 5) * 5
         : 0
+    },
+    invertedRotation() {
+      return 360 - this.rotation
     },
     severity() {
       if (this.input.severity < 2 || this.input.severity > 4) {
