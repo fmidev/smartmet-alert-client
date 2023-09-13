@@ -5,9 +5,10 @@ import he from 'he'
 import xpath from 'xpath'
 
 import config from './config'
+import geojsonsvg from './geojsonsvg'
 
 export default {
-  mixins: [config],
+  mixins: [config, geojsonsvg],
   computed: {
     NUMBER_OF_DAYS: () => 5,
     REGION_LAND: () => 'land',
@@ -41,8 +42,6 @@ export default {
       severe: 3,
       extreme: 4,
     }),
-    COVERAGE_JSON: () => 'coverage.json',
-    COVERAGE_SVG: () => 'coverage.svg',
     bluePaths() {
       return this.paths({
         type: this.REGION_SEA,
@@ -540,7 +539,7 @@ export default {
       return coverageData
     },
 
-    async createCoverage(coverage, width, height, reference) {
+    createCoverage(coverage, width, height, reference) {
       const data = {
         type: 'FeatureCollection',
         features: [coverage, this.bbox],
@@ -564,10 +563,7 @@ export default {
         })
         data.totalFeatures++
       }
-      const input = {
-        [this.COVERAGE_JSON]: JSON.stringify(data),
-      }
-      return ''
+      return this.geoJSONToSVG(data, width, height)
     },
 
     coverageData(coverage) {
@@ -592,7 +588,7 @@ export default {
       }))
     },
 
-    async handleMapWarnings(data) {
+    handleMapWarnings(data) {
       const warnings = {}
       const parents = {}
       this.errors = []
@@ -679,23 +675,14 @@ export default {
                   }
                 })
               if (warning.geometry != null) {
-                // eslint-disable-next-line no-await-in-loop
-                const coverage = await this.createCoverage(warning, 440, 550, [
+                const coverage = this.createCoverage(warning, 440, 550, [
                   warning.properties.representative_x,
                   warning.properties.representative_y,
                 ])
-                // eslint-disable-next-line no-await-in-loop
-                const coverageSmall = await this.createCoverage(
-                  warning,
-                  75,
-                  120
-                )
-                warnings[warningId].coveragesLarge = this.coverageData(
-                  coverage[this.COVERAGE_SVG]
-                )
-                warnings[warningId].coveragesSmall = this.coverageData(
-                  coverageSmall[this.COVERAGE_SVG]
-                )
+                const coverageSmall = this.createCoverage(warning, 75, 120)
+                warnings[warningId].coveragesLarge = this.coverageData(coverage)
+                warnings[warningId].coveragesSmall =
+                  this.coverageData(coverageSmall)
               }
             }
             if (
