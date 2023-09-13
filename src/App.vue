@@ -180,9 +180,7 @@ export default {
       }
     },
     fetchWarnings() {
-      if (this.spinnerEnabled) {
-        this.loading = true
-      }
+      this.loading = true
       if (this.debugMode) {
         console.log(`Updating warnings at ${new Date()}`)
       }

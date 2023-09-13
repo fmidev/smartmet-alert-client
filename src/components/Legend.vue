@@ -260,9 +260,14 @@ div#legends-collapse div.card-body {
   padding: 0;
 }
 
+nav.symbol-list-header {
+  padding-left: 0;
+}
+
 @media (max-width: 767px) {
   nav.symbol-list-header {
     margin-top: 15px;
+    margin-bottom: 5px;
   }
 }
 </style>
