@@ -256,11 +256,7 @@ export default {
     },
     loading: {
       type: Boolean,
-      default: false,
-    },
-    initialized: {
-      type: Boolean,
-      default: false,
+      default: true,
     },
     theme: {
       type: String,
@@ -646,9 +642,8 @@ export default {
     }
   },
   updated() {
-    this.$emit('loaded', true)
     if (this.warnings != null) {
-      this.$emit('initialized', true)
+      this.$emit('loaded', true)
     }
   },
   methods: {
@@ -667,9 +662,9 @@ export default {
             regions.push({
               key: `${regionId}${this.size}${this.index}Path`,
               fill:
-                this.initialized || !this.isClientSide()
-                  ? visualization.color
-                  : this.colors.missing,
+                this.loading && this.isClientSide()
+                  ? this.colors.missing
+                  : visualization.color,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',
               dataRegion: regionId,

@@ -18,7 +18,7 @@
         :visible-warnings="visibleWarnings"
         :warnings="warnings"
         :geometry-id="geometryId"
-        :initialized="initialized" />
+        :loading="loading" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -64,9 +64,9 @@ export default {
       type: Boolean,
       default: true,
     },
-    initialized: {
+    loading: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     theme: {
       type: String,

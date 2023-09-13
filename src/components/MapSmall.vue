@@ -1,5 +1,8 @@
 <template>
   <div :id="`day-map-small-${index}`" class="map-small">
+    <div v-if="loading" class="spinner-container text-center">
+      <BSpinner />
+    </div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.2"
@@ -126,9 +129,9 @@ export default {
     geometryId: {
       type: Number,
     },
-    initialized: {
+    loading: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   data() {
@@ -173,11 +176,14 @@ export default {
                 options.severity == null ||
                 visualization.severity === options.severity
               ) {
+                //                console.log('========================================')
+                //                console.log(this.loading)
+
                 regions.push({
                   key: `${regionId}${this.size}${this.index}Path`,
-                  fill: this.initialized
-                    ? visualization.color
-                    : this.colors.missing,
+                  fill: this.loading
+                    ? this.colors.missing
+                    : visualization.color,
                   d: visualization.geom.pathSmall,
                   opacity: visualization.visible ? '1' : '0',
                   strokeWidth:

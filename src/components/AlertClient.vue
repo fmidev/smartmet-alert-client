@@ -8,10 +8,10 @@
       <div class="container-fluid" :class="theme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h2 v-if="initialized && !loading" class="valid-warnings">
+            <h2 v-if="!loading" class="valid-warnings">
               {{ validWarningsText }}
             </h2>
-            <div v-if="!initialized || loading" class="not-ready">
+            <div v-if="loading" class="not-ready">
               <p>
                 {{ mainInfoText }}
                 {{ additionalInfoText }}
@@ -45,11 +45,9 @@
               :regions="regions"
               :geometry-id="geometryId"
               :loading="loading"
-              :initialized="initialized"
               :theme="theme"
               :language="language"
               @daySelected="onDaySelected"
-              @initialized="onInitialized"
               @loaded="onLoaded" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
@@ -158,7 +156,6 @@ export default {
       parents: {},
       legend: [],
       timeOffset: 0,
-      initialized: false,
       // eslint-disable-next-line no-undef
       version: __APP_VERSION__,
       errors: [],
@@ -226,8 +223,8 @@ export default {
     }
     this.cancelTimer()
   },
-  async serverPrefetch() {
-    await this.createDataForChildren()
+  serverPrefetch() {
+    this.createDataForChildren()
   },
   methods: {
     onDaySelected(newSelectedDay) {
@@ -247,14 +244,9 @@ export default {
         this.$emit('loaded', true)
       }
     },
-    onInitialized(initialized) {
-      if (initialized) {
-        this.initialized = true
-      }
-    },
-    async createDataForChildren() {
+    createDataForChildren() {
       if (this.warningsData != null) {
-        const result = await this.handleMapWarnings(this.warningsData)
+        const result = this.handleMapWarnings(this.warningsData)
         this.warnings = result.warnings
         this.days = result.days
         this.regions = result.regions
@@ -374,7 +366,7 @@ div#fmi-warnings {
   }
 
   .dark h3.valid-warnings {
-    &:not(.initialized) {
+    &:not(.not-ready) {
       background-color: $darkest-gray;
       border: 1px solid $notification-color;
       color: $white;

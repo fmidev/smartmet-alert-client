@@ -23,7 +23,7 @@
             :geometry-id="geometryId"
             :active="i === day"
             :static-days="staticDays"
-            :initialized="initialized"
+            :loading="loading"
             :theme="theme"
             :language="language" />
         </template>
@@ -37,11 +37,9 @@
           :static-days="staticDays"
           :time-offset="timeOffset"
           :loading="loading"
-          :initialized="initialized"
           :theme="theme"
           :language="language"
-          @loaded="onLoaded"
-          @initialized="onInitialized" />
+          @loaded="onLoaded" />
       </b-tab>
     </b-tabs>
   </div>
@@ -93,10 +91,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    initialized: {
-      type: Boolean,
-      default: false,
-    },
     theme: {
       type: String,
       default: 'light',
@@ -127,11 +121,6 @@ export default {
     onLoaded(loaded) {
       if (loaded) {
         this.$emit('loaded', true)
-      }
-    },
-    onInitialized(initialized) {
-      if (initialized) {
-        this.$emit('initialized', true)
       }
     },
   },

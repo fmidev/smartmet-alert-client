@@ -25,11 +25,9 @@
       :warnings="warnings"
       :geometry-id="geometryId"
       :loading="loading"
-      :initialized="initialized"
       :theme="theme"
       :language="language"
-      @loaded="onLoaded"
-      @initialized="onInitialized" />
+      @loaded="onLoaded" />
   </div>
 </template>
 
@@ -74,11 +72,7 @@ export default {
     },
     loading: {
       type: Boolean,
-      default: false,
-    },
-    initialized: {
-      type: Boolean,
-      default: false,
+      default: true,
     },
     theme: {
       type: String,
@@ -144,11 +138,6 @@ export default {
     onLoaded(loaded) {
       if (loaded) {
         this.$emit('loaded', true)
-      }
-    },
-    onInitialized(initialized) {
-      if (initialized) {
-        this.$emit('initialized', true)
       }
     },
   },
