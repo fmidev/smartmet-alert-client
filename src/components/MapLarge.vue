@@ -372,6 +372,7 @@ export default {
               }
             })
           let offsetX =
+            iconSizes.length > 0 &&
             this.geometries[this.geometryId][regionId].align === 'right'
               ? -iconSizes.reduce(
                   (acc, iconSize) => acc + iconSize[0],
