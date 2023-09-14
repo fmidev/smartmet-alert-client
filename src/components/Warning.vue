@@ -25,25 +25,8 @@
             @touchend="preventEvents"
             @touchstart="toggle"
             @mousedown="toggle"
-            @mouseenter="openTooltip"
-            @mouseleave="closeTooltip"
             @keydown.enter="toggle"
             @keydown.space="toggle" />
-          <b-tooltip
-            id="fmi-warnings-toggle-tooltip"
-            :show.sync="showTooltip"
-            triggers=""
-            :target="id"
-            placement="top"
-            delay="0"
-            :fallback-placement="[]"
-            :container="`fmi-warnings-flag-${input.type}`">
-            <span @mouseenter="closeTooltip">
-              {{ tooltipFirstLine }}
-              <br />
-              {{ tooltipSecondLine }}
-            </span>
-          </b-tooltip>
         </div>
       </div>
       <hr />
@@ -65,39 +48,12 @@ export default {
   name: 'Warning',
   mixins: [fields, i18n, utils],
   props: ['input', 'hideable', 'language', 'theme'],
-  data() {
-    return {
-      showTooltip: false,
-    }
-  },
   computed: {
     id() {
       return `fmi-warnings-flag-${this.input.type}`
     },
     title() {
       return this.t(this.input.type)
-    },
-    tooltipFirstLine() {
-      return this.input.visible
-        ? this.t('selectWarningTooltipLine1')
-        : this.t('selectDisabledWarningTooltipLine1')
-    },
-    tooltipSecondLine() {
-      return this.input.visible
-        ? this.t('selectWarningTooltipLine2')
-        : this.t('selectDisabledWarningTooltipLine2')
-    },
-    showLabel() {
-      return `${this.t(
-        'selectDisabledWarningTooltipLine1'
-      )} ${this.uncapitalize(this.title)} ${this.t(
-        'selectDisabledWarningTooltipLine2'
-      )}`
-    },
-    hideLabel() {
-      return `${this.t('selectWarningTooltipLine1')} ${this.uncapitalize(
-        this.title
-      )} ${this.t('selectWarningTooltipLine2')}`
     },
   },
   methods: {
@@ -110,13 +66,6 @@ export default {
         warning: this.input.type,
         visible,
       })
-      this.closeTooltip()
-    },
-    openTooltip() {
-      this.showTooltip = true
-    },
-    closeTooltip() {
-      this.showTooltip = false
     },
     preventEvents(event) {
       event.preventDefault()
@@ -268,63 +217,6 @@ div.symbol-list-text {
 
 .dark .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
-}
-
-:deep(.tooltip.bs-tooltip-top) {
-  opacity: 1;
-  top: -9px !important;
-  padding: 0;
-  outline: none;
-
-  .arrow {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border: solid transparent;
-    bottom: -5px;
-    left: 50% !important;
-    margin: 0 0 0 -6px;
-    border-width: 6px 6px 0;
-    border-top-color: $tooltip-border-color;
-  }
-
-  .arrow:before {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-width: 5px 5px 0;
-    border-top-color: $tooltip-background-color;
-    left: 50% !important;
-    margin: 0 0 0 -5px;
-    top: -6px;
-    pointer-events: none;
-  }
-
-  .tooltip-inner {
-    background-color: $tooltip-background-color;
-    border: $tooltip-border-width solid $tooltip-border-color;
-    color: $tooltip-inner-color;
-    font-family: $font-family;
-    font-size: $font-size;
-    padding: 3px 6px;
-    height: 52px;
-    width: 90px;
-    max-width: 100%;
-    display: table;
-    text-align: center;
-
-    span {
-      display: table-cell;
-      vertical-align: middle;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-  }
 }
 
 @media (max-width: 767px) {
