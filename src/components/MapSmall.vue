@@ -102,14 +102,14 @@
 </template>
 
 <script>
-import { vueWindowSizeMixin } from 'vue-window-size/mixin'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 import config from '../mixins/config'
 import utils from '../mixins/utils'
 
 export default {
   name: 'MapSmall',
-  mixins: [config, utils, vueWindowSizeMixin()],
+  mixins: [config, utils],
   props: {
     index: {
       type: Number,
@@ -133,6 +133,19 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
   },
   data() {
     return {
@@ -176,9 +189,6 @@ export default {
                 options.severity == null ||
                 visualization.severity === options.severity
               ) {
-                //                console.log('========================================')
-                //                console.log(this.loading)
-
                 regions.push({
                   key: `${regionId}${this.size}${this.index}Path`,
                   fill: this.loading

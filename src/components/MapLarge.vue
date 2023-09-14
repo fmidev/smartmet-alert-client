@@ -158,28 +158,31 @@
           aria-hidden="true"
           v-html="icon.geom" />
       </svg>
-      <b-button
+      <button
         id="fmi-warnings-zoom-in"
         ref="zoomButton"
-        class="fmi-warnings-map-tool"
+        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        type="button"
         :disabled="scale > 2"
         :aria-label="zoomInText"
-        @click="zoomIn"></b-button>
-      <b-button
+        @click="zoomIn" />
+      <button
         id="fmi-warnings-zoom-out"
-        class="fmi-warnings-map-tool"
+        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        type="button"
         :disabled="scale < 2"
         :aria-label="zoomOutText"
-        @click="zoomOut"></b-button>
-      <b-button
+        @click="zoomOut" />
+      <button
         id="fmi-warnings-move"
-        class="fmi-warnings-map-tool"
-        :aria-label="moveText"
+        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        type="button"
         :disabled="scale < 2"
+        :aria-label="moveText"
         @keydown.left="moveWest"
         @keydown.right="moveEast"
         @keydown.up="moveNorth"
-        @keydown.down="moveSouth"></b-button>
+        @keydown.down="moveSouth" />
       <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle">
         <div
           id="fmi-warnings-region-tooltip"
@@ -225,7 +228,7 @@
 import 'focus-visible'
 
 import Panzoom from '@panzoom/panzoom'
-import { vueWindowSizeMixin } from 'vue-window-size/mixin'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
@@ -235,7 +238,7 @@ import PopupRow from './PopupRow.vue'
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, i18n, utils, vueWindowSizeMixin()],
+  mixins: [config, i18n, utils],
   props: {
     index: {
       type: Number,
@@ -265,6 +268,19 @@ export default {
     language: {
       type: String,
     },
+  },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
   },
   data() {
     return {
