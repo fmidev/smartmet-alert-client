@@ -6,8 +6,8 @@
         id="fmi-warnings-region-content"
         :href="fromLandToNextContentHref"
         tabindex="0"
-        class="fmi-warnings-to-next-content visually-hidden visually-hidden-focusable"
-        >{{ fromLandtoNextContentText }}</a
+        class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        >{{ fromLandToNextContentText }}</a
       >
       <div id="accordion-land" class="accordion-region" role="tablist">
         <div v-for="region in regions.land" :key="region.key">
@@ -28,8 +28,8 @@
         :id="fromSeaToNextContentId"
         href="#fmi-warnings-end-of-regions"
         tabindex="0"
-        class="fmi-warnings-to-next-content visually-hidden visually-hidden-focusable"
-        >{{ fromSeatoNextContentText }}</a
+        class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        >{{ fromSeaToNextContentText }}</a
       >
       <div id="accordion-sea" class="accordion-region" role="tablist">
         <div v-for="region in regions.sea" :key="region.key">
@@ -75,15 +75,15 @@ export default {
     seaText() {
       return this.t('regionSea')
     },
-    fromLandtoNextContentText() {
-      return `${this.t('warningsIn')} ${this.regions.land.length} ${this.t(
-        'toNextContent'
-      )}`
+    fromLandToNextContentText() {
+      return `${this.t('warningsInAreaStart')} ${
+        this.regions.land.length
+      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
     },
-    fromSeatoNextContentText() {
-      return `${this.t('warningsIn')} ${this.regions.sea.length} ${this.t(
-        'toNextContent'
-      )}`
+    fromSeaToNextContentText() {
+      return `${this.t('warningsInAreaStart')} ${
+        this.regions.sea.length
+      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
     },
     fromLandToNextContentHref() {
       return this.anySeaWarnings

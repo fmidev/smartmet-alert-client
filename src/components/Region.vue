@@ -15,14 +15,13 @@
       <b-button
         v-b-toggle="identifier"
         block
-        variant="info"
         class="current-warning-toggle"
         :aria-label="ariaButton" />
     </b-card-header>
     <b-collapse
       :id="identifier"
       v-model="visible"
-      class="accordion-item-region"
+      class="accordion-item-region focus-ring"
       :accordion="`accordion-${type}`"
       tabindex="0"
       :aria-label="ariaInfo">
@@ -43,8 +42,6 @@
 </template>
 
 <script>
-import 'focus-visible'
-
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
 import DescriptionWarning from './DescriptionWarning.vue'
@@ -173,7 +170,7 @@ export default {
   background-color: $dark-current-warning-heading-color;
 }
 
-button.btn-info {
+button {
   border: none;
 }
 
@@ -190,13 +187,6 @@ button.btn-info {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 15px;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-    overflow: visible;
-    position: absolute;
-    z-index: 1;
-    padding-right: 3px;
-  }
 }
 
 .light .region-item-text {
@@ -207,7 +197,8 @@ button.btn-info {
   background-color: $dark-current-warning-heading-color;
 }
 
-.current-warning-toggle.btn-info {
+.current-warning-toggle {
+  position: relative;
   height: $current-warning-height;
   width: $current-warning-height;
   min-width: $current-warning-height;
@@ -220,28 +211,15 @@ button.btn-info {
   padding: $image-padding;
   margin-left: 5px;
 
-  &:focus {
-    position: relative;
-    z-index: 1;
-    box-shadow: none !important;
-    &:not([data-focus-visible-added]) {
-      outline: none !important;
-    }
-  }
-
   &.collapsed {
     background-image: url($ui-image-path + 'arrow-down.svg');
   }
 }
 
-.light .current-warning-toggle.btn-info {
+.light .current-warning-toggle {
   background-color: $light-current-warning-toggle-color;
 
   &:hover {
-    background-color: $light-current-warning-toggle-color;
-  }
-
-  &:focus {
     background-color: $light-current-warning-toggle-color;
   }
 
@@ -250,14 +228,10 @@ button.btn-info {
   }
 }
 
-.dark .current-warning-toggle.btn-info {
+.dark .current-warning-toggle {
   background-color: $dark-current-warning-toggle-color;
 
   &:hover {
-    background-color: $dark-current-warning-toggle-color;
-  }
-
-  &:focus {
     background-color: $dark-current-warning-toggle-color;
   }
 
@@ -287,9 +261,6 @@ div.current-description-table {
 }
 
 div.accordion-item-region {
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
   div.card-body {
     padding: 0;
   }

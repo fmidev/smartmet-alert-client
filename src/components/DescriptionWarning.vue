@@ -37,8 +37,6 @@
 </template>
 
 <script>
-import 'focus-visible'
-
 import fields from '../mixins/fields'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
@@ -140,9 +138,6 @@ a.ext-link {
   background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
     right;
   margin-right: 2px;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
 .light a.ext-link {

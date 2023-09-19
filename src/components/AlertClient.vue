@@ -28,9 +28,9 @@
               <a
                 v-if="numWarnings"
                 id="fmi-warnings-to-text-content"
-                href="#fmi-warnings-region-content"
+                :href="toContentId"
                 tabindex="0"
-                class="visually-hidden visually-hidden-focusable"
+                class="visually-hidden-focusable focus-ring"
                 >{{ toContentText }}</a
               >
               <div v-else :aria-label="noWarningsText"></div>
@@ -79,8 +79,6 @@
 </template>
 
 <script>
-import 'focus-visible'
-
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
@@ -163,7 +161,26 @@ export default {
   },
   computed: {
     toContentText() {
-      return this.t('toContent') || ''
+      if (
+        [this.REGION_LAND, this.REGION_SEA].some(
+          (regionType) =>
+            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
+        )
+      ) {
+        return this.t('toContent') || ''
+      }
+      return this.t('toNextContent') || ''
+    },
+    toContentId() {
+      if (
+        [this.REGION_LAND, this.REGION_SEA].some(
+          (regionType) =>
+            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
+        )
+      ) {
+        return '#fmi-warnings-region-content'
+      }
+      return '#fmi-warnings-end-of-regions'
     },
     noWarningsText() {
       return this.t('noWarnings')
@@ -398,31 +415,6 @@ div#fmi-warnings {
     height: 20px;
     &:focus {
       outline-offset: 2px;
-      &:not([data-focus-visible-added]) {
-        outline: none !important;
-      }
-    }
-  }
-
-  &.light {
-    *:focus {
-      outline: dashed 2px $light-outline-color !important;
-    }
-    a#fmi-warnings-to-text-content {
-      &:focus {
-        outline: dashed 2px $light-outline-color !important;
-      }
-    }
-  }
-
-  &.dark {
-    *:focus {
-      outline: dashed 2px $dark-outline-color !important;
-    }
-    a#fmi-warnings-to-text-content {
-      &:focus {
-        outline: dashed 2px $dark-outline-color !important;
-      }
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="map-large" :class="theme" tabindex="0">
+  <div class="map-large focus-ring" :class="theme" tabindex="0">
     <div v-if="loading" class="spinner-container text-center">
       <BSpinner />
     </div>
@@ -225,8 +225,6 @@
 </template>
 
 <script>
-import 'focus-visible'
-
 import Panzoom from '@panzoom/panzoom'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -890,10 +888,6 @@ div.map-large {
   max-height: $map-large-height;
   background-color: transparent;
 
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
-
   div.spinner-container {
     height: 0;
   }
@@ -919,9 +913,6 @@ button.fmi-warnings-map-tool {
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
 .light button.fmi-warnings-map-tool {
@@ -1006,9 +997,6 @@ div.day-map-large
   div#fmi-warnings-region-tooltip-reference
   > div#fmi-warnings-region-tooltip.tooltip.b-tooltip {
   opacity: 1;
-  &:focus {
-    outline: none !important;
-  }
 }
 
 #fmi-warnings-region-tooltip-reference {
@@ -1104,9 +1092,6 @@ a.fmi-warnings-popup-closer {
     z-index: 8;
     pointer-events: auto;
     outline: none !important;
-    &:focus {
-      outline: none;
-    }
   }
 }
 

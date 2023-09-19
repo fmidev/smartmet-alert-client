@@ -17,6 +17,7 @@
               'symbol-list-select',
               input.visible ? 'flag-selected' : 'flag-unselected',
               { 'd-md-block': hideable },
+              'focus-ring',
               'd-none',
             ]"
             :aria-label="input.visible ? hideLabel : showLabel"
@@ -35,14 +36,9 @@
 </template>
 
 <script>
-import 'focus-visible'
-
-// import VueObserveVisibility from 'vue-observe-visibility'
 import fields from '../mixins/fields'
 import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
-
-// Vue.use(VueObserveVisibility)
 
 export default {
   name: 'Warning',
@@ -170,9 +166,6 @@ div.symbol-list-text {
   max-width: 141px;
   padding-right: 5px;
   hyphens: auto;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
 .symbol-list-select-container {
@@ -200,11 +193,6 @@ div.symbol-list-text {
 
 .dark .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.flag-unselected:focus:not([data-focus-visible-added]),
-.flag-selected:focus:not([data-focus-visible-added]) {
-  outline: none;
 }
 
 .flag-unselected {

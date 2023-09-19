@@ -46,8 +46,6 @@
 </template>
 
 <script>
-import 'focus-visible'
-
 import DayLarge from './DayLarge.vue'
 import DaySmall from './DaySmall.vue'
 
@@ -156,15 +154,13 @@ div#fmi-warnings-date-selector.tabs {
 }
 
 :deep(button.day) {
+  height: 180px;
   border-radius: 0;
   border: 0;
   padding: 0;
   margin: 0;
   text-align: center;
   color: transparent;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
 :deep(button.day.day0) {
@@ -229,17 +225,16 @@ div#fmi-warnings-date-selector.tabs {
   background: transparent !important;
 }
 
+:deep(div.tab-content) {
+  margin-top: 4px;
+}
+
 @media (max-width: 575px) {
-  button.day {
+  :deep(button.day) {
     border-bottom: 0;
     border-radius: 0;
     margin-bottom: 0;
-  }
-}
-
-@media (max-width: 499px) {
-  :deep(.fmi-warnings-date-wrapper) {
-    overflow-x: auto;
+    height: 84px;
   }
 }
 </style>

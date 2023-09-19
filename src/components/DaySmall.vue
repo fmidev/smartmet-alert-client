@@ -98,9 +98,11 @@ export default {
         : ''
     },
     ariaLabel() {
-      return `${
-        this.input.weekdayName ? this.t(`${this.input.weekdayName}Full`) : ''
-      } ${this.input.day}.${this.input.month}`
+      return `${this.t(this.input.weekdayName)} ${this.input.day}.${
+        this.input.month
+      }. ${this.t('warningsInEffect')} ${this.regions.land.length} ${this.t(
+        'landAreas'
+      )} ${this.regions.sea.length} ${this.t('seaAreas')}.`
     },
   },
 }

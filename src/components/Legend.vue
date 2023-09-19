@@ -13,16 +13,12 @@
             {{ toggleLegendsText }}
           </span>
         </div>
-        <b-button
-          v-b-toggle.legends-collapse
-          block
-          variant="info"
-          class="legends-toggle" />
+        <b-button v-b-toggle.legends-collapse block class="legends-toggle" />
       </b-card-header>
       <b-collapse
         id="legends-collapse"
         v-model="visible"
-        class="legends-collapse-item"
+        class="legends-collapse-item focus-ring"
         tabindex="0">
         <b-card-body body-class="p-0">
           <div class="legends-container">
@@ -154,13 +150,6 @@ div.symbol-list-header-row {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 15px;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-    overflow: visible;
-    position: absolute;
-    z-index: 1;
-    padding-right: 3px;
-  }
 }
 
 .light .legends-text {
@@ -171,7 +160,8 @@ div.symbol-list-header-row {
   background-color: $dark-legend-heading-background-color;
 }
 
-.legends-toggle.btn-info {
+.legends-toggle {
+  position: relative;
   height: $current-warning-height;
   width: $current-warning-height;
   min-width: $current-warning-height;
@@ -184,28 +174,15 @@ div.symbol-list-header-row {
   padding: $image-padding;
   margin-left: 5px;
 
-  &:focus {
-    position: relative;
-    z-index: 1;
-    box-shadow: none !important;
-    &:not([data-focus-visible-added]) {
-      outline: none !important;
-    }
-  }
-
   &.collapsed {
     background-image: url($ui-image-path + 'arrow-down.svg');
   }
 }
 
-.light .legends-toggle.btn-info {
+.light .legends-toggle {
   background-color: $light-legend-toggle-background-color;
 
   &:hover {
-    background-color: $light-legend-toggle-background-color;
-  }
-
-  &:focus {
     background-color: $light-legend-toggle-background-color;
   }
 
@@ -218,14 +195,10 @@ div.symbol-list-header-row {
   }
 }
 
-.dark .legends-toggle.btn-info {
+.dark .legends-toggle {
   background-color: $dark-legend-toggle-background-color;
 
   &:hover {
-    background-color: $dark-legend-toggle-background-color;
-  }
-
-  &:focus {
     background-color: $dark-legend-toggle-background-color;
   }
 
@@ -236,10 +209,6 @@ div.symbol-list-header-row {
   &:not(:disabled):not(.disabled):active {
     background-color: $dark-current-warning-toggle-active-color;
   }
-}
-
-div.legends-collapse-item:focus:not([data-focus-visible-added]) {
-  outline: none !important;
 }
 
 .legends-container {
