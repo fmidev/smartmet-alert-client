@@ -62,7 +62,10 @@ export default {
   props: {
     input: Array,
     selectedDay: Number,
-    warnings: Object,
+    warnings: {
+      type: Object,
+      default: null,
+    },
     parents: Object,
     geometryId: Number,
     theme: String,

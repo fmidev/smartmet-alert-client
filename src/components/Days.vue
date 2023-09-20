@@ -81,7 +81,7 @@ export default {
     },
     warnings: {
       type: Object,
-      default: () => {},
+      default: null,
     },
     regions: Array,
     geometryId: Number,

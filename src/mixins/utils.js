@@ -507,7 +507,7 @@ export default {
     coverageGeom(coverageProperty, strokeWidth, fillOpacity, severity) {
       const coverageData = []
       const visibleWarnings = this.visibleWarnings
-      Object.keys(this.warnings).forEach((key) => {
+      Object.keys(this.warnings ?? {}).forEach((key) => {
         if (
           (severity == null || this.warnings[key].severity === severity) &&
           this.warnings[key].effectiveDays[this.index] &&

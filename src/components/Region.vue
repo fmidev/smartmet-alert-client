@@ -67,7 +67,7 @@ export default {
     },
     warnings: {
       type: Object,
-      default: () => {},
+      default: null,
     },
     theme: {
       type: String,

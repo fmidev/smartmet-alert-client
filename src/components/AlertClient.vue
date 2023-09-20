@@ -148,7 +148,7 @@ export default {
       visibleWarnings: [],
       timer: null,
       visibilityListener: null,
-      warnings: {},
+      warnings: null,
       days: [],
       regions: this.regionsDefault(),
       parents: {},
@@ -203,7 +203,7 @@ export default {
       return this.t('notInitializedEnd')
     },
     numWarnings() {
-      return Object.keys(this.warnings).length
+      return this.warnings != null ? Object.keys(this.warnings).length : 0
     },
     validData() {
       return (

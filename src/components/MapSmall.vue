@@ -1,8 +1,5 @@
 <template>
   <div :id="`day-map-small-${index}`" class="map-small">
-    <div v-if="loading" class="spinner-container text-center">
-      <BSpinner />
-    </div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.2"
@@ -124,7 +121,7 @@ export default {
     },
     warnings: {
       type: Object,
-      default: () => {},
+      default: null,
     },
     geometryId: {
       type: Number,

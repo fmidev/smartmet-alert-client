@@ -250,7 +250,7 @@ export default {
     },
     warnings: {
       type: Object,
-      default: () => {},
+      default: null,
     },
     geometryId: {
       type: Number,
