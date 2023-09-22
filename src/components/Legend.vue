@@ -40,6 +40,22 @@
         @warningsToggled="onWarningsToggled"
         @showAllWarnings="onShowAllWarnings" />
     </div>
+    {{ theme }}
+    <div v-if="grayScaleSelector" id="gray-scale-select-row">
+      <div id="gray-scale-select-text">{{ grayScaleText }}</div>
+      <div id="gray-scale-select-container">
+        <div
+          id="gray-scale-select"
+          :class="[grayScale ? 'gray-scale-selected' : 'gray-scale-unselected']"
+          tabindex="0"
+          @touchmove="preventEvents"
+          @touchend="preventEvents"
+          @touchstart="toggleGrayScale"
+          @mousedown="toggleGrayScale"
+          @keydown.enter="toggleGrayScale"
+          @keydown.space="toggleGrayScale" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -53,13 +69,37 @@ export default {
     Warnings,
   },
   mixins: [i18n],
-  props: ['input', 'language', 'theme', 'visibleWarnings'],
+  props: {
+    input: {
+      type: Array,
+      default: () => [],
+    },
+    language: {
+      type: String,
+      default: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
+    },
+    grayScaleSelector: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+      default: 'light',
+    },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       visible: false,
     }
   },
   computed: {
+    grayScale() {
+      return this.theme === 'gray-theme'
+    },
     warnings() {
       return this.input
     },
@@ -68,6 +108,9 @@ export default {
     },
     toggleLegendsText() {
       return this.visible ? this.t('hideLegends') : this.t('showLegends')
+    },
+    grayScaleText() {
+      return this.t('grayScale')
     },
   },
   methods: {
@@ -82,6 +125,13 @@ export default {
           []
         )
       )
+    },
+    toggleGrayScale(event) {
+      event.preventDefault()
+      this.$emit('themeChanged', this.grayScale ? '' : 'gray')
+    },
+    preventEvents(event) {
+      event.preventDefault()
     },
   },
 }
@@ -106,12 +156,16 @@ div.symbol-list-header-row {
   margin-right: 0;
 }
 
-.light .legends-panel {
+.light-theme .legends-panel {
   border: 2px solid $light-legend-background-color;
 }
 
-.dark .legends-panel {
+.dark-theme .legends-panel {
   border: 2px solid $dark-legend-background-color;
+}
+
+.dark-theme .legends-panel {
+  border: 2px solid $gray-legend-background-color;
 }
 
 .legends-heading {
@@ -122,12 +176,16 @@ div.symbol-list-header-row {
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.light .legends-heading {
+.light-theme .legends-heading {
   background-color: $light-legend-heading-background-color;
 }
 
-.dark .legends-heading {
+.dark-theme .legends-heading {
   background-color: $dark-legend-heading-background-color;
+}
+
+.dark-theme .legends-heading {
+  background-color: $gray-legend-heading-background-color;
 }
 
 .legends-header {
@@ -136,12 +194,16 @@ div.symbol-list-header-row {
   right: 38px;
 }
 
-.light .legends-header {
+.light-theme .legends-header {
   background: $light-legend-heading-background-color;
 }
 
-.dark .legends-header {
+.dark-theme .legends-header {
   background: $dark-legend-heading-background-color;
+}
+
+.dark-theme .legends-header {
+  background: $gray-legend-heading-background-color;
 }
 
 .legends-text {
@@ -152,12 +214,16 @@ div.symbol-list-header-row {
   margin-left: 15px;
 }
 
-.light .legends-text {
+.light-theme .legends-text {
   background-color: $light-legend-heading-background-color;
 }
 
-.dark .legends-text {
+.dark-theme .legends-text {
   background-color: $dark-legend-heading-background-color;
+}
+
+.dark-theme .legends-text {
+  background-color: $gray-legend-heading-background-color;
 }
 
 .legends-toggle {
@@ -179,7 +245,7 @@ div.symbol-list-header-row {
   }
 }
 
-.light .legends-toggle {
+.light-theme .legends-toggle {
   background-color: $light-legend-toggle-background-color;
 
   &:hover {
@@ -195,7 +261,7 @@ div.symbol-list-header-row {
   }
 }
 
-.dark .legends-toggle {
+.dark-theme .legends-toggle {
   background-color: $dark-legend-toggle-background-color;
 
   &:hover {
@@ -211,18 +277,39 @@ div.symbol-list-header-row {
   }
 }
 
+.dark-theme .legends-toggle {
+  background-color: $gray-legend-toggle-background-color;
+
+  &:hover {
+    background-color: $gray-legend-toggle-background-color;
+  }
+
+  &:active {
+    background-color: $gray-legend-toggle-background-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $gray-current-warning-toggle-active-color;
+  }
+}
+
 .legends-container {
   padding: 15px;
 }
 
-.light .legends-container {
+.light-theme .legends-container {
   background-color: $light-legend-container-background-color;
   border-top: 2px solid $light-legend-background-color;
 }
 
-.dark .legends-container {
+.dark-theme .legends-container {
   background-color: $dark-legend-container-background-color;
   border-top: 2px solid $dark-legend-background-color;
+}
+
+.dark-theme .legends-container {
+  background-color: $gray-legend-container-background-color;
+  border-top: 2px solid $gray-legend-background-color;
 }
 
 div#legends-collapse div.card-body {
@@ -233,7 +320,65 @@ nav.symbol-list-header {
   padding-left: 0;
 }
 
+div#gray-scale-select-row {
+  width: 100%;
+  display: table;
+  padding-left: 59px;
+}
+
+div#gray-scale-select-text {
+  display: table-cell;
+  max-width: 141px;
+  padding-right: 5px;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+div#gray-scale-select-container {
+  display: table-cell;
+  width: 30px;
+  height: $symbol-list-line-height;
+  vertical-align: middle;
+}
+
+div#gray-scale-select {
+  width: 100%;
+  height: $symbol-list-select-height;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.light-theme .gray-scale-selected {
+  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
+}
+
+.dark-theme .gray-scale-selected {
+  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
+}
+
+.dark-theme .gray-scale-selected {
+  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
+}
+
+.light-theme .gray-scale-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+}
+
+.dark-theme .gray-scale-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
+}
+
+.dark-theme .gray-scale-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+}
+
 @media (max-width: 767px) {
+  div#gray-scale-select-text {
+    text-align: right;
+    padding-right: 10px;
+  }
   nav.symbol-list-header {
     margin-top: 15px;
     margin-bottom: 5px;

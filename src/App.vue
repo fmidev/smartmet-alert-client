@@ -6,15 +6,17 @@
     :static-days="staticDays"
     :start-from="startFrom"
     :region-list-enabled="regionListEnabled"
+    :gray-scale-selector="grayScaleSelector"
     :current-time="currentTime"
     :warnings-data="warningsData"
     :daily-warning-types="dailyWarningTypes"
     :geometry-id="geometryId"
     :language="language"
-    :theme="theme"
+    :theme="themeClass"
     :sleep="sleep"
     :loading="loading"
     @loaded="onLoaded"
+    @themeChanged="onThemeChanged"
     @update-warnings="fetchWarnings" />
 </template>
 <script>
@@ -50,6 +52,10 @@ export default {
       default: true,
     },
     spinnerEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    grayScaleSelector: {
       type: Boolean,
       default: true,
     },
@@ -100,6 +106,7 @@ export default {
       loading: false,
       updatedAt: null,
       refreshedAt: null,
+      themeClass: `${this.theme}-theme`,
       warningsData: null,
       visible: true,
     }
@@ -151,7 +158,7 @@ export default {
           fi: 'fi-FI',
           sv: 'sv-SV',
           en: 'en-US',
-        }[this.language])
+        })[this.language]
     },
     currentTime() {
       if (this.refreshedAt) {
@@ -178,6 +185,12 @@ export default {
       if (loaded) {
         this.loading = false
       }
+    },
+    onThemeChanged(newTheme) {
+      this.themeClass =
+        newTheme != null && newTheme - length > 0
+          ? `${newTheme}-theme`
+          : this.theme
     },
     fetchWarnings() {
       this.loading = true

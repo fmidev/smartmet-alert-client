@@ -234,12 +234,16 @@ div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
 
-.light .gray {
+.light-theme .gray {
   background-color: $light-legend-toggle-background-color;
 }
 
-.dark .gray {
+.dark-theme .gray {
   background-color: $dark-legend-toggle-background-color;
+}
+
+.gray-theme .gray {
+  background-color: $gray-legend-toggle-background-color;
 }
 
 .several {
@@ -308,14 +312,19 @@ hr {
   opacity: 1;
 }
 
-.light hr {
+.light-theme hr {
   background-color: $light-horizontal-rule-color;
   color: $light-horizontal-rule-color;
 }
 
-.dark hr {
+.dark-theme hr {
   background-color: $dark-horizontal-rule-color;
   color: $dark-horizontal-rule-color;
+}
+
+.gray-theme hr {
+  background-color: $gray-horizontal-rule-color;
+  color: $gray-horizontal-rule-color;
 }
 
 @media (max-width: 767px) {

@@ -55,8 +55,10 @@
               v-show="validData"
               :input="legend"
               :visible-warnings="visibleWarnings"
-              :theme="theme"
+              :gray-scale-selector="grayScaleSelector"
+              :theme="themeClass"
               :language="language"
+              @themeChanged="onThemeChanged"
               @warningsToggled="onWarningsToggled" />
           </div>
         </div>
@@ -109,6 +111,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    grayScaleSelector: {
+      type: Boolean,
+      default: false,
+    },
     currentTime: {
       type: Number,
       default: Date.now(),
@@ -122,7 +128,10 @@ export default {
       type: Number,
       default: config.props.defaultGeometryId,
     },
-    language: String,
+    language: {
+      type: String,
+      default: 'en',
+    },
     theme: {
       type: String,
       default: 'light',
@@ -261,6 +270,11 @@ export default {
         this.$emit('loaded', true)
       }
     },
+    onThemeChanged(newTheme) {
+      if (this.theme !== newTheme) {
+        this.$emit('themeChanged', newTheme)
+      }
+    },
     createDataForChildren() {
       if (this.warningsData != null) {
         const result = this.handleMapWarnings(this.warningsData)
@@ -347,12 +361,16 @@ export default {
   }
 }
 
-:deep(.light *) {
+:deep(.light-theme *) {
   color: $light-text-color;
 }
 
-:deep(.dark *) {
+:deep(.dark-theme *) {
   color: $dark-text-color;
+}
+
+:deep(.gray-theme *) {
+  color: $gray-text-color;
 }
 
 div#fmi-warnings {
@@ -382,7 +400,7 @@ div#fmi-warnings {
     }
   }
 
-  .dark h3.valid-warnings {
+  .dark-theme h3.valid-warnings {
     &:not(.not-ready) {
       background-color: $darkest-gray;
       border: 1px solid $notification-color;
@@ -442,12 +460,16 @@ div.symbol-list {
   min-width: $symbol-list-width;
 }
 
-.light a.supported-browsers {
+.light-theme a.supported-browsers {
   color: $light-ext-link-color;
 }
 
-.dark a.supported-browsers {
+.dark-theme a.supported-browsers {
   color: $light-ext-link-color;
+}
+
+.gray-theme a.supported-browsers {
+  color: $gray-ext-link-color;
 }
 
 @media (max-width: 767px) {

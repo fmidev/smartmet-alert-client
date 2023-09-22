@@ -162,12 +162,16 @@ export default {
   }
 }
 
-.light .current-warning-heading {
+.light-theme .current-warning-heading {
   background-color: $light-current-warning-heading-color;
 }
 
-.dark .current-warning-heading {
+.dark-theme .current-warning-heading {
   background-color: $dark-current-warning-heading-color;
+}
+
+.gray-theme .current-warning-heading {
+  background-color: $gray-current-warning-heading-color;
 }
 
 button {
@@ -189,12 +193,16 @@ button {
   margin-left: 15px;
 }
 
-.light .region-item-text {
+.light-theme .region-item-text {
   background-color: $light-current-warning-heading-color;
 }
 
-.dark .region-item-text {
+.dark-theme .region-item-text {
   background-color: $dark-current-warning-heading-color;
+}
+
+.gray-theme .region-item-text {
+  background-color: $gray-current-warning-heading-color;
 }
 
 .current-warning-toggle {
@@ -216,7 +224,7 @@ button {
   }
 }
 
-.light .current-warning-toggle {
+.light-theme .current-warning-toggle {
   background-color: $light-current-warning-toggle-color;
 
   &:hover {
@@ -228,7 +236,7 @@ button {
   }
 }
 
-.dark .current-warning-toggle {
+.dark-theme .current-warning-toggle {
   background-color: $dark-current-warning-toggle-color;
 
   &:hover {
@@ -240,18 +248,35 @@ button {
   }
 }
 
+.gray-theme .current-warning-toggle {
+  background-color: $gray-current-warning-toggle-color;
+
+  &:hover {
+    background-color: $gray-current-warning-toggle-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $gray-current-warning-toggle-active-color;
+  }
+}
+
 .current-description {
   padding: 15px;
 }
 
-.light .current-description {
+.light-theme .current-description {
   border-top: 1px solid $light-description-border-color;
   background-color: $light-description-background-color;
 }
 
-.dark .current-description {
+.dark-theme .current-description {
   border-top: 1px solid $dark-description-border-color;
   background-color: $dark-description-background-color;
+}
+
+.gray-theme .current-description {
+  border-top: 1px solid $gray-description-border-color;
+  background-color: $gray-description-background-color;
 }
 
 div.current-description-table {

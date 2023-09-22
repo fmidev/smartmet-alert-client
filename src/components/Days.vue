@@ -134,11 +134,14 @@ div#fmi-warnings-date-selector.tabs {
 
 .date-selector {
   margin: 0;
-  &.light {
+  &.light-theme {
     background-color: $light-date-selector-background-color;
   }
-  &.dark {
+  &.dark-theme {
     background-color: $dark-date-selector-background-color;
+  }
+  &.dark-theme {
+    background-color: $gray-date-selector-background-color;
   }
 }
 
@@ -172,11 +175,14 @@ div#fmi-warnings-date-selector.tabs {
       border-left: none !important;
       border-right: none !important;
     }
-    &.light > div {
+    &.light-theme > div {
       border-right: 1px solid $light-border-color !important;
     }
-    &.dark > div {
+    &.dark-theme > div {
       border-right: 1px solid $dark-border-color !important;
+    }
+    &.dark-theme > div {
+      border-right: 1px solid $gray-border-color !important;
     }
   }
 }
@@ -192,13 +198,17 @@ div#fmi-warnings-date-selector.tabs {
       border-left: none !important;
       border-right: none !important;
     }
-    &.light > div {
+    &.light-theme > div {
       border-left: 1px solid $light-border-color !important;
       border-right: 1px solid $light-border-color !important;
     }
-    &.dark > div {
+    &.dark-theme > div {
       border-left: 1px solid $dark-border-color !important;
       border-right: 1px solid $dark-border-color !important;
+    }
+    &.dark-theme > div {
+      border-left: 1px solid $gray-border-color !important;
+      border-right: 1px solid $gray-border-color !important;
     }
   }
 }
@@ -212,11 +222,14 @@ div#fmi-warnings-date-selector.tabs {
       border-left: none !important;
       border-right: none !important;
     }
-    &.light > div {
+    &.light-theme > div {
       border-left: 1px solid $light-border-color !important;
     }
-    &.dark > div {
+    &.dark-theme > div {
       border-left: 1px solid $dark-border-color !important;
+    }
+    &.dark-theme > div {
+      border-left: 1px solid $gray-border-color !important;
     }
   }
 }

@@ -175,5 +175,6 @@
     "hideLegends": "Piilota selitteet",
     "warningsInEffect": "Varoituksia voimassa",
     "landAreas": "maa-alueella ja",
-    "seaAreas": "merialueella"
+    "seaAreas": "merialueella",
+    "grayScale": "Harmaasävyt"
 }

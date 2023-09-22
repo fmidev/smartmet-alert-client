@@ -113,16 +113,22 @@ export default {
 
 div.date-selector-cell {
   &.active {
-    &.light div.date-selector-cell-footer {
+    &.light-theme div.date-selector-cell-footer {
       background-color: $light-text-color;
       &:after {
         border-top: solid 7px $light-text-color;
       }
     }
-    &.dark div.date-selector-cell-footer {
+    &.dark-theme div.date-selector-cell-footer {
       background-color: $dark-text-color;
       &:after {
         border-top: solid 7px $dark-text-color;
+      }
+    }
+    &.dark-theme div.date-selector-cell-footer {
+      background-color: $gray-text-color;
+      &:after {
+        border-top: solid 7px $gray-text-color;
       }
     }
 
@@ -145,12 +151,16 @@ div.date-selector-cell {
     margin-bottom: 20px;
   }
 
-  &.light > .date-selector-cell-footer {
+  &.light-theme > .date-selector-cell-footer {
     background-color: $light-date-selector-footer-color;
   }
 
-  &.dark > .date-selector-cell-footer {
+  &.dark-theme > .date-selector-cell-footer {
     background-color: $dark-date-selector-footer-color;
+  }
+
+  &.dark-theme > .date-selector-cell-footer {
+    background-color: $gray-date-selector-footer-color;
   }
 
   .date-selector-cell-body {
@@ -183,12 +193,16 @@ div.date-selector-cell {
     display: none;
   }
 
-  .light div.date-selector-cell-header * {
+  .light-theme div.date-selector-cell-header * {
     color: $light-date-selector-mobile-text-color !important;
   }
 
-  .dark div.date-selector-cell-header * {
+  .dark-theme div.date-selector-cell-header * {
     color: $dark-date-selector-mobile-text-color !important;
+  }
+
+  .dark-theme div.date-selector-cell-header * {
+    color: $gray-date-selector-mobile-text-color !important;
   }
 
   div.date-selector-cell-header {

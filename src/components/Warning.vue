@@ -131,14 +131,19 @@ hr {
   opacity: 1;
 }
 
-.light hr {
+.light-theme hr {
   background-color: $light-horizontal-rule-color;
   color: $light-horizontal-rule-color;
 }
 
-.dark hr {
+.dark-theme hr {
   background-color: $dark-horizontal-rule-color;
   color: $dark-horizontal-rule-color;
+}
+
+.gray-theme hr {
+  background-color: $gray-horizontal-rule-color;
+  color: $gray-horizontal-rule-color;
 }
 
 div#fmi-warnings-list div.symbol-list-cell-text {
@@ -187,24 +192,32 @@ div.symbol-list-text {
   cursor: pointer;
 }
 
-.light .flag-selected {
+.light-theme .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
-.dark .flag-selected {
+.dark-theme .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
+}
+
+.gray-theme .flag-selected {
+  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
 .flag-unselected {
   cursor: pointer;
 }
 
-.light .flag-unselected {
+.light-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 
-.dark .flag-unselected {
+.dark-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
+}
+
+.gray-theme .flag-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 
 @media (max-width: 767px) {

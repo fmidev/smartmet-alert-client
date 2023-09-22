@@ -140,12 +140,16 @@ a.ext-link {
   margin-right: 2px;
 }
 
-.light a.ext-link {
+.light-theme a.ext-link {
   color: $light-ext-link-color;
 }
 
-.dark a.ext-link {
+.dark-theme a.ext-link {
   color: $light-ext-link-color;
+}
+
+.dark-theme a.ext-link {
+  color: $gray-ext-link-color;
 }
 
 span.warning-valid {
