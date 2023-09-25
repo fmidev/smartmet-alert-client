@@ -56,7 +56,7 @@
               :input="legend"
               :visible-warnings="visibleWarnings"
               :gray-scale-selector="grayScaleSelector"
-              :theme="themeClass"
+              :theme="theme"
               :language="language"
               @themeChanged="onThemeChanged"
               @warningsToggled="onWarningsToggled" />

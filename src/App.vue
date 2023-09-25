@@ -187,10 +187,9 @@ export default {
       }
     },
     onThemeChanged(newTheme) {
-      this.themeClass =
-        newTheme != null && newTheme - length > 0
-          ? `${newTheme}-theme`
-          : this.theme
+      this.themeClass = `${
+        newTheme != null && newTheme.length > 0 ? newTheme : this.theme
+      }-theme`
     },
     fetchWarnings() {
       this.loading = true

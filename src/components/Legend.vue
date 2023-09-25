@@ -40,7 +40,6 @@
         @warningsToggled="onWarningsToggled"
         @showAllWarnings="onShowAllWarnings" />
     </div>
-    {{ theme }}
     <div v-if="grayScaleSelector" id="gray-scale-select-row">
       <div id="gray-scale-select-text">{{ grayScaleText }}</div>
       <div id="gray-scale-select-container">
@@ -358,7 +357,7 @@ div#gray-scale-select {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
 }
 
-.dark-theme .gray-scale-selected {
+.gray-theme .gray-scale-selected {
   background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
@@ -370,7 +369,7 @@ div#gray-scale-select {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
-.dark-theme .gray-scale-unselected {
+.gray-theme .gray-scale-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 

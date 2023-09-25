@@ -140,7 +140,7 @@ div#fmi-warnings-date-selector.tabs {
   &.dark-theme {
     background-color: $dark-date-selector-background-color;
   }
-  &.dark-theme {
+  &.gray-theme {
     background-color: $gray-date-selector-background-color;
   }
 }
@@ -181,7 +181,7 @@ div#fmi-warnings-date-selector.tabs {
     &.dark-theme > div {
       border-right: 1px solid $dark-border-color !important;
     }
-    &.dark-theme > div {
+    &.gray-theme > div {
       border-right: 1px solid $gray-border-color !important;
     }
   }
@@ -206,7 +206,7 @@ div#fmi-warnings-date-selector.tabs {
       border-left: 1px solid $dark-border-color !important;
       border-right: 1px solid $dark-border-color !important;
     }
-    &.dark-theme > div {
+    &.gray-theme > div {
       border-left: 1px solid $gray-border-color !important;
       border-right: 1px solid $gray-border-color !important;
     }
@@ -228,7 +228,7 @@ div#fmi-warnings-date-selector.tabs {
     &.dark-theme > div {
       border-left: 1px solid $dark-border-color !important;
     }
-    &.dark-theme > div {
+    &.gray-theme > div {
       border-left: 1px solid $gray-border-color !important;
     }
   }
