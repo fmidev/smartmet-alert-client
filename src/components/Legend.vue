@@ -97,7 +97,11 @@ export default {
   },
   computed: {
     grayScale() {
-      return this.theme === 'gray-theme'
+      if (this.theme == null || this.theme.length === 0) {
+        return false
+      }
+      const themeParts = this.theme.split('-')
+      return themeParts.length > 1 && themeParts[1] === 'gray'
     },
     warnings() {
       return this.input
@@ -127,7 +131,14 @@ export default {
     },
     toggleGrayScale(event) {
       event.preventDefault()
-      this.$emit('themeChanged', this.grayScale ? '' : 'gray')
+      if (this.theme == null || this.theme.length === 0) {
+        return
+      }
+      const baseTheme = this.theme.split('-')[0]
+      this.$emit(
+        'themeChanged',
+        this.grayScale ? baseTheme : `${baseTheme}-gray`
+      )
     },
     preventEvents(event) {
       event.preventDefault()
@@ -357,7 +368,7 @@ div#gray-scale-select {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
 }
 
-.gray-theme .gray-scale-selected {
+.light-gray-theme .gray-scale-selected {
   background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
@@ -369,7 +380,7 @@ div#gray-scale-select {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
-.gray-theme .gray-scale-unselected {
+.light-gray-theme .gray-scale-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 

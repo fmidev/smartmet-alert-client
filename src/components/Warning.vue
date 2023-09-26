@@ -141,7 +141,7 @@ hr {
   color: $dark-horizontal-rule-color;
 }
 
-.gray-theme hr {
+.light-gray-theme hr {
   background-color: $gray-horizontal-rule-color;
   color: $gray-horizontal-rule-color;
 }
@@ -200,7 +200,7 @@ div.symbol-list-text {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
 }
 
-.gray-theme .flag-selected {
+.light-gray-theme .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
@@ -216,7 +216,7 @@ div.symbol-list-text {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
-.gray-theme .flag-unselected {
+.light-gray-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 

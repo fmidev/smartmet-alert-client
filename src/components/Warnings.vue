@@ -242,7 +242,7 @@ div.symbol-list-cell-image {
   background-color: $dark-legend-toggle-background-color;
 }
 
-.gray-theme .gray {
+.light-gray-theme .gray {
   background-color: $gray-legend-toggle-background-color;
 }
 
@@ -322,7 +322,7 @@ hr {
   color: $dark-horizontal-rule-color;
 }
 
-.gray-theme hr {
+.light-gray-theme hr {
   background-color: $gray-horizontal-rule-color;
   color: $gray-horizontal-rule-color;
 }

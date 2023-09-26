@@ -125,7 +125,7 @@ div.date-selector-cell {
         border-top: solid 7px $dark-text-color;
       }
     }
-    &.gray-theme div.date-selector-cell-footer {
+    &.light-gray-theme div.date-selector-cell-footer {
       background-color: $gray-text-color;
       &:after {
         border-top: solid 7px $gray-text-color;
@@ -159,7 +159,7 @@ div.date-selector-cell {
     background-color: $dark-date-selector-footer-color;
   }
 
-  &.gray-theme > .date-selector-cell-footer {
+  &.light-gray-theme > .date-selector-cell-footer {
     background-color: $gray-date-selector-footer-color;
   }
 

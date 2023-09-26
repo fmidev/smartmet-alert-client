@@ -170,7 +170,7 @@ export default {
   background-color: $dark-current-warning-heading-color;
 }
 
-.gray-theme .current-warning-heading {
+.light-gray-theme .current-warning-heading {
   background-color: $gray-current-warning-heading-color;
 }
 
@@ -201,7 +201,7 @@ button {
   background-color: $dark-current-warning-heading-color;
 }
 
-.gray-theme .region-item-text {
+.light-gray-theme .region-item-text {
   background-color: $gray-current-warning-heading-color;
 }
 
@@ -248,7 +248,7 @@ button {
   }
 }
 
-.gray-theme .current-warning-toggle {
+.light-gray-theme .current-warning-toggle {
   background-color: $gray-current-warning-toggle-color;
 
   &:hover {
@@ -274,7 +274,7 @@ button {
   background-color: $dark-description-background-color;
 }
 
-.gray-theme .current-description {
+.light-gray-theme .current-description {
   border-top: 1px solid $gray-description-border-color;
   background-color: $gray-description-background-color;
 }

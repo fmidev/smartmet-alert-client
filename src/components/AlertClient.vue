@@ -369,7 +369,7 @@ export default {
   color: $dark-text-color;
 }
 
-:deep(.gray-theme *) {
+:deep(.light-gray-theme *) {
   color: $gray-text-color;
 }
 
@@ -468,7 +468,7 @@ div.symbol-list {
   color: $light-ext-link-color;
 }
 
-.gray-theme a.supported-browsers {
+.light-gray-theme a.supported-browsers {
   color: $gray-ext-link-color;
 }
 
