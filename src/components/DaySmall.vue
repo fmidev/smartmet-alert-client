@@ -18,7 +18,8 @@
         :visible-warnings="visibleWarnings"
         :warnings="warnings"
         :geometry-id="geometryId"
-        :loading="loading" />
+        :loading="loading"
+        :theme="theme" />
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -70,7 +71,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     language: {
       type: String,

@@ -531,7 +531,7 @@ export default {
               d: coverage.path,
               fillOpacity,
               strokeWidth,
-              fill: this.colors.levels[this.warnings[key].severity],
+              fill: this.colors[this.theme].levels[this.warnings[key].severity],
             })
           })
         }
@@ -765,7 +765,9 @@ export default {
       const isLand =
         this.geometries[this.geometryId][regionId].type === this.REGION_LAND
       const color =
-        severity || isLand ? this.colors.levels[severity] : this.colors.sea
+        severity || isLand
+          ? this.colors[this.theme].levels[severity]
+          : this.colors[this.theme].sea
       const visible = severity > 0 || geom.subType !== this.REGION_LAKE
       return {
         geom,

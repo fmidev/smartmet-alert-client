@@ -134,7 +134,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     loading: {
       type: Boolean,
@@ -386,35 +386,46 @@ div#fmi-warnings {
 
   div.not-ready {
     width: 100%;
-    color: $darker-blue;
-    background-color: $notification-color;
-    border: 1px solid $darker-blue;
     padding: 15px;
-    a {
+    a.supported-browsers {
       font-weight: bold;
       text-decoration: none;
+    }
+  }
+
+  .light-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $darker-blue;
+    a.supported-browsers {
+      color: $light-ext-link-color;
       border-bottom: 1px solid $light-ext-link-color;
     }
-    a:hover {
+    a.supported-browsers:hover {
       border-color: $darker-blue;
     }
   }
 
-  .dark-theme h3.valid-warnings {
-    &:not(.not-ready) {
-      background-color: $darkest-gray;
-      border: 1px solid $notification-color;
-      color: $white;
+  .dark-theme div.not-ready {
+    background-color: $darkest-gray;
+    border: 1px solid $notification-color;
+    a.supported-browsers {
+      color: $dark-ext-link-color;
+      border-bottom: 1px solid $dark-ext-link-color;
     }
-    span {
-      color: $white;
-      a {
-        color: $white;
-        border-bottom: 1px solid $dark-ext-link-color;
-      }
-      a:hover {
-        border-color: $notification-color;
-      }
+    a.supported-browsers:hover {
+      border-color: $notification-color;
+    }
+  }
+
+  .light-gray-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $darker-blue;
+    a.supported-browsers {
+      color: $gray-ext-link-color;
+      border-bottom: 1px solid $gray-ext-link-color;
+    }
+    a.supported-browsers:hover {
+      border-color: $darker-blue;
     }
   }
 
@@ -458,14 +469,6 @@ div.symbol-list {
   width: $symbol-list-width;
   max-width: $symbol-list-width;
   min-width: $symbol-list-width;
-}
-
-.light-theme a.supported-browsers {
-  color: $light-ext-link-color;
-}
-
-.dark-theme a.supported-browsers {
-  color: $light-ext-link-color;
 }
 
 .light-gray-theme a.supported-browsers {

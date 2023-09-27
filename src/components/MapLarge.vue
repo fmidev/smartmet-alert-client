@@ -261,7 +261,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     language: {
       type: String,
@@ -678,7 +678,7 @@ export default {
               key: `${regionId}${this.size}${this.index}Path`,
               fill:
                 this.loading && this.isClientSide()
-                  ? this.colors.missing
+                  ? this.colors[this.theme].missing
                   : visualization.color,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',

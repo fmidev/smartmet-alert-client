@@ -71,7 +71,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     language: {
       type: String,
@@ -193,15 +193,15 @@ button {
   margin-left: 15px;
 }
 
-.light-theme .region-item-text {
+.light-theme .region-header {
   background-color: $light-current-warning-heading-color;
 }
 
-.dark-theme .region-item-text {
+.dark-theme .region-header {
   background-color: $dark-current-warning-heading-color;
 }
 
-.light-gray-theme .region-item-text {
+.light-gray-theme .region-header {
   background-color: $gray-current-warning-heading-color;
 }
 

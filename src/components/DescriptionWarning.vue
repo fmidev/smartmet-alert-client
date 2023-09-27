@@ -145,10 +145,10 @@ a.ext-link {
 }
 
 .dark-theme a.ext-link {
-  color: $light-ext-link-color;
+  color: $dark-ext-link-color;
 }
 
-.dark-theme a.ext-link {
+.light-gray-theme a.ext-link {
   color: $gray-ext-link-color;
 }
 

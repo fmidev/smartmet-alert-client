@@ -130,6 +130,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    theme: {
+      type: String,
+      default: 'light-theme',
+    },
   },
   setup() {
     const windowWidth = ref(window.innerWidth)
@@ -189,7 +193,7 @@ export default {
                 regions.push({
                   key: `${regionId}${this.size}${this.index}Path`,
                   fill: this.loading
-                    ? this.colors.missing
+                    ? this.colors[this.theme].missing
                     : visualization.color,
                   d: visualization.geom.pathSmall,
                   opacity: visualization.visible ? '1' : '0',

@@ -91,7 +91,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     language: {
       type: String,

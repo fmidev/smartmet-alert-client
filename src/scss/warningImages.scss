@@ -13,24 +13,44 @@ div.symbol-image {
   display: table;
 }
 
-.level-0 {
+.light-theme .level-0, .dark-theme .level-0 {
   background-color: $green;
 }
 
-.level-1 {
+.light-theme .level-1, .dark-theme .level-1 {
   background-color: $green;
 }
 
-.level-2 {
+.light-theme .level-2, .dark-theme .level-2 {
   background-color: $yellow;
 }
 
-.level-3 {
+.light-theme .level-3, .dark-theme .level-3 {
   background-color: $orange;
 }
 
-.level-4 {
+.light-theme .level-4, .dark-theme .level-4 {
   background-color: $red;
+}
+
+.light-gray-theme .level-0, .dark-gray-theme .level-0 {
+  background-color: $lighter-gray;
+}
+
+.light-gray-theme .level-1, .dark-gray-theme .level-1 {
+  background-color: $lighter-gray;
+}
+
+.light-gray-theme .level-2, .dark-gray-theme .level-2 {
+  background-color: $light-gray;
+}
+
+.light-gray-theme .level-3, .dark-gray-theme .level-3 {
+  background-color: $dark-gray;
+}
+
+.light-gray-theme .level-4, .dark-gray-theme .level-4 {
+  background-color: $darker-gray;
 }
 
 .thunder-storm {

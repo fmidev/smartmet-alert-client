@@ -962,9 +962,26 @@ export default {
         },
       },
       colors: {
-        sea: '#bee2f1',
-        levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
-        missing: '#f8f8f8',
+        'light-theme': {
+          sea: '#bee2f1',
+          levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
+          missing: '#f8f8f8',
+        },
+        'dark-theme': {
+          sea: '#bee2f1',
+          levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
+          missing: '#f8f8f8',
+        },
+        'light-gray-theme': {
+          sea: '#bee2f1',
+          levels: ['#eee', '#eee', '#e8e8e8', '#979797', '#434752'],
+          missing: '#f8f8f8',
+        },
+        'dark-gray-theme': {
+          sea: '#bee2f1',
+          levels: ['#eee', '#eee', '#e8e8e8', '#979797', '#434752'],
+          missing: '#f8f8f8',
+        },
       },
       bbox: {
         type: 'Feature',

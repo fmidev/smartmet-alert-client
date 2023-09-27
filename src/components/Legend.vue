@@ -83,7 +83,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
     },
     visibleWarnings: {
       type: Array,
@@ -287,7 +287,7 @@ div.symbol-list-header-row {
   }
 }
 
-.dark-theme .legends-toggle {
+.gray-theme .legends-toggle {
   background-color: $gray-legend-toggle-background-color;
 
   &:hover {
