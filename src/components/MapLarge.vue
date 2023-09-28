@@ -1097,6 +1097,12 @@ div.day-map-large
   }
 }
 
+@media (forced-colors: active) {
+  .arrow {
+    forced-color-adjust: none;
+  }
+}
+
 a.fmi-warnings-popup-closer {
   border-bottom: none;
   position: absolute;
@@ -1251,6 +1257,16 @@ span.region-popup-header-text {
 
   .shadow-level-4 {
     background-color: $gray-red-shadow !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .shadow-level-0,
+  .shadow-level-1,
+  .shadow-level-2,
+  .shadow-level-3,
+  .shadow-level-4 {
+    forced-color-adjust: none;
   }
 }
 

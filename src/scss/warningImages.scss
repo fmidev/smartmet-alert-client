@@ -53,6 +53,12 @@ div.symbol-image {
   background-color: $darker-gray;
 }
 
+@media (forced-colors: active) {
+  .level-0, .level-1, .level-2, .level-3, .level-4 {
+    forced-color-adjust: none;
+  }
+}
+
 .thunder-storm {
   background-image: url($warning-image-path + 'thunder-storm' + $image-extension);
 }

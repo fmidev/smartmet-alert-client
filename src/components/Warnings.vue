@@ -246,6 +246,12 @@ div.symbol-list-cell-image {
   background-color: $gray-legend-toggle-background-color;
 }
 
+@media (forced-colors: active) {
+  .gray {
+    forced-color-adjust: none;
+  }
+}
+
 .several {
   background-image: url($warning-image-path + 'several' + $image-extension);
 }
