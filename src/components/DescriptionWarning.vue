@@ -91,7 +91,7 @@ div.warning-image {
 }
 
 span.region-warning-symbol-text {
-  font-size: 12px;
+  font-size: $font-size;
 }
 
 div.current-description-text-cell {

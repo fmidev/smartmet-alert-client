@@ -1303,8 +1303,8 @@ export default {
                 <path d="${svgpath('M10.0 0.0L14.0 8.0 L6.0 8.0z')
                   .rotate(warning.direction, 10.0, 10.0)
                   .toString()}" fill="#000000" />
-                <text x="10" y="12.45" fill="#ffffff"
-                      style="font-family: sans-serif; font-size: 7px; text-anchor: middle; font-weight: bold;">${
+                <text x="10" y="13" fill="#ffffff"
+                      style="font-family: sans-serif; font-size: 8px; text-anchor: middle; font-weight: bold;">${
                         warning.text
                       }
                 </text>

@@ -60,11 +60,12 @@ export default {
 }
 
 .popup-table-symbol-cell {
-  background-size: 24px 24px;
   height: $current-warning-image-height;
   width: $current-warning-image-height;
   min-width: $current-warning-image-height;
-  margin-top: calc(($current-warning-height - $current-warning-image-height) / 2);
+  margin-top: calc(
+    ($current-warning-height - $current-warning-image-height) / 2
+  );
   margin-left: 2px;
   margin-right: 0;
 }
@@ -83,7 +84,7 @@ span.symbol-text {
 }
 
 span.warning-symbol-text {
-  font-size: 9px;
+  font-size: $warning-symbol-font-size;
 }
 
 .popup-table-text-cell {

@@ -55,6 +55,6 @@ div.warning-image {
 }
 
 span.warning-symbol-text {
-  font-size: 9px;
+  font-size: $warning-symbol-font-size;
 }
 </style>

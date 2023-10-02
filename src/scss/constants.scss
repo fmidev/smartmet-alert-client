@@ -3,7 +3,8 @@
 @import "./themes/light-gray.scss";
 
 $base-path: '../assets/';
-$font-size: 16px;
+$font-size: 1rem;
+$warning-symbol-font-size: 0.625rem;
 $current-warning-height: 38px;
 $current-warning-image-height: 28px;
 $current-description-image-height: 48px;
