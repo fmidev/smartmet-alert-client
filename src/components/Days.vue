@@ -156,8 +156,9 @@ div#fmi-warnings-date-selector.tabs {
   flex-wrap: nowrap;
 }
 
-:deep(button.day) {
-  height: 180px;
+:deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
+  width: $day-small-width;
+  height: $day-small-height;
   border-radius: 0;
   border: 0;
   padding: 0;
@@ -185,6 +186,10 @@ div#fmi-warnings-date-selector.tabs {
       border-right: 1px solid $gray-border-color !important;
     }
   }
+}
+
+button.day div.date-selector-cell {
+  overflow-x: hidden;
 }
 
 :deep(button.day.day1),
@@ -242,12 +247,18 @@ div#fmi-warnings-date-selector.tabs {
   margin-top: 4px;
 }
 
+@media (max-width: 767px) {
+  :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
+    width: 100%;
+  }
+}
+
 @media (max-width: 575px) {
   :deep(button.day) {
     border-bottom: 0;
     border-radius: 0;
     margin-bottom: 0;
-    height: 84px;
+    height: $day-small-mobile-height;
   }
 }
 </style>
