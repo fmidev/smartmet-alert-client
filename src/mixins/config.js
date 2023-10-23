@@ -974,12 +974,12 @@ export default {
         },
         'light-gray-theme': {
           sea: '#bee2f1',
-          levels: ['#eee', '#eee', '#e8e8e8', '#979797', '#434752'],
+          levels: ['#eee', '#eee', '#cecece', '#979797', '#434752'],
           missing: '#f8f8f8',
         },
         'dark-gray-theme': {
           sea: '#bee2f1',
-          levels: ['#eee', '#eee', '#e8e8e8', '#979797', '#434752'],
+          levels: ['#eee', '#eee', '#cecece', '#979797', '#434752'],
           missing: '#f8f8f8',
         },
       },
