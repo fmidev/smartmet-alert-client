@@ -199,9 +199,20 @@ div.show-text-row {
 div#fmi-warnings-view > div.row > span.show-text {
   line-height: 30px;
   float: right;
-  color: $dark-blue;
   cursor: pointer;
   white-space: nowrap;
+}
+
+div#fmi-warnings-view.light-theme > div.row > span.show-text {
+  color: $dark-blue;
+}
+
+div#fmi-warnings-view.dark-theme > div.row > span.show-text {
+  color: $dark-blue;
+}
+
+div#fmi-warnings-view.light-gray-theme > div.row > span.show-text {
+  color: $darker-gray;
 }
 
 hr.symbol-block-separator {

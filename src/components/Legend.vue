@@ -369,7 +369,7 @@ div#gray-scale-select {
 }
 
 .light-gray-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
+  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
 }
 
 .light-theme .gray-scale-unselected {

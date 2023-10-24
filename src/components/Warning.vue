@@ -201,7 +201,7 @@ div.symbol-list-text {
 }
 
 .light-gray-theme .flag-selected {
-  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
+  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
 }
 
 .flag-unselected {
