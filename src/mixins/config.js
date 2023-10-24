@@ -973,7 +973,7 @@ export default {
           missing: '#f8f8f8',
         },
         'light-gray-theme': {
-          sea: '#bee2f1',
+          sea: '#fff',
           levels: ['#eee', '#eee', '#cecece', '#979797', '#434752'],
           missing: '#f8f8f8',
         },
