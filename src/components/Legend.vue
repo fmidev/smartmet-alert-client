@@ -1,5 +1,11 @@
 <template>
   <div class="sticky-top" :class="theme">
+    <GrayScaleToggle
+      class="narrow-screen"
+      :language="language"
+      :gray-scale-selector="grayScaleSelector"
+      :theme="theme"
+      @themeChanged="onThemeChanged" />
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">
         {{ warningSymbolsText }}
@@ -40,21 +46,11 @@
         @warningsToggled="onWarningsToggled"
         @showAllWarnings="onShowAllWarnings" />
     </div>
-    <div v-if="grayScaleSelector" id="gray-scale-select-row">
-      <div id="gray-scale-select-text">{{ grayScaleText }}</div>
-      <div id="gray-scale-select-container">
-        <div
-          id="gray-scale-select"
-          :class="[grayScale ? 'gray-scale-selected' : 'gray-scale-unselected']"
-          tabindex="0"
-          @touchmove="preventEvents"
-          @touchend="preventEvents"
-          @touchstart="toggleGrayScale"
-          @mousedown="toggleGrayScale"
-          @keydown.enter="toggleGrayScale"
-          @keydown.space="toggleGrayScale" />
-      </div>
-    </div>
+    <GrayScaleToggle
+      :language="language"
+      :gray-scale-selector="grayScaleSelector"
+      :theme="theme"
+      @themeChanged="onThemeChanged" />
   </div>
 </template>
 
@@ -96,13 +92,6 @@ export default {
     }
   },
   computed: {
-    grayScale() {
-      if (this.theme == null || this.theme.length === 0) {
-        return false
-      }
-      const themeParts = this.theme.split('-')
-      return themeParts.length > 1 && themeParts[1] === 'gray'
-    },
     warnings() {
       return this.input
     },
@@ -111,9 +100,6 @@ export default {
     },
     toggleLegendsText() {
       return this.visible ? this.t('hideLegends') : this.t('showLegends')
-    },
-    grayScaleText() {
-      return this.t('grayScale')
     },
   },
   methods: {
@@ -129,19 +115,10 @@ export default {
         )
       )
     },
-    toggleGrayScale(event) {
-      event.preventDefault()
-      if (this.theme == null || this.theme.length === 0) {
-        return
+    onThemeChanged(newTheme) {
+      if (this.theme !== newTheme) {
+        this.$emit('themeChanged', newTheme)
       }
-      const baseTheme = this.theme.split('-')[0]
-      this.$emit(
-        'themeChanged',
-        this.grayScale ? baseTheme : `${baseTheme}-gray`
-      )
-    },
-    preventEvents(event) {
-      event.preventDefault()
     },
   },
 }
@@ -212,7 +189,7 @@ div.symbol-list-header-row {
   background: $dark-legend-heading-background-color;
 }
 
-.dark-theme .legends-header {
+.light-dark-theme .legends-header {
   background: $gray-legend-heading-background-color;
 }
 
@@ -287,7 +264,7 @@ div.symbol-list-header-row {
   }
 }
 
-.gray-theme .legends-toggle {
+.light-gray-theme .legends-toggle {
   background-color: $gray-legend-toggle-background-color;
 
   &:hover {
@@ -330,65 +307,7 @@ nav.symbol-list-header {
   padding-left: 0;
 }
 
-div#gray-scale-select-row {
-  width: 100%;
-  display: table;
-  padding-left: 59px;
-}
-
-div#gray-scale-select-text {
-  display: table-cell;
-  max-width: 141px;
-  padding-right: 5px;
-  vertical-align: middle;
-  line-height: normal;
-}
-
-div#gray-scale-select-container {
-  display: table-cell;
-  width: 30px;
-  height: $symbol-list-line-height;
-  vertical-align: middle;
-}
-
-div#gray-scale-select {
-  width: 100%;
-  height: $symbol-list-select-height;
-  margin: 0;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: pointer;
-}
-
-.light-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
-}
-
-.dark-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.light-gray-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
-}
-
-.light-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
-.dark-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
-}
-
-.light-gray-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
 @media (max-width: 767px) {
-  div#gray-scale-select-text {
-    text-align: right;
-    padding-right: 10px;
-  }
   nav.symbol-list-header {
     margin-top: 15px;
     margin-bottom: 5px;
