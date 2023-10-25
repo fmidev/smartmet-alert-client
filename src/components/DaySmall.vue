@@ -210,24 +210,49 @@ div.date-selector-cell {
     height: 60px !important;
   }
 
-  div.mobile-level-0 {
-    background-color: $green !important;
+  .light-theme,
+  .dark-theme {
+    div.mobile-level-0 {
+      background-color: $light-green !important;
+    }
+
+    div.mobile-level-1 {
+      background-color: $light-green !important;
+    }
+
+    div.mobile-level-2 {
+      background-color: $light-yellow !important;
+    }
+
+    div.mobile-level-3 {
+      background-color: $light-orange !important;
+    }
+
+    div.mobile-level-4 {
+      background-color: $light-red !important;
+    }
   }
 
-  div.mobile-level-1 {
-    background-color: $green !important;
-  }
+  .light-gray-theme {
+    div.mobile-level-0 {
+      background-color: $gray-green !important;
+    }
 
-  div.mobile-level-2 {
-    background-color: $yellow !important;
-  }
+    div.mobile-level-1 {
+      background-color: $gray-green !important;
+    }
 
-  div.mobile-level-3 {
-    background-color: $orange !important;
-  }
+    div.mobile-level-2 {
+      background-color: $gray-yellow !important;
+    }
 
-  div.mobile-level-4 {
-    background-color: $red !important;
+    div.mobile-level-3 {
+      background-color: $gray-orange !important;
+    }
+
+    div.mobile-level-4 {
+      background-color: $gray-red !important;
+    }
   }
 }
 </style>

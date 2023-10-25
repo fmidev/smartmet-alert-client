@@ -151,7 +151,7 @@ div.symbol-list-header-row {
   border: 2px solid $dark-legend-background-color;
 }
 
-.dark-theme .legends-panel {
+.light-gray-theme .legends-panel {
   border: 2px solid $gray-legend-background-color;
 }
 
@@ -171,7 +171,7 @@ div.symbol-list-header-row {
   background-color: $dark-legend-heading-background-color;
 }
 
-.dark-theme .legends-heading {
+.light-gray-theme .legends-heading {
   background-color: $gray-legend-heading-background-color;
 }
 
@@ -189,7 +189,7 @@ div.symbol-list-header-row {
   background: $dark-legend-heading-background-color;
 }
 
-.light-dark-theme .legends-header {
+.light-gray-theme .legends-header {
   background: $gray-legend-heading-background-color;
 }
 
@@ -209,7 +209,7 @@ div.symbol-list-header-row {
   background-color: $dark-legend-heading-background-color;
 }
 
-.dark-theme .legends-text {
+.light-gray-theme .legends-text {
   background-color: $gray-legend-heading-background-color;
 }
 
@@ -294,7 +294,7 @@ div.symbol-list-header-row {
   border-top: 2px solid $dark-legend-background-color;
 }
 
-.dark-theme .legends-container {
+.light-gray-theme .legends-container {
   background-color: $gray-legend-container-background-color;
   border-top: 2px solid $gray-legend-background-color;
 }
