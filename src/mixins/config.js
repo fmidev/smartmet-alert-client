@@ -1299,8 +1299,12 @@ export default {
             <desc></desc>
             <defs></defs>
             <g>
-                <circle cx="10" cy="10" r="6" fill="#000000" style=""/>
-                <path d="${svgpath('M10.0 0.0L14.0 8.0 L6.0 8.0z')
+                <path d="${svgpath(
+                  'M 11.127030796064377 6.106581985398371 A 8.4 8.4 0 1 0 16.872969203935618 6.106581985398369 L 14 0 L 11.127030796064377 6.106581985398371'
+                )
+                  .translate(-14.0, -14.0)
+                  .scale(6 / 8.4)
+                  .translate(10.0, 10.0)
                   .rotate(warning.direction, 10.0, 10.0)
                   .toString()}" fill="#000000" />
                 <text x="10" y="13" fill="#ffffff"
