@@ -132,6 +132,7 @@ div.symbol-list-header-row {
   padding-right: 0;
   padding-bottom: 0;
   margin-left: 0;
+  margin-right: 0;
   span {
     white-space: nowrap;
   }

@@ -254,7 +254,7 @@ button.day div.date-selector-cell {
 }
 
 @media (max-width: 575px) {
-  :deep(button.day) {
+  :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
     border-bottom: 0;
     border-radius: 0;
     margin-bottom: 0;
