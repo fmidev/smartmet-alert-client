@@ -11,6 +11,9 @@
 
 div.symbol-image {
   display: table;
+  &.popup-table-cell {
+    display: table-cell;
+  }
 }
 
 .light-theme .level-0, .dark-theme .level-0 {
