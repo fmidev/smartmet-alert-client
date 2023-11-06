@@ -443,9 +443,8 @@ export default {
           const icon = this.warningIcon(warning)
           const scale = icon.scale ? icon.scale : 1
           const width =
-            (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) /
-            icon.aspectRatio[1]
-          const height = scale * icon.scale * this.iconSize
+            (scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1]
+          const height = scale * this.iconSize
           iconData.push({
             key: warningId + Math.random(),
             x: `${reference[0] - width / 2}px`,
