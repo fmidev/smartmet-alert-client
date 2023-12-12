@@ -1,6 +1,7 @@
 <template>
   <div :id="`day-map-small-${index}`" class="map-small">
     <svg
+      class="finland-small"
       xmlns="http://www.w3.org/2000/svg"
       version="1.2"
       baseProfile="tiny"
@@ -9,7 +10,7 @@
       viewBox="0 0 75 120"
       stroke-linecap="round"
       stroke-linejoin="round">
-      <g :id="`finland-small-${index}`">
+      <g v-if="pathsNeeded" :id="`finland-small-${index}`">
         <path
           v-for="path in bluePaths"
           :key="path.key"
@@ -214,8 +215,7 @@ export default {
       if (!this.isClientSide()) {
         return true
       }
-      const element = document.getElementById(`day-map-small-${this.index}`)
-      return element != null && element.offsetParent !== null
+      return this.$el != null && this.$el.offsetParent !== null
     },
   },
 }
@@ -226,7 +226,7 @@ export default {
 
 div.map-small {
   position: relative;
-  top: 0;
+  bottom: -5px !important;
   display: inline-block;
   width: $map-small-width !important;
   height: $map-small-height !important;

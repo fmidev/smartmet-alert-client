@@ -2,15 +2,7 @@
   <div
     :class="['date-selector-cell', theme, { active: active }]"
     :aria-label="ariaLabel">
-    <div class="date-selector-cell-header">
-      <div :class="`date-selector-text mobile-level-${severity}`">
-        <span v-if="staticDays" class="bold-text weekday-text">{{
-          weekday
-        }}</span>
-        <br v-if="staticDays" class="d-inline d-sm-none" />
-        {{ date }}
-      </div>
-    </div>
+    <div class="date-selector-cell-header"></div>
     <div class="date-selector-cell-body map-container">
       <MapSmall
         :index="index"
@@ -20,6 +12,15 @@
         :geometry-id="geometryId"
         :loading="loading"
         :theme="theme" />
+    </div>
+    <div class="date-selector-cell-date">
+      <div :class="`date-selector-text mobile-level-${severity}`">
+        <span v-if="staticDays" class="bold-text weekday-text">{{
+          weekday
+        }}</span>
+        <br v-if="staticDays" class="d-inline d-sm-none" />
+        {{ date }}
+      </div>
     </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
@@ -115,9 +116,9 @@ export default {
 div.date-selector-cell {
   &.active {
     &.light-theme div.date-selector-cell-footer {
-      background-color: $light-text-color;
+      background-color: $darker-blue;
       &:after {
-        border-top: solid 7px $light-text-color;
+        border-top: solid 7px $darker-blue;
       }
     }
     &.dark-theme div.date-selector-cell-footer {
@@ -144,6 +145,12 @@ div.date-selector-cell {
       left: -moz-calc(50% - 5px);
       left: calc(50% - 5px);
     }
+  }
+
+  .date-selector-cell-header {
+    position: relative;
+    height: 2px;
+    background-color: transparent;
   }
 
   .date-selector-cell-footer {
@@ -181,7 +188,7 @@ div.date-selector-cell {
     white-space: nowrap;
   }
 
-  .date-selector-cell-header {
+  .date-selector-cell-date {
     width: 100%;
     display: table;
     height: 30px;
@@ -194,19 +201,19 @@ div.date-selector-cell {
     display: none;
   }
 
-  .light-theme div.date-selector-cell-header * {
+  .light-theme div.date-selector-cell-date * {
     color: $light-date-selector-mobile-text-color !important;
   }
 
-  .dark-theme div.date-selector-cell-header * {
+  .dark-theme div.date-selector-cell-date * {
     color: $dark-date-selector-mobile-text-color !important;
   }
 
-  .dark-theme div.date-selector-cell-header * {
+  .dark-theme div.date-selector-cell-date * {
     color: $gray-date-selector-mobile-text-color !important;
   }
 
-  div.date-selector-cell-header {
+  div.date-selector-cell-date {
     height: 60px !important;
   }
 

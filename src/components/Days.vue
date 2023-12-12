@@ -87,7 +87,7 @@ export default {
     geometryId: Number,
     loading: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     theme: {
       type: String,
@@ -167,34 +167,11 @@ div#fmi-warnings-date-selector.tabs {
   color: transparent;
 }
 
-:deep(button.day.day0) {
-  border: none !important;
-  div.date-selector-cell {
-    > div {
-      border-top: none !important;
-      border-bottom: none !important;
-      border-left: none !important;
-      border-right: none !important;
-    }
-    &.light-theme > div {
-      border-right: 1px solid $light-border-color !important;
-    }
-    &.dark-theme > div {
-      border-right: 1px solid $dark-border-color !important;
-    }
-    &.light-gray-theme > div {
-      border-right: 1px solid $gray-border-color !important;
-    }
-  }
-}
-
 button.day div.date-selector-cell {
   overflow-x: hidden;
 }
 
-:deep(button.day.day1),
-:deep(button.day.day2),
-:deep(button.day.day3) {
+:deep(button.day) {
   border: none !important;
   div.date-selector-cell {
     > div {
@@ -218,23 +195,32 @@ button.day div.date-selector-cell {
   }
 }
 
-:deep(button.day.day4) {
-  border: none !important;
-  div.date-selector-cell {
+:deep(button.day.active div.date-selector-cell.active) {
+  &.light-theme {
+    div.date-selector-cell-header {
+      border-top: 2px solid $darker-blue !important;
+    }
     > div {
-      border-top: none !important;
-      border-bottom: none !important;
-      border-left: none !important;
-      border-right: none !important;
+      border-left: 2px solid $darker-blue !important;
+      border-right: 2px solid $darker-blue !important;
     }
-    &.light-theme > div {
-      border-left: 1px solid $light-border-color !important;
+  }
+  &.dark-theme {
+    div.date-selector-cell-header {
+      border-top: 2px solid $darker-blue !important;
     }
-    &.dark-theme > div {
-      border-left: 1px solid $dark-border-color !important;
+    > div {
+      border-left: 2px solid $darker-blue !important;
+      border-right: 2px solid $darker-blue !important;
     }
-    &.light-gray-theme > div {
-      border-left: 1px solid $gray-border-color !important;
+  }
+  &.light-gray-theme {
+    div.date-selector-cell-header {
+      border-top: 2px solid $black !important;
+    }
+    > div {
+      border-left: 2px solid $black !important;
+      border-right: 2px solid $black !important;
     }
   }
 }
