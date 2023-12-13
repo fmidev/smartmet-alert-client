@@ -54,7 +54,7 @@ export default {
   vertical-align: middle;
   text-align: left;
 
-  &.level-0 {
+  &.level-0.warning-image {
     display: none;
   }
 }
