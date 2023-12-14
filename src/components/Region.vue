@@ -81,11 +81,6 @@ export default {
       type: String,
     },
   },
-  watch: {
-    shown(isShown) {
-      this.visible = isShown
-    },
-  },
   data() {
     return {
       visible: this.shown,
@@ -148,6 +143,11 @@ export default {
             `warningLevel${warning.severity}`
           )}.`
       )
+    },
+  },
+  watch: {
+    shown(isShown) {
+      this.visible = isShown
     },
   },
   methods: {

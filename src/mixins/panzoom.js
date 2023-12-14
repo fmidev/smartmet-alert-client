@@ -431,8 +431,8 @@ function Panzoom(elem, options) {
     typeof options.origin === 'string'
       ? options.origin
       : isSVG
-      ? '0 0'
-      : '50% 50%'
+        ? '0 0'
+        : '50% 50%'
   )
   function resetStyle() {
     parent.style.overflow = ''
