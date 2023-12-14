@@ -11,7 +11,9 @@ import pkg from './package.json'
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      customElement: true,
+    }),
     Components({
       resolvers: [BootstrapVueNextResolver()],
     }),
@@ -28,7 +30,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: '',
-    sourcemap: true,
+    sourcemap: 'inline',
     minify: true,
     rollupOptions: {
       output: {

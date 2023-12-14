@@ -8,9 +8,7 @@
       <div class="symbol-list-text-select">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="item-text symbol-list-text" v-html="title"></div>
-        <div
-          v-observe-visibility="flagVisibilityChanged"
-          class="symbol-list-select-container d-none d-md-table-cell">
+        <div class="symbol-list-select-container d-none d-md-table-cell">
           <div
             :id="id"
             :class="[
@@ -20,7 +18,6 @@
               'focus-ring',
               'd-none',
             ]"
-            :aria-label="input.visible ? hideLabel : showLabel"
             tabindex="0"
             @touchmove="preventEvents"
             @touchend="preventEvents"
@@ -65,11 +62,6 @@ export default {
     },
     preventEvents(event) {
       event.preventDefault()
-    },
-    flagVisibilityChanged(isVisible, entry) {
-      if (!isVisible && !entry?.boundingClientRect?.width) {
-        this.setWarningVisibility(true)
-      }
     },
   },
 }

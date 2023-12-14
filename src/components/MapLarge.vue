@@ -16,7 +16,7 @@
         aria-labelledby="finland-large-title"
         role="img">
         <title id="finland-large-title">{{ mapText }}</title>
-        <g>
+        <g v-if="!loading">
           <path
             v-for="path in bluePaths"
             :id="path.key"
@@ -113,6 +113,8 @@
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
             style="cursor: pointer; pointer-events: none" />
+        </g>
+        <g>
           <path
             v-for="path in overlayPaths"
             :id="path.key"
@@ -122,6 +124,8 @@
             :d="path.d"
             fill-opacity="0"
             style="cursor: pointer; pointer-events: none" />
+        </g>
+        <g v-if="!loading">
           <path
             v-for="coverage in overlayCoverages"
             :id="coverage.key"
@@ -175,9 +179,15 @@
         @click="zoomOut" />
       <button
         id="fmi-warnings-move"
-        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        :class="[
+          'btn',
+          'btn-md',
+          'btn-secondary',
+          'fmi-warnings-map-tool',
+          scale < 2 ? 'hidden' : '',
+        ]"
         type="button"
-        :disabled="scale < 2"
+        :tabindex="scale < 2 ? -1 : 0"
         :aria-label="moveText"
         @keydown.left="moveWest"
         @keydown.right="moveEast"
@@ -225,18 +235,18 @@
 </template>
 
 <script>
-import Panzoom from '@panzoom/panzoom'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
+import Panzoom from '../mixins/panzoom'
 import utils from '../mixins/utils'
 import PopupRow from './PopupRow.vue'
 
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, i18n, utils],
+  mixins: [config, i18n, Panzoom, utils],
   props: {
     index: {
       type: Number,
@@ -608,7 +618,7 @@ export default {
   },
   mounted() {
     if (this.isClientSide()) {
-      const finlandLarge = document.getElementById('finland-large')
+      const finlandLarge = this.$el.querySelector('svg#finland-large')
       if (finlandLarge != null) {
         this.panzoom = Panzoom(finlandLarge, {
           disableZoom: true,
@@ -961,10 +971,8 @@ div.map-large div.day-map-large button {
       border-radius: 2px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z'/%3E%3C/svg%3E");
 
-      &:disabled {
-        border-color: $variant-gray;
-        background-color: $variant-gray;
-        cursor: default;
+      &.hidden {
+        display: none;
       }
     }
   }

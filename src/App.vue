@@ -20,9 +20,6 @@
     @update-warnings="fetchWarnings" />
 </template>
 <script>
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
-
 import fetch from 'cross-fetch'
 
 import AlertClient from './components/AlertClient.vue'
@@ -103,7 +100,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       updatedAt: null,
       refreshedAt: null,
       themeClass: `${this.theme}-theme`,

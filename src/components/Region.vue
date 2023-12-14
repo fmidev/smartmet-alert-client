@@ -13,10 +13,10 @@
         </span>
       </div>
       <b-button
-        v-b-toggle="identifier"
         block
-        class="current-warning-toggle"
-        :aria-label="ariaButton" />
+        :class="['current-warning-toggle', visible ? '' : 'collapsed']"
+        :aria-label="ariaButton"
+        @click="onRegionToggle" />
     </b-card-header>
     <b-collapse
       :id="identifier"
@@ -55,6 +55,10 @@ export default {
     type: {
       type: String,
     },
+    shown: {
+      type: Boolean,
+      default: false,
+    },
     code: {
       type: String,
     },
@@ -77,9 +81,14 @@ export default {
       type: String,
     },
   },
+  watch: {
+    shown(isShown) {
+      this.visible = isShown
+    },
+  },
   data() {
     return {
-      visible: false,
+      visible: this.shown,
     }
   },
   computed: {
@@ -139,6 +148,14 @@ export default {
             `warningLevel${warning.severity}`
           )}.`
       )
+    },
+  },
+  methods: {
+    onRegionToggle() {
+      this.$emit('regionToggled', {
+        code: this.code,
+        shown: !this.visible,
+      })
     },
   },
 }

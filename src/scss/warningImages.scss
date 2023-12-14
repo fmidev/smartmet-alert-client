@@ -37,23 +37,23 @@ div.symbol-image {
 }
 
 .light-gray-theme .level-0, .dark-gray-theme .level-0 {
-  background-color: $lighter-gray;
+  background-color: $gray-green;
 }
 
 .light-gray-theme .level-1, .dark-gray-theme .level-1 {
-  background-color: $lighter-gray;
+  background-color: $gray-green;
 }
 
 .light-gray-theme .level-2, .dark-gray-theme .level-2 {
-  background-color: $variant-gray;
+  background-color: $gray-yellow;
 }
 
 .light-gray-theme .level-3, .dark-gray-theme .level-3 {
-  background-color: $dark-gray;
+  background-color: $gray-orange;
 }
 
 .light-gray-theme .level-4, .dark-gray-theme .level-4 {
-  background-color: $darker-gray;
+  background-color: $gray-red;
 }
 
 @media (forced-colors: active) {

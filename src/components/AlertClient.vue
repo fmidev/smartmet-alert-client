@@ -138,7 +138,7 @@ export default {
     },
     loading: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     sleep: {
       type: Boolean,
@@ -381,7 +381,7 @@ div#fmi-warnings {
   h2.valid-warnings {
     text-align: left;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
 
   div.not-ready {

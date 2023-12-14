@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.0.0-alpha.38",
+  "version": "4.0.0-alpha.39",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -10,26 +10,25 @@
     "url": "git+https://github.com/fmidev/smartmet-alert-client.git"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "test": "vitest"
   },
   "dependencies": {
-    "@panzoom/panzoom": "4.5.1",
     "@xmldom/xmldom": "0.8.10",
     "bootstrap": "5.3.1",
-    "bootstrap-vue-next": "0.12.3",
+    "bootstrap-vue-next": "0.14.10",
     "cross-fetch": "3.1.5",
-    "flatbush": "3.2.1",
     "dompurify": "3.0.5",
+    "flatbush": "3.2.1",
     "focus-visible": "5.2.0",
     "he": "1.2.0",
     "svgpath": "2.6.0",
     "url-search-params-polyfill": "8.2.5",
     "vue": "3.3.4",
-    "vue-observe-visibility": "1.0.0",
+    "vue-web-component-wrapper": "1.2.0",
     "xpath": "0.0.33"
   },
   "devDependencies": {
@@ -43,12 +42,12 @@
     "eslint-plugin-sonarjs": "0.21.0",
     "eslint-plugin-standard": "5.0.0",
     "eslint-plugin-vue": "9.17.0",
+    "postcss-prefixwrap": "1.40.0",
     "prettier": "3.0.3",
     "rollup-plugin-visualizer": "5.9.2",
     "unplugin-vue-components": "0.25.2",
     "vite": "4.4.9",
     "vite-plugin-banner": "0.7.0",
-    "postcss-prefixwrap": "1.40.0",
     "vitest": "0.34.4"
   },
   "eslintConfig": {

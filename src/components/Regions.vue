@@ -14,11 +14,13 @@
           <Region
             v-if="region.warnings.length"
             type="land"
+            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
             :warnings="warnings"
-            :language="language" />
+            :language="language"
+            @regionToggled="onRegionToggled" />
         </div>
       </div>
     </div>
@@ -35,13 +37,15 @@
         <div v-for="region in regions.sea" :key="region.key">
           <Region
             v-if="region.warnings.length"
-            type="land"
+            type="sea"
+            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language" />
+            :language="language"
+            @regionToggled="onRegionToggled" />
         </div>
       </div>
     </div>
@@ -70,6 +74,11 @@ export default {
     geometryId: Number,
     theme: String,
     language: String,
+  },
+  data() {
+    return {
+      shownRegion: null,
+    }
   },
   computed: {
     landText() {
@@ -143,6 +152,9 @@ export default {
         this.regions[regionType] != null &&
         this.regions[regionType].length > 0
       )
+    },
+    onRegionToggled({ code, shown }) {
+      this.shownRegion = shown ? code : null
     },
   },
 }

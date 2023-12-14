@@ -19,7 +19,10 @@
             {{ toggleLegendsText }}
           </span>
         </div>
-        <b-button v-b-toggle.legends-collapse block class="legends-toggle" />
+        <b-button
+          block
+          :class="['legends-toggle', visible ? '' : 'collapsed']"
+          @click="onLegendToggle" />
       </b-card-header>
       <b-collapse
         id="legends-collapse"
@@ -103,6 +106,9 @@ export default {
     },
   },
   methods: {
+    onLegendToggle() {
+      this.visible = !this.visible
+    },
     onWarningsToggled(newVisibleWarnings) {
       this.$emit('warningsToggled', newVisibleWarnings)
     },
