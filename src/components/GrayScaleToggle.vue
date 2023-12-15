@@ -4,7 +4,10 @@
     <div id="gray-scale-select-container">
       <div
         id="gray-scale-select"
-        :class="[grayScale ? 'gray-scale-selected' : 'gray-scale-unselected']"
+        :class="[
+          'focus-ring',
+          grayScale ? 'gray-scale-selected' : 'gray-scale-unselected',
+        ]"
         tabindex="0"
         @touchmove="preventEvents"
         @touchend="preventEvents"
