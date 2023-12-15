@@ -7,6 +7,7 @@
         :href="fromLandToNextContentHref"
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        @click="fromLandToNextContentClicked"
         >{{ fromLandToNextContentText }}</a
       >
       <div id="accordion-land" class="accordion-region" role="tablist">
@@ -31,6 +32,7 @@
         href="#fmi-warnings-end-of-regions"
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        @click="fromSeaToNextContentClicked"
         >{{ fromSeaToNextContentText }}</a
       >
       <div id="accordion-sea" class="accordion-region" role="tablist">
@@ -155,6 +157,16 @@ export default {
     },
     onRegionToggled({ code, shown }) {
       this.shownRegion = shown ? code : null
+    },
+    fromLandToNextContentClicked() {
+      const nextContent = this.$el.querySelector(this.fromLandToNextContentHref)
+      nextContent.scrollIntoView()
+      nextContent.focus()
+    },
+    fromSeaToNextContentClicked() {
+      const nextContent = this.$el.querySelector('#fmi-warnings-end-of-regions')
+      nextContent.scrollIntoView()
+      nextContent.focus()
     },
   },
 }

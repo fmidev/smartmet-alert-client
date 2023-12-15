@@ -31,6 +31,7 @@
                 :href="toContentId"
                 tabindex="0"
                 class="visually-hidden-focusable focus-ring"
+                @click="toContentClicked"
                 >{{ toContentText }}</a
               >
               <div v-else :aria-label="noWarningsText"></div>
@@ -274,6 +275,11 @@ export default {
       if (this.theme !== newTheme) {
         this.$emit('themeChanged', newTheme)
       }
+    },
+    toContentClicked() {
+      const textContent = this.$el.querySelector(this.toContentId);
+      textContent.scrollIntoView()
+      textContent.focus()
     },
     createDataForChildren() {
       if (this.warningsData != null) {
