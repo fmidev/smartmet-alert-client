@@ -3,12 +3,14 @@
     <div
       v-if="input.length > 0"
       :class="['row', 'symbol-list-main-row', 'show-text-row']">
-      <span
-        class="bold-text show-text d-none"
+      <button
+        tabindex="0"
+        type="button"
+        class="bold-text show-text d-none focus-ring"
         :class="{ 'd-sm-block': hiddenWarnings }"
-        @click="showAll"
-        >{{ showWarningsText }}</span
-      >
+        @click="showAll">
+        {{ showWarningsText }}
+      </button>
     </div>
     <div v-if="input.length > 0" class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
@@ -190,28 +192,30 @@ div.symbol-list-main-row {
 
 div.show-text-row {
   height: 30px;
-  span.show-text {
+  button.show-text {
     width: auto;
     padding: 0;
+    border: none;
+    background: none;
   }
 }
 
-div#fmi-warnings-view > div.row > span.show-text {
+div#fmi-warnings-view > div.row > button.show-text {
   line-height: 30px;
   float: right;
   cursor: pointer;
   white-space: nowrap;
 }
 
-div#fmi-warnings-view.light-theme > div.row > span.show-text {
+div#fmi-warnings-view.light-theme > div.row > button.show-text {
   color: $dark-blue;
 }
 
-div#fmi-warnings-view.dark-theme > div.row > span.show-text {
+div#fmi-warnings-view.dark-theme > div.row > button.show-text {
   color: $dark-blue;
 }
 
-div#fmi-warnings-view.light-gray-theme > div.row > span.show-text {
+div#fmi-warnings-view.light-gray-theme > div.row > button.show-text {
   color: $darker-gray;
 }
 
