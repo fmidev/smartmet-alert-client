@@ -40,7 +40,7 @@
         </b-card-body>
       </b-collapse>
     </b-card>
-    <div class="d-md-block d-none">
+    <div ref="warningsContainer" class="d-md-block d-none">
       <Warnings
         :input="input"
         :visible-warnings="visibleWarnings"
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { onMounted, onUnmounted, ref } from 'vue'
+
 import i18n from '../mixins/i18n'
 import Warnings from './Warnings.vue'
 
@@ -89,6 +91,19 @@ export default {
       default: () => [],
     },
   },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
+  },
   data() {
     return {
       visible: false,
@@ -103,6 +118,13 @@ export default {
     },
     toggleLegendsText() {
       return this.visible ? this.t('hideLegends') : this.t('showLegends')
+    },
+  },
+  watch: {
+    windowWidth() {
+      if (this.$refs.warningsContainer.clientHeight === 0) {
+        this.onShowAllWarnings()
+      }
     },
   },
   methods: {
