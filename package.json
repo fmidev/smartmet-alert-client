@@ -1,10 +1,10 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.0.0-alpha.51",
+  "version": "4.0.0-alpha.52",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
-  "main": "dist/SmartMetAlertClient.umd.min.js",
+  "main": "dist/assets/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fmidev/smartmet-alert-client.git"
