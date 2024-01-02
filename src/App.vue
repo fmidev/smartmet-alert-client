@@ -2,18 +2,18 @@
   <AlertClient
     v-if="visible"
     :refresh-interval="refreshInterval"
-    :default-day="selectedDay"
-    :static-days="staticDays"
+    :default-day="selectedDayParsed"
+    :static-days="staticDaysParsed"
     :start-from="startFrom"
-    :region-list-enabled="regionListEnabled"
-    :gray-scale-selector="grayScaleSelector"
+    :region-list-enabled="regionListEnabledParsed"
+    :gray-scale-selector="grayScaleSelectorParsed"
     :current-time="currentTime"
     :warnings-data="warningsData"
-    :daily-warning-types="dailyWarningTypes"
-    :geometry-id="geometryId"
+    :daily-warning-types="dailyWarningTypesParsed"
+    :geometry-id="geometryIdParsed"
     :language="language"
     :theme="themeClass"
-    :sleep="sleep"
+    :sleep="sleepParsed"
     :loading="loading"
     @loaded="onLoaded"
     @themeChanged="onThemeChanged"
@@ -35,30 +35,31 @@ export default {
   props: {
     currentDate: {
       type: String,
+      default: null,
     },
     baseUrl: {
       type: String,
       default: 'https://www.ilmatieteenlaitos.fi/geoserver/alert/ows',
     },
     selectedDay: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: '0',
     },
     regionListEnabled: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: 'true',
     },
     spinnerEnabled: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: 'true',
     },
     grayScaleSelector: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: 'true',
     },
     staticDays: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: 'true',
     },
     startFrom: {
       type: String,
@@ -68,17 +69,20 @@ export default {
     floodUpdated: String,
     weatherWarnings: String,
     floodWarnings: String,
-    warnings: Object,
+    warnings: {
+      type: String,
+      default: null,
+    },
     dailyWarningTypes: {
-      type: Array,
-      default: () => [],
+      type: String,
+      default: null,
     },
     refreshInterval: {
-      type: Number,
-      default: 1000 * 60 * 15,
+      type: String,
+      default: '900000', // 1000 * 60 * 15
     },
     geometryId: {
-      type: Number,
+      type: String,
       default: config.props.defaultGeometryId,
     },
     language: {
@@ -90,12 +94,12 @@ export default {
       default: 'light',
     },
     sleep: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: 'true',
     },
     debugMode: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: 'false',
     },
   },
   data() {
@@ -109,6 +113,32 @@ export default {
     }
   },
   computed: {
+    selectedDayParsed() {
+      return Number(this.selectedDay)
+    },
+    regionListEnabledParsed() {
+      return this.regionListEnabled.toLowerCase() !== 'false'
+    },
+    grayScaleSelectorParsed() {
+      return this.grayScaleSelector.toLowerCase() !== 'false'
+    },
+    staticDaysParsed() {
+      return this.staticDays.toLowerCase() !== 'false'
+    },
+    dailyWarningTypes() {
+      return this.dailyWarningTypes != null
+        ? this.dailyWarningTypes.split(',').map((item) => item.trim())
+        : []
+    },
+    refreshIntervalParsed() {
+      return Number(this.refreshInterval)
+    },
+    geometryIdParsed() {
+      return Number(this.geometryId)
+    },
+    sleepParsed() {
+      return this.sleep.toLowerCase() !== 'false'
+    },
     weatherUpdatedType() {
       return 'weather_update_time'
     },
@@ -169,7 +199,7 @@ export default {
   },
   created() {
     if (this.warnings) {
-      this.warningsData = this.warnings
+      this.warningsData = JSON.parse(this.warnings)
     }
   },
   serverPrefetch() {
@@ -190,7 +220,7 @@ export default {
     },
     fetchWarnings() {
       this.loading = true
-      if (this.debugMode) {
+      if (this.debugMode.toLowerCase() !== 'false') {
         console.log(`Updating warnings at ${new Date()}`)
       }
       const queries = new Map()

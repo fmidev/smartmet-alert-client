@@ -2,7 +2,7 @@ import svgpath from 'svgpath'
 
 export default {
   props: {
-    defaultGeometryId: 2021,
+    defaultGeometryId: '2021',
   },
   data() {
     return {
