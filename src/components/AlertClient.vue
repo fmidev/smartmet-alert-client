@@ -48,6 +48,7 @@
               :loading="loading"
               :theme="theme"
               :language="language"
+              :spinner-enabled="spinnerEnabled"
               @daySelected="onDaySelected"
               @loaded="onLoaded" />
           </div>
@@ -142,6 +143,10 @@ export default {
       default: true,
     },
     sleep: {
+      type: Boolean,
+      default: true,
+    },
+    spinnerEnabled: {
       type: Boolean,
       default: true,
     },
@@ -277,7 +282,7 @@ export default {
       }
     },
     toContentClicked() {
-      const textContent = this.$el.querySelector(this.toContentId);
+      const textContent = this.$el.querySelector(this.toContentId)
       textContent.scrollIntoView()
       textContent.focus()
     },

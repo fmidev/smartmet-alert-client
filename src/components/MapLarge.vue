@@ -1,6 +1,6 @@
 <template>
   <div class="map-large focus-ring" :class="theme" tabindex="0">
-    <div v-if="loading" class="spinner-container text-center">
+    <div v-if="spinnerEnabled && loading" class="spinner-container text-center">
       <BSpinner />
     </div>
     <div ref="dayMapLarge" class="day-map-large">
@@ -275,6 +275,10 @@ export default {
     },
     language: {
       type: String,
+    },
+    spinnerEnabled: {
+      type: Boolean,
+      default: true,
     },
   },
   setup() {

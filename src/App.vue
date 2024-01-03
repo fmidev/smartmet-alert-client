@@ -15,6 +15,7 @@
     :theme="themeClass"
     :sleep="sleepParsed"
     :loading="loading"
+    :spinner-enabled="spinnerEnabledParsed"
     @loaded="onLoaded"
     @themeChanged="onThemeChanged"
     @update-warnings="fetchWarnings" />
@@ -97,6 +98,10 @@ export default {
       type: String,
       default: 'true',
     },
+    spinnerEnabled: {
+      type: String,
+      default: 'true',
+    },
     debugMode: {
       type: String,
       default: 'false',
@@ -138,6 +143,9 @@ export default {
     },
     sleepParsed() {
       return this.sleep.toLowerCase() !== 'false'
+    },
+    spinnerEnabledParsed() {
+      return this.spinnerEnabled.toLowerCase() !== 'false'
     },
     weatherUpdatedType() {
       return 'weather_update_time'

@@ -27,6 +27,7 @@
       :loading="loading"
       :theme="theme"
       :language="language"
+      :spinner-enabled="spinnerEnabled"
       @loaded="onLoaded" />
   </div>
 </template>
@@ -79,6 +80,10 @@ export default {
     },
     language: {
       type: String,
+    },
+    spinnerEnabled: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
