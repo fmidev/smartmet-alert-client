@@ -176,13 +176,15 @@ export default {
     },
     effectiveDays(start, end, dailyWarning) {
       const offset = this.timeOffset
+      const referenceTime =
+        this.startFrom === 'updated' ? this.updatedAt : this.currentTime
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = new Date(this.currentTime)
+        const date = new Date(referenceTime)
         date.setDate(date.getDate() + index)
         const day = this.toTimeZone(date)
         const startOfDay = new Date(day.year, day.month - 1, day.day)
 
-        const nextDate = new Date(this.currentTime)
+        const nextDate = new Date(referenceTime)
         nextDate.setDate(nextDate.getDate() + index + 1)
         const nextDay = this.toTimeZone(nextDate)
         const startOfNextDay = new Date(
@@ -323,7 +325,9 @@ export default {
             )}`
           : ''
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = new Date(this.currentTime)
+        const referenceTime =
+          this.startFrom === 'updated' ? this.updatedAt : this.currentTime
+        const date = new Date(referenceTime)
         date.setDate(date.getDate() + index)
         const moment = this.toTimeZone(date)
         return {
