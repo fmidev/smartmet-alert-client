@@ -593,9 +593,9 @@ export default {
       const parents = {}
       this.errors = []
       const allUpdateTimes = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
+        .filter((warningUpdateTime) => data[warningUpdateTime] != null)
         .reduce((updateTimes, warningUpdateTime) => {
           if (
-            data[warningUpdateTime] != null &&
             data[warningUpdateTime].features != null &&
             data[warningUpdateTime].features.length > 0 &&
             data[warningUpdateTime].features[0].properties != null
