@@ -1,7 +1,7 @@
 <template>
   <AlertClient
     v-if="visible"
-    :refresh-interval="refreshInterval"
+    :refresh-interval="refreshIntervalParsed"
     :default-day="selectedDayParsed"
     :static-days="staticDaysParsed"
     :start-from="startFrom"
@@ -125,7 +125,7 @@ export default {
     staticDaysParsed() {
       return this.staticDays.toLowerCase() !== 'false'
     },
-    dailyWarningTypes() {
+    dailyWarningTypesParsed() {
       return this.dailyWarningTypes != null
         ? this.dailyWarningTypes.split(',').map((item) => item.trim())
         : []
