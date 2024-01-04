@@ -88,7 +88,7 @@ export default {
     },
     language: {
       type: String,
-      default: import.meta.env.VUE_APP_I18N_LOCALE || 'fi',
+      default: import.meta.env.VITE_LANGUAGE || 'fi',
     },
     theme: {
       type: String,
