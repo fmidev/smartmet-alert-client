@@ -182,9 +182,8 @@
         :class="[
           'btn',
           'btn-md',
-          'btn-secondary',
           'fmi-warnings-map-tool',
-          scale < 2 ? 'hidden' : '',
+          scale < 2 ? 'hidden' : 'btn-secondary',
         ]"
         type="button"
         :tabindex="scale < 2 ? -1 : 0"
