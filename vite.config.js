@@ -10,6 +10,7 @@ import banner from 'vite-plugin-banner'
 import pkg from './package.json'
 
 export default defineConfig({
+  base: './',
   plugins: [
     vue({
       customElement: true,
@@ -35,9 +36,9 @@ export default defineConfig({
     minify: true,
     rollupOptions: {
       output: {
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`,
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `[name].[ext]`,
       },
     },
   },
