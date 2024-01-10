@@ -391,7 +391,7 @@ export default {
                 const width =
                   (scale * icon.aspectRatio[0] * this.iconSize) /
                   icon.aspectRatio[1]
-                const height = scale * this.iconSize
+                const height = scale * this.iconSize + 6
                 iconSizes.push([width, height])
                 aspectRatios.push(icon.aspectRatio)
                 geoms.push(icon.geom)
