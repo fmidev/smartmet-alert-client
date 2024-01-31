@@ -115,22 +115,40 @@ export default {
 
 div.date-selector-cell {
   &.active {
-    &.light-theme div.date-selector-cell-footer {
-      background-color: $darker-blue;
-      &:after {
-        border-top: solid 7px $darker-blue;
+    &.light-theme {
+      background-color: $lightest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-blue;
+        &:after {
+          border-top: solid 7px $dark-blue;
+        }
       }
     }
-    &.dark-theme div.date-selector-cell-footer {
-      background-color: $dark-text-color;
-      &:after {
-        border-top: solid 7px $dark-text-color;
+    &.dark-theme {
+      background-color: $darkest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-text-color;
+        &:after {
+          border-top: solid 7px $dark-text-color;
+        }
       }
     }
-    &.light-gray-theme div.date-selector-cell-footer {
-      background-color: $gray-text-color;
-      &:after {
-        border-top: solid 7px $gray-text-color;
+    &.light-gray-theme {
+      background-color: $lightest-gray;
+      div.date-selector-cell-footer {
+        background-color: $light-gray-text-color;
+        &:after {
+          border-top: solid 7px $light-gray-text-color;
+        }
+      }
+    }
+    &.dark-gray-theme {
+      background-color: $darkest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-gray-text-color;
+        &:after {
+          border-top: solid 7px $dark-gray-text-color;
+        }
       }
     }
 
@@ -168,7 +186,11 @@ div.date-selector-cell {
   }
 
   &.light-gray-theme > .date-selector-cell-footer {
-    background-color: $gray-date-selector-footer-color;
+    background-color: $light-gray-date-selector-footer-color;
+  }
+
+  &.dark-gray-theme > .date-selector-cell-footer {
+    background-color: $dark-gray-date-selector-footer-color;
   }
 
   .date-selector-cell-body {
@@ -209,8 +231,12 @@ div.date-selector-cell {
     color: $dark-date-selector-mobile-text-color !important;
   }
 
-  .dark-theme div.date-selector-cell-date * {
-    color: $gray-date-selector-mobile-text-color !important;
+  .light-gray-theme div.date-selector-cell-date * {
+    color: $light-gray-date-selector-mobile-text-color !important;
+  }
+
+  .dark-gray-theme div.date-selector-cell-date * {
+    color: $dark-gray-date-selector-mobile-text-color !important;
   }
 
   div.date-selector-cell-date {
@@ -220,45 +246,127 @@ div.date-selector-cell {
   .light-theme,
   .dark-theme {
     div.mobile-level-0 {
+      color: $black !important;
       background-color: $light-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-1 {
+      color: $black !important;
       background-color: $light-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-2 {
+      color: $black !important;
       background-color: $light-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-3 {
+      color: $black !important;
       background-color: $light-orange !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-4 {
+      color: $black !important;
       background-color: $light-red !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
   }
 
   .light-gray-theme {
     div.mobile-level-0 {
-      background-color: $gray-green !important;
+      color: $black !important;
+      background-color: $light-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-1 {
-      background-color: $gray-green !important;
+      color: $black !important;
+      background-color: $light-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-2 {
-      background-color: $gray-yellow !important;
+      color: $black !important;
+      background-color: $light-gray-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
     }
 
     div.mobile-level-3 {
-      background-color: $gray-orange !important;
+      color: $white !important;
+      background-color: $light-gray-orange !important;
+      .weekday-text {
+        color: $white !important;
+      }
     }
 
     div.mobile-level-4 {
-      background-color: $gray-red !important;
+      color: $white !important;
+      background-color: $light-gray-red !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
+  }
+
+  .dark-gray-theme {
+    div.mobile-level-0 {
+      color: $black !important;
+      background-color: $dark-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-1 {
+      color: $black !important;
+      background-color: $dark-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-2 {
+      color: $black !important;
+      background-color: $dark-gray-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-3 {
+      color: $white !important;
+      background-color: $dark-gray-orange !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
+
+    div.mobile-level-4 {
+      color: $white !important;
+      background-color: $dark-gray-red !important;
+      .weekday-text {
+        color: $white !important;
+      }
     }
   }
 }

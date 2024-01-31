@@ -381,7 +381,11 @@ export default {
 }
 
 :deep(.light-gray-theme *) {
-  color: $gray-text-color;
+  color: $light-gray-text-color;
+}
+
+:deep(.dark-gray-theme *) {
+  color: $dark-gray-text-color;
 }
 
 div#fmi-warnings {
@@ -406,13 +410,13 @@ div#fmi-warnings {
 
   .light-theme div.not-ready {
     background-color: $notification-color;
-    border: 1px solid $darker-blue;
+    border: 1px solid $dark-blue;
     a.supported-browsers {
       color: $light-ext-link-color;
       border-bottom: 1px solid $light-ext-link-color;
     }
     a.supported-browsers:hover {
-      border-color: $darker-blue;
+      border-color: $dark-blue;
     }
   }
 
@@ -430,13 +434,25 @@ div#fmi-warnings {
 
   .light-gray-theme div.not-ready {
     background-color: $notification-color;
-    border: 1px solid $darker-blue;
+    border: 1px solid $dark-blue;
     a.supported-browsers {
-      color: $gray-ext-link-color;
-      border-bottom: 1px solid $gray-ext-link-color;
+      color: $light-gray-ext-link-color;
+      border-bottom: 1px solid $light-gray-ext-link-color;
     }
     a.supported-browsers:hover {
-      border-color: $darker-blue;
+      border-color: $dark-blue;
+    }
+  }
+
+  .dark-gray-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $light-blue;
+    a.supported-browsers {
+      color: $dark-gray-ext-link-color;
+      border-bottom: 1px solid $dark-gray-ext-link-color;
+    }
+    a.supported-browsers:hover {
+      border-color: $light-blue;
     }
   }
 
@@ -483,7 +499,11 @@ div.symbol-list {
 }
 
 .light-gray-theme a.supported-browsers {
-  color: $gray-ext-link-color;
+  color: $light-gray-ext-link-color;
+}
+
+.dark-gray-theme a.supported-browsers {
+  color: $dark-gray-ext-link-color;
 }
 
 @media (max-width: 767px) {

@@ -181,7 +181,11 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-panel {
-  border: 2px solid $gray-legend-background-color;
+  border: 2px solid $light-gray-legend-background-color;
+}
+
+.dark-gray-theme .legends-panel {
+  border: 2px solid $dark-gray-legend-background-color;
 }
 
 .legends-heading {
@@ -201,7 +205,11 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-heading {
-  background-color: $gray-legend-heading-background-color;
+  background-color: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-heading {
+  background-color: $dark-gray-legend-heading-background-color;
 }
 
 .legends-header {
@@ -219,7 +227,11 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-header {
-  background: $gray-legend-heading-background-color;
+  background: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-header {
+  background: $dark-gray-legend-heading-background-color;
 }
 
 .legends-text {
@@ -239,7 +251,11 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-text {
-  background-color: $gray-legend-heading-background-color;
+  background-color: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-text {
+  background-color: $dark-gray-legend-heading-background-color;
 }
 
 .legends-toggle {
@@ -294,18 +310,34 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-toggle {
-  background-color: $gray-legend-toggle-background-color;
+  background-color: $light-gray-legend-toggle-background-color;
 
   &:hover {
-    background-color: $gray-legend-toggle-background-color;
+    background-color: $light-gray-legend-toggle-background-color;
   }
 
   &:active {
-    background-color: $gray-legend-toggle-background-color;
+    background-color: $light-gray-legend-toggle-background-color;
   }
 
   &:not(:disabled):not(.disabled):active {
-    background-color: $gray-current-warning-toggle-active-color;
+    background-color: $light-gray-current-warning-toggle-active-color;
+  }
+}
+
+.dark-gray-theme .legends-toggle {
+  background-color: $dark-gray-legend-toggle-background-color;
+
+  &:hover {
+    background-color: $dark-gray-legend-toggle-background-color;
+  }
+
+  &:active {
+    background-color: $dark-gray-legend-toggle-background-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $dark-gray-current-warning-toggle-active-color;
   }
 }
 
@@ -324,8 +356,13 @@ div.symbol-list-header-row {
 }
 
 .light-gray-theme .legends-container {
-  background-color: $gray-legend-container-background-color;
-  border-top: 2px solid $gray-legend-background-color;
+  background-color: $light-gray-legend-container-background-color;
+  border-top: 2px solid $light-gray-legend-background-color;
+}
+
+.dark-gray-theme .legends-container {
+  background-color: $dark-gray-legend-container-background-color;
+  border-top: 2px solid $dark-gray-legend-background-color;
 }
 
 div#legends-collapse div.card-body {

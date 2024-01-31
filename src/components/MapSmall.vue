@@ -14,7 +14,7 @@
         <path
           v-for="path in bluePaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -22,7 +22,7 @@
         <path
           v-for="path in greenPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -30,7 +30,7 @@
         <path
           v-for="path in yellowPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -38,7 +38,7 @@
         <path
           v-for="coverage in yellowCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -47,7 +47,7 @@
         <path
           v-for="path in orangePaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -55,7 +55,7 @@
         <path
           v-for="coverage in orangeCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -64,7 +64,7 @@
         <path
           v-for="path in redPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -72,7 +72,7 @@
         <path
           v-for="coverage in redCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -81,14 +81,14 @@
         <path
           v-for="path in overlayPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
           fill-opacity="0" />
         <path
           v-for="coverage in overlayCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"

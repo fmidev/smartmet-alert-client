@@ -146,7 +146,10 @@ div#fmi-warnings-date-selector.tabs {
     background-color: $dark-date-selector-background-color;
   }
   &.light-gray-theme {
-    background-color: $gray-date-selector-background-color;
+    background-color: $light-gray-date-selector-background-color;
+  }
+  &.dark-gray-theme {
+    background-color: $dark-gray-date-selector-background-color;
   }
 }
 
@@ -194,8 +197,12 @@ button.day div.date-selector-cell {
       border-right: 1px solid $dark-border-color !important;
     }
     &.light-gray-theme > div {
-      border-left: 1px solid $gray-border-color !important;
-      border-right: 1px solid $gray-border-color !important;
+      border-left: 1px solid $light-gray-border-color !important;
+      border-right: 1px solid $light-gray-border-color !important;
+    }
+    &.dark-gray-theme > div {
+      border-left: 1px solid $dark-gray-border-color !important;
+      border-right: 1px solid $dark-gray-border-color !important;
     }
   }
 }
@@ -203,20 +210,20 @@ button.day div.date-selector-cell {
 :deep(button.day.active div.date-selector-cell.active) {
   &.light-theme {
     div.date-selector-cell-header {
-      border-top: 2px solid $darker-blue !important;
+      border-top: 2px solid $dark-blue !important;
     }
     > div {
-      border-left: 2px solid $darker-blue !important;
-      border-right: 2px solid $darker-blue !important;
+      border-left: 2px solid $dark-blue !important;
+      border-right: 2px solid $dark-blue !important;
     }
   }
   &.dark-theme {
     div.date-selector-cell-header {
-      border-top: 2px solid $darker-blue !important;
+      border-top: 2px solid $dark-blue !important;
     }
     > div {
-      border-left: 2px solid $darker-blue !important;
-      border-right: 2px solid $darker-blue !important;
+      border-left: 2px solid $dark-blue !important;
+      border-right: 2px solid $dark-blue !important;
     }
   }
   &.light-gray-theme {
@@ -226,6 +233,15 @@ button.day div.date-selector-cell {
     > div {
       border-left: 2px solid $black !important;
       border-right: 2px solid $black !important;
+    }
+  }
+  &.dark-gray-theme {
+    div.date-selector-cell-header {
+      border-top: 2px solid $white !important;
+    }
+    > div {
+      border-left: 2px solid $white !important;
+      border-right: 2px solid $white !important;
     }
   }
 }

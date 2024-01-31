@@ -208,15 +208,19 @@ div#fmi-warnings-view > div.row > button.show-text {
 }
 
 div#fmi-warnings-view.light-theme > div.row > button.show-text {
-  color: $dark-blue;
+  color: $blue;
 }
 
 div#fmi-warnings-view.dark-theme > div.row > button.show-text {
-  color: $dark-blue;
+  color: $blue;
 }
 
 div#fmi-warnings-view.light-gray-theme > div.row > button.show-text {
   color: $darker-gray;
+}
+
+div#fmi-warnings-view.dark-gray-theme > div.row > button.show-text {
+  color: $lighter-gray;
 }
 
 hr.symbol-block-separator {
@@ -258,7 +262,11 @@ div.symbol-list-cell-image {
 }
 
 .light-gray-theme .gray {
-  background-color: $gray-legend-toggle-background-color;
+  background-color: $light-gray-legend-toggle-background-color;
+}
+
+.dark-gray-theme .gray {
+  background-color: $dark-gray-legend-toggle-background-color;
 }
 
 @media (forced-colors: active) {
@@ -288,6 +296,22 @@ div.warning-image {
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.light-theme div.warning-image {
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.dark-theme div.warning-image {
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.light-gray-theme div.warning-image {
+  box-shadow: 0 0 0 2px $black;
+}
+
+.dark-gray-theme div.warning-image {
+  box-shadow: 0 0 0 2px $white;
 }
 
 div.symbol-list-cell-text {
@@ -344,8 +368,13 @@ hr {
 }
 
 .light-gray-theme hr {
-  background-color: $gray-horizontal-rule-color;
-  color: $gray-horizontal-rule-color;
+  background-color: $light-gray-horizontal-rule-color;
+  color: $light-gray-horizontal-rule-color;
+}
+
+.dark-gray-theme hr {
+  background-color: $dark-gray-horizontal-rule-color;
+  color: $dark-gray-horizontal-rule-color;
 }
 
 @media (max-width: 767px) {

@@ -188,7 +188,11 @@ export default {
 }
 
 .light-gray-theme .current-warning-heading {
-  background-color: $gray-current-warning-heading-color;
+  background-color: $light-gray-current-warning-heading-color;
+}
+
+.dark-gray-theme .current-warning-heading {
+  background-color: $dark-gray-current-warning-heading-color;
 }
 
 button {
@@ -219,7 +223,11 @@ button {
 }
 
 .light-gray-theme .region-header {
-  background-color: $gray-current-warning-heading-color;
+  background-color: $light-gray-current-warning-heading-color;
+}
+
+.dark-gray-theme .region-header {
+  background-color: $dark-gray-current-warning-heading-color;
 }
 
 .current-warning-toggle {
@@ -266,14 +274,26 @@ button {
 }
 
 .light-gray-theme .current-warning-toggle {
-  background-color: $gray-current-warning-toggle-color;
+  background-color: $light-gray-current-warning-toggle-color;
 
   &:hover {
-    background-color: $gray-current-warning-toggle-color;
+    background-color: $light-gray-current-warning-toggle-color;
   }
 
   &:not(:disabled):not(.disabled):active {
-    background-color: $gray-current-warning-toggle-active-color;
+    background-color: $light-gray-current-warning-toggle-active-color;
+  }
+}
+
+.dark-gray-theme .current-warning-toggle {
+  background-color: $dark-gray-current-warning-toggle-color;
+
+  &:hover {
+    background-color: $dark-gray-current-warning-toggle-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $dark-gray-current-warning-toggle-active-color;
   }
 }
 
@@ -292,8 +312,13 @@ button {
 }
 
 .light-gray-theme .current-description {
-  border-top: 1px solid $gray-description-border-color;
-  background-color: $gray-description-background-color;
+  border-top: 1px solid $light-gray-description-border-color;
+  background-color: $light-gray-description-background-color;
+}
+
+.dark-gray-theme .current-description {
+  border-top: 1px solid $dark-gray-description-border-color;
+  background-color: $dark-gray-description-background-color;
 }
 
 div.current-description-table {

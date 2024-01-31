@@ -120,6 +120,10 @@ div#gray-scale-select {
   background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
 }
 
+.dark-gray-theme .gray-scale-selected {
+  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
+}
+
 .light-theme .gray-scale-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
@@ -130,6 +134,10 @@ div#gray-scale-select {
 
 .light-gray-theme .gray-scale-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+}
+
+.dark-gray-theme .gray-scale-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
 @media (max-width: 767px) {

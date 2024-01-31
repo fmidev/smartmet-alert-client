@@ -42,6 +42,9 @@ export default {
       severe: 3,
       extreme: 4,
     }),
+    strokeColor() {
+      return this.colors[this.theme].stroke
+    },
     bluePaths() {
       return this.paths({
         type: this.REGION_SEA,

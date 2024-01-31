@@ -109,6 +109,22 @@ div.warning-image {
   background-position: center;
 }
 
+.light-theme div.warning-image {
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.dark-theme div.warning-image {
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.light-gray-theme div.warning-image {
+  box-shadow: 0 0 0 2px $black;
+}
+
+.dark-gray-theme div.warning-image {
+  box-shadow: 0 0 0 2px $white;
+}
+
 div.symbol-list-cell-text {
   padding-left: 15px;
   padding-right: 0;
@@ -134,8 +150,13 @@ hr {
 }
 
 .light-gray-theme hr {
-  background-color: $gray-horizontal-rule-color;
-  color: $gray-horizontal-rule-color;
+  background-color: $light-gray-horizontal-rule-color;
+  color: $light-gray-horizontal-rule-color;
+}
+
+.dark-gray-theme hr {
+  background-color: $dark-gray-horizontal-rule-color;
+  color: $dark-gray-horizontal-rule-color;
 }
 
 div#fmi-warnings-list div.symbol-list-cell-text {
@@ -196,6 +217,10 @@ div.symbol-list-text {
   background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
 }
 
+.dark-gray-theme .flag-selected {
+  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
+}
+
 .flag-unselected {
   cursor: pointer;
 }
@@ -210,6 +235,10 @@ div.symbol-list-text {
 
 .light-gray-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+}
+
+.dark-gray-theme .flag-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
 @media (max-width: 767px) {

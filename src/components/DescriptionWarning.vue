@@ -149,7 +149,11 @@ a.ext-link {
 }
 
 .light-gray-theme a.ext-link {
-  color: $gray-ext-link-color;
+  color: $light-gray-ext-link-color;
+}
+
+.dark-gray-theme a.ext-link {
+  color: $dark-gray-ext-link-color;
 }
 
 span.warning-valid {
