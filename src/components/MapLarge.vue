@@ -62,7 +62,6 @@
             v-for="coverage in yellowCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
@@ -85,7 +84,6 @@
             v-for="coverage in orangeCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
@@ -108,7 +106,6 @@
             v-for="coverage in redCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
@@ -134,6 +131,7 @@
             :key="coverage.key"
             :stroke="strokeColor"
             :stroke-width="coverage.strokeWidth"
+            :stroke-opacity="strokeOpacity"
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
@@ -320,7 +318,7 @@ export default {
       popupWarnings: [],
       coverageRegions: {},
       coverageWarnings: [],
-      strokeOpacity: '0.75',
+      strokeOpacity: '1',
     }
   },
   computed: {

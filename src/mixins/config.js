@@ -966,7 +966,7 @@ export default {
           sea: '#bee2f1',
           levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
           missing: '#f8f8f8',
-          stroke: '#191b22',
+          stroke: '#303030',
         },
         'dark-theme': {
           sea: '#bee2f1',
@@ -978,7 +978,7 @@ export default {
           sea: '#ffffff',
           levels: ['#ffffff', '#ffffff', '#aaaaaa', '#555555', '#000000'],
           missing: '#f8f8f8',
-          stroke: '#808080',
+          stroke: '#666666',
         },
         'dark-gray-theme': {
           sea: '#ffffff',
