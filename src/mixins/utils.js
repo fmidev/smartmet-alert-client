@@ -104,7 +104,7 @@ export default {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 4)
     },
     overlayCoverages() {
-      return this.coverageGeom(`coverages${this.size}`, this.strokeWidth, 0)
+      return this.coverageGeom(`coverages${this.size}`, 1.1 * this.strokeWidth, 0)
     },
   },
   methods: {

@@ -110,19 +110,19 @@ div.warning-image {
 }
 
 .light-theme div.warning-image {
-  box-shadow: 0 0 0 2px transparent;
+  box-shadow: 0 0 0 1.5px transparent;
 }
 
 .dark-theme div.warning-image {
-  box-shadow: 0 0 0 2px transparent;
+  box-shadow: 0 0 0 1.5px transparent;
 }
 
 .light-gray-theme div.warning-image {
-  box-shadow: 0 0 0 2px $black;
+  box-shadow: 0 0 0 1.5px $black;
 }
 
 .dark-gray-theme div.warning-image {
-  box-shadow: 0 0 0 2px $white;
+  box-shadow: 0 0 0 1.5px $white;
 }
 
 div.symbol-list-cell-text {

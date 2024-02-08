@@ -966,13 +966,13 @@ export default {
           sea: '#bee2f1',
           levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
           missing: '#f8f8f8',
-          stroke: '#303030',
+          stroke: '#000000',
         },
         'dark-theme': {
           sea: '#bee2f1',
           levels: ['#6af86a', '#6af86a', '#f8f800', '#f9bf2e', '#ff0909'],
           missing: '#f8f8f8',
-          stroke: '#555555',
+          stroke: '#282828',
         },
         'light-gray-theme': {
           sea: '#ffffff',

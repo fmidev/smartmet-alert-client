@@ -371,6 +371,7 @@ div#legends-collapse div.card-body {
 
 nav.symbol-list-header {
   padding-left: 0;
+  text-align: left;
 }
 
 @media (max-width: 767px) {

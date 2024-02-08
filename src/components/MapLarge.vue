@@ -318,7 +318,7 @@ export default {
       popupWarnings: [],
       coverageRegions: {},
       coverageWarnings: [],
-      strokeOpacity: '1',
+      strokeOpacity: '0.5',
     }
   },
   computed: {
