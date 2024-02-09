@@ -242,7 +242,7 @@ export default {
   },
   mounted() {
     this.initTimer()
-    if (this.sleep) {
+    if (this.isClientSide() && this.sleep) {
       this.visibilityListener = document.addEventListener(
         'visibilitychange',
         this.visibilityChange
