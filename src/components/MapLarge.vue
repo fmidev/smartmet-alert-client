@@ -664,6 +664,9 @@ export default {
           this.limitPan()
         })
       }
+      if (this.warnings != null) {
+        this.$emit('loaded', true)
+      }
     }
   },
   updated() {
