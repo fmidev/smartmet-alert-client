@@ -109,7 +109,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      loading: 1,
       updatedAt: null,
       refreshedAt: null,
       themeClass: `${this.theme}-theme`,
@@ -217,8 +217,8 @@ export default {
   },
   methods: {
     onLoaded(loaded) {
-      if (loaded) {
-        this.loading = false
+      if (loaded !== 0) {
+        this.loading = loaded === -1 ? -1 : 0
       }
     },
     onThemeChanged(newTheme) {
@@ -227,7 +227,7 @@ export default {
       }-theme`
     },
     fetchWarnings() {
-      this.loading = true
+      this.loading = 1
       if (this.debugMode.toLowerCase() !== 'false') {
         console.log(`Updating warnings at ${new Date()}`)
       }
@@ -249,14 +249,20 @@ export default {
       return Promise.allSettled(
         [...queries.keys()].map(async (query) =>
           fetch(query).then((response) =>
-            response.json().then((json) => {
-              const currentTime = Date.now()
-              if (this.updatedAt != null) {
-                this.refreshedAt = currentTime
-              }
-              this.updatedAt = currentTime
-              responseData[queries.get(query)] = json
-            })
+            response
+              .json()
+              .then((json) => {
+                const currentTime = Date.now()
+                if (this.updatedAt != null) {
+                  this.refreshedAt = currentTime
+                }
+                this.updatedAt = currentTime
+                responseData[queries.get(query)] = json
+              })
+              .catch((error) => {
+                this.loading = -1
+                console.log(error)
+              })
           )
         )
       ).then(() => {

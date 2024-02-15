@@ -3,7 +3,7 @@
   "notInitializedEnd": "Säkerställ nätverksanslutning. Kontrollera att du har uppdaterat din webbläsare och operativsystem.",
   "supportedBrowsers": "Lista över webbläsare som stöds",
   "supportedBrowsersLink": "https://sv.ilmatieteenlaitos.fi/information-om-sidorna",
-  "failed": "Lastning misslyckades.",
+  "failed": "Ett fel uppstod vid sökningen av varningar. Försök på nytt om en stund.",
   "regionLand": "Varningar är i kraft i följande landområden",
   "regionSea": "Varningar är i kraft i följande havsområden",
   "validWarnings": "Varningar i kraft, 5 dygn",

@@ -45,7 +45,7 @@
               :warnings="warnings"
               :regions="regions"
               :geometry-id="geometryId"
-              :loading="loading"
+              :loading="Boolean(loading)"
               :theme="theme"
               :language="language"
               :spinner-enabled="spinnerEnabled"
@@ -139,7 +139,7 @@ export default {
       default: 'light-theme',
     },
     loading: {
-      type: Boolean,
+      type: Number,
       default: true,
     },
     sleep: {
@@ -212,10 +212,12 @@ export default {
       return this.t('supportedBrowsers')
     },
     mainInfoText() {
-      return this.t('notInitializedStart')
+      return this.loading === -1
+        ? this.t('failed')
+        : this.t('notInitializedStart')
     },
     additionalInfoText() {
-      return this.t('notInitializedEnd')
+      return this.loading === -1 ? '' : this.t('notInitializedEnd')
     },
     numWarnings() {
       return this.warnings != null ? Object.keys(this.warnings).length : 0
@@ -272,9 +274,12 @@ export default {
       })
     },
     onLoaded(loaded) {
-      if (loaded) {
-        this.$emit('loaded', true)
+      if (this.loading !== -1 && loaded) {
+        this.$emit('loaded', 1)
       }
+    },
+    onDataError() {
+      this.$emit('loaded', -1)
     },
     onThemeChanged(newTheme) {
       if (this.theme !== newTheme) {

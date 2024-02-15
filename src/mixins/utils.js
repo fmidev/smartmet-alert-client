@@ -104,7 +104,11 @@ export default {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 4)
     },
     overlayCoverages() {
-      return this.coverageGeom(`coverages${this.size}`, 1.1 * this.strokeWidth, 0)
+      return this.coverageGeom(
+        `coverages${this.size}`,
+        1.1 * this.strokeWidth,
+        0
+      )
     },
   },
   methods: {
@@ -638,7 +642,8 @@ export default {
       for (const warningType of warningTypes) {
         let features = []
         if (data[warningType] == null) {
-          this.handleError(warningType)
+          this.handleError(`Missing data: ${warningType}`)
+          this.onDataError()
           // eslint-disable-next-line no-continue
           continue
         }
