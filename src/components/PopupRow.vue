@@ -77,7 +77,7 @@ span.symbol-text {
   width: 100%;
   text-align: center;
   margin: 0 auto;
-  font-family: $font-family;
+  font-family: $symbol-font-family;
   color: $white;
   text-anchor: middle;
   font-weight: 700;
