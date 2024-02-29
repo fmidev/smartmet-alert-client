@@ -1,7 +1,7 @@
-const PrefixWrap = require('postcss-prefixwrap')
-const postcssurl = require('postcss-url')
+import PrefixWrap from 'postcss-prefixwrap'
+import postcssurl from 'postcss-url'
 
-module.exports = {
+export default {
   plugins: [
     PrefixWrap('div#fmi-warnings div', {
       ignoredSelectors: ['#fmi-warnings'],

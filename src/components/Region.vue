@@ -162,7 +162,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
 
 .current-warning-panel {
   border-radius: 0;

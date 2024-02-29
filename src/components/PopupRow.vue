@@ -42,8 +42,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
-@import '../scss/warningImages.scss';
 
 .popup-table-row {
   display: table-row;

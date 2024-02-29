@@ -33,8 +33,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
-@import '../scss/warningImages.scss';
 
 div.warning-image {
   border-radius: 50%;

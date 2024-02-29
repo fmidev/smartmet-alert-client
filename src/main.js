@@ -1,22 +1,12 @@
-import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css?inline'
-import {
-  createApp,
-  defineCustomElement as VueDefineCustomElement,
-  getCurrentInstance,
-  h,
-} from 'vue'
-import { createWebComponent } from 'vue-web-component-wrapper'
+import { createApp } from 'vue'
+import App from './App.vue'
 
-import app from './App.vue'
-import { pluginsWrapper } from './plugins'
+class SmartMetAlertClient extends HTMLElement {
+  constructor() {
+    super()
+    const app = createApp(App)
+    app.mount(this.attachShadow({ mode: 'open' }))
+  }
+}
 
-createWebComponent({
-  rootComponent: app,
-  elementName: 'smartmet-alert-client',
-  plugins: pluginsWrapper,
-  cssFrameworkStyles: [bootstrapStyle],
-  VueDefineCustomElement,
-  h,
-  createApp,
-  getCurrentInstance,
-})
+customElements.define('smartmet-alert-client', SmartMetAlertClient)

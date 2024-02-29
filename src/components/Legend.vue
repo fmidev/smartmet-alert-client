@@ -153,7 +153,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
 
 div.symbol-list-header-row {
   padding-left: 0;

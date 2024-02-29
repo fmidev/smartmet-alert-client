@@ -173,7 +173,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
 
 h3 {
   width: 100%;

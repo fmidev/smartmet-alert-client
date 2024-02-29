@@ -341,7 +341,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../scss/constants.scss';
 
 :deep(*) {
   box-sizing: border-box;
