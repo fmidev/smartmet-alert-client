@@ -131,6 +131,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../scss/constants.scss';
 
 div#fmi-warnings-date-selector.tabs {
   padding: 0;

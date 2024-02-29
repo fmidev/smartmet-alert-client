@@ -891,6 +891,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../scss/constants.scss';
+@import '../scss/warningImages.scss';
 
 div.map-large {
   display: inline-block;

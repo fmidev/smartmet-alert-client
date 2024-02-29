@@ -66,6 +66,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../scss/constants.scss';
+@import '../scss/warningImages.scss';
 
 div.current-description-row {
   display: table-row;

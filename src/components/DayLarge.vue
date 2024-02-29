@@ -150,6 +150,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../scss/constants.scss';
 
 div,
 span {
