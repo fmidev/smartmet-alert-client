@@ -75,6 +75,7 @@ export default {
 
 div#gray-scale-select-row {
   width: 100%;
+  margin-top: 20px;
   padding-left: 59px;
   &.narrow-screen {
     display: none;
@@ -142,6 +143,7 @@ div#gray-scale-select {
 
 @media (max-width: 767px) {
   div#gray-scale-select-row {
+    margin-top: 0;
     &.narrow-screen {
       display: table;
       div#gray-scale-select-text {

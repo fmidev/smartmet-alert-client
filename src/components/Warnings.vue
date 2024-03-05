@@ -40,7 +40,6 @@
           <div class="item-text symbol-list-text">
             {{ severalWarningsText }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -54,7 +53,6 @@
           <div class="item-text symbol-list-text">
             {{ warningLevel1Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -68,7 +66,6 @@
           <div class="item-text symbol-list-text">
             {{ warningLevel2Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -82,7 +79,6 @@
           <div class="item-text symbol-list-text">
             {{ warningLevel3Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -96,7 +92,7 @@
           <div class="item-text symbol-list-text">
             {{ warningLevel4Text }}
           </div>
-          <hr />
+          <hr class="bottom-separator" />
         </div>
       </div>
     </div>
@@ -378,8 +374,11 @@ hr {
 }
 
 @media (max-width: 767px) {
-  hr.symbol-block-separator {
-    margin-right: 0;
+  hr {
+    &.symbol-block-separator,
+    &.bottom-separator {
+      display: none;
+    }
   }
 
   div.show-text-row {
