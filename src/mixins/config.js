@@ -1213,8 +1213,8 @@ export default {
                   .rotate(warning.direction, 10.0, 10.0)
                   .translate(1.0 + dx, 0.0)
                   .toString()}" fill="#000000" stroke="rgba(255, 255, 255, 1.0)" stroke-width="2.5px" paint-order="stroke" />
-                <text x="${10.75 + dx}" y="13" fill="#ffffff"
-                      style="font-family: sans-serif; font-size: 8px; text-anchor: middle; font-weight: bold;">${
+                <text x="${10.75 + dx}" y="13.05" fill="#ffffff"
+                      style="font-family: 'Noto Sans', sans-serif; font-size: 9px; text-anchor: middle; font-weight: bold;">${
                         warning.text
                       }
                 </text>
