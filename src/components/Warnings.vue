@@ -295,19 +295,19 @@ div.warning-image {
 }
 
 .light-theme div.warning-image {
-  box-shadow: 0 0 0 1.5px transparent;
+  box-shadow: 0 0 0 1px transparent;
 }
 
 .dark-theme div.warning-image {
-  box-shadow: 0 0 0 1.5px transparent;
+  box-shadow: 0 0 0 1px transparent;
 }
 
 .light-gray-theme div.warning-image {
-  box-shadow: 0 0 0 1.5px $black;
+  box-shadow: 0 0 0 1px $black;
 }
 
 .dark-gray-theme div.warning-image {
-  box-shadow: 0 0 0 1.5px $white;
+  box-shadow: 0 0 0 1px $white;
 }
 
 div.symbol-list-cell-text {
