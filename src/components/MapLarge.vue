@@ -1413,8 +1413,16 @@ span.region-popup-header-text {
   background-color: $dark-popup-table-background-color;
 }
 
-.light-gray-theme .popup-table-heading {
-  background-color: $light-gray-popup-table-background-color;
+.light-gray-theme {
+  .popup-table-heading {
+    background-color: $light-gray-popup-table-background-color;
+  }
+  .popup-table {
+    border-top: solid 1px $light-gray;
+  }
+  #day-map-large-base-popup {
+    box-shadow: 0 0 0 1px $light-gray;
+  }
 }
 
 .dark-gray-theme .popup-table-heading {
