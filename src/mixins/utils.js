@@ -2,14 +2,13 @@ import 'url-search-params-polyfill'
 
 import { DOMParser } from '@xmldom/xmldom'
 import he from 'he'
-import mapshaper from 'mapshaper'
 import xpath from 'xpath'
 
-import i18n from '../i18n'
 import config from './config'
+import geojsonsvg from './geojsonsvg'
 
 export default {
-  mixins: [config],
+  mixins: [config, geojsonsvg],
   computed: {
     NUMBER_OF_DAYS: () => 5,
     REGION_LAND: () => 'land',
@@ -43,13 +42,8 @@ export default {
       severe: 3,
       extreme: 4,
     }),
-    COVERAGE_JSON: () => 'coverage.json',
-    COVERAGE_SVG: () => 'coverage.svg',
-    allWarnings() {
-      return this.$store.getters.warnings ?? {}
-    },
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
+    strokeColor() {
+      return this.colors[this.theme].stroke
     },
     bluePaths() {
       return this.paths({
@@ -110,13 +104,11 @@ export default {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 4)
     },
     overlayCoverages() {
-      return this.coverageGeom(`coverages${this.size}`, this.strokeWidth, 0)
-    },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
-    initialized() {
-      return this.$store.getters.initialized
+      return this.coverageGeom(
+        `coverages${this.size}`,
+        1.1 * this.strokeWidth,
+        0
+      )
     },
   },
   methods: {
@@ -190,7 +182,7 @@ export default {
       return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
     },
     effectiveDays(start, end, dailyWarning) {
-      const offset = this.$store.getters.timeOffset
+      const offset = this.timeOffset
       const referenceTime =
         this.startFrom === 'updated' ? this.updatedAt : this.currentTime
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
@@ -323,8 +315,8 @@ export default {
         info: {
           [warning.properties.language.substr(0, 2).toLowerCase()]: info,
         },
-        link: i18n.t('floodLink'),
-        linkText: i18n.t('floodLinkText'),
+        link: this.t('floodLink'),
+        linkText: this.t('floodLinkText'),
       }
     },
     createDays(warnings) {
@@ -525,33 +517,32 @@ export default {
 
     coverageGeom(coverageProperty, strokeWidth, fillOpacity, severity) {
       const coverageData = []
-      const warnings = this.allWarnings
       const visibleWarnings = this.visibleWarnings
-      Object.keys(warnings).forEach((key) => {
+      Object.keys(this.warnings ?? {}).forEach((key) => {
         if (
-          (severity == null || warnings[key].severity === severity) &&
-          warnings[key].effectiveDays[this.index] &&
-          visibleWarnings.includes(warnings[key].type) &&
-          warnings[key].coveragesLarge.length > 0
+          (severity == null || this.warnings[key].severity === severity) &&
+          this.warnings[key].effectiveDays[this.index] &&
+          visibleWarnings.includes(this.warnings[key].type) &&
+          this.warnings[key].coveragesLarge.length > 0
         ) {
           if (!this.coverageWarnings.includes(key)) {
-            ;[...warnings[key].covRegions.keys()].forEach((covRegion) => {
+            ;[...this.warnings[key].covRegions.keys()].forEach((covRegion) => {
               if (
                 this.coverageRegions[covRegion] == null ||
-                this.coverageRegions[covRegion] < warnings[key].severity
+                this.coverageRegions[covRegion] < this.warnings[key].severity
               ) {
-                this.coverageRegions[covRegion] = warnings[key].severity
+                this.coverageRegions[covRegion] = this.warnings[key].severity
               }
             })
             this.coverageWarnings.push(key)
           }
-          warnings[key][coverageProperty].forEach((coverage) => {
+          this.warnings[key][coverageProperty].forEach((coverage) => {
             coverageData.push({
               key: `${key}${this.size}${this.index}${fillOpacity}Coverage`,
               d: coverage.path,
               fillOpacity,
               strokeWidth,
-              fill: this.colors.levels[warnings[key].severity],
+              fill: this.colors[this.theme].levels[this.warnings[key].severity],
             })
           })
         }
@@ -559,7 +550,7 @@ export default {
       return coverageData
     },
 
-    async createCoverage(coverage, width, height, reference) {
+    createCoverage(coverage, width, height, reference) {
       const data = {
         type: 'FeatureCollection',
         features: [coverage, this.bbox],
@@ -583,13 +574,7 @@ export default {
         })
         data.totalFeatures++
       }
-      const input = {
-        [this.COVERAGE_JSON]: JSON.stringify(data),
-      }
-      return mapshaper.applyCommands(
-        `-i coverage.json -o format=svg width=${width} height=${height}`,
-        input
-      )
+      return this.geoJSONToSVG(data, width, height)
     },
 
     coverageData(coverage) {
@@ -614,14 +599,14 @@ export default {
       }))
     },
 
-    async handleMapWarnings(data) {
+    handleMapWarnings(data) {
       const warnings = {}
       const parents = {}
       this.errors = []
       const allUpdateTimes = [this.WEATHER_UPDATE_TIME, this.FLOOD_UPDATE_TIME]
+        .filter((warningUpdateTime) => data[warningUpdateTime] != null)
         .reduce((updateTimes, warningUpdateTime) => {
           if (
-            data[warningUpdateTime] != null &&
             data[warningUpdateTime].features != null &&
             data[warningUpdateTime].features.length > 0 &&
             data[warningUpdateTime].features[0].properties != null
@@ -647,8 +632,7 @@ export default {
       if (!this.staticDays) {
         const startTime =
           this.startFrom === 'updated' ? this.updatedAt : this.currentTime
-        const timeOffset = this.msSinceStartOfDay(startTime)
-        this.$store.dispatch('setTimeOffset', timeOffset)
+        this.timeOffset = this.msSinceStartOfDay(startTime)
       }
       const createWarnings = {
         [this.WEATHER_WARNINGS]: this.createWeatherWarning,
@@ -658,7 +642,8 @@ export default {
       for (const warningType of warningTypes) {
         let features = []
         if (data[warningType] == null) {
-          this.handleError(warningType)
+          this.handleError(`Missing data: ${warningType}`)
+          this.onDataError()
           // eslint-disable-next-line no-continue
           continue
         }
@@ -702,23 +687,14 @@ export default {
                   }
                 })
               if (warning.geometry != null) {
-                // eslint-disable-next-line no-await-in-loop
-                const coverage = await this.createCoverage(warning, 440, 550, [
+                const coverage = this.createCoverage(warning, 440, 550, [
                   warning.properties.representative_x,
                   warning.properties.representative_y,
                 ])
-                // eslint-disable-next-line no-await-in-loop
-                const coverageSmall = await this.createCoverage(
-                  warning,
-                  75,
-                  120
-                )
-                warnings[warningId].coveragesLarge = this.coverageData(
-                  coverage[this.COVERAGE_SVG]
-                )
-                warnings[warningId].coveragesSmall = this.coverageData(
-                  coverageSmall[this.COVERAGE_SVG]
-                )
+                const coverageSmall = this.createCoverage(warning, 75, 120)
+                warnings[warningId].coveragesLarge = this.coverageData(coverage)
+                warnings[warningId].coveragesSmall =
+                  this.coverageData(coverageSmall)
               }
             }
             if (
@@ -772,17 +748,17 @@ export default {
       )
     },
     regionSeverity(regionId) {
-      const warnings = this.allWarnings
       const region = this.regionData(regionId)
       let severity = 0
       if (region != null) {
         region.warnings.find((warning) => {
           if (this.visibleWarnings.includes(warning.type)) {
             const topIdentifier = warning.identifiers.find(
-              (id) => warnings[id] && warnings[id].covRegions.size === 0
+              (id) =>
+                this.warnings[id] && this.warnings[id].covRegions.size === 0
             )
             if (topIdentifier != null) {
-              severity = warnings[topIdentifier].severity
+              severity = this.warnings[topIdentifier].severity
               return true
             }
           }
@@ -801,7 +777,9 @@ export default {
       const isLand =
         this.geometries[this.geometryId][regionId].type === this.REGION_LAND
       const color =
-        severity || isLand ? this.colors.levels[severity] : this.colors.sea
+        severity || isLand
+          ? this.colors[this.theme].levels[severity]
+          : this.colors[this.theme].sea
       const visible = severity > 0 || geom.subType !== this.REGION_LAKE
       return {
         geom,

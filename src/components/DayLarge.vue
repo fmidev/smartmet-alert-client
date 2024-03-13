@@ -2,12 +2,12 @@
   <div class="map-container">
     <div class="warning-map-status" aria-hidden="true">
       <p>
-        <span class="bold-text">{{ warnings }}</span
+        <span class="bold-text">{{ warningsTitle }}</span
         ><br />
         <span v-html="warningsDate"></span>
       </p>
       <p>
-        <span class="bold-text">{{ updated }}</span
+        <span class="bold-text">{{ updatedTitle }}</span
         ><br />
         {{ updatedDate }}<br />
         {{ atTime }} {{ updatedTime }}
@@ -18,19 +18,29 @@
       ><br />
       <span>{{ dataProviderSecond }}</span>
     </div>
-    <MapLarge :index="index" :input="regions" :geometry-id="geometryId" />
+    <MapLarge
+      :index="index"
+      :input="regions"
+      :visible-warnings="visibleWarnings"
+      :warnings="warnings"
+      :geometry-id="geometryId"
+      :loading="loading"
+      :theme="theme"
+      :language="language"
+      :spinner-enabled="spinnerEnabled"
+      @loaded="onLoaded" />
   </div>
 </template>
 
 <script>
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import MapLarge from './MapLarge.vue'
 
 export default {
   name: 'DayLarge',
   components: { MapLarge },
-  mixins: [utils],
+  mixins: [i18n, utils],
   props: {
     index: {
       type: Number,
@@ -38,6 +48,14 @@ export default {
     input: {
       type: Object,
       default: () => ({}),
+    },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: null,
     },
     regions: {
       type: Object,
@@ -49,16 +67,34 @@ export default {
       type: Boolean,
       default: true,
     },
+    timeOffset: {
+      type: Number,
+      default: 0,
+    },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    theme: {
+      type: String,
+    },
+    language: {
+      type: String,
+    },
+    spinnerEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
-    warnings() {
-      return i18n.t('warnings') || ''
+    warningsTitle() {
+      return this.t('warnings') || ''
     },
-    updated() {
-      return i18n.t('updated') || ''
+    updatedTitle() {
+      return this.t('updated') || ''
     },
     atTime() {
-      return i18n.t('atTime') || ''
+      return this.t('atTime') || ''
     },
     warningsDate() {
       if (
@@ -78,7 +114,7 @@ export default {
       )
       const nextDate = new Date(date.getTime())
       nextDate.setDate(nextDate.getDate() + 1)
-      const offset = this.$store.getters.timeOffset
+      const offset = this.timeOffset
       const offsetDate = new Date(date.getTime())
       offsetDate.setMilliseconds(offset)
       const hours = this.twoDigits(offsetDate.getHours())
@@ -97,10 +133,17 @@ export default {
       return this.input.updatedTime || ''
     },
     dataProviderFirst() {
-      return i18n.t('dataProviderFirst')
+      return this.t('dataProviderFirst')
     },
     dataProviderSecond() {
-      return i18n.t('dataProviderSecond')
+      return this.t('dataProviderSecond')
+    },
+  },
+  methods: {
+    onLoaded(loaded) {
+      if (loaded) {
+        this.$emit('loaded', true)
+      }
     },
   },
 }

@@ -1,34 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SmartMetAlertClient demo</title>
-<script src="./vue.js"></script>
-<script src="./SmartMetAlertClient.umd.js"></script>
-
-<link rel="stylesheet" href="./SmartMetAlertClient.css">
-<style>
-  body {
-    background-color: #191b22;
-  }
-</style>
-</head>
-<body>
-<div id="app"></div>
-
-<script>
-new Vue({
-  el: '#app',
-  render: function(h) {
-    return h(SmartMetAlertClient, {
-      props: {
-        language: 'fi',
-        theme: 'dark',
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>SmartMet Alert Client</title>
+    <style>
+      body {
+        background-color: #191b22;
       }
-    });
-  }
-});
-</script>
-</body>
+    </style>
+  </head>
+
+  <body>
+    <smartmet-alert-client language="fi" theme="dark"></smartmet-alert-client>
+    <script type="module" src="./index.js"></script>
+  </body>
 </html>

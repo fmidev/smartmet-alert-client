@@ -1,7 +1,13 @@
-const PrefixWrap = require('postcss-prefixwrap');
+import PrefixWrap from 'postcss-prefixwrap'
+import postcssurl from 'postcss-url'
 
-module.exports = {
-  plugins: [PrefixWrap('div#fmi-warnings div', {
-    ignoredSelectors: ['#fmi-warnings'],
-  })],
-};
+export default {
+  plugins: [
+    PrefixWrap('div#fmi-warnings div', {
+      ignoredSelectors: ['#fmi-warnings'],
+    }),
+    postcssurl({
+      url: 'inline',
+    }),
+  ],
+}

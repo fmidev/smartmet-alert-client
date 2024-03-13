@@ -1,50 +1,30 @@
 <template>
-  <div class="symbol-list-table" :class="currentTheme">
+  <div class="symbol-list-table" :class="theme">
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"></div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
-        <div class="item-text symbol-list-text">
-          {{ title }}
-        </div>
-        <div
-          v-observe-visibility="flagVisibilityChanged"
-          class="symbol-list-select-container d-none d-md-table-cell">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="item-text symbol-list-text" v-html="title"></div>
+        <div class="symbol-list-select-container d-none d-md-table-cell">
           <div
             :id="id"
             :class="[
               'symbol-list-select',
               input.visible ? 'flag-selected' : 'flag-unselected',
               { 'd-md-block': hideable },
+              'focus-ring',
               'd-none',
             ]"
-            :aria-label="input.visible ? hideLabel : showLabel"
             tabindex="0"
             @touchmove="preventEvents"
             @touchend="preventEvents"
             @touchstart="toggle"
             @mousedown="toggle"
-            @mouseenter="openTooltip"
-            @mouseleave="closeTooltip"
             @keydown.enter="toggle"
             @keydown.space="toggle" />
-          <b-tooltip
-            id="fmi-warnings-toggle-tooltip"
-            :show.sync="showTooltip"
-            triggers=""
-            :target="id"
-            placement="top"
-            delay="0"
-            :fallback-placement="[]"
-            :container="`fmi-warnings-flag-${input.type}`">
-            <span @mouseenter="closeTooltip">
-              {{ tooltipFirstLine }}
-              <br />
-              {{ tooltipSecondLine }}
-            </span>
-          </b-tooltip>
         </div>
       </div>
       <hr />
@@ -53,54 +33,20 @@
 </template>
 
 <script>
-import 'focus-visible'
-
-import Vue from 'vue'
-import VueObserveVisibility from 'vue-observe-visibility'
-
-import i18n from '../i18n'
 import fields from '../mixins/fields'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
-
-Vue.use(VueObserveVisibility)
 
 export default {
   name: 'Warning',
-  mixins: [fields, utils],
-  props: ['input', 'hideable'],
-  data() {
-    return {
-      showTooltip: false,
-    }
-  },
+  mixins: [fields, i18n, utils],
+  props: ['input', 'hideable', 'language', 'theme'],
   computed: {
     id() {
       return `fmi-warnings-flag-${this.input.type}`
     },
     title() {
-      return i18n.t(this.input.type)
-    },
-    tooltipFirstLine() {
-      return this.input.visible
-        ? i18n.t('selectWarningTooltipLine1')
-        : i18n.t('selectDisabledWarningTooltipLine1')
-    },
-    tooltipSecondLine() {
-      return this.input.visible
-        ? i18n.t('selectWarningTooltipLine2')
-        : i18n.t('selectDisabledWarningTooltipLine2')
-    },
-    showLabel() {
-      return `${i18n.t(
-        'selectDisabledWarningTooltipLine1'
-      )} ${this.uncapitalize(this.title)} ${i18n.t(
-        'selectDisabledWarningTooltipLine2'
-      )}`
-    },
-    hideLabel() {
-      return `${i18n.t('selectWarningTooltipLine1')} ${this.uncapitalize(
-        this.title
-      )} ${i18n.t('selectWarningTooltipLine2')}`
+      return this.t(this.input.type)
     },
   },
   methods: {
@@ -109,25 +55,13 @@ export default {
       this.setWarningVisibility(!this.input.visible)
     },
     setWarningVisibility(visible) {
-      this.$store.dispatch('setWarningVisibility', {
+      this.$emit('warningToggled', {
         warning: this.input.type,
         visible,
       })
-      this.closeTooltip()
-    },
-    openTooltip() {
-      this.showTooltip = true
-    },
-    closeTooltip() {
-      this.showTooltip = false
     },
     preventEvents(event) {
       event.preventDefault()
-    },
-    flagVisibilityChanged(isVisible, entry) {
-      if (!isVisible && !entry?.boundingClientRect?.width) {
-        this.setWarningVisibility(true)
-      }
     },
   },
 }
@@ -141,6 +75,7 @@ div.symbol-list-table {
   display: table;
   border-spacing: 0;
   width: 100%;
+  padding: 0;
 }
 
 div.symbol-list-cell {
@@ -174,6 +109,22 @@ div.warning-image {
   background-position: center;
 }
 
+.light-theme div.warning-image {
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.dark-theme div.warning-image {
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.light-gray-theme div.warning-image {
+  box-shadow: 0 0 0 1px $black;
+}
+
+.dark-gray-theme div.warning-image {
+  box-shadow: 0 0 0 1px $white;
+}
+
 div.symbol-list-cell-text {
   padding-left: 15px;
   padding-right: 0;
@@ -184,16 +135,28 @@ hr {
   margin: 0;
   border: 0 none;
   height: 2px;
+  width: auto;
+  opacity: 1;
 }
 
-.light hr {
+.light-theme hr {
   background-color: $light-horizontal-rule-color;
   color: $light-horizontal-rule-color;
 }
 
-.dark hr {
+.dark-theme hr {
   background-color: $dark-horizontal-rule-color;
   color: $dark-horizontal-rule-color;
+}
+
+.light-gray-theme hr {
+  background-color: $light-gray-horizontal-rule-color;
+  color: $light-gray-horizontal-rule-color;
+}
+
+.dark-gray-theme hr {
+  background-color: $dark-gray-horizontal-rule-color;
+  color: $dark-gray-horizontal-rule-color;
 }
 
 div#fmi-warnings-list div.symbol-list-cell-text {
@@ -218,9 +181,9 @@ div.symbol-list-text-select {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
+  max-width: 141px;
+  padding-right: 5px;
+  hyphens: auto;
 }
 
 .symbol-list-select-container {
@@ -242,86 +205,40 @@ div.symbol-list-text {
   cursor: pointer;
 }
 
-.light .flag-selected {
+.light-theme .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
 }
 
-.dark .flag-selected {
+.dark-theme .flag-selected {
   background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
 }
 
-.flag-unselected:focus:not([data-focus-visible-added]),
-.flag-selected:focus:not([data-focus-visible-added]) {
-  outline: none;
+.light-gray-theme .flag-selected {
+  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
+}
+
+.dark-gray-theme .flag-selected {
+  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
 }
 
 .flag-unselected {
   cursor: pointer;
 }
 
-.light .flag-unselected {
+.light-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
 }
 
-.dark .flag-unselected {
+.dark-theme .flag-unselected {
   background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
-::v-deep .tooltip.bs-tooltip-top {
-  opacity: 1;
-  top: -9px !important;
-  padding: 0;
-  outline: none;
+.light-gray-theme .flag-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
+}
 
-  .arrow {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border: solid transparent;
-    bottom: -5px;
-    left: 50% !important;
-    margin: 0 0 0 -6px;
-    border-width: 6px 6px 0;
-    border-top-color: $tooltip-border-color;
-  }
-
-  .arrow:before {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-width: 5px 5px 0;
-    border-top-color: $tooltip-background-color;
-    left: 50% !important;
-    margin: 0 0 0 -5px;
-    top: -6px;
-    pointer-events: none;
-  }
-
-  .tooltip-inner {
-    background-color: $tooltip-background-color;
-    border: $tooltip-border-width solid $tooltip-border-color;
-    color: $tooltip-inner-color;
-    font-family: $font-family;
-    font-size: $font-size;
-    padding: 3px 6px;
-    height: 52px;
-    width: 90px;
-    max-width: 100%;
-    display: table;
-    text-align: center;
-
-    span {
-      display: table-cell;
-      vertical-align: middle;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-  }
+.dark-gray-theme .flag-unselected {
+  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
 }
 
 @media (max-width: 767px) {

@@ -1,56 +1,79 @@
 <template>
   <div
     id="fmi-warnings"
-    :class="currentTheme"
+    :class="theme"
     :data-smartmet-alert-client-version="version">
     <div id="fmi-warnings-errors" :class="errors" />
     <div>
-      <div class="container-fluid" :class="currentTheme">
+      <div class="container-fluid" :class="theme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h3 class="valid-warnings" :class="initialized && 'initialized'">
+            <h2 v-if="!loading" class="valid-warnings">
               {{ validWarningsText }}
-              <span v-if="!initialized">
-                <br>
-                {{ additionalWarningsText }}
-                <br>
-                <a
-                  :href="supportedBrowsersLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="supported-browsers">
-                  {{ supportedBrowsers }}</a
-                >
-              </span>
-            </h3>
+            </h2>
+            <div v-if="loading" class="not-ready">
+              <p>
+                {{ mainInfoText }}
+                {{ additionalInfoText }}
+              </p>
+              <a
+                :href="supportedBrowsersLink"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="supported-browsers">
+                {{ supportedBrowsers }}</a
+              >
+            </div>
             <div v-if="regionListEnabled">
               <a
                 v-if="numWarnings"
                 id="fmi-warnings-to-text-content"
-                href="#fmi-warnings-region-content"
+                :href="toContentId"
                 tabindex="0"
-                class="sr-only sr-only-focusable"
+                class="visually-hidden-focusable focus-ring"
+                @click="toContentClicked"
                 >{{ toContentText }}</a
               >
               <div v-else :aria-label="noWarningsText"></div>
             </div>
             <Days
               :input="days"
-              :default-day="selectedDay"
+              :visible-warnings="visibleWarnings"
+              :selected-day="selectedDay"
               :static-days="staticDays"
+              :time-offset="timeOffset"
+              :warnings="warnings"
               :regions="regions"
-              :geometry-id="geometryId" />
+              :geometry-id="geometryId"
+              :loading="Boolean(loading)"
+              :theme="theme"
+              :language="language"
+              :spinner-enabled="spinnerEnabled"
+              @daySelected="onDaySelected"
+              @loaded="onLoaded" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
-            <Legend v-show="validData" :input="legend" />
+            <Legend
+              v-show="validData"
+              :input="legend"
+              :visible-warnings="visibleWarnings"
+              :gray-scale-selector="grayScaleSelector"
+              :theme="theme"
+              :language="language"
+              @themeChanged="onThemeChanged"
+              @warningsToggled="onWarningsToggled" />
           </div>
         </div>
         <div v-if="regionListEnabled" class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <Regions
               :input="regions"
+              :selected-day="selectedDay"
+              :warnings="warnings"
               :parents="parents"
-              :geometry-id="geometryId" />
+              :geometry-id="geometryId"
+              :theme="theme"
+              :language="language" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list"></div>
         </div>
@@ -60,12 +83,9 @@
 </template>
 
 <script>
-import 'focus-visible'
-
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
-import module from '../store/module'
 import Days from './Days.vue'
 import Legend from './Legend.vue'
 import Regions from './Regions.vue'
@@ -77,7 +97,7 @@ export default {
       type: Number,
       default: 1000 * 60 * 15,
     },
-    selectedDay: {
+    defaultDay: {
       type: Number,
       default: 0,
     },
@@ -93,6 +113,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    grayScaleSelector: {
+      type: Boolean,
+      default: false,
+    },
     currentTime: {
       type: Number,
       default: Date.now(),
@@ -106,12 +130,23 @@ export default {
       type: Number,
       default: config.props.defaultGeometryId,
     },
-    language: String,
+    language: {
+      type: String,
+      default: 'en',
+    },
     theme: {
       type: String,
-      default: 'light',
+      default: 'light-theme',
+    },
+    loading: {
+      type: Number,
+      default: true,
     },
     sleep: {
+      type: Boolean,
+      default: true,
+    },
+    spinnerEnabled: {
       type: Boolean,
       default: true,
     },
@@ -121,53 +156,71 @@ export default {
     Regions,
     Legend,
   },
-  mixins: [config, utils],
+  mixins: [config, i18n, utils],
   data() {
     return {
+      selectedDay: this.defaultDay,
+      visibleWarnings: [],
       timer: null,
       visibilityListener: null,
-      warnings: {},
+      warnings: null,
       days: [],
       regions: this.regionsDefault(),
       parents: {},
       legend: [],
+      timeOffset: 0,
       // eslint-disable-next-line no-undef
-      version: VERSION,
+      version: __APP_VERSION__,
       errors: [],
     }
   },
   computed: {
-    loading() {
-      return this.$store.getters.loading
-    },
     toContentText() {
-      return i18n.t('toContent') || ''
+      if (
+        [this.REGION_LAND, this.REGION_SEA].some(
+          (regionType) =>
+            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
+        )
+      ) {
+        return this.t('toContent') || ''
+      }
+      return this.t('toNextContent') || ''
+    },
+    toContentId() {
+      if (
+        [this.REGION_LAND, this.REGION_SEA].some(
+          (regionType) =>
+            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
+        )
+      ) {
+        return '#fmi-warnings-region-content'
+      }
+      return '#fmi-warnings-end-of-regions'
     },
     noWarningsText() {
-      return i18n.t('noWarnings')
+      return this.t('noWarnings')
     },
     validWarningsText() {
-      if (this.loading) {
-        return ''
-      }
-      if (!this.initialized) {
-        return i18n.t('notInitializedStart')
-      }
       return this.legend.length > 0
-        ? i18n.t('validWarnings')
-        : i18n.t('noWarnings')
+        ? this.t('validWarnings')
+        : this.t('noWarnings')
     },
     supportedBrowsersLink() {
-      return i18n.t('supportedBrowsersLink')
+      return this.t('supportedBrowsersLink')
     },
     supportedBrowsers() {
-      return i18n.t('supportedBrowsers')
+      return this.t('supportedBrowsers')
     },
-    additionalWarningsText() {
-      return i18n.t('notInitializedEnd')
+    mainInfoText() {
+      return this.loading === -1
+        ? this.t('failed')
+        : this.t('notInitializedStart')
+    },
+    additionalInfoText() {
+      return this.loading === -1 ? '' : this.t('notInitializedEnd')
     },
     numWarnings() {
-      return Object.keys(this.warnings).length
+      return this.warnings != null ? Object.keys(this.warnings).length : 0
     },
     validData() {
       return (
@@ -183,26 +236,15 @@ export default {
       this.createDataForChildren()
     },
   },
-  async beforeCreate() {
-    if (!this.$store.hasModule('warningsStore')) {
-      await this.$store.registerModule('warningsStore', module, {
-        preserveState: false,
-      })
-    }
-  },
   created() {
-    if (this.language) {
-      i18n.locale = this.language
-    }
     this.createDataForChildren()
     if (this.warningsData == null) {
       this.update()
     }
   },
   mounted() {
-    this.$store.dispatch('setTheme', this.theme)
     this.initTimer()
-    if (this.sleep) {
+    if (this.isClientSide() && this.sleep) {
       this.visibilityListener = document.addEventListener(
         'visibilitychange',
         this.visibilityChange
@@ -214,35 +256,52 @@ export default {
       document.removeEventListener('visibilitychange', this.visibilityListener)
     }
     this.cancelTimer()
-    this.$store.unregisterModule('warningsStore')
   },
-  async serverPrefetch() {
-    await this.createDataForChildren()
+  serverPrefetch() {
+    this.createDataForChildren()
   },
   methods: {
-    async createDataForChildren() {
+    onDaySelected(newSelectedDay) {
+      this.selectedDay = newSelectedDay
+    },
+    onWarningsToggled(newVisibleWarnings) {
+      this.visibleWarnings = newVisibleWarnings
+      this.legend.forEach((warning, i) => {
+        const isVisible = newVisibleWarnings.includes(warning.type)
+        if (isVisible !== warning.visible) {
+          this.legend[i].visible = isVisible
+        }
+      })
+    },
+    onLoaded(loaded) {
+      if (this.loading !== -1 && loaded) {
+        this.$emit('loaded', 1)
+      }
+    },
+    onDataError() {
+      this.$emit('loaded', -1)
+    },
+    onThemeChanged(newTheme) {
+      if (this.theme !== newTheme) {
+        this.$emit('themeChanged', newTheme)
+      }
+    },
+    toContentClicked() {
+      const textContent = this.$el.querySelector(this.toContentId)
+      textContent.scrollIntoView()
+      textContent.focus()
+    },
+    createDataForChildren() {
       if (this.warningsData != null) {
-        const result = await this.handleMapWarnings(this.warningsData)
+        const result = this.handleMapWarnings(this.warningsData)
         this.warnings = result.warnings
         this.days = result.days
         this.regions = result.regions
         this.parents = result.parents
         this.legend = result.legend
-        const dispatches = [
-          this.$store.dispatch(
-            'setVisibleWarnings',
-            this.legend
-              .filter((legendWarning) => legendWarning.visible)
-              .map((legendWarning) => legendWarning.type)
-          ),
-          this.$store.dispatch('setWarnings', this.warnings),
-        ]
-        if (!this.initialized) {
-          dispatches.unshift(
-            this.$store.dispatch('setSelectedDay', this.selectedDay)
-          )
-        }
-        await Promise.all(dispatches)
+        this.visibleWarnings = this.legend
+          .filter((legendWarning) => legendWarning.visible)
+          .map((legendWarning) => legendWarning.type)
       }
     },
     visibilityChange() {
@@ -284,7 +343,7 @@ export default {
 <style scoped lang="scss">
 @import '../scss/constants.scss';
 
-::v-deep * {
+:deep(*) {
   box-sizing: border-box;
   -webkit-hyphens: none;
   -ms-hyphens: none;
@@ -318,12 +377,20 @@ export default {
   }
 }
 
-::v-deep .light * {
+:deep(.light-theme *) {
   color: $light-text-color;
 }
 
-::v-deep .dark * {
+:deep(.dark-theme *) {
   color: $dark-text-color;
+}
+
+:deep(.light-gray-theme *) {
+  color: $light-gray-text-color;
+}
+
+:deep(.dark-gray-theme *) {
+  color: $dark-gray-text-color;
 }
 
 div#fmi-warnings {
@@ -331,48 +398,67 @@ div#fmi-warnings {
   padding: 0;
   margin-bottom: 20px;
 
-  h3.valid-warnings {
+  h2.valid-warnings {
     text-align: left;
-    font-weight: normal;
-    &.initialized {
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+
+  div.not-ready {
+    width: 100%;
+    padding: 15px;
+    a.supported-browsers {
       font-weight: bold;
-    }
-    &:not(.initialized) {
-      width: 100%;
-      background-color: $notification-color;
-      border: 1px solid $darker-blue;
-      color: $darker-blue;
-      padding: 15px;
-    }
-    span {
-      color: $darker-blue;
-      a {
-        font-weight: bold;
-        text-decoration: none;
-        border-bottom: 1px solid $light-ext-link-color;
-      }
-      a:hover {
-        border-color: $darker-blue;
-      }
+      text-decoration: none;
     }
   }
 
-  .dark h3.valid-warnings {
-    &:not(.initialized) {
-      background-color: $darkest-gray;
-      border: 1px solid $notification-color;
-      color: $white;
+  .light-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $dark-blue;
+    a.supported-browsers {
+      color: $light-ext-link-color;
+      border-bottom: 1px solid $light-ext-link-color;
     }
-    span {
-      color: $white;
-      a {
-        color: $white;
-        border-bottom: 1px solid $dark-ext-link-color;
-      }
-      a:hover {
-        border-color: $notification-color;
-      }  
-    }  
+    a.supported-browsers:hover {
+      border-color: $dark-blue;
+    }
+  }
+
+  .dark-theme div.not-ready {
+    background-color: $darkest-gray;
+    border: 1px solid $notification-color;
+    a.supported-browsers {
+      color: $dark-ext-link-color;
+      border-bottom: 1px solid $dark-ext-link-color;
+    }
+    a.supported-browsers:hover {
+      border-color: $notification-color;
+    }
+  }
+
+  .light-gray-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $dark-blue;
+    a.supported-browsers {
+      color: $light-gray-ext-link-color;
+      border-bottom: 1px solid $light-gray-ext-link-color;
+    }
+    a.supported-browsers:hover {
+      border-color: $dark-blue;
+    }
+  }
+
+  .dark-gray-theme div.not-ready {
+    background-color: $notification-color;
+    border: 1px solid $light-blue;
+    a.supported-browsers {
+      color: $dark-gray-ext-link-color;
+      border-bottom: 1px solid $dark-gray-ext-link-color;
+    }
+    a.supported-browsers:hover {
+      border-color: $light-blue;
+    }
   }
 
   div {
@@ -390,31 +476,6 @@ div#fmi-warnings {
     height: 20px;
     &:focus {
       outline-offset: 2px;
-      &:not([data-focus-visible-added]) {
-        outline: none !important;
-      }
-    }
-  }
-
-  &.light {
-    *:focus {
-      outline: dashed 2px $light-outline-color !important;
-    }
-    a#fmi-warnings-to-text-content {
-      &:focus {
-        outline: dashed 2px $light-outline-color !important;
-      }
-    }
-  }
-
-  &.dark {
-    *:focus {
-      outline: dashed 2px $dark-outline-color !important;
-    }
-    a#fmi-warnings-to-text-content {
-      &:focus {
-        outline: dashed 2px $dark-outline-color !important;
-      }
     }
   }
 }
@@ -442,12 +503,12 @@ div.symbol-list {
   min-width: $symbol-list-width;
 }
 
-.light a.supported-browsers {
-  color: $light-ext-link-color;
+.light-gray-theme a.supported-browsers {
+  color: $light-gray-ext-link-color;
 }
 
-.dark a.supported-browsers {
-  color: $light-ext-link-color;
+.dark-gray-theme a.supported-browsers {
+  color: $dark-gray-ext-link-color;
 }
 
 @media (max-width: 767px) {

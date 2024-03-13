@@ -1,14 +1,16 @@
 <template>
-  <div id="fmi-warnings-view" :class="currentTheme">
+  <div id="fmi-warnings-view" :class="theme">
     <div
       v-if="input.length > 0"
       :class="['row', 'symbol-list-main-row', 'show-text-row']">
-      <span
-        class="bold-text show-text d-none"
+      <button
+        tabindex="0"
+        type="button"
+        class="bold-text show-text d-none focus-ring"
         :class="{ 'd-sm-block': hiddenWarnings }"
-        @click="showAll"
-        >{{ showWarningsText }}</span
-      >
+        @click="showAll">
+        {{ showWarningsText }}
+      </button>
     </div>
     <div v-if="input.length > 0" class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
@@ -18,7 +20,10 @@
         v-for="warning in warnings"
         :key="warning.key"
         :input="warning"
-        :hideable="warnings.length > 1" />
+        :hideable="warnings.length > 1"
+        :theme="theme"
+        :language="language"
+        @warningToggled="onWarningToggled" />
     </div>
     <div class="row symbol-list-main-row">
       <hr
@@ -29,18 +34,12 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              gray
-              several
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="gray several symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
             {{ severalWarningsText }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -48,17 +47,12 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-1
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-1 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
             {{ warningLevel1Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -66,17 +60,12 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-2
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-2 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
             {{ warningLevel2Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -84,17 +73,12 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-3
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-3 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
             {{ warningLevel3Text }}
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -102,17 +86,13 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="
-              level-4
-              symbol-list-image-column symbol-list-image
-              warning-image
-            "></div>
+            class="level-4 symbol-list-image-column symbol-list-image warning-image"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div class="item-text symbol-list-text">
             {{ warningLevel4Text }}
           </div>
-          <hr />
+          <hr class="bottom-separator" />
         </div>
       </div>
     </div>
@@ -120,9 +100,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import Warning from './Warning.vue'
 
 export default {
@@ -130,13 +108,11 @@ export default {
   components: {
     Warning,
   },
-  props: ['input'],
+  mixins: [i18n],
+  props: ['input', 'visibleWarnings', 'language', 'theme'],
   computed: {
     warnings() {
       return this.input
-    },
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
     },
     hiddenWarnings() {
       return this.visibleWarnings.length !== this.input.length
@@ -145,55 +121,44 @@ export default {
       return this.warnings.length === 0
     },
     warningSymbolsText() {
-      return this.noWarnings ? i18n.t('noWarnings') : i18n.t('warningSymbols')
+      return this.noWarnings ? this.t('noWarnings') : this.t('warningSymbols')
     },
     warningSymbolDaysText() {
-      return this.noWarnings ? '' : i18n.t('warningSymbolDays')
+      return this.noWarnings ? '' : this.t('warningSymbolDays')
     },
     showWarningsText() {
-      return i18n.t('showWarnings')
+      return this.t('showWarnings')
     },
     severalWarningsText() {
-      return i18n.t('severalWarnings')
+      return this.t('severalWarnings')
     },
     warningLevel1Text() {
-      return i18n.t('warningLevel1')
+      return this.t('warningLevel1')
     },
     warningLevel2Text() {
-      return i18n.t('warningLevel2')
+      return this.t('warningLevel2')
     },
     warningLevel3Text() {
-      return i18n.t('warningLevel3')
+      return this.t('warningLevel3')
     },
     warningLevel4Text() {
-      return i18n.t('warningLevel4')
-    },
-    currentTheme() {
-      return this.$store.getters.theme
-    },
-  },
-  watch: {
-    input() {
-      this.showAll()
-    },
-    visibleWarnings(newVisibleWarnings) {
-      this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type)
-        if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible)
-        }
-      })
+      return this.t('warningLevel4')
     },
   },
   methods: {
-    showAll() {
-      this.$store.dispatch(
-        'setVisibleWarnings',
-        this.warnings.reduce(
-          (types, warning) => types.concat([warning.type]),
-          []
+    onWarningToggled({ warning, visible }) {
+      let newVisibleWarnings = this.visibleWarnings
+      if (visible && !this.visibleWarnings.includes(warning)) {
+        newVisibleWarnings.push(warning)
+      } else if (!visible) {
+        newVisibleWarnings = newVisibleWarnings.filter(
+          (visibleWarning) => visibleWarning !== warning
         )
-      )
+      }
+      this.$emit('warningsToggled', newVisibleWarnings)
+    },
+    showAll() {
+      this.$emit('showAllWarnings')
     },
   },
 }
@@ -221,16 +186,37 @@ div.symbol-list-main-row {
   padding-left: 0;
 }
 
-.show-text-row {
+div.show-text-row {
   height: 30px;
+  button.show-text {
+    width: auto;
+    padding: 0;
+    border: none;
+    background: none;
+  }
 }
 
-.show-text {
+div#fmi-warnings-view > div.row > button.show-text {
   line-height: 30px;
   float: right;
-  color: $dark-blue;
   cursor: pointer;
   white-space: nowrap;
+}
+
+div#fmi-warnings-view.light-theme > div.row > button.show-text {
+  color: $blue;
+}
+
+div#fmi-warnings-view.dark-theme > div.row > button.show-text {
+  color: $blue;
+}
+
+div#fmi-warnings-view.light-gray-theme > div.row > button.show-text {
+  color: $darker-gray;
+}
+
+div#fmi-warnings-view.dark-gray-theme > div.row > button.show-text {
+  color: $lighter-gray;
 }
 
 hr.symbol-block-separator {
@@ -249,6 +235,7 @@ div.symbol-list-table {
   display: table;
   border-spacing: 0;
   width: 100%;
+  padding: 0;
 }
 
 div.symbol-list-cell {
@@ -262,12 +249,26 @@ div.symbol-list-cell-image {
   width: $symbol-list-image-size;
 }
 
-.light .gray {
+.light-theme .gray {
   background-color: $light-legend-toggle-background-color;
 }
 
-.dark .gray {
+.dark-theme .gray {
   background-color: $dark-legend-toggle-background-color;
+}
+
+.light-gray-theme .gray {
+  background-color: $light-gray-legend-toggle-background-color;
+}
+
+.dark-gray-theme .gray {
+  background-color: $dark-gray-legend-toggle-background-color;
+}
+
+@media (forced-colors: active) {
+  .gray {
+    forced-color-adjust: none;
+  }
 }
 
 .several {
@@ -291,6 +292,22 @@ div.warning-image {
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.light-theme div.warning-image {
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.dark-theme div.warning-image {
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.light-gray-theme div.warning-image {
+  box-shadow: 0 0 0 1px $black;
+}
+
+.dark-gray-theme div.warning-image {
+  box-shadow: 0 0 0 1px $white;
 }
 
 div.symbol-list-cell-text {
@@ -332,28 +349,43 @@ hr {
   margin: 0;
   border: 0 none;
   height: 2px;
+  width: auto;
+  opacity: 1;
 }
 
-.light hr {
+.light-theme hr {
   background-color: $light-horizontal-rule-color;
   color: $light-horizontal-rule-color;
 }
 
-.dark hr {
+.dark-theme hr {
   background-color: $dark-horizontal-rule-color;
   color: $dark-horizontal-rule-color;
 }
 
+.light-gray-theme hr {
+  background-color: $light-gray-horizontal-rule-color;
+  color: $light-gray-horizontal-rule-color;
+}
+
+.dark-gray-theme hr {
+  background-color: $dark-gray-horizontal-rule-color;
+  color: $dark-gray-horizontal-rule-color;
+}
+
 @media (max-width: 767px) {
-  hr.symbol-block-separator {
-    margin-right: 0;
+  hr {
+    &.symbol-block-separator,
+    &.bottom-separator {
+      display: none;
+    }
   }
 
   div.show-text-row {
     display: none;
   }
 
-  ::v-deep br.symbol-list-header-line-break {
+  :deep(br.symbol-list-header-line-break) {
     display: none;
   }
 }

@@ -4,7 +4,7 @@
       'symbol-image',
       'warning-image',
       'current-warning-image',
-      `symbol-image-rotate-${rotation}`,
+      `transform-rotate-${rotation}`,
       `symbol-rotate-${rotation}`,
       `level-${input.severity}`,
       `${typeClass}`,
@@ -14,7 +14,7 @@
       :class="[
         'warning-symbol-text',
         'symbol-text',
-        `symbol-text-rotate-${rotation}`,
+        `transform-rotate-${invertedRotation}`,
       ]"
       >{{ input.text }}</span
     >
@@ -46,13 +46,15 @@ div.warning-image {
   background-size: 28px 28px;
   height: $current-warning-image-height;
   width: $current-warning-image-height;
-  margin-top: ($current-warning-height - $current-warning-image-height) / 2;
+  margin-top: calc(
+    ($current-warning-height - $current-warning-image-height) / 2
+  );
   float: right;
   margin-left: 5px;
   margin-right: 5px;
 }
 
 span.warning-symbol-text {
-  font-size: 9px;
+  font-size: $warning-symbol-font-size;
 }
 </style>

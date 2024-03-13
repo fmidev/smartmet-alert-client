@@ -1,8 +1,21 @@
-# SmartMet Alert Client (smartmet-alert-client)
+# SmartMet Alert Client
 
 SmartMet Alert Client is a customizable map visualizer for weather, flood and other alerts.
 
 ![Screenshot](./screenshot.png)
+
+## Installation
+
+```
+npm install @fmidev/smartmet-alert-client
+```
+
+## Usage
+
+```
+<smartmet-alert-client language="en"></smartmet-alert-client>
+```
+More examples are available in the directory `public`.
 
 ## Project setup
 ```
@@ -22,13 +35,4 @@ npm run build
 ### Lints and fixes files
 ```
 npm run lint
-```
-
-### Localization
-
-The default language is defined in the .env file. This can be overridden when defining a Vue component:
-```
-<template>
-    <AlertClient :refreshInterval="refreshInterval" :selectedDay="selectedDay" language="en"/>
-</template>
 ```

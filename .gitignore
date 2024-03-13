@@ -142,3 +142,9 @@ test/svg
 
 # Environmet variables
 .env
+
+# GitHub
+.devcontainer/
+
+# Rollup Plugin Visualizer
+stats.html

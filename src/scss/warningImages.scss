@@ -1,23 +1,10 @@
 @import "./constants.scss";
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 
-@for $i from 0 through 360 {
-  $imgRotationDeg: unquote($i + 'deg');
-  div.symbol-image.symbol-image-rotate-#{$i} {
-    -webkit-transform: rotate($imgRotationDeg);
-    -moz-transform: rotate($imgRotationDeg);
-    -ms-transform: rotate($imgRotationDeg);
-    -o-transform: rotate($imgRotationDeg);
-    transform: rotate($imgRotationDeg);
-  }
-  $txtRotation: 360 - $i;
-  $txtRotationDeg: unquote($txtRotation + 'deg');
-  span.symbol-text.symbol-text-rotate-#{$i} {
-    -webkit-transform: rotate($txtRotationDeg);
-    -moz-transform: rotate($txtRotationDeg);
-    -ms-transform: rotate($txtRotationDeg);
-    -o-transform: rotate($txtRotationDeg);
-    transform: rotate($txtRotationDeg);
+@for $i from 0 through 72 {
+  $angle: 5 * $i;
+  $rotationDegree: unquote($angle + 'deg');
+  .transform-rotate-#{$angle} {
+    transform: rotate($rotationDegree);
   }
 }
 
@@ -25,24 +12,98 @@ div.symbol-image {
   display: table;
 }
 
-.level-0 {
-  background-color: $green;
+.light-theme {
+  .level-0 {
+    background-color: $light-green;
+  }
+
+  .level-1 {
+    background-color: $light-green;
+  }
+
+  .level-2 {
+    background-color: $light-yellow;
+  }
+
+  .level-3 {
+    background-color: $light-orange;
+  }
+
+  .level-4 {
+    background-color: $light-red;
+  }
 }
 
-.level-1 {
-  background-color: $green;
+.dark-theme {
+  .level-0 {
+    background-color: $dark-green;
+  }
+
+  .level-1 {
+    background-color: $dark-green;
+  }
+
+  .level-2 {
+    background-color: $dark-yellow;
+  }
+
+  .level-3 {
+    background-color: $dark-orange;
+  }
+
+  .level-4 {
+    background-color: $dark-red;
+  }
 }
 
-.level-2 {
-  background-color: $yellow;
+.light-gray-theme {
+  .level-0 {
+    background-color: $light-gray-green;
+  }
+
+  .level-1 {
+    background-color: $light-gray-green;
+  }
+
+  .level-2 {
+    background-color: $light-gray-yellow;
+  }
+
+  .level-3 {
+    background-color: $light-gray-orange;
+  }
+
+  .level-4 {
+    background-color: $light-gray-red;
+  }
 }
 
-.level-3 {
-  background-color: $orange;
+.dark-gray-theme {
+  .level-0 {
+    background-color: $dark-gray-green;
+  }
+
+  .level-1 {
+    background-color: $dark-gray-green;
+  }
+
+  .level-2 {
+    background-color: $dark-gray-yellow;
+  }
+
+  .level-3 {
+    background-color: $dark-gray-orange;
+  }
+
+  .level-4 {
+    background-color: $dark-gray-red;
+  }
 }
 
-.level-4 {
-  background-color: $red;
+@media (forced-colors: active) {
+  .level-0, .level-1, .level-2, .level-3, .level-4 {
+    forced-color-adjust: none;
+  }
 }
 
 .thunder-storm {
@@ -120,11 +181,11 @@ div.symbol-image {
 span.symbol-text {
   display: table-cell;
   vertical-align: middle;
-  line-height: normal;
+  line-height: $current-warning-image-height;
   width: 100%;
   text-align: center;
   margin: 0 auto;
-  font-family: $font-family;
+  font-family: $symbol-font-family !important;
   color: #ffffff;
   text-anchor: middle;
   font-weight: 700;

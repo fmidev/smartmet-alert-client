@@ -1,7 +1,7 @@
 <template>
-  <div class="map-large" :class="currentTheme" tabindex="0">
-    <div v-if="loading" class="spinner-container text-center">
-      <b-spinner></b-spinner>
+  <div class="map-large focus-ring" :class="theme" tabindex="0">
+    <div v-if="spinnerEnabled && loading" class="spinner-container text-center">
+      <BSpinner />
     </div>
     <div ref="dayMapLarge" class="day-map-large">
       <svg
@@ -16,13 +16,14 @@
         aria-labelledby="finland-large-title"
         role="img">
         <title id="finland-large-title">{{ mapText }}</title>
-        <g>
+        <g v-if="!loading">
           <path
             v-for="path in bluePaths"
             :id="path.key"
             :key="path.key"
             :stroke="strokeColor"
             :stroke-width="path.strokeWidth"
+            :stroke-opacity="strokeOpacity"
             :fill="path.fill"
             :d="path.d"
             :opacity="path.opacity"
@@ -61,7 +62,6 @@
             v-for="coverage in yellowCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
@@ -84,7 +84,6 @@
             v-for="coverage in orangeCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
@@ -107,27 +106,32 @@
             v-for="coverage in redCoverages"
             :id="coverage.key"
             :key="coverage.key"
-            stroke="#000000"
             :stroke-width="coverage.strokeWidth"
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
             style="cursor: pointer; pointer-events: none" />
+        </g>
+        <g>
           <path
             v-for="path in overlayPaths"
             :id="path.key"
             :key="path.key"
             :stroke="strokeColor"
             :stroke-width="path.strokeWidth"
+            :stroke-opacity="strokeOpacity"
             :d="path.d"
             fill-opacity="0"
             style="cursor: pointer; pointer-events: none" />
+        </g>
+        <g v-if="!loading">
           <path
             v-for="coverage in overlayCoverages"
             :id="coverage.key"
             :key="coverage.key"
             :stroke="strokeColor"
             :stroke-width="coverage.strokeWidth"
+            :stroke-opacity="strokeOpacity"
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
@@ -158,61 +162,64 @@
           aria-hidden="true"
           v-html="icon.geom" />
       </svg>
-      <b-button
+      <button
         id="fmi-warnings-zoom-in"
         ref="zoomButton"
-        class="fmi-warnings-map-tool"
+        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        type="button"
         :disabled="scale > 2"
         :aria-label="zoomInText"
-        @click="zoomIn"></b-button>
-      <b-button
+        @click="zoomIn" />
+      <button
         id="fmi-warnings-zoom-out"
-        class="fmi-warnings-map-tool"
+        class="btn btn-md btn-secondary fmi-warnings-map-tool"
+        type="button"
         :disabled="scale < 2"
         :aria-label="zoomOutText"
-        @click="zoomOut"></b-button>
-      <b-button
+        @click="zoomOut" />
+      <button
         id="fmi-warnings-move"
-        class="fmi-warnings-map-tool"
+        :class="[
+          'btn',
+          'btn-md',
+          'fmi-warnings-map-tool',
+          scale < 2 ? 'hidden' : 'btn-secondary',
+        ]"
+        type="button"
+        :tabindex="scale < 2 ? -1 : 0"
         :aria-label="moveText"
-        :disabled="scale < 2"
         @keydown.left="moveWest"
         @keydown.right="moveEast"
         @keydown.up="moveNorth"
-        @keydown.down="moveSouth"></b-button>
-      <div
-        id="fmi-warnings-region-tooltip-reference"
-        :style="tooltipStyle"></div>
-      <b-tooltip
-        id="fmi-warnings-region-tooltip"
-        :show.sync="showTooltip"
-        triggers=""
-        target="fmi-warnings-region-tooltip-reference"
-        placement="top"
-        delay="0"
-        container="fmi-warnings-region-tooltip-reference"
-        :custom-class="currentTheme">
-        <div id="day-map-large-base-popup" class="fmi-warnings-popup">
-          <a
-            id="day-map-large-base-popup-closer"
-            :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
-            href="#"
-            @click="closeTooltip"></a>
-          <div id="day-map-large-base-popup-content">
-            <div class="region-popup">
-              <div :class="['region-popup-header', `${popupLevel}`]">
-                <span class="region-popup-header-text bold-text">
-                  {{ regionTitle }}
-                </span>
-              </div>
-              <div class="region-popup-wrapper">
-                <div class="region-popup-body">
-                  <div class="popup-table">
-                    <div class="popup-table-body">
-                      <PopupRow
-                        v-for="popupWarning in popupWarnings"
-                        :key="popupWarning.id"
-                        :input="popupWarning"></PopupRow>
+        @keydown.down="moveSouth" />
+      <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle">
+        <div
+          id="fmi-warnings-region-tooltip"
+          class="tooltip b-tooltip bs-tooltip-top"
+          :class="[showTooltip ? '' : 'd-none', theme]">
+          <div class="arrow" style="left: 0" />
+          <div id="day-map-large-base-popup" class="fmi-warnings-popup">
+            <a
+              id="day-map-large-base-popup-closer"
+              :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
+              href="#"
+              @click="closeTooltip"></a>
+            <div id="day-map-large-base-popup-content">
+              <div class="region-popup">
+                <div :class="['region-popup-header', `${popupLevel}`]">
+                  <span class="region-popup-header-text bold-text">
+                    {{ regionTitle }}
+                  </span>
+                </div>
+                <div class="region-popup-wrapper">
+                  <div class="region-popup-body">
+                    <div class="popup-table">
+                      <div class="popup-table-body">
+                        <PopupRow
+                          v-for="popupWarning in popupWarnings"
+                          :key="popupWarning.id"
+                          :input="popupWarning"></PopupRow>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -220,27 +227,25 @@
             </div>
           </div>
         </div>
-      </b-tooltip>
+      </div>
     </div>
     <div :class="{ 'prevent-tooltip': dragging }"></div>
   </div>
 </template>
 
 <script>
-import 'focus-visible'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-import Panzoom from '@panzoom/panzoom'
-import { vueWindowSizeMixin } from 'vue-window-size'
-
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
+import Panzoom from '../mixins/panzoom'
 import utils from '../mixins/utils'
 import PopupRow from './PopupRow.vue'
 
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, utils, vueWindowSizeMixin],
+  mixins: [config, i18n, Panzoom, utils],
   props: {
     index: {
       type: Number,
@@ -248,9 +253,45 @@ export default {
     input: {
       type: Object,
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: null,
+    },
     geometryId: {
       type: Number,
     },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    theme: {
+      type: String,
+      default: 'light-theme',
+    },
+    language: {
+      type: String,
+    },
+    spinnerEnabled: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
   },
   data() {
     return {
@@ -277,15 +318,10 @@ export default {
       popupWarnings: [],
       coverageRegions: {},
       coverageWarnings: [],
+      strokeOpacity: '0.5',
     }
   },
   computed: {
-    visibleWarnings() {
-      return this.$store.getters.visibleWarnings
-    },
-    loading() {
-      return this.$store.getters.loading
-    },
     moveStep() {
       return 25
     },
@@ -299,13 +335,13 @@ export default {
       return 40
     },
     zoomInText() {
-      return i18n.t('zoomIn')
+      return this.t('zoomIn')
     },
     zoomOutText() {
-      return i18n.t('zoomOut')
+      return this.t('zoomOut')
     },
     moveText() {
-      return i18n.t('moveMap')
+      return this.t('moveMap')
     },
     tooltipStyle() {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`
@@ -315,9 +351,6 @@ export default {
     },
     strokeWidth() {
       return String(1.2 - (this.scale - 1) / this.scale)
-    },
-    strokeColor() {
-      return 'rgb(80,80,80)'
     },
     iconSize() {
       return 28 - 4 * this.scale
@@ -354,9 +387,9 @@ export default {
                     : this.warningIcon(warnings[identifier])
                 const scale = icon.scale ? icon.scale : 1
                 const width =
-                  (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) /
+                  (scale * icon.aspectRatio[0] * this.iconSize) /
                   icon.aspectRatio[1]
-                const height = scale * icon.scale * this.iconSize
+                const height = scale * this.iconSize + 6
                 iconSizes.push([width, height])
                 aspectRatios.push(icon.aspectRatio)
                 geoms.push(icon.geom)
@@ -364,7 +397,13 @@ export default {
               }
             })
           let offsetX =
-            -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
+            iconSizes.length > 0 &&
+            this.geometries[this.geometryId][regionId].align === 'right'
+              ? -iconSizes.reduce(
+                  (acc, iconSize) => acc + iconSize[0],
+                  -iconSizes[iconSizes.length - 1][0] / 2
+                )
+              : -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
           const coords = this.geometries[this.geometryId][regionId].center
           iconSizes.forEach((iconSize, index) => {
             data.push({
@@ -415,9 +454,8 @@ export default {
           const icon = this.warningIcon(warning)
           const scale = icon.scale ? icon.scale : 1
           const width =
-            (scale * icon.scale * icon.aspectRatio[0] * this.iconSize) /
-            icon.aspectRatio[1]
-          const height = scale * icon.scale * this.iconSize
+            (scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1]
+          const height = scale * this.iconSize
           iconData.push({
             key: warningId + Math.random(),
             x: `${reference[0] - width / 2}px`,
@@ -433,7 +471,7 @@ export default {
       }, [])
     },
     regionTitle() {
-      return i18n.t(this.popupRegion.name)
+      return this.t(this.popupRegion.name)
     },
     regionSets() {
       const map = new Map()
@@ -544,9 +582,6 @@ export default {
       })
       return merged
     },
-    warnings() {
-      return this.$store.getters.warnings
-    },
   },
   watch: {
     scale() {
@@ -584,7 +619,7 @@ export default {
   },
   mounted() {
     if (this.isClientSide()) {
-      const finlandLarge = document.getElementById('finland-large')
+      const finlandLarge = this.$el.querySelector('svg#finland-large')
       if (finlandLarge != null) {
         this.panzoom = Panzoom(finlandLarge, {
           disableZoom: true,
@@ -629,12 +664,14 @@ export default {
           this.limitPan()
         })
       }
+      if (this.warnings != null) {
+        this.$emit('loaded', true)
+      }
     }
   },
   updated() {
-    this.$store.dispatch('setLoading', false)
-    if (this.$store.getters.warnings != null) {
-      this.$store.dispatch('setInitialized', true)
+    if (this.warnings != null) {
+      this.$emit('loaded', true)
     }
   },
   methods: {
@@ -653,9 +690,9 @@ export default {
             regions.push({
               key: `${regionId}${this.size}${this.index}Path`,
               fill:
-                this.initialized || !this.isClientSide()
-                  ? visualization.color
-                  : this.colors.missing,
+                this.loading && this.isClientSide()
+                  ? this.colors[this.theme].missing
+                  : visualization.color,
               d: visualization.visible ? visualization.geom.pathLarge : '',
               opacity: '1',
               dataRegion: regionId,
@@ -706,7 +743,7 @@ export default {
             severity: 0,
             direction: 0,
             text: '',
-            interval: i18n.t('popupNoWarnings'),
+            interval: this.t('popupNoWarnings'),
           },
         ]
       } else if (
@@ -864,20 +901,24 @@ div.map-large {
   max-height: $map-large-height;
   background-color: transparent;
 
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
-
   div.spinner-container {
     height: 0;
   }
 
-  &.light div.day-map-large button#fmi-warnings-move:focus {
+  &.light-theme div.day-map-large button#fmi-warnings-move:focus {
     background-color: $light-button-focus-color;
   }
 
-  &.dark div.day-map-large button#fmi-warnings-move:focus {
+  &.dark-theme div.day-map-large button#fmi-warnings-move:focus {
     background-color: $dark-button-focus-color;
+  }
+
+  &.light-gray-theme div.day-map-large button#fmi-warnings-move:focus {
+    background-color: $light-gray-button-focus-color;
+  }
+
+  &.dark-gray-theme div.day-map-large button#fmi-warnings-move:focus {
+    background-color: $dark-gray-button-focus-color;
   }
 }
 
@@ -893,17 +934,22 @@ button.fmi-warnings-map-tool {
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
-.light button.fmi-warnings-map-tool {
+.light-theme button.fmi-warnings-map-tool {
   border-color: $light-button-border-color;
 }
 
-.dark button.fmi-warnings-map-tool {
+.dark-theme button.fmi-warnings-map-tool {
   border-color: $dark-button-border-color;
+}
+
+.light-gray-theme button.fmi-warnings-map-tool {
+  border-color: $light-gray-button-border-color;
+}
+
+.dark-gray-theme button.fmi-warnings-map-tool {
+  border-color: $dark-gray-button-border-color;
 }
 
 div.map-large div.day-map-large button {
@@ -912,7 +958,7 @@ div.map-large div.day-map-large button {
     border-radius: 2px 2px 0 0;
 
     &:disabled {
-      border-color: $disabled-color;
+      border-color: $variant-gray;
       cursor: default;
     }
   }
@@ -922,7 +968,7 @@ div.map-large div.day-map-large button {
     border-radius: 0 0 2px 2px;
 
     &:disabled {
-      border-color: $disabled-color;
+      border-color: $variant-gray;
       cursor: default;
     }
   }
@@ -937,16 +983,14 @@ div.map-large div.day-map-large button {
       border-radius: 2px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10zM.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708l-2-2zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8z'/%3E%3C/svg%3E");
 
-      &:disabled {
-        border-color: $disabled-color;
-        background-color: $disabled-color;
-        cursor: default;
+      &.hidden {
+        display: none;
       }
     }
   }
 }
 
-div.map-large.light div.day-map-large button {
+div.map-large.light-theme div.day-map-large button {
   &#fmi-warnings-zoom-in {
     background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04MzcuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0icGx1cy1zeW1ib2wiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgzNy4wMDAwMDAsIDcyNC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxyZWN0IGlkPSJmaWxsLTMiIGZpbGw9IiMzQTY2RTMiIHg9IjAiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCI+PC9yZWN0PgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE3LDI0IEwxNywxMCIgaWQ9ImZpbGwtMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLDE3IEwyNCwxNyIgaWQ9ImZpbGwtMSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=);
     &:disabled {
@@ -961,15 +1005,45 @@ div.map-large.light div.day-map-large button {
   }
 }
 
-div.map-large.dark div.day-map-large button {
+div.map-large.dark-theme div.day-map-large button {
   &#fmi-warnings-zoom-in {
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8-Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI-CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04MzcuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0icGx1cy1zeW1ib2wiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgzNy4wMDAwMDAsIDcyNC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxyZWN0IGlkPSJmaWxsLTMiIGZpbGw9IiM0MzQ3NTIiIHg9IjAiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCI-PC9yZWN0PgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE3LDI0IEwxNywxMCIgaWQ9ImZpbGwtMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI-PC9wYXRoPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLDE3IEwyNCwxNyIgaWQ9ImZpbGwtMSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI-PC9wYXRoPgogICAgICAgICAgICA8L2c-CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMzQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBmaWxsPSIjNDM0NzUyIiBkPSJNMCAwaDM0djM0SDB6Ii8+PHBhdGggZD0iTTE3IDI0VjEwTTEwIDE3aDE0IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjwvc3ZnPg==);
     &:disabled {
       background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzk3OTc5NyIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
     }
   }
   &#fmi-warnings-zoom-out {
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8-Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU-CiAgICA8ZGVmcz48L2RlZnM-CiAgICA8ZyBpZD0iaWNvbnMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJTeW1ib2xzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODgxLjAwMDAwMCwgLTcyNC4wMDAwMDApIj4KICAgICAgICAgICAgPGcgaWQ9Im1pbnVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODgxLjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMiIgZmlsbD0iIzQzNDc1MiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q-CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg-CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c-CiAgICA8L2c-Cjwvc3ZnPg);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMzQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBmaWxsPSIjNDM0NzUyIiBkPSJNMCAwaDM0djM0SDB6Ii8+PHBhdGggZD0iTTEwIDE3aDE0IiBzdHJva2U9IiNGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjwvc3ZnPg==);
+    &:disabled {
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjOTc5Nzk3IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+    }
+  }
+}
+
+div.map-large.light-gray-theme div.day-map-large button {
+  &#fmi-warnings-zoom-in {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04MzcuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0icGx1cy1zeW1ib2wiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgzNy4wMDAwMDAsIDcyNC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxyZWN0IGlkPSJmaWxsLTMiIGZpbGw9IiM0MzQ3NTIiIHg9IjAiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCI+PC9yZWN0PgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE3LDI0IEwxNywxMCIgaWQ9ImZpbGwtMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLDE3IEwyNCwxNyIgaWQ9ImZpbGwtMSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=);
+    &:disabled {
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzk3OTc5NyIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+    }
+  }
+  &#fmi-warnings-zoom-out {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iaWNvbnMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJTeW1ib2xzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODgxLjAwMDAwMCwgLTcyNC4wMDAwMDApIj4KICAgICAgICAgICAgPGcgaWQ9Im1pbnVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODgxLjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMiIgZmlsbD0iIzQzNDc1MiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+    &:disabled {
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjOTc5Nzk3IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
+    }
+  }
+}
+
+div.map-large.dark-gray-theme div.day-map-large button {
+  &#fmi-warnings-zoom-in {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04MzcuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0icGx1cy1zeW1ib2wiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgzNy4wMDAwMDAsIDcyNC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxyZWN0IGlkPSJmaWxsLTMiIGZpbGw9IiM0MzQ3NTIiIHg9IjAiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzNCI+PC9yZWN0PgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTE3LDI0IEwxNywxMCIgaWQ9ImZpbGwtMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLDE3IEwyNCwxNyIgaWQ9ImZpbGwtMSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=);
+    &:disabled {
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPnBsdXMtc3ltYm9sPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Imljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0iU3ltYm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTgzNy4wMDAwMDAsIC03MjQuMDAwMDAwKSI+CiAgICAgICAgICAgIDxnIGlkPSJwbHVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODM3LjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMyIgZmlsbD0iIzk3OTc5NyIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcsMjQgTDE3LDEwIiBpZD0iZmlsbC0yIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+    }
+  }
+  &#fmi-warnings-zoom-out {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iaWNvbnMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJTeW1ib2xzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtODgxLjAwMDAwMCwgLTcyNC4wMDAwMDApIj4KICAgICAgICAgICAgPGcgaWQ9Im1pbnVzLXN5bWJvbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODgxLjAwMDAwMCwgNzI0LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9ImZpbGwtMiIgZmlsbD0iIzQzNDc1MiIgeD0iMCIgeT0iMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjM0Ij48L3JlY3Q+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTAsMTcgTDI0LDE3IiBpZD0iZmlsbC0xIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48L3BhdGg+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
     &:disabled {
       background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjM0cHgiIGhlaWdodD0iMzRweCIgdmlld0JveD0iMCAwIDM0IDM0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCAzLjcuMSAoMjgyMTUpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPm1pbnVzLXN5bWJvbDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IlN5bWJvbHMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC04ODEuMDAwMDAwLCAtNzI0LjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0ibWludXMtc3ltYm9sIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4ODEuMDAwMDAwLCA3MjQuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8cmVjdCBpZD0iZmlsbC0yIiBmaWxsPSIjOTc5Nzk3IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPjwvcmVjdD4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMCwxNyBMMjQsMTciIGlkPSJmaWxsLTEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+);
     }
@@ -980,9 +1054,6 @@ div.day-map-large
   div#fmi-warnings-region-tooltip-reference
   > div#fmi-warnings-region-tooltip.tooltip.b-tooltip {
   opacity: 1;
-  &:focus {
-    outline: none !important;
-  }
 }
 
 #fmi-warnings-region-tooltip-reference {
@@ -1004,19 +1075,19 @@ div.day-map-large
   z-index: 9;
 }
 
-.light .fmi-warnings-popup {
+.light-theme .fmi-warnings-popup {
   background-color: $light-popup-background-color;
   -webkit-filter: drop-shadow(0 1px 4px $light-popup-filter-color);
   filter: drop-shadow(0 1px 4px $light-popup-filter-color);
 }
 
-.dark .fmi-warnings-popup {
+.dark-theme .fmi-warnings-popup {
   background-color: $dark-popup-background-color;
   -webkit-filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
   filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
 }
 
-::v-deep .tooltip.bs-tooltip-top {
+:deep(.tooltip.bs-tooltip-top) {
   .arrow,
   .arrow::before {
     content: ' ';
@@ -1032,7 +1103,7 @@ div.day-map-large
     border: 11px solid transparent;
     left: 60px;
     margin-left: -11px;
-    top: 0;
+    top: -11px;
     z-index: 10;
   }
 
@@ -1043,7 +1114,7 @@ div.day-map-large
     z-index: 9;
   }
 
-  &.light {
+  &.light-theme {
     .arrow {
       border-top-color: $light-popup-border-color;
     }
@@ -1053,7 +1124,7 @@ div.day-map-large
     }
   }
 
-  &.dark {
+  &.dark-theme {
     .arrow {
       border-top-color: $dark-popup-border-color;
     }
@@ -1061,6 +1132,32 @@ div.day-map-large
     .arrow::before {
       border-top-color: $dark-popup-background-color;
     }
+  }
+
+  &.light-gray-theme {
+    .arrow {
+      border-top-color: $light-gray-popup-border-color;
+    }
+
+    .arrow::before {
+      border-top-color: $light-gray-popup-background-color;
+    }
+  }
+
+  &.dark-gray-theme {
+    .arrow {
+      border-top-color: $dark-gray-popup-border-color;
+    }
+
+    .arrow::before {
+      border-top-color: $dark-gray-popup-background-color;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .arrow {
+    forced-color-adjust: none;
   }
 }
 
@@ -1078,9 +1175,6 @@ a.fmi-warnings-popup-closer {
     z-index: 8;
     pointer-events: auto;
     outline: none !important;
-    &:focus {
-      outline: none;
-    }
   }
 }
 
@@ -1089,12 +1183,20 @@ a.fmi-warnings-popup-closer {
   cursor: default;
 }
 
-.light .region-popup {
+.light-theme .region-popup {
   background-color: $light-popup-background-color;
 }
 
-.dark .region-popup {
+.dark-theme .region-popup {
   background-color: $dark-popup-background-color;
+}
+
+.light-gray-theme .region-popup {
+  background-color: $light-gray-popup-background-color;
+}
+
+.dark-gray-theme .region-popup {
+  background-color: $dark-gray-popup-background-color;
 }
 
 div.region-popup-header {
@@ -1116,12 +1218,48 @@ span.region-popup-header-text {
   margin-top: 3px;
 }
 
-.light span.region-popup-header-text {
-  color: $light-popup-header-text-color;
+.light-theme span.region-popup-header-text {
+  color: $black;
 }
 
-.dark span.region-popup-header-text {
-  color: $dark-popup-header-text-color;
+.dark-theme span.region-popup-header-text {
+  color: $black;
+}
+
+.light-gray-theme div.region-popup-header {
+  &.level-0 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-1 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-2 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-3 > span.region-popup-header-text {
+    color: $white;
+  }
+  &.level-4 > span.region-popup-header-text {
+    color: $white;
+  }
+}
+
+.dark-gray-theme div.region-popup-header {
+  &.level-0 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-1 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-2 > span.region-popup-header-text {
+    color: $black;
+  }
+  &.level-3 > span.region-popup-header-text {
+    color: $white;
+  }
+  &.level-4 > span.region-popup-header-text {
+    color: $white;
+  }
 }
 
 .region-popup-wrapper {
@@ -1138,15 +1276,23 @@ span.region-popup-header-text {
   padding: 0 0 0 0;
 }
 
-.light .region-popup-body {
+.light-theme .region-popup-body {
   background-color: $light-popup-background-color;
 }
 
-.dark .region-popup-body {
+.dark-theme .region-popup-body {
   background-color: $dark-popup-background-color;
 }
 
-.light {
+.light-gray-theme .region-popup-body {
+  background-color: $light-gray-popup-background-color;
+}
+
+.dark-gray-theme .region-popup-body {
+  background-color: $dark-gray-popup-background-color;
+}
+
+.light-theme {
   .shadow-level-0 {
     background-color: $light-green-shadow !important;
   }
@@ -1168,7 +1314,7 @@ span.region-popup-header-text {
   }
 }
 
-.dark {
+.dark-theme {
   .shadow-level-0 {
     background-color: $dark-green-shadow !important;
   }
@@ -1190,7 +1336,61 @@ span.region-popup-header-text {
   }
 }
 
-::v-deep div.tooltip-inner {
+.light-gray-theme {
+  .shadow-level-0 {
+    background-color: $light-gray-green-shadow !important;
+  }
+
+  .shadow-level-1 {
+    background-color: $light-gray-green-shadow !important;
+  }
+
+  .shadow-level-2 {
+    background-color: $light-gray-yellow-shadow !important;
+  }
+
+  .shadow-level-3 {
+    background-color: $light-gray-orange-shadow !important;
+  }
+
+  .shadow-level-4 {
+    background-color: $light-gray-red-shadow !important;
+  }
+}
+
+.dark-gray-theme {
+  .shadow-level-0 {
+    background-color: $dark-gray-green-shadow !important;
+  }
+
+  .shadow-level-1 {
+    background-color: $dark-gray-green-shadow !important;
+  }
+
+  .shadow-level-2 {
+    background-color: $dark-gray-yellow-shadow !important;
+  }
+
+  .shadow-level-3 {
+    background-color: $dark-gray-orange-shadow !important;
+  }
+
+  .shadow-level-4 {
+    background-color: $dark-gray-red-shadow !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .shadow-level-0,
+  .shadow-level-1,
+  .shadow-level-2,
+  .shadow-level-3,
+  .shadow-level-4 {
+    forced-color-adjust: none;
+  }
+}
+
+:deep(div.tooltip-inner) {
   padding: 0;
 }
 
@@ -1205,12 +1405,28 @@ span.region-popup-header-text {
   display: table-header-group;
 }
 
-.light .popup-table-heading {
+.light-theme .popup-table-heading {
   background-color: $light-popup-table-background-color;
 }
 
-.dark .popup-table-heading {
+.dark-theme .popup-table-heading {
   background-color: $dark-popup-table-background-color;
+}
+
+.light-gray-theme {
+  .popup-table-heading {
+    background-color: $light-gray-popup-table-background-color;
+  }
+  .popup-table {
+    border-top: solid 1px $light-gray;
+  }
+  #day-map-large-base-popup {
+    box-shadow: 0 0 0 1px $light-gray;
+  }
+}
+
+.dark-gray-theme .popup-table-heading {
+  background-color: $dark-gray-popup-table-background-color;
 }
 
 .popup-table-head {
@@ -1224,12 +1440,20 @@ span.region-popup-header-text {
   font-weight: bold;
 }
 
-.light .popup-table-heading {
+.light-theme .popup-table-heading {
   background-color: $light-popup-table-background-color;
 }
 
-.dark .popup-table-heading {
+.dark-theme .popup-table-heading {
   background-color: $dark-popup-table-background-color;
+}
+
+.light-gray-theme .popup-table-heading {
+  background-color: $light-gray-popup-table-background-color;
+}
+
+.dark-gray-theme .popup-table-heading {
+  background-color: $dark-gray-popup-table-background-color;
 }
 
 .popup-table-foot {
@@ -1237,12 +1461,20 @@ span.region-popup-header-text {
   font-weight: bold;
 }
 
-.light .popup-table-foot {
+.light-theme .popup-table-foot {
   background-color: $light-popup-table-background-color;
 }
 
-.dark .popup-table-foot {
+.dark-theme .popup-table-foot {
   background-color: $dark-popup-table-background-color;
+}
+
+.light-gray-theme .popup-table-foot {
+  background-color: $light-gray-popup-table-background-color;
+}
+
+.dark-gray-theme .popup-table-foot {
+  background-color: $dark-gray-popup-table-background-color;
 }
 
 .popup-table-body {

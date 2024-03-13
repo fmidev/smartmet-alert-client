@@ -1,5 +1,11 @@
 <template>
-  <div class="sticky-top" :class="currentTheme">
+  <div class="sticky-top" :class="theme">
+    <GrayScaleToggle
+      class="narrow-screen"
+      :language="language"
+      :gray-scale-selector="grayScaleSelector"
+      :theme="theme"
+      @themeChanged="onThemeChanged" />
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">
         {{ warningSymbolsText }}
@@ -7,43 +13,54 @@
       </nav>
     </div>
     <b-card no-body class="mb-1 d-md-none legends-panel">
-      <b-card-header
-        header-tag="header"
-        class="p-1"
-        header-class="legends-heading">
+      <b-card-header header-tag="header" class="legends-heading p-1">
         <div class="legends-header">
           <span class="legends-text">
             {{ toggleLegendsText }}
           </span>
         </div>
         <b-button
-          v-b-toggle.legends-collapse
           block
-          variant="info"
-          class="legends-toggle" />
+          :class="['legends-toggle', visible ? '' : 'collapsed']"
+          @click="onLegendToggle" />
       </b-card-header>
       <b-collapse
         id="legends-collapse"
         v-model="visible"
-        class="legends-collapse-item"
+        class="legends-collapse-item focus-ring"
         tabindex="0">
         <b-card-body body-class="p-0">
           <div class="legends-container">
-            <Warnings :input="input" />
+            <Warnings
+              :input="input"
+              :visible-warnings="visibleWarnings"
+              :theme="theme"
+              :language="language" />
           </div>
         </b-card-body>
       </b-collapse>
     </b-card>
-    <div class="d-md-block d-none">
-      <Warnings :input="input" />
+    <div ref="warningsContainer" class="d-md-block d-none">
+      <Warnings
+        :input="input"
+        :visible-warnings="visibleWarnings"
+        :theme="theme"
+        :language="language"
+        @warningsToggled="onWarningsToggled"
+        @showAllWarnings="onShowAllWarnings" />
     </div>
+    <GrayScaleToggle
+      :language="language"
+      :gray-scale-selector="grayScaleSelector"
+      :theme="theme"
+      @themeChanged="onThemeChanged" />
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import Warnings from './Warnings.vue'
 
 export default {
@@ -51,7 +68,42 @@ export default {
   components: {
     Warnings,
   },
-  props: ['input'],
+  mixins: [i18n],
+  props: {
+    input: {
+      type: Array,
+      default: () => [],
+    },
+    language: {
+      type: String,
+      default: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
+    },
+    grayScaleSelector: {
+      type: Boolean,
+      default: false,
+    },
+    theme: {
+      type: String,
+      default: 'light-theme',
+    },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
+  },
   data() {
     return {
       visible: false,
@@ -62,37 +114,39 @@ export default {
       return this.input
     },
     warningSymbolsText() {
-      return i18n.t('legends')
+      return this.t('legends')
     },
     toggleLegendsText() {
-      return this.visible ? i18n.t('hideLegends') : i18n.t('showLegends')
-    },
-    currentTheme() {
-      return this.$store.getters.theme
+      return this.visible ? this.t('hideLegends') : this.t('showLegends')
     },
   },
   watch: {
-    input() {
-      this.showAll()
-    },
-    visibleWarnings(newVisibleWarnings) {
-      this.warnings.forEach((warning) => {
-        const isVisible = newVisibleWarnings.includes(warning.type)
-        if (isVisible !== warning.visible) {
-          Vue.set(warning, 'visible', isVisible)
-        }
-      })
+    windowWidth() {
+      if (this.$refs.warningsContainer.clientHeight === 0) {
+        this.onShowAllWarnings()
+      }
     },
   },
   methods: {
-    showAll() {
-      this.$store.dispatch(
-        'setVisibleWarnings',
+    onLegendToggle() {
+      this.visible = !this.visible
+    },
+    onWarningsToggled(newVisibleWarnings) {
+      this.$emit('warningsToggled', newVisibleWarnings)
+    },
+    onShowAllWarnings() {
+      this.$emit(
+        'warningsToggled',
         this.warnings.reduce(
           (types, warning) => types.concat([warning.type]),
           []
         )
       )
+    },
+    onThemeChanged(newTheme) {
+      if (this.theme !== newTheme) {
+        this.$emit('themeChanged', newTheme)
+      }
     },
   },
 }
@@ -106,6 +160,7 @@ div.symbol-list-header-row {
   padding-right: 0;
   padding-bottom: 0;
   margin-left: 0;
+  margin-right: 0;
   span {
     white-space: nowrap;
   }
@@ -117,12 +172,20 @@ div.symbol-list-header-row {
   margin-right: 0;
 }
 
-.light .legends-panel {
+.light-theme .legends-panel {
   border: 2px solid $light-legend-background-color;
 }
 
-.dark .legends-panel {
+.dark-theme .legends-panel {
   border: 2px solid $dark-legend-background-color;
+}
+
+.light-gray-theme .legends-panel {
+  border: 2px solid $light-gray-legend-background-color;
+}
+
+.dark-gray-theme .legends-panel {
+  border: 2px solid $dark-gray-legend-background-color;
 }
 
 .legends-heading {
@@ -130,14 +193,23 @@ div.symbol-list-header-row {
   padding: 0 0 0 15px !important;
   line-height: $current-warning-height;
   border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.light .legends-heading {
+.light-theme .legends-heading {
   background-color: $light-legend-heading-background-color;
 }
 
-.dark .legends-heading {
+.dark-theme .legends-heading {
   background-color: $dark-legend-heading-background-color;
+}
+
+.light-gray-theme .legends-heading {
+  background-color: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-heading {
+  background-color: $dark-gray-legend-heading-background-color;
 }
 
 .legends-header {
@@ -146,12 +218,20 @@ div.symbol-list-header-row {
   right: 38px;
 }
 
-.light .legends-header {
+.light-theme .legends-header {
   background: $light-legend-heading-background-color;
 }
 
-.dark .legends-header {
+.dark-theme .legends-header {
   background: $dark-legend-heading-background-color;
+}
+
+.light-gray-theme .legends-header {
+  background: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-header {
+  background: $dark-gray-legend-heading-background-color;
 }
 
 .legends-text {
@@ -160,24 +240,26 @@ div.symbol-list-header-row {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 15px;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-    overflow: visible;
-    position: absolute;
-    z-index: 1;
-    padding-right: 3px;
-  }
 }
 
-.light .legends-text {
+.light-theme .legends-text {
   background-color: $light-legend-heading-background-color;
 }
 
-.dark .legends-text {
+.dark-theme .legends-text {
   background-color: $dark-legend-heading-background-color;
 }
 
-.legends-toggle.btn-info {
+.light-gray-theme .legends-text {
+  background-color: $light-gray-legend-heading-background-color;
+}
+
+.dark-gray-theme .legends-text {
+  background-color: $dark-gray-legend-heading-background-color;
+}
+
+.legends-toggle {
+  position: relative;
   height: $current-warning-height;
   width: $current-warning-height;
   min-width: $current-warning-height;
@@ -190,28 +272,15 @@ div.symbol-list-header-row {
   padding: $image-padding;
   margin-left: 5px;
 
-  &:focus {
-    position: relative;
-    z-index: 1;
-    box-shadow: none !important;
-    &:not([data-focus-visible-added]) {
-      outline: none !important;
-    }
-  }
-
   &.collapsed {
     background-image: url($ui-image-path + 'arrow-down.svg');
   }
 }
 
-.light .legends-toggle.btn-info {
+.light-theme .legends-toggle {
   background-color: $light-legend-toggle-background-color;
 
   &:hover {
-    background-color: $light-legend-toggle-background-color;
-  }
-
-  &:focus {
     background-color: $light-legend-toggle-background-color;
   }
 
@@ -224,14 +293,10 @@ div.symbol-list-header-row {
   }
 }
 
-.dark .legends-toggle.btn-info {
+.dark-theme .legends-toggle {
   background-color: $dark-legend-toggle-background-color;
 
   &:hover {
-    background-color: $dark-legend-toggle-background-color;
-  }
-
-  &:focus {
     background-color: $dark-legend-toggle-background-color;
   }
 
@@ -244,27 +309,75 @@ div.symbol-list-header-row {
   }
 }
 
-div.legends-collapse-item:focus:not([data-focus-visible-added]) {
-  outline: none !important;
+.light-gray-theme .legends-toggle {
+  background-color: $light-gray-legend-toggle-background-color;
+
+  &:hover {
+    background-color: $light-gray-legend-toggle-background-color;
+  }
+
+  &:active {
+    background-color: $light-gray-legend-toggle-background-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $light-gray-current-warning-toggle-active-color;
+  }
+}
+
+.dark-gray-theme .legends-toggle {
+  background-color: $dark-gray-legend-toggle-background-color;
+
+  &:hover {
+    background-color: $dark-gray-legend-toggle-background-color;
+  }
+
+  &:active {
+    background-color: $dark-gray-legend-toggle-background-color;
+  }
+
+  &:not(:disabled):not(.disabled):active {
+    background-color: $dark-gray-current-warning-toggle-active-color;
+  }
 }
 
 .legends-container {
   padding: 15px;
 }
 
-.light .legends-container {
+.light-theme .legends-container {
   background-color: $light-legend-container-background-color;
   border-top: 2px solid $light-legend-background-color;
 }
 
-.dark .legends-container {
+.dark-theme .legends-container {
   background-color: $dark-legend-container-background-color;
   border-top: 2px solid $dark-legend-background-color;
+}
+
+.light-gray-theme .legends-container {
+  background-color: $light-gray-legend-container-background-color;
+  border-top: 2px solid $light-gray-legend-background-color;
+}
+
+.dark-gray-theme .legends-container {
+  background-color: $dark-gray-legend-container-background-color;
+  border-top: 2px solid $dark-gray-legend-background-color;
+}
+
+div#legends-collapse div.card-body {
+  padding: 0;
+}
+
+nav.symbol-list-header {
+  padding-left: 0;
+  text-align: left;
 }
 
 @media (max-width: 767px) {
   nav.symbol-list-header {
     margin-top: 15px;
+    margin-bottom: 5px;
   }
 }
 </style>

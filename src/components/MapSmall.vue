@@ -1,6 +1,7 @@
 <template>
   <div :id="`day-map-small-${index}`" class="map-small">
     <svg
+      class="finland-small"
       xmlns="http://www.w3.org/2000/svg"
       version="1.2"
       baseProfile="tiny"
@@ -9,11 +10,11 @@
       viewBox="0 0 75 120"
       stroke-linecap="round"
       stroke-linejoin="round">
-      <g :id="`finland-small-${index}`">
+      <g v-if="pathsNeeded" :id="`finland-small-${index}`">
         <path
           v-for="path in bluePaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -21,7 +22,7 @@
         <path
           v-for="path in greenPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -29,7 +30,7 @@
         <path
           v-for="path in yellowPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -37,7 +38,7 @@
         <path
           v-for="coverage in yellowCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -46,7 +47,7 @@
         <path
           v-for="path in orangePaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -54,7 +55,7 @@
         <path
           v-for="coverage in orangeCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -63,7 +64,7 @@
         <path
           v-for="path in redPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
@@ -71,7 +72,7 @@
         <path
           v-for="coverage in redCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -80,14 +81,14 @@
         <path
           v-for="path in overlayPaths"
           :key="path.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
           fill-opacity="0" />
         <path
           v-for="coverage in overlayCoverages"
           :key="coverage.key"
-          stroke="#000000"
+          :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
           :fill="coverage.fill"
           :d="coverage.d"
@@ -99,14 +100,14 @@
 </template>
 
 <script>
-import { vueWindowSizeMixin } from 'vue-window-size'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 import config from '../mixins/config'
 import utils from '../mixins/utils'
 
 export default {
   name: 'MapSmall',
-  mixins: [config, utils, vueWindowSizeMixin],
+  mixins: [config, utils],
   props: {
     index: {
       type: Number,
@@ -115,9 +116,38 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: null,
+    },
     geometryId: {
       type: Number,
     },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    theme: {
+      type: String,
+      default: 'light-theme',
+    },
+  },
+  setup() {
+    const windowWidth = ref(window.innerWidth)
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth
+    }
+    onMounted(() => {
+      window.addEventListener('resize', updateWidth)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWidth)
+    })
+    return { windowWidth }
   },
   data() {
     return {
@@ -163,9 +193,9 @@ export default {
               ) {
                 regions.push({
                   key: `${regionId}${this.size}${this.index}Path`,
-                  fill: this.initialized
-                    ? visualization.color
-                    : this.colors.missing,
+                  fill: this.loading
+                    ? this.colors[this.theme].missing
+                    : visualization.color,
                   d: visualization.geom.pathSmall,
                   opacity: visualization.visible ? '1' : '0',
                   strokeWidth:
@@ -185,8 +215,7 @@ export default {
       if (!this.isClientSide()) {
         return true
       }
-      const element = document.getElementById(`day-map-small-${this.index}`)
-      return element != null && element.offsetParent !== null
+      return this.$el != null && this.$el.offsetParent !== null
     },
   },
 }
@@ -197,7 +226,7 @@ export default {
 
 div.map-small {
   position: relative;
-  top: 0;
+  bottom: -5px !important;
   display: inline-block;
   width: $map-small-width !important;
   height: $map-small-height !important;

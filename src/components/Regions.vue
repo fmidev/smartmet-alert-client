@@ -6,17 +6,22 @@
         id="fmi-warnings-region-content"
         :href="fromLandToNextContentHref"
         tabindex="0"
-        class="fmi-warnings-to-next-content sr-only sr-only-focusable"
-        >{{ fromLandtoNextContentText }}</a
+        class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        @click="fromLandToNextContentClicked"
+        >{{ fromLandToNextContentText }}</a
       >
       <div id="accordion-land" class="accordion-region" role="tablist">
         <div v-for="region in regions.land" :key="region.key">
           <Region
             v-if="region.warnings.length"
             type="land"
+            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
-            :input="region.warnings" />
+            :input="region.warnings"
+            :warnings="warnings"
+            :language="language"
+            @regionToggled="onRegionToggled" />
         </div>
       </div>
     </div>
@@ -26,17 +31,23 @@
         :id="fromSeaToNextContentId"
         href="#fmi-warnings-end-of-regions"
         tabindex="0"
-        class="fmi-warnings-to-next-content sr-only sr-only-focusable"
-        >{{ fromSeatoNextContentText }}</a
+        class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
+        @click="fromSeaToNextContentClicked"
+        >{{ fromSeaToNextContentText }}</a
       >
       <div id="accordion-sea" class="accordion-region" role="tablist">
         <div v-for="region in regions.sea" :key="region.key">
           <Region
             v-if="region.warnings.length"
-            type="land"
+            type="sea"
+            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
-            :input="region.warnings" />
+            :input="region.warnings"
+            :warnings="warnings"
+            :theme="theme"
+            :language="language"
+            @regionToggled="onRegionToggled" />
         </div>
       </div>
     </div>
@@ -45,36 +56,48 @@
 </template>
 
 <script>
-import i18n from '../i18n'
 import config from '../mixins/config'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 import Region from './Region.vue'
 
 export default {
   name: 'Regions',
   components: { Region },
-  mixins: [config, utils],
+  mixins: [config, i18n, utils],
   props: {
     input: Array,
+    selectedDay: Number,
+    warnings: {
+      type: Object,
+      default: null,
+    },
     parents: Object,
     geometryId: Number,
+    theme: String,
+    language: String,
+  },
+  data() {
+    return {
+      shownRegion: null,
+    }
   },
   computed: {
     landText() {
-      return i18n.t('regionLand')
+      return this.t('regionLand')
     },
     seaText() {
-      return i18n.t('regionSea')
+      return this.t('regionSea')
     },
-    fromLandtoNextContentText() {
-      return `${i18n.t('warningsIn')} ${this.regions.land.length} ${i18n.t(
-        'toNextContent'
-      )}`
+    fromLandToNextContentText() {
+      return `${this.t('warningsInAreaStart')} ${
+        this.regions.land.length
+      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
     },
-    fromSeatoNextContentText() {
-      return `${i18n.t('warningsIn')} ${this.regions.sea.length} ${i18n.t(
-        'toNextContent'
-      )}`
+    fromSeaToNextContentText() {
+      return `${this.t('warningsInAreaStart')} ${
+        this.regions.sea.length
+      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
     },
     fromLandToNextContentHref() {
       return this.anySeaWarnings
@@ -117,9 +140,6 @@ export default {
         {}
       )
     },
-    selectedDay() {
-      return this.$store.getters.selectedDay
-    },
     anyLandWarnings() {
       return this.anyRegionWarnings('land')
     },
@@ -134,6 +154,19 @@ export default {
         this.regions[regionType] != null &&
         this.regions[regionType].length > 0
       )
+    },
+    onRegionToggled({ code, shown }) {
+      this.shownRegion = shown ? code : null
+    },
+    fromLandToNextContentClicked() {
+      const nextContent = this.$el.querySelector(this.fromLandToNextContentHref)
+      nextContent.scrollIntoView()
+      nextContent.focus()
+    },
+    fromSeaToNextContentClicked() {
+      const nextContent = this.$el.querySelector('#fmi-warnings-end-of-regions')
+      nextContent.scrollIntoView()
+      nextContent.focus()
     },
   },
 }
@@ -173,5 +206,6 @@ h3.header-region {
 
 div.region-type-container {
   width: 100%;
+  padding: 0;
 }
 </style>

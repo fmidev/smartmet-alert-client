@@ -5,7 +5,7 @@
         'popup-table-cell',
         'popup-table-symbol-cell',
         'symbol-image',
-        `symbol-image-rotate-${rotation}`,
+        `transform-rotate-${rotation}`,
         `level-${severity}`,
         typeClass,
         'warning-image',
@@ -13,7 +13,7 @@
       <span
         :class="[
           'symbol-text',
-          `symbol-text-rotate-${rotation}`,
+          `transform-rotate-${invertedRotation}`,
           'warning-symbol-text',
         ]">
         {{ input.text }}
@@ -54,17 +54,18 @@ export default {
   vertical-align: middle;
   text-align: left;
 
-  &.level-0 {
+  &.level-0.warning-image {
     display: none;
   }
 }
 
 .popup-table-symbol-cell {
-  background-size: 24px 24px;
   height: $current-warning-image-height;
   width: $current-warning-image-height;
   min-width: $current-warning-image-height;
-  margin-top: ($current-warning-height - $current-warning-image-height) / 2;
+  margin-top: calc(
+    ($current-warning-height - $current-warning-image-height) / 2
+  );
   margin-left: 2px;
   margin-right: 0;
 }
@@ -76,14 +77,14 @@ span.symbol-text {
   width: 100%;
   text-align: center;
   margin: 0 auto;
-  font-family: $font-family;
+  font-family: $symbol-font-family !important;
   color: $white;
   text-anchor: middle;
   font-weight: 700;
 }
 
 span.warning-symbol-text {
-  font-size: 9px;
+  font-size: $warning-symbol-font-size;
 }
 
 .popup-table-text-cell {

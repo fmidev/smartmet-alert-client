@@ -1,8 +1,19 @@
 <template>
   <div
-    :class="['date-selector-cell', currentTheme, { active: active }]"
+    :class="['date-selector-cell', theme, { active: active }]"
     :aria-label="ariaLabel">
-    <div class="date-selector-cell-header">
+    <div class="date-selector-cell-header"></div>
+    <div class="date-selector-cell-body map-container">
+      <MapSmall
+        :index="index"
+        :input="regions"
+        :visible-warnings="visibleWarnings"
+        :warnings="warnings"
+        :geometry-id="geometryId"
+        :loading="loading"
+        :theme="theme" />
+    </div>
+    <div class="date-selector-cell-date">
       <div :class="`date-selector-text mobile-level-${severity}`">
         <span v-if="staticDays" class="bold-text weekday-text">{{
           weekday
@@ -11,15 +22,12 @@
         {{ date }}
       </div>
     </div>
-    <div class="date-selector-cell-body map-container">
-      <MapSmall :index="index" :input="regions" :geometry-id="geometryId" />
-    </div>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
 </template>
 
 <script>
-import i18n from '../i18n'
+import i18n from '../mixins/i18n'
 import MapSmall from './MapSmall.vue'
 
 export default {
@@ -27,6 +35,7 @@ export default {
   components: {
     MapSmall,
   },
+  mixins: [i18n],
   props: {
     index: {
       type: Number,
@@ -34,6 +43,14 @@ export default {
     input: {
       type: Object,
       default: () => ({}),
+    },
+    visibleWarnings: {
+      type: Array,
+      default: () => [],
+    },
+    warnings: {
+      type: Object,
+      default: null,
     },
     regions: {
       type: Object,
@@ -49,10 +66,21 @@ export default {
       type: Boolean,
       default: true,
     },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    theme: {
+      type: String,
+      default: 'light-theme',
+    },
+    language: {
+      type: String,
+    },
   },
   computed: {
     weekday() {
-      return i18n.t(this.input.weekdayName) || ''
+      return this.t(this.input.weekdayName) || ''
     },
     severity() {
       return this.input.severity
@@ -72,12 +100,11 @@ export default {
         : ''
     },
     ariaLabel() {
-      return `${
-        this.input.weekdayName ? i18n.t(`${this.input.weekdayName}Full`) : ''
-      } ${this.input.day}.${this.input.month}`
-    },
-    currentTheme() {
-      return this.$store.getters.theme
+      return `${this.t(this.input.weekdayName)} ${this.input.day}.${
+        this.input.month
+      }. ${this.t('warningsInEffect')} ${this.regions.land.length} ${this.t(
+        'landAreas'
+      )} ${this.regions.sea.length} ${this.t('seaAreas')}.`
     },
   },
 }
@@ -88,16 +115,40 @@ export default {
 
 div.date-selector-cell {
   &.active {
-    &.light div.date-selector-cell-footer {
-      background-color: $light-text-color;
-      &:after {
-        border-top: solid 7px $light-text-color;
+    &.light-theme {
+      background-color: $lightest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-blue;
+        &:after {
+          border-top: solid 7px $dark-blue;
+        }
       }
     }
-    &.dark div.date-selector-cell-footer {
-      background-color: $dark-text-color;
-      &:after {
-        border-top: solid 7px $dark-text-color;
+    &.dark-theme {
+      background-color: $darkest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-text-color;
+        &:after {
+          border-top: solid 7px $dark-text-color;
+        }
+      }
+    }
+    &.light-gray-theme {
+      background-color: $lightest-gray;
+      div.date-selector-cell-footer {
+        background-color: $light-gray-text-color;
+        &:after {
+          border-top: solid 7px $light-gray-text-color;
+        }
+      }
+    }
+    &.dark-gray-theme {
+      background-color: $darkest-gray;
+      div.date-selector-cell-footer {
+        background-color: $dark-gray-text-color;
+        &:after {
+          border-top: solid 7px $dark-gray-text-color;
+        }
       }
     }
 
@@ -114,18 +165,32 @@ div.date-selector-cell {
     }
   }
 
+  .date-selector-cell-header {
+    position: relative;
+    height: 2px;
+    background-color: transparent;
+  }
+
   .date-selector-cell-footer {
     position: relative;
     height: 4px;
     margin-bottom: 20px;
   }
 
-  &.light > .date-selector-cell-footer {
+  &.light-theme > .date-selector-cell-footer {
     background-color: $light-date-selector-footer-color;
   }
 
-  &.dark > .date-selector-cell-footer {
+  &.dark-theme > .date-selector-cell-footer {
     background-color: $dark-date-selector-footer-color;
+  }
+
+  &.light-gray-theme > .date-selector-cell-footer {
+    background-color: $light-gray-date-selector-footer-color;
+  }
+
+  &.dark-gray-theme > .date-selector-cell-footer {
+    background-color: $dark-gray-date-selector-footer-color;
   }
 
   .date-selector-cell-body {
@@ -145,7 +210,7 @@ div.date-selector-cell {
     white-space: nowrap;
   }
 
-  .date-selector-cell-header {
+  .date-selector-cell-date {
     width: 100%;
     display: table;
     height: 30px;
@@ -158,36 +223,151 @@ div.date-selector-cell {
     display: none;
   }
 
-  .light div.date-selector-cell-header * {
+  .light-theme div.date-selector-cell-date * {
     color: $light-date-selector-mobile-text-color !important;
   }
 
-  .dark div.date-selector-cell-header * {
+  .dark-theme div.date-selector-cell-date * {
     color: $dark-date-selector-mobile-text-color !important;
   }
 
-  div.date-selector-cell-header {
+  .light-gray-theme div.date-selector-cell-date * {
+    color: $light-gray-date-selector-mobile-text-color !important;
+  }
+
+  .dark-gray-theme div.date-selector-cell-date * {
+    color: $dark-gray-date-selector-mobile-text-color !important;
+  }
+
+  div.date-selector-cell-date {
     height: 60px !important;
   }
 
-  div.mobile-level-0 {
-    background-color: $green !important;
+  .light-theme,
+  .dark-theme {
+    div.mobile-level-0 {
+      color: $black !important;
+      background-color: $light-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-1 {
+      color: $black !important;
+      background-color: $light-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-2 {
+      color: $black !important;
+      background-color: $light-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-3 {
+      color: $black !important;
+      background-color: $light-orange !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-4 {
+      color: $black !important;
+      background-color: $light-red !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
   }
 
-  div.mobile-level-1 {
-    background-color: $green !important;
+  .light-gray-theme {
+    div.mobile-level-0 {
+      color: $black !important;
+      background-color: $light-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-1 {
+      color: $black !important;
+      background-color: $light-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-2 {
+      color: $black !important;
+      background-color: $light-gray-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-3 {
+      color: $white !important;
+      background-color: $light-gray-orange !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
+
+    div.mobile-level-4 {
+      color: $white !important;
+      background-color: $light-gray-red !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
   }
 
-  div.mobile-level-2 {
-    background-color: $yellow !important;
-  }
+  .dark-gray-theme {
+    div.mobile-level-0 {
+      color: $black !important;
+      background-color: $dark-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
 
-  div.mobile-level-3 {
-    background-color: $orange !important;
-  }
+    div.mobile-level-1 {
+      color: $black !important;
+      background-color: $dark-gray-green !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
 
-  div.mobile-level-4 {
-    background-color: $red !important;
+    div.mobile-level-2 {
+      color: $black !important;
+      background-color: $dark-gray-yellow !important;
+      .weekday-text {
+        color: $black !important;
+      }
+    }
+
+    div.mobile-level-3 {
+      color: $white !important;
+      background-color: $dark-gray-orange !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
+
+    div.mobile-level-4 {
+      color: $white !important;
+      background-color: $dark-gray-red !important;
+      .weekday-text {
+        color: $white !important;
+      }
+    }
   }
 }
 </style>

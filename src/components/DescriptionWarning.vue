@@ -1,10 +1,10 @@
 <template>
-  <div class="current-description-row" :class="currentTheme">
+  <div class="current-description-row" :class="theme">
     <div class="current-description-image-cell" aria-hidden="true">
       <div
-        :class="`current-description-image warning-image symbol-image symbol-image-rotate-${rotation} level-${input.severity} ${typeClass}`">
+        :class="`current-description-image warning-image symbol-image transform-rotate-${rotation} level-${input.severity} ${typeClass}`">
         <span
-          :class="`symbol-text symbol-text-rotate-${rotation} region-warning-symbol-text`"
+          :class="`symbol-text transform-rotate-${invertedRotation} region-warning-symbol-text`"
           >{{ input.text }}</span
         >
       </div>
@@ -37,31 +37,29 @@
 </template>
 
 <script>
-import 'focus-visible'
-
-import i18n from '../i18n'
 import fields from '../mixins/fields'
+import i18n from '../mixins/i18n'
 import utils from '../mixins/utils'
 
 export default {
   name: 'DescriptionWarning',
-  mixins: [fields, utils],
-  props: ['input'],
+  mixins: [fields, i18n, utils],
+  props: ['input', 'language', 'theme'],
   computed: {
     warningTitle() {
-      return i18n.t(this.input.type)
+      return this.t(this.input.type)
     },
     info() {
-      return this.input.info[i18n.locale]
+      return this.input.info[this.language]
     },
     validText() {
-      return i18n.t('valid')
+      return this.t('valid')
     },
     linkHidden() {
       return this.input.link == null || this.input.link.length === 0
     },
     description() {
-      return i18n.t(`${this.input.type}DescriptionLevel${this.input.severity}`)
+      return this.t(`${this.input.type}DescriptionLevel${this.input.severity}`)
     },
   },
 }
@@ -93,7 +91,7 @@ div.warning-image {
 }
 
 span.region-warning-symbol-text {
-  font-size: 12px;
+  font-size: $font-size;
 }
 
 div.current-description-text-cell {
@@ -140,17 +138,22 @@ a.ext-link {
   background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
     right;
   margin-right: 2px;
-  &:focus:not([data-focus-visible-added]) {
-    outline: none !important;
-  }
 }
 
-.light a.ext-link {
+.light-theme a.ext-link {
   color: $light-ext-link-color;
 }
 
-.dark a.ext-link {
-  color: $light-ext-link-color;
+.dark-theme a.ext-link {
+  color: $dark-ext-link-color;
+}
+
+.light-gray-theme a.ext-link {
+  color: $light-gray-ext-link-color;
+}
+
+.dark-gray-theme a.ext-link {
+  color: $dark-gray-ext-link-color;
 }
 
 span.warning-valid {
