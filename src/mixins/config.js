@@ -1200,7 +1200,7 @@ export default {
         case 'seaWind':
           const dx = -1.5 * Math.sin((warning.direction * Math.PI) / 180)
           icon.aspectRatio = [22, 22]
-          icon.scale = 1.3
+          icon.scale = 1.5
           icon.geom = `
             <title>seawind-symbol</title>
             <g>
@@ -1211,10 +1211,10 @@ export default {
                   .scale(6 / 8.4)
                   .translate(10.0, 10.0)
                   .rotate(warning.direction, 10.0, 10.0)
-                  .translate(1.0 + dx, 0.0)
-                  .toString()}" fill="#000000" stroke="rgba(255, 255, 255, 1.0)" stroke-width="2.5px" paint-order="stroke" />
-                <text x="${10.75 + dx}" y="13.05" fill="#ffffff"
-                      style="font-family: 'Noto Sans', sans-serif; font-size: 9px; text-anchor: middle; font-weight: bold;">${
+                  .translate(1.0 + dx, 1.5)
+                  .toString()}" fill="#000000" stroke="rgba(255, 255, 255, 1.0)" stroke-width="1.7px" paint-order="stroke" />
+                <text x="${10.9 + dx}" y="14.7" fill="#ffffff"
+                      style="font-family: 'Noto Sans', sans-serif; font-size: 8.5px; text-anchor: middle; font-weight: bold;">${
                         warning.text
                       }
                 </text>
