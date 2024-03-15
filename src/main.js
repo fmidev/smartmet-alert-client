@@ -1,18 +1,17 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import {
+  createApp,
+  defineCustomElement as VueDefineCustomElement,
+  getCurrentInstance,
+  h,
+} from 'vue'
+import { createWebComponent } from 'vue-web-component-wrapper'
+import app from './App.vue'
 
-class SmartMetAlertClient extends HTMLElement {
-  constructor() {
-    super()
-    const app = createApp(
-      App,
-      [...this.attributes].reduce((newObject, item) => {
-        newObject[item.nodeName] = item.nodeValue
-        return newObject
-      }, {})
-    )
-    app.mount(this.attachShadow({ mode: 'open' }))
-  }
-}
-
-customElements.define('smartmet-alert-client', SmartMetAlertClient)
+createWebComponent({
+  rootComponent: app,
+  elementName: 'smartmet-alert-client',
+  VueDefineCustomElement,
+  h,
+  createApp,
+  getCurrentInstance,
+})
