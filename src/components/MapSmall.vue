@@ -212,10 +212,7 @@ export default {
         : []
     },
     isFullMode() {
-      if (!this.isClientSide()) {
-        return true
-      }
-      return this.$el != null && this.$el.offsetParent !== null
+      return true;
     },
   },
 }
