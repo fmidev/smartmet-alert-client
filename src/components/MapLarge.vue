@@ -1089,14 +1089,12 @@ div.day-map-large
 
 .light-theme .fmi-warnings-popup {
   background-color: $light-popup-background-color;
-  -webkit-filter: drop-shadow(0 1px 4px $light-popup-filter-color);
-  filter: drop-shadow(0 1px 4px $light-popup-filter-color);
+  box-shadow: 0 0 0 1px $light-gray;
 }
 
 .dark-theme .fmi-warnings-popup {
   background-color: $dark-popup-background-color;
-  -webkit-filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
-  filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
+  box-shadow: 0 0 0 1px $light-gray;
 }
 
 :deep(.tooltip.bs-tooltip-top) {
