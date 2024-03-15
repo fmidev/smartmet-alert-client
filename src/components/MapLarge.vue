@@ -620,7 +620,7 @@ export default {
   mounted() {
     if (this.isClientSide()) {
       const finlandLarge = this.$el.querySelector('svg#finland-large')
-      if (finlandLarge != null) {
+      if (this.isAttached(finlandLarge)) {
         this.panzoom = Panzoom(finlandLarge, {
           disableZoom: true,
           panOnlyWhenZoomed: true,
@@ -886,6 +886,18 @@ export default {
         this.panzoom.pan(pan.x, pan.y)
       }
     },
+    isAttached(node) {
+      let currentNode = node
+      while (currentNode != null && currentNode.parentNode != null) {
+        if (currentNode.parentNode === document) {
+          return true
+        }
+        currentNode = currentNode.parentNode instanceof ShadowRoot
+          ? currentNode.parentNode.host
+          : currentNode.parentNode
+      }
+      return false
+    }
   },
 }
 </script>
@@ -1077,14 +1089,12 @@ div.day-map-large
 
 .light-theme .fmi-warnings-popup {
   background-color: $light-popup-background-color;
-  -webkit-filter: drop-shadow(0 1px 4px $light-popup-filter-color);
-  filter: drop-shadow(0 1px 4px $light-popup-filter-color);
+  box-shadow: 0 0 0 1px $light-gray;
 }
 
 .dark-theme .fmi-warnings-popup {
   background-color: $dark-popup-background-color;
-  -webkit-filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
-  filter: drop-shadow(0 1px 4px $dark-popup-filter-color);
+  box-shadow: 0 0 0 1px $light-gray;
 }
 
 :deep(.tooltip.bs-tooltip-top) {

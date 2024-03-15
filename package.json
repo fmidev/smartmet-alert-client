@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.0.1",
+  "version": "4.0.5",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "svgpath": "2.6.0",
     "url-search-params-polyfill": "8.2.5",
     "vue": "3.4.19",
+    "vue-web-component-wrapper": "1.4.0",
     "xpath": "0.0.33"
   },
   "devDependencies": {
@@ -50,8 +51,7 @@
     "unplugin-vue-components": "0.26.0",
     "vite": "5.1.4",
     "vite-plugin-banner": "0.7.1",
-    "vitest": "0.34.4",
-    "vue-adopted-stylesheets": "0.0.7"
+    "vitest": "0.34.4"
   },
   "eslintConfig": {
     "env": {
@@ -64,7 +64,9 @@
       "plugin:sonarjs/recommended",
       "plugin:prettier/recommended"
     ],
-    "plugins": ["simple-import-sort"],
+    "plugins": [
+      "simple-import-sort"
+    ],
     "rules": {
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error"
@@ -89,5 +91,10 @@
     "npm": ">=8.0.0",
     "node": ">=14.0.0"
   },
-  "keywords": ["smartmet", "weather", "alert", "wfs"]
+  "keywords": [
+    "smartmet",
+    "weather",
+    "alert",
+    "wfs"
+  ]
 }
