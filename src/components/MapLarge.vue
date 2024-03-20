@@ -1094,7 +1094,17 @@ div.day-map-large
 
 .dark-theme .fmi-warnings-popup {
   background-color: $dark-popup-background-color;
+  box-shadow: 0 0 0 1px $dark-gray;
+}
+
+.light-gray-theme .fmi-warnings-popup {
+  background-color: $light-popup-background-color;
   box-shadow: 0 0 0 1px $light-gray;
+}
+
+.dark-gray-theme .fmi-warnings-popup {
+  background-color: $dark-popup-background-color;
+  box-shadow: 0 0 0 1px $dark-gray;
 }
 
 :deep(.tooltip.bs-tooltip-top) {
@@ -1430,13 +1440,15 @@ span.region-popup-header-text {
   .popup-table {
     border-top: solid 1px $light-gray;
   }
-  #day-map-large-base-popup {
-    box-shadow: 0 0 0 1px $light-gray;
-  }
 }
 
-.dark-gray-theme .popup-table-heading {
-  background-color: $dark-gray-popup-table-background-color;
+.dark-gray-theme {
+  .popup-table-heading {
+    background-color: $dark-gray-popup-table-background-color;
+  }
+  .popup-table {
+    border-top: solid 1px $dark-gray;
+  }
 }
 
 .popup-table-head {
