@@ -197,6 +197,7 @@ div.accordion-region {
 }
 
 h3.header-region {
+  text-align: left;
   font-size: $font-size;
   font-weight: bold;
   line-height: 1.1;

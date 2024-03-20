@@ -207,6 +207,7 @@ button {
 
 .region-item-text {
   display: block;
+  text-align: left;
   line-height: $current-warning-height;
   white-space: nowrap;
   overflow: hidden;
