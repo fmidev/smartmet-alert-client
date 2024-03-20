@@ -97,6 +97,7 @@ span.region-warning-symbol-text {
 div.current-description-text-cell {
   display: table-cell;
   vertical-align: middle;
+  text-align: left;
   padding-left: 10px;
 }
 

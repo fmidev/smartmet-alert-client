@@ -235,6 +235,8 @@ div.symbol-list-header-row {
 }
 
 .legends-text {
+  position: absolute;
+  left: 0;
   line-height: $current-warning-height;
   white-space: nowrap;
   overflow: hidden;
