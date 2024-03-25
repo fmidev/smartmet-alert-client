@@ -72,11 +72,11 @@ export default {
     floodWarnings: String,
     warnings: {
       type: String,
-      default: null,
+      default: '',
     },
     dailyWarningTypes: {
       type: String,
-      default: null,
+      default: '',
     },
     refreshInterval: {
       type: String,
@@ -84,7 +84,7 @@ export default {
     },
     geometryId: {
       type: String,
-      default: config.props.defaultGeometryId,
+      default: config.props.defaultGeometryId || '2021',
     },
     language: {
       type: String,
@@ -131,7 +131,7 @@ export default {
       return this.staticDays.toLowerCase() !== 'false'
     },
     dailyWarningTypesParsed() {
-      return this.dailyWarningTypes != null
+      return this.dailyWarningTypes
         ? this.dailyWarningTypes.split(',').map((item) => item.trim())
         : []
     },
@@ -211,7 +211,7 @@ export default {
     }
   },
   serverPrefetch() {
-    if (this.warnings == null) {
+    if (!this.warnings) {
       return this.fetchWarnings()
     }
   },
