@@ -76,7 +76,7 @@ export default {
     },
     language: {
       type: String,
-      default: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
+      default: import.meta.env.VITE_LANGUAGE || 'fi',
     },
     grayScaleSelector: {
       type: Boolean,
