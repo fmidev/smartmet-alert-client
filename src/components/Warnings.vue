@@ -295,7 +295,7 @@ div.warning-image {
 }
 
 .light-gray-theme div.warning-image {
-  border: 1px solid $black;
+  border: 1px solid $light-gray-border;
 }
 
 .dark-gray-theme div.warning-image {
