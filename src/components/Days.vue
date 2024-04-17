@@ -49,9 +49,11 @@
 <script>
 import DayLarge from './DayLarge.vue'
 import DaySmall from './DaySmall.vue'
+import keycodes from '../mixins/keycodes'
 
 export default {
   name: 'Days',
+  mixins: [keycodes],
   components: {
     DaySmall,
     DayLarge,
@@ -117,6 +119,29 @@ export default {
       this.onDaySelected(newSelectedDay)
     },
   },
+  mounted() {
+    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
+      (button) => {
+        button.addEventListener('keydown', this.switchDay, true)
+      }
+    )
+  },
+  beforeUnmount() {
+    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
+      (button) => {
+        button.removeEventListener('keydown', this.switchDay, true)
+      }
+    )
+  },
+  updated() {
+    Array.from(this.$el.querySelectorAll('button.day')).forEach((button) => {
+      if (button.classList.contains('active')) {
+        button.removeAttribute('tabindex')
+      } else {
+        button.setAttribute('tabindex', -1)
+      }
+    })
+  },
   methods: {
     onDaySelected(newSelectedDay) {
       this.$emit('daySelected', newSelectedDay)
@@ -125,6 +150,23 @@ export default {
       if (loaded) {
         this.$emit('loaded', true)
       }
+    },
+    switchDay(event) {
+      switch (event.keyCode) {
+        case this.KEY_CODE_LEFT:
+          this.day = Math.max(this.day - 1, 0)
+          break
+        case this.KEY_CODE_RIGHT:
+          this.day = Math.min(this.day + 1, 4)
+          break
+        case this.KEY_CODE_HOME:
+          this.day = 0
+          break
+        case this.KEY_CODE_END:
+          this.day = 4
+          break
+      }
+      this.$el.querySelector(`button.day.day${this.day}`).focus()
     },
   },
 }
@@ -175,8 +217,9 @@ div#fmi-warnings-date-selector.tabs {
   color: transparent;
 }
 
-button.day div.date-selector-cell {
-  overflow-x: hidden;
+:deep(button.day div.date-selector-cell) {
+  height: $day-small-height;
+  overflow: hidden;
 }
 
 :deep(button.day) {

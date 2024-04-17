@@ -6,6 +6,7 @@ import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import pkg from './package.json'
 
@@ -22,6 +23,15 @@ export default defineConfig({
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n * homepage: ${pkg.homepage}\n */`
     ),
     visualizer(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'dist/index.mjs',
+          dest: './',
+          rename: 'index.js',
+        }
+      ]
+    })
   ],
   resolve: {
     alias: {
@@ -36,9 +46,7 @@ export default defineConfig({
     minify: true,
     rollupOptions: {
       output: {
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`,
+        entryFileNames: 'index.mjs',
       },
     },
   },

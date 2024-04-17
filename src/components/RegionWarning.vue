@@ -42,6 +42,10 @@ div.warning-image {
   background-position: center;
 }
 
+.light-gray-theme div.warning-image {
+  border: 1px solid $light-gray-border;
+}
+
 .current-warning-image {
   background-size: 28px 28px;
   height: $current-warning-image-height;
