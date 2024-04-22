@@ -155,15 +155,19 @@ export default {
       switch (event.keyCode) {
         case this.KEY_CODE_LEFT:
           this.day = Math.max(this.day - 1, 0)
+          event.preventDefault()
           break
         case this.KEY_CODE_RIGHT:
           this.day = Math.min(this.day + 1, 4)
+          event.preventDefault()
           break
         case this.KEY_CODE_HOME:
           this.day = 0
+          event.preventDefault()
           break
         case this.KEY_CODE_END:
           this.day = 4
+          event.preventDefault()
           break
       }
       this.$el.querySelector(`button.day.day${this.day}`).focus()
@@ -310,5 +314,10 @@ div#fmi-warnings-date-selector.tabs {
     margin-bottom: 0;
     height: $day-small-mobile-height;
   }
+
+  :deep(button.day div.date-selector-cell) {
+    height: $day-small-mobile-height;
+  }
+
 }
 </style>
