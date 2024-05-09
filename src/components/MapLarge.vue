@@ -203,7 +203,7 @@
               id="day-map-large-base-popup-closer"
               :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
               href="#"
-              @click="closeTooltip"></a>
+              @mousedown="closeTooltip"></a>
             <div id="day-map-large-base-popup-content">
               <div class="region-popup">
                 <div :class="['region-popup-header', `${popupLevel}`]">
