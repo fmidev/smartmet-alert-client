@@ -902,7 +902,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import '../scss/constants.scss';
 @import '../scss/warningImages.scss';
 
@@ -1107,7 +1107,7 @@ div.day-map-large
   box-shadow: 0 0 0 1px $dark-gray;
 }
 
-:deep(.tooltip.bs-tooltip-top) {
+.tooltip.bs-tooltip-top {
   .arrow,
   .arrow::before {
     content: ' ';
