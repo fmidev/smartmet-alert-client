@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.1.7",
+  "version": "4.1.8",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "test": "vitest"
+    "test": "vitest --reporter=verbose --disable-console-intercept"
   },
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",
@@ -52,7 +52,7 @@
     "vite": "5.1.7",
     "vite-plugin-banner": "0.7.1",
     "vite-plugin-static-copy": "1.0.2",
-    "vitest": "0.34.4"
+    "vitest": "1.6.0"
   },
   "eslintConfig": {
     "env": {
