@@ -137,7 +137,7 @@ pinegrow.json
 .history
 
 # Test data
-test/__snapshots__
+test/html
 test/svg
 
 # Environmet variables

@@ -203,7 +203,7 @@
               id="day-map-large-base-popup-closer"
               :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
               href="#"
-              @click="closeTooltip"></a>
+              @mousedown="closeTooltip"></a>
             <div id="day-map-large-base-popup-content">
               <div class="region-popup">
                 <div :class="['region-popup-header', `${popupLevel}`]">
@@ -902,7 +902,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import '../scss/constants.scss';
 @import '../scss/warningImages.scss';
 
@@ -1107,7 +1107,7 @@ div.day-map-large
   box-shadow: 0 0 0 1px $dark-gray;
 }
 
-:deep(.tooltip.bs-tooltip-top) {
+.tooltip.bs-tooltip-top {
   .arrow,
   .arrow::before {
     content: ' ';
