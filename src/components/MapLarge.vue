@@ -364,10 +364,12 @@ export default {
       const maxWarningIcons = this.maxWarningIcons
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId)
+        const geometry = this.geometries[this.geometryId][regionId]
         if (
           region != null &&
-          this.geometries[this.geometryId][regionId].children.length === 0 &&
-          !this.mergedRegions.has(regionId)
+          geometry.children.length === 0 &&
+          (!this.mergedRegions.has(regionId) ||
+          (geometry.weight > this.maxMergedWeight && region?.warnings?.length === 1))
         ) {
           const iconSizes = []
           const aspectRatios = []

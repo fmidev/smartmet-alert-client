@@ -10,6 +10,7 @@ export default {
       dateTimeFormatLocale: 'fi-FI',
       panLimits: { x: 175, y: 275 },
       coverageCriterion: 0.2,
+      maxMergedWeight: 7,
       maxUpdateDelay: {
         weather_update_time: 12 * 60 * 60 * 1000,
         flood_update_time: 12 * 60 * 60 * 1000,
