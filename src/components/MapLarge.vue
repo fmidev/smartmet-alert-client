@@ -369,7 +369,10 @@ export default {
           region != null &&
           geometry.children.length === 0 &&
           (!this.mergedRegions.has(regionId) ||
-          (geometry.weight > this.maxMergedWeight && region?.warnings?.length === 1))
+          (geometry.weight > this.maxMergedWeight && region?.warnings?.filter((warning) =>
+          this.visibleWarnings.includes(warning.type)).length === 1) &&
+          !(geometry?.parent?.length && this.regionData(geometry.parent)?.warnings?.some((warning) =>
+          this.visibleWarnings.includes(warning.type))))
         ) {
           const iconSizes = []
           const aspectRatios = []
