@@ -19,10 +19,8 @@
               'd-none',
             ]"
             tabindex="0"
-            @touchmove="preventEvents"
-            @touchend="preventEvents"
-            @touchstart="toggle"
-            @mousedown="toggle"
+            @mousedown="preventEvents"
+            @click="toggle"
             @keydown.enter="toggle"
             @keydown.space="toggle" />
         </div>

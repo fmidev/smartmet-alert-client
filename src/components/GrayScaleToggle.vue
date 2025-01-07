@@ -9,10 +9,8 @@
           grayScale ? 'gray-scale-selected' : 'gray-scale-unselected',
         ]"
         tabindex="0"
-        @touchmove="preventEvents"
-        @touchend="preventEvents"
-        @touchstart="toggleGrayScale"
-        @mousedown="toggleGrayScale"
+        @mousedown="preventEvents"
+        @click="toggleGrayScale"
         @keydown.enter="toggleGrayScale"
         @keydown.space="toggleGrayScale" />
     </div>
