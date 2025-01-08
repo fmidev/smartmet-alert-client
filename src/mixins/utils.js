@@ -185,27 +185,23 @@ export default {
       const offset = this.timeOffset
       const referenceTime =
         this.startFrom === 'updated' ? this.updatedAt : this.currentTime
+      const day = 1000 * 60 * 60 * 24
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = new Date(referenceTime)
-        date.setDate(date.getDate() + index)
-        const day = this.toTimeZone(date)
-        const startOfDay = new Date(day.year, day.month - 1, day.day)
+        const dayTime = referenceTime + index * day
+        const dayStartOffset = this.msSinceStartOfDay(dayTime)
+        let startOfDay = dayTime - dayStartOffset
 
-        const nextDate = new Date(referenceTime)
-        nextDate.setDate(nextDate.getDate() + index + 1)
-        const nextDay = this.toTimeZone(nextDate)
-        const startOfNextDay = new Date(
-          nextDay.year,
-          nextDay.month - 1,
-          nextDay.day
-        )
+        const nextDayTime = referenceTime + (index + 1) * day
+        const nextDayStartOffset = this.msSinceStartOfDay(nextDayTime)
+        let startOfNextDay = nextDayStartOffset - dayStartOffset
+
         if (!dailyWarning) {
-          startOfDay.setMilliseconds(offset)
-          startOfNextDay.setMilliseconds(offset)
+          startOfDay = startOfDay + offset
+          startOfNextDay = startOfNextDay + offset
         }
         return (
-          new Date(start).getTime() < startOfNextDay.getTime() &&
-          new Date(end).getTime() > startOfDay.getTime()
+          new Date(start).getTime() < startOfNextDay &&
+          new Date(end).getTime() > startOfDay
         )
       })
     },
