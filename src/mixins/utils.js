@@ -179,7 +179,13 @@ export default {
     },
     msSinceStartOfDay(timestamp) {
       const moment = this.toTimeZone(timestamp)
-      return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
+      const ms = ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 + moment.millisecond
+      // Daylight saving time
+      const ref = this.toTimeZone(timestamp - ms)
+      if (ref.day !== moment.day) {
+        return ms - 60 * 60 * 1000
+      }
+      return ms + ref.hour * 60 * 60 * 1000
     },
     effectiveDays(start, end, dailyWarning) {
       const offset = this.timeOffset
@@ -193,7 +199,7 @@ export default {
 
         const nextDayTime = referenceTime + (index + 1) * day
         const nextDayStartOffset = this.msSinceStartOfDay(nextDayTime)
-        let startOfNextDay = nextDayStartOffset - dayStartOffset
+        let startOfNextDay = nextDayTime - nextDayStartOffset
 
         if (!dailyWarning) {
           startOfDay = startOfDay + offset
