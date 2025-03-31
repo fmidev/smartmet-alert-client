@@ -99,6 +99,8 @@ export default {
         {
           key: 'border.land',
           d: this.geometries[this.geometryId]['borders']['land'][`path${this.size}`],
+          opacity: '1',
+          strokeWidth: this.strokeWidth,
         },
       ]
     },

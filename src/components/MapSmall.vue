@@ -86,6 +86,13 @@
           :d="path.d"
           fill-opacity="0" />
         <path
+          v-for="path in landBorders"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :d="path.d"
+          fill-opacity="0" />
+        <path
           v-for="coverage in overlayCoverages"
           :key="coverage.key"
           :stroke="strokeColor"
