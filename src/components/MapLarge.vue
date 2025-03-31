@@ -33,6 +33,16 @@
             class="region-path"
             @click="regionClicked" />
           <path
+            v-for="path in seaBorders"
+            :id="path.key"
+            :key="path.key"
+            :stroke="strokeColor"
+            :stroke-width="path.strokeWidth"
+            :stroke-opacity="strokeOpacity"
+            :d="path.d"
+            fill-opacity="0"
+            style="cursor: pointer; pointer-events: none" />
+          <path
             v-for="path in greenPaths"
             :id="path.key"
             :key="path.key"
@@ -123,6 +133,16 @@
             :d="path.d"
             fill-opacity="0"
             style="cursor: pointer; pointer-events: none" />
+        <path
+          v-for="path in landBorders"
+          :id="path.key"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
+          :d="path.d"
+          fill-opacity="0"
+          style="cursor: pointer; pointer-events: none" />
         </g>
         <g v-if="!loading">
           <path

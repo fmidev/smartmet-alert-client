@@ -94,6 +94,22 @@ export default {
         return regions
       }, [])
     },
+    landBorders() {
+      return [
+        {
+          key: 'border.land',
+          d: this.geometries[this.geometryId]['borders']['land'][`path${this.size}`],
+        },
+      ]
+    },
+    seaBorders() {
+      return [
+        {
+          key: 'border.sea',
+          d: this.geometries[this.geometryId]['borders']['sea'][`path${this.size}`],
+        },
+      ]
+    },
     yellowCoverages() {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 2)
     },
