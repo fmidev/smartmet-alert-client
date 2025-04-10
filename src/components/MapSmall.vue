@@ -20,6 +20,13 @@
           :d="path.d"
           :opacity="path.opacity" />
         <path
+          v-for="path in seaBorders"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :d="path.d"
+          fill-opacity="0" />
+        <path
           v-for="path in greenPaths"
           :key="path.key"
           :stroke="strokeColor"

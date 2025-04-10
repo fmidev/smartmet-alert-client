@@ -95,22 +95,10 @@ export default {
       }, [])
     },
     landBorders() {
-      return [
-        {
-          key: 'border.land',
-          d: this.geometries[this.geometryId]['borders']['land'][`path${this.size}`],
-          opacity: '1',
-          strokeWidth: this.strokeWidth,
-        },
-      ]
+      return this.areaBorders('land')
     },
     seaBorders() {
-      return [
-        {
-          key: 'border.sea',
-          d: this.geometries[this.geometryId]['borders']['sea'][`path${this.size}`],
-        },
-      ]
+      return this.areaBorders('sea')
     },
     yellowCoverages() {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 2)
@@ -147,6 +135,16 @@ export default {
           .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
           .join('')
       )
+    },
+    areaBorders(area) {
+      return [
+        {
+          key: `border.${area}`,
+          d: this.geometries[this.geometryId]['borders'][area][`path${this.size}`],
+          opacity: '1',
+          strokeWidth: this.strokeWidth,
+        },
+      ]
     },
     relativeCoverageFromReference(reference) {
       if (reference == null) {
