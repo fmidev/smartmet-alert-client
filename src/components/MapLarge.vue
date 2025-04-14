@@ -372,7 +372,7 @@ export default {
       return 'Large'
     },
     strokeWidth() {
-      return String(1.2 - (this.scale - 1) / this.scale)
+      return String(1 - (this.scale - 1) / this.scale)
     },
     iconSize() {
       return 28 - 4 * this.scale

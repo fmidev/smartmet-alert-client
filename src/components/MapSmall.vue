@@ -177,7 +177,7 @@ export default {
       return 'Small'
     },
     strokeWidth() {
-      return 0.4
+      return 0.3
     },
   },
   watch: {
