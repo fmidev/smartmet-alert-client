@@ -21,6 +21,7 @@
           :opacity="path.opacity" />
         <path
           v-for="path in seaBorders"
+          class="border-path"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
@@ -94,6 +95,7 @@
           fill-opacity="0" />
         <path
           v-for="path in landBorders"
+          class="border-path"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
@@ -295,6 +297,12 @@ div.map-small {
 
 *[id^='day-map-small-base-'] {
   height: 100%;
+}
+
+@media (forced-colors: active) {
+  path.border-path {
+    stroke: $gray;
+  }
 }
 
 @media (max-width: 575px) {

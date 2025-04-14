@@ -35,6 +35,7 @@
           <path
             v-for="path in seaBorders"
             :id="path.key"
+            class="border-path"
             :key="path.key"
             :stroke="strokeColor"
             :stroke-width="path.strokeWidth"
@@ -136,6 +137,7 @@
         <path
           v-for="path in landBorders"
           :id="path.key"
+          class="border-path"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
@@ -1432,6 +1434,9 @@ span.region-popup-header-text {
   .shadow-level-3,
   .shadow-level-4 {
     forced-color-adjust: none;
+  }
+  path.border-path {
+    stroke: $gray;
   }
 }
 
