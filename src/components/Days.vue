@@ -266,11 +266,11 @@ div#fmi-warnings-date-selector.tabs {
   }
   &.dark-theme {
     div.date-selector-cell-header {
-      border-top: 2px solid $dark-blue !important;
+      border-top: 2px solid $white !important;
     }
     > div {
-      border-left: 2px solid $dark-blue !important;
-      border-right: 2px solid $dark-blue !important;
+      border-left: 2px solid $white !important;
+      border-right: 2px solid $white !important;
     }
   }
   &.light-gray-theme {

@@ -94,6 +94,12 @@ export default {
         return regions
       }, [])
     },
+    landBorders() {
+      return this.areaBorders('land')
+    },
+    seaBorders() {
+      return this.areaBorders('sea')
+    },
     yellowCoverages() {
       return this.coverageGeom(`coverages${this.size}`, 0, 1, 2)
     },
@@ -129,6 +135,16 @@ export default {
           .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
           .join('')
       )
+    },
+    areaBorders(area) {
+      return [
+        {
+          key: `border.${area}`,
+          d: this.geometries[this.geometryId]['borders'][area][`path${this.size}`],
+          opacity: '1',
+          strokeWidth: this.strokeWidth,
+        },
+      ]
     },
     relativeCoverageFromReference(reference) {
       if (reference == null) {
@@ -179,33 +195,35 @@ export default {
     },
     msSinceStartOfDay(timestamp) {
       const moment = this.toTimeZone(timestamp)
-      return ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000
+      const ms = ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 + moment.millisecond
+      // Daylight saving time
+      const ref = this.toTimeZone(timestamp - ms)
+      if (ref.day !== moment.day) {
+        return ms - 60 * 60 * 1000
+      }
+      return ms + ref.hour * 60 * 60 * 1000
     },
     effectiveDays(start, end, dailyWarning) {
       const offset = this.timeOffset
       const referenceTime =
         this.startFrom === 'updated' ? this.updatedAt : this.currentTime
+      const day = 1000 * 60 * 60 * 24
       return [...Array(this.NUMBER_OF_DAYS).keys()].map((index) => {
-        const date = new Date(referenceTime)
-        date.setDate(date.getDate() + index)
-        const day = this.toTimeZone(date)
-        const startOfDay = new Date(day.year, day.month - 1, day.day)
+        const dayTime = referenceTime + index * day
+        const dayStartOffset = this.msSinceStartOfDay(dayTime)
+        let startOfDay = dayTime - dayStartOffset
 
-        const nextDate = new Date(referenceTime)
-        nextDate.setDate(nextDate.getDate() + index + 1)
-        const nextDay = this.toTimeZone(nextDate)
-        const startOfNextDay = new Date(
-          nextDay.year,
-          nextDay.month - 1,
-          nextDay.day
-        )
+        const nextDayTime = referenceTime + (index + 1) * day
+        const nextDayStartOffset = this.msSinceStartOfDay(nextDayTime)
+        let startOfNextDay = nextDayTime - nextDayStartOffset
+
         if (!dailyWarning) {
-          startOfDay.setMilliseconds(offset)
-          startOfNextDay.setMilliseconds(offset)
+          startOfDay = startOfDay + offset
+          startOfNextDay = startOfNextDay + offset
         }
         return (
-          new Date(start).getTime() < startOfNextDay.getTime() &&
-          new Date(end).getTime() > startOfDay.getTime()
+          new Date(start).getTime() < startOfNextDay &&
+          new Date(end).getTime() > startOfDay
         )
       })
     },

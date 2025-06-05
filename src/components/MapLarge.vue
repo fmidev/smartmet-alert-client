@@ -33,6 +33,17 @@
             class="region-path"
             @click="regionClicked" />
           <path
+            v-for="path in seaBorders"
+            :id="path.key"
+            class="border-path"
+            :key="path.key"
+            :stroke="strokeColor"
+            :stroke-width="path.strokeWidth"
+            :stroke-opacity="strokeOpacity"
+            :d="path.d"
+            fill-opacity="0"
+            style="cursor: pointer; pointer-events: none" />
+          <path
             v-for="path in greenPaths"
             :id="path.key"
             :key="path.key"
@@ -123,6 +134,17 @@
             :d="path.d"
             fill-opacity="0"
             style="cursor: pointer; pointer-events: none" />
+        <path
+          v-for="path in landBorders"
+          :id="path.key"
+          class="border-path"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
+          :d="path.d"
+          fill-opacity="0"
+          style="cursor: pointer; pointer-events: none" />
         </g>
         <g v-if="!loading">
           <path
@@ -350,7 +372,7 @@ export default {
       return 'Large'
     },
     strokeWidth() {
-      return String(1.2 - (this.scale - 1) / this.scale)
+      return String(1 - (this.scale - 1) / this.scale)
     },
     iconSize() {
       return 28 - 4 * this.scale
@@ -364,10 +386,15 @@ export default {
       const maxWarningIcons = this.maxWarningIcons
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId)
+        const geometry = this.geometries[this.geometryId][regionId]
         if (
           region != null &&
-          this.geometries[this.geometryId][regionId].children.length === 0 &&
-          !this.mergedRegions.has(regionId)
+          geometry.children.length === 0 &&
+          (!this.mergedRegions.has(regionId) ||
+          (geometry.weight > this.maxMergedWeight && region?.warnings?.filter((warning) =>
+          this.visibleWarnings.includes(warning.type)).length === 1) &&
+          !(geometry?.parent?.length && this.regionData(geometry.parent)?.warnings?.some((warning) =>
+          this.visibleWarnings.includes(warning.type))))
         ) {
           const iconSizes = []
           const aspectRatios = []
@@ -1407,6 +1434,9 @@ span.region-popup-header-text {
   .shadow-level-3,
   .shadow-level-4 {
     forced-color-adjust: none;
+  }
+  path.border-path {
+    stroke: $gray;
   }
 }
 

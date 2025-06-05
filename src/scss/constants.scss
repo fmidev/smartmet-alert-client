@@ -30,5 +30,13 @@ $tooltip-arrow-width: 5px;
 $tooltip-border-width: 1px;
 $tooltip-arrow-border-width: $tooltip-arrow-width + $tooltip-border-width;
 $popup-width: 250px;
-$font-family: Roboto, Helvetica, Arial, sans-serif;
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-weight: normal;
+  font-style: normal;
+  src: url($font-base-path + 'Noto_Sans/Noto-Sans-regular.woff2') format('woff2');
+  font-display: swap;
+}
+$font-family: Roboto, Helvetica, Arial, 'Noto Sans', sans-serif;
 $symbol-font-family: 'Noto Sans', sans-serif;

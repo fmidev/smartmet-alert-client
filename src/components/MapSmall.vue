@@ -20,6 +20,14 @@
           :d="path.d"
           :opacity="path.opacity" />
         <path
+          v-for="path in seaBorders"
+          class="border-path"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :d="path.d"
+          fill-opacity="0" />
+        <path
           v-for="path in greenPaths"
           :key="path.key"
           :stroke="strokeColor"
@@ -80,6 +88,14 @@
           pointer-events="fill" />
         <path
           v-for="path in overlayPaths"
+          :key="path.key"
+          :stroke="strokeColor"
+          :stroke-width="path.strokeWidth"
+          :d="path.d"
+          fill-opacity="0" />
+        <path
+          v-for="path in landBorders"
+          class="border-path"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
@@ -161,7 +177,7 @@ export default {
       return 'Small'
     },
     strokeWidth() {
-      return 0.4
+      return 0.3
     },
   },
   watch: {
@@ -281,6 +297,12 @@ div.map-small {
 
 *[id^='day-map-small-base-'] {
   height: 100%;
+}
+
+@media (forced-colors: active) {
+  path.border-path {
+    stroke: $gray;
+  }
 }
 
 @media (max-width: 575px) {
