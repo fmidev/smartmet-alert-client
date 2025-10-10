@@ -22,6 +22,7 @@
         <b-button
           block
           :class="['legends-toggle', visible ? '' : 'collapsed']"
+          :aria-label="toggleLegendsText"
           @click="onLegendToggle" />
       </b-card-header>
       <b-collapse
@@ -167,25 +168,25 @@ div.symbol-list-header-row {
 }
 
 .legends-panel {
-  border-radius: 0;
   margin-left: 0;
   margin-right: 0;
+  border-radius: 0;
 }
 
 .light-theme .legends-panel {
-  border: 2px solid $light-legend-background-color;
+  border: 0.5px solid $light-legend-background-color;
 }
 
 .dark-theme .legends-panel {
-  border: 2px solid $dark-legend-background-color;
+  border: 0.5px solid $dark-legend-background-color;
 }
 
 .light-gray-theme .legends-panel {
-  border: 2px solid $light-gray-legend-background-color;
+  border: 0.5px solid $light-gray-legend-background-color;
 }
 
 .dark-gray-theme .legends-panel {
-  border: 2px solid $dark-gray-legend-background-color;
+  border: 0.5px solid $dark-gray-legend-background-color;
 }
 
 .legends-heading {
@@ -193,7 +194,8 @@ div.symbol-list-header-row {
   padding: 0 0 0 15px !important;
   line-height: $current-warning-height;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0 !important;
 }
 
 .light-theme .legends-heading {
@@ -216,6 +218,11 @@ div.symbol-list-header-row {
   position: absolute;
   left: 0;
   right: 38px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  height: $current-warning-height;
 }
 
 .light-theme .legends-header {
@@ -237,7 +244,6 @@ div.symbol-list-header-row {
 .legends-text {
   display: block;
   text-align: left;
-  line-height: $current-warning-height;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -260,7 +266,7 @@ div.symbol-list-header-row {
   background-color: $dark-gray-legend-heading-background-color;
 }
 
-.legends-toggle {
+button.legends-toggle {
   position: relative;
   height: $current-warning-height;
   width: $current-warning-height;
@@ -268,7 +274,7 @@ div.symbol-list-header-row {
   background-image: url($ui-image-path + 'arrow-up.svg');
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 0;
+  border-radius: 0 !important;
   border-style: none;
   float: right;
   padding: $image-padding;
@@ -276,6 +282,7 @@ div.symbol-list-header-row {
 
   &.collapsed {
     background-image: url($ui-image-path + 'arrow-down.svg');
+    border-radius: 0 3px 3px 0;
   }
 }
 
@@ -345,26 +352,27 @@ div.symbol-list-header-row {
 
 .legends-container {
   padding: 15px;
+  border-radius: 0;
 }
 
 .light-theme .legends-container {
   background-color: $light-legend-container-background-color;
-  border-top: 2px solid $light-legend-background-color;
+  border-top: 0.5px solid $light-legend-background-color;
 }
 
 .dark-theme .legends-container {
   background-color: $dark-legend-container-background-color;
-  border-top: 2px solid $dark-legend-background-color;
+  border-top: 0.5px solid $dark-legend-background-color;
 }
 
 .light-gray-theme .legends-container {
   background-color: $light-gray-legend-container-background-color;
-  border-top: 2px solid $light-gray-legend-background-color;
+  border-top: 0.5px solid $light-gray-legend-background-color;
 }
 
 .dark-gray-theme .legends-container {
   background-color: $dark-gray-legend-container-background-color;
-  border-top: 2px solid $dark-gray-legend-background-color;
+  border-top: 0.5px solid $dark-gray-legend-background-color;
 }
 
 div#legends-collapse div.card-body {

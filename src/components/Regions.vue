@@ -10,21 +10,21 @@
         @click="fromLandToNextContentClicked"
         >{{ fromLandToNextContentText }}</a
       >
-      <div id="accordion-land" class="accordion-region" role="tablist">
+      <div id="accordion-group-land" class="accordion">
         <div v-for="region in regions.land" :key="region.key">
           <Region
             v-if="region.warnings.length"
             type="land"
-            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
             :warnings="warnings"
-            :language="language"
-            @regionToggled="onRegionToggled" />
+            :theme="theme"
+            :language="language" />
         </div>
       </div>
     </div>
+
     <div v-if="anySeaWarnings" class="region-type-container">
       <h3 id="header-sea" class="header-region">{{ seaText }}</h3>
       <a
@@ -35,19 +35,17 @@
         @click="fromSeaToNextContentClicked"
         >{{ fromSeaToNextContentText }}</a
       >
-      <div id="accordion-sea" class="accordion-region" role="tablist">
+      <div id="accordion-group-sea" class="accordion">
         <div v-for="region in regions.sea" :key="region.key">
           <Region
             v-if="region.warnings.length"
             type="sea"
-            :shown="shownRegion === region.key"
             :code="region.key"
             :name="region.name"
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language"
-            @regionToggled="onRegionToggled" />
+            :language="language" />
         </div>
       </div>
     </div>
@@ -77,11 +75,6 @@ export default {
     theme: String,
     language: String,
   },
-  data() {
-    return {
-      shownRegion: null,
-    }
-  },
   computed: {
     landText() {
       return this.t('regionLand')
@@ -90,14 +83,14 @@ export default {
       return this.t('regionSea')
     },
     fromLandToNextContentText() {
-      return `${this.t('warningsInAreaStart')} ${
-        this.regions.land.length
-      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
+      return `${this.t('warningsInAreasStart')} ${
+        this.t(`in${this.regions.land.length}Areas`)
+      }. ${this.t('toNextContent')}`
     },
     fromSeaToNextContentText() {
-      return `${this.t('warningsInAreaStart')} ${
-        this.regions.sea.length
-      } ${this.t('warningsInAreaEnd')} ${this.t('toNextContent')}`
+      return `${this.t('warningsInAreasStart')} ${
+        this.t(`in${this.regions.sea.length}Areas`)
+      }. ${this.t('toNextContent')}`
     },
     fromLandToNextContentHref() {
       return this.anySeaWarnings
@@ -155,9 +148,6 @@ export default {
         this.regions[regionType].length > 0
       )
     },
-    onRegionToggled({ code, shown }) {
-      this.shownRegion = shown ? code : null
-    },
     fromLandToNextContentClicked() {
       const nextContent = this.$el.querySelector(this.fromLandToNextContentHref)
       nextContent.scrollIntoView()
@@ -208,5 +198,14 @@ h3.header-region {
 div.region-type-container {
   width: 100%;
   padding: 0;
+}
+
+div.accordion {
+  margin: 0;
+  border: 0.5px solid $variant-gray-darker;
+  border-radius: 0;
+  > * + * {
+    border-top: 0.5px solid $variant-gray-darker;
+  }
 }
 </style>

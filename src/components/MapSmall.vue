@@ -98,7 +98,7 @@
           class="border-path"
           :key="path.key"
           :stroke="strokeColor"
-          :stroke-width="path.strokeWidth"
+          :stroke-width="1.5*path.strokeWidth"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -176,8 +176,11 @@ export default {
     size() {
       return 'Small'
     },
+    strokeColor() {
+     return 'DarkSlateGray'
+    },
     strokeWidth() {
-      return 0.3
+      return 0.6
     },
   },
   watch: {
@@ -305,7 +308,7 @@ div.map-small {
   }
 }
 
-@media (max-width: 575px) {
+@media (width < 576px) {
   #fmi-day-small-view .map-small,
   #fmi-day-small-view .map-container {
     display: none;

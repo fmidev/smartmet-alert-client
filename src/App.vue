@@ -94,6 +94,10 @@ export default {
       type: String,
       default: 'light',
     },
+    fontScale: {
+      type: String,
+      default: '1',
+    },
     sleep: {
       type: String,
       default: 'true',
@@ -210,6 +214,31 @@ export default {
       this.warningsData = JSON.parse(this.warnings)
     }
   },
+  mounted() {
+    if (this.fontScale != null && this.fontScale.trim() !== ''
+    && Number(this.fontScale) !== 1) {
+      const newFontScale = Number(this.fontScale)
+      if (!Number.isNaN(newFontScale)) {
+        let originalFontSize
+        if (
+          typeof window !== 'undefined' &&
+          typeof document !== 'undefined' &&
+          document.documentElement &&
+          window.getComputedStyle
+        ) {
+          const htmlElement = document.documentElement
+          const computedStyle = window.getComputedStyle(htmlElement)
+          originalFontSize = parseFloat(computedStyle.fontSize)
+        }
+        if (originalFontSize == null || Number.isNaN(originalFontSize)) {
+          originalFontSize = 16 // Fallback
+        }
+        const scaledFontSize = newFontScale * originalFontSize
+        const newFontSize = Math.round(scaledFontSize * 100) / 100
+        document.documentElement.style.fontSize = `${newFontSize}px`
+      }
+    }
+  },
   serverPrefetch() {
     if (!this.warnings) {
       return this.fetchWarnings()
@@ -227,6 +256,9 @@ export default {
       }-theme`
     },
     fetchWarnings() {
+      if (this.warnings) {
+        return
+      }
       this.loading = 1
       if (this.debugMode.toLowerCase() !== 'false') {
         console.log(`Updating warnings at ${new Date()}`)

@@ -307,7 +307,7 @@ div#fmi-warnings-date-selector.tabs {
   }
 }
 
-@media (max-width: 575px) {
+@media (width < 576px) {
   :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
     border-bottom: 0;
     border-radius: 0;

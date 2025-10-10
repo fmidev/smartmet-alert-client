@@ -2,7 +2,9 @@
   <div class="symbol-list-table" :class="theme">
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
-        :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"></div>
+        :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"
+        :aria-label="`${warningLevelText} ${title.toLowerCase()}`">
+      </div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
@@ -18,11 +20,18 @@
               'focus-ring',
               'd-none',
             ]"
+            role="button"
             tabindex="0"
+            :aria-pressed="input.visible ? 'true' : 'false'"
+            :aria-label="title.replace(/&[^;]*;/g, '')"
             @mousedown="preventEvents"
             @click="toggle"
             @keydown.enter="toggle"
-            @keydown.space="toggle" />
+            @keydown.space="toggle">
+              <span>
+                {{ toggleText }}
+              </span>
+            </div>
         </div>
       </div>
       <hr />
@@ -45,6 +54,12 @@ export default {
     },
     title() {
       return this.t(this.input.type)
+    },
+    warningLevelText() {
+      return this.t(`warningLevel${this.severity}`)
+    },
+    toggleText() {
+      return this.input.visible ? this.t('toggleOn') : this.t('toggleOff')
     },
   },
   methods: {
@@ -151,7 +166,6 @@ hr {
 
 div#fmi-warnings-list div.symbol-list-cell-text {
   padding-right: 0;
-
   hr {
     margin-right: 0;
   }
@@ -172,70 +186,52 @@ div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
   max-width: 141px;
-  padding-right: 5px;
+  padding-right: 10px;
+  word-break: break-word;
   hyphens: auto;
 }
 
 .symbol-list-select-container {
-  width: 30px;
+  width: 55px;
   height: $symbol-list-line-height;
   display: table-cell;
   vertical-align: middle;
 }
 
-.symbol-list-select {
+.symbol-list-select.d-md-block {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: $symbol-list-select-height;
   margin: 0;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-.flag-selected {
-  cursor: pointer;
-}
-
-.light-theme .flag-selected {
-  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
-}
-
-.dark-theme .flag-selected {
-  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.light-gray-theme .flag-selected {
-  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
-}
-
-.dark-gray-theme .flag-selected {
-  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.flag-unselected {
-  cursor: pointer;
-}
-
-.light-theme .flag-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
-.dark-theme .flag-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
-}
-
-.light-gray-theme .flag-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
-.dark-gray-theme .flag-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
+  &.flag-selected {
+    padding-right: 18px;
+    background-image: url($ui-image-path + 'toggle-selected' + $image-extension);
+    span {
+      color: $toggle-on-text;
+    }
+  }
+  &.flag-unselected {
+    padding-left: 18px;
+    background-image: url($ui-image-path + 'toggle-unselected' + $image-extension);
+    span {
+      color: $toggle-off-text;
+    }
+  }
+  span {
+    font-family: "Noto Sans", sans-serif;
+    font-size: $font-size;
+    forced-color-adjust: none;
+  }
 }
 
 @media (max-width: 767px) {
   div.symbol-list-table {
     div.symbol-list-cell.symbol-list-cell-text {
       padding-right: 0;
-
       hr {
         margin-right: 0;
       }

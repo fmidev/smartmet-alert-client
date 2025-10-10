@@ -479,7 +479,7 @@ export default {
                     if (covRegions.has(regionId)) {
                       warningItem.coverage += covRegions.get(regionId)
                     } else {
-                      warningItem.coverage = 1
+                      warningItem.coverage = 100
                     }
                   }
                 })
@@ -546,8 +546,9 @@ export default {
           if (!this.coverageWarnings.includes(key)) {
             ;[...this.warnings[key].covRegions.keys()].forEach((covRegion) => {
               if (
-                this.coverageRegions[covRegion] == null ||
-                this.coverageRegions[covRegion] < this.warnings[key].severity
+                (this.coverageRegions[covRegion] == null ||
+                this.coverageRegions[covRegion] < this.warnings[key].severity) &&
+                this.warnings[key].covRegions.get(covRegion) >= this.coverageCriterion
               ) {
                 this.coverageRegions[covRegion] = this.warnings[key].severity
               }
@@ -748,6 +749,7 @@ export default {
       const maxSeverities = this.getMaxSeverities(warnings)
       const legend = this.createLegend(maxSeverities)
       const regions = this.createRegions(warnings)
+      this.optimizeCovRegions(warnings, regions)
       return {
         warnings,
         days,
@@ -805,6 +807,21 @@ export default {
         color,
         visible,
       }
+    },
+    // Include also lakes to prevent overlapping symbols in Saimaa
+    optimizeCovRegions(warnings, regions) {
+      Object.keys(this.geometries[this.geometryId]).filter((regionId) =>
+        this.geometries[this.geometryId][regionId]?.type === 'sea' &&
+        this.geometries[this.geometryId][regionId]?.subType === 'lake'
+      ).filter((regionId) => regions.some((day) =>
+        day['sea'].some((region) => region['key'] === regionId
+      ))).forEach((regionId) =>
+        Object.keys(warnings).filter((warningKey) =>
+          warnings[warningKey].covRegions.size > 0
+        ).forEach((warningKey) => {
+          warnings[warningKey].covRegions.set(regionId, 0)
+        }
+      ))
     },
     regionsDefault() {
       return [

@@ -34,10 +34,14 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="gray several symbol-list-image-column symbol-list-image warning-image"></div>
+            class="gray several symbol-list-image-column symbol-list-image warning-image"
+            aria-labelledby="symbol-list-several-warnings-text">
+          </div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
-          <div class="item-text symbol-list-text">
+          <div
+            id="symbol-list-several-warnings-text"
+            class="item-text symbol-list-text">
             {{ severalWarningsText }}
           </div>
         </div>
@@ -47,10 +51,14 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-1 symbol-list-image-column symbol-list-image warning-image"></div>
+            class="level-1 symbol-list-image-column symbol-list-image warning-image"
+            aria-labelledby="symbol-list-warning-level-1-text">
+          </div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
-          <div class="item-text symbol-list-text">
+          <div
+            id="symbol-list-warning-level-1-text"
+            class="item-text symbol-list-text">
             {{ warningLevel1Text }}
           </div>
         </div>
@@ -60,10 +68,14 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-2 symbol-list-image-column symbol-list-image warning-image"></div>
+            class="level-2 symbol-list-image-column symbol-list-image warning-image"
+            aria-labelledby="symbol-list-warning-level-2-text">
+          </div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
-          <div class="item-text symbol-list-text">
+          <div
+            id="symbol-list-warning-level-2-text"
+            class="item-text symbol-list-text">
             {{ warningLevel2Text }}
           </div>
         </div>
@@ -73,10 +85,14 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-3 symbol-list-image-column symbol-list-image warning-image"></div>
+            class="level-3 symbol-list-image-column symbol-list-image warning-image"
+            aria-labelledby="symbol-list-warning-level-3-text">
+          </div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
-          <div class="item-text symbol-list-text">
+          <div
+            id="symbol-list-warning-level-3-text"
+            class="item-text symbol-list-text">
             {{ warningLevel3Text }}
           </div>
         </div>
@@ -86,10 +102,14 @@
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
-            class="level-4 symbol-list-image-column symbol-list-image warning-image"></div>
+            class="level-4 symbol-list-image-column symbol-list-image warning-image"
+            aria-labelledby="symbol-list-warning-level-4-text">
+          </div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
-          <div class="item-text symbol-list-text">
+          <div
+            id="symbol-list-warning-level-4-text"
+            class="item-text symbol-list-text">
             {{ warningLevel4Text }}
           </div>
           <hr class="bottom-separator" />
@@ -197,6 +217,7 @@ div.show-text-row {
 }
 
 div#fmi-warnings-view > div.row > button.show-text {
+  height: 30px;
   line-height: 30px;
   float: right;
   cursor: pointer;
@@ -334,6 +355,8 @@ div#fmi-warnings-view {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 hr {
