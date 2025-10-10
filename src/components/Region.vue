@@ -1,44 +1,51 @@
 <template>
-  <b-card no-body class="mb-1 current-warning-panel" :class="theme">
-    <b-card-header header-tag="header" class="p-1">
+  <h3>
+    <button
+      type="button"
+      :aria-expanded="open"
+      :class="['accordion-trigger', 'focus-ring', open ? '' : 'collapsed']"
+      :aria-controls="`accordion-section-${code}`"
+      :id="`accordion-${code}`"
+      :aria-label="ariaButton"
+      @click="onRegionToggle">
       <div class="region-header">
+        <span class="region-item-text">
+          {{ regionName }}
+        </span>
         <div>
           <RegionWarning
             v-for="warning in warningsSummary"
             :key="warning.key"
-            :input="warning"></RegionWarning>
+            :input="warning"
+            :language="language">
+          </RegionWarning>
         </div>
-        <span class="region-item-text">
-          {{ regionName }}
-        </span>
       </div>
-      <b-button
+      <div
         block
-        :class="['current-warning-toggle', visible ? '' : 'collapsed']"
-        :aria-label="ariaButton"
-        @click="onRegionToggle" />
-    </b-card-header>
-    <b-collapse
-      :id="identifier"
-      v-model="visible"
-      class="accordion-item-region focus-ring"
-      :accordion="`accordion-${type}`"
-      tabindex="0"
-      :aria-label="ariaInfo">
-      <b-card-body body-class="p-0">
-        <div class="current-description">
-          <div class="current-description-table">
-            <DescriptionWarning
-              v-for="warning in reducedWarnings"
-              :key="warning.identification"
-              :input="warning"
-              :theme="theme"
-              :language="language" />
-          </div>
-        </div>
-      </b-card-body>
-    </b-collapse>
-  </b-card>
+        :class="['current-warning-toggle', open ? '' : 'collapsed']" />
+    </button>
+  </h3>
+  <div
+    :id="`accordion-section-${code}`"
+    role="region"
+    :aria-labelledby="`accordion-${code}`"
+    :aria-expanded="open"
+    class="accordion-panel"
+    :hidden="open ? null : ''"
+  >
+    <div class="current-description">
+      <div class="current-description-table">
+        <DescriptionWarning
+          v-for="warning in reducedWarnings"
+            :key="warning.identification"
+            :input="warning"
+            :theme="theme"
+            :language="language"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -54,10 +61,6 @@ export default {
   props: {
     type: {
       type: String,
-    },
-    shown: {
-      type: Boolean,
-      default: false,
     },
     code: {
       type: String,
@@ -83,7 +86,7 @@ export default {
   },
   data() {
     return {
-      visible: this.shown,
+      open: false,
     }
   },
   computed: {
@@ -131,7 +134,7 @@ export default {
     },
     ariaButton() {
       return `${
-        this.visible
+        this.open
           ? this.t('infoButtonAriaLabelCloseRegion')
           : this.t('infoButtonAriaLabelShowRegion')
       } ${this.regionName} ${this.t('infoButtonAriaLabelValidWarnings')}`
@@ -145,17 +148,9 @@ export default {
       )
     },
   },
-  watch: {
-    shown(isShown) {
-      this.visible = isShown
-    },
-  },
   methods: {
     onRegionToggle() {
-      this.$emit('regionToggled', {
-        code: this.code,
-        shown: !this.visible,
-      })
+      this.open = !this.open
     },
   },
 }
@@ -197,18 +192,24 @@ export default {
 
 button {
   border: none;
+  &:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
 }
 
 .region-header {
   position: absolute;
   left: 0;
   right: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: $current-warning-height;
 }
 
 .region-item-text {
   display: block;
   text-align: left;
-  line-height: $current-warning-height;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -303,22 +304,22 @@ button {
 }
 
 .light-theme .current-description {
-  border-top: 1px solid $light-description-border-color;
+  border-top: 0.5px solid $light-description-border-color;
   background-color: $light-description-background-color;
 }
 
 .dark-theme .current-description {
-  border-top: 1px solid $dark-description-border-color;
+  border-top: 0.5px solid $dark-description-border-color;
   background-color: $dark-description-background-color;
 }
 
 .light-gray-theme .current-description {
-  border-top: 1px solid $light-gray-description-border-color;
+  border-top: 0.5px solid $light-gray-description-border-color;
   background-color: $light-gray-description-background-color;
 }
 
 .dark-gray-theme .current-description {
-  border-top: 1px solid $dark-gray-description-border-color;
+  border-top: 0.5px solid $dark-gray-description-border-color;
   background-color: $dark-gray-description-background-color;
 }
 
@@ -332,5 +333,98 @@ div.accordion-item-region {
   div.card-body {
     padding: 0;
   }
+}
+
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.accordion-trigger {
+  background: none;
+  color: hsl(0deg 0% 13%);
+  display: block;
+  font-size: $font-size;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  text-align: left;
+  width: 100%;
+  outline: none;
+}
+
+.accordion > div:first-child .accordion-trigger > .region-header {
+  border-radius: 0;
+}
+
+.accordion > div:last-child .accordion-trigger.collapsed > .region-header {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child .accordion-trigger > .region-header {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child .accordion-trigger.collapsed > .region-header {
+  border-radius: 0;
+}
+
+.accordion > div:first-child > h3 > button,
+.accordion > div:first-child > h3 > button:hover {
+  border-radius: 0;
+}
+
+.accordion > div:last-child > h3 > button.collapsed,
+.accordion > div:last-child > h3 > button.collapsed:hover {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child > h3 > button,
+.accordion > div:first-child:last-child > h3 > button:hover {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child > h3 > button.collapsed,
+.accordion > div:first-child:last-child > h3 > button.collapsed:hover {
+  border-radius: 0;
+}
+
+.accordion > div:last-child .current-description {
+  border-radius: 0;
+}
+
+.accordion > div:first-child > div > h3 > button > div.current-warning-toggle {
+  border-radius: 0;
+}
+
+.accordion > div:last-child > div > h3 > button > div.current-warning-toggle.collapsed {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child > div > h3 > button > div.current-warning-toggle {
+  border-radius: 0;
+}
+
+.accordion > div:first-child:last-child > div > h3 > button > div.current-warning-toggle.collapsed {
+  border-radius: 0;
+}
+
+button {
+  border-style: none;
+}
+
+.accordion button::-moz-focus-inner {
+  border: 0;
+}
+
+.accordion-panel {
+  margin: 0;
+  padding: 0;
+}
+
+/* For Edge bug https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/4806035/ */
+.accordion-panel[hidden] {
+  display: none;
 }
 </style>

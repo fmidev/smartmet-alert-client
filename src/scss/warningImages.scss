@@ -181,7 +181,6 @@ div.symbol-image {
 span.symbol-text {
   display: table-cell;
   vertical-align: middle;
-  line-height: $current-warning-image-height;
   width: 100%;
   text-align: center;
   margin: 0 auto;
@@ -192,7 +191,7 @@ span.symbol-text {
   font-weight: 700;
 }
 
-@media (max-width: 575px) {
+@media (width < 576px) {
   .symbol-text {
     display: none;
   }

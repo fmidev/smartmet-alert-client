@@ -217,7 +217,7 @@ div.date-selector-cell {
   }
 }
 
-@media (max-width: 575px) {
+@media (width < 576px) {
   .map-small,
   .map-container {
     display: none;

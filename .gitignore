@@ -148,3 +148,9 @@ test/svg
 
 # Rollup Plugin Visualizer
 stats.html
+
+# Aider
+.aider.*
+
+# Build
+dist

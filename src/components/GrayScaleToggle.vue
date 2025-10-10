@@ -8,11 +8,18 @@
           'focus-ring',
           grayScale ? 'gray-scale-selected' : 'gray-scale-unselected',
         ]"
+        role="button"
         tabindex="0"
+        :aria-pressed="grayScale ? 'true' : 'false'"
+        :aria-label="grayScaleText"
         @mousedown="preventEvents"
         @click="toggleGrayScale"
         @keydown.enter="toggleGrayScale"
-        @keydown.space="toggleGrayScale" />
+        @keydown.space="toggleGrayScale">
+          <span>
+            {{ toggleText }}
+          </span>
+        </div>
     </div>
   </div>
 </template>
@@ -47,6 +54,9 @@ export default {
     },
     grayScaleText() {
       return this.t('grayScale')
+    },
+    toggleText() {
+      return this.grayScale ? this.t('toggleOn') : this.t('toggleOff')
     },
   },
   methods: {
@@ -89,54 +99,46 @@ div#gray-scale-select-text {
   padding-right: 5px;
   vertical-align: middle;
   line-height: normal;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 div#gray-scale-select-container {
   display: table-cell;
-  width: 30px;
+  width: 55px;
   height: $symbol-list-line-height;
   vertical-align: middle;
 }
 
 div#gray-scale-select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: $symbol-list-select-height;
   margin: 0;
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
-}
-
-.light-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-blue' + $image-extension);
-}
-
-.dark-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.light-gray-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-dark' + $image-extension);
-}
-
-.dark-gray-theme .gray-scale-selected {
-  background-image: url($ui-image-path + 'toggle-selected-light' + $image-extension);
-}
-
-.light-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
-.dark-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
-}
-
-.light-gray-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-light' + $image-extension);
-}
-
-.dark-gray-theme .gray-scale-unselected {
-  background-image: url($ui-image-path + 'toggle-unselected-dark' + $image-extension);
+  &.gray-scale-selected {
+    padding-right: 18px;
+    background-image: url($ui-image-path + 'toggle-selected' + $image-extension);
+    span {
+      color: $toggle-on-text;
+    }
+  }
+  &.gray-scale-unselected {
+    padding-left: 18px;
+    background-image: url($ui-image-path + 'toggle-unselected' + $image-extension);
+    span {
+      color: $toggle-off-text;
+    }
+  }
+  span {
+    font-family: $symbol-font-family;
+    font-size: $font-size;
+    forced-color-adjust: none;
+  }
 }
 
 @media (max-width: 767px) {

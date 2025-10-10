@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.2.7",
+  "version": "4.4.19",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "bootstrap": "5.3.3",
     "bootstrap-vue-next": "0.14.10",
     "cross-fetch": "3.1.8",
-    "dompurify": "3.2.3",
+    "dompurify": "3.2.7",
     "flatbush": "3.2.1",
     "focus-visible": "5.2.1",
     "he": "1.2.0",

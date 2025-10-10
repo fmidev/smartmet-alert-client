@@ -394,7 +394,7 @@ export default {
 }
 
 div#fmi-warnings {
-  width: 690px;
+  width: 700px;
   padding: 0;
   margin-bottom: 20px;
 

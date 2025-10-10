@@ -1,34 +1,36 @@
 <template>
-  <div class="map-container">
-    <div class="warning-map-status" aria-hidden="true">
-      <p>
-        <span class="bold-text">{{ warningsTitle }}</span
-        ><br />
-        <span v-html="warningsDate"></span>
-      </p>
-      <p>
-        <span class="bold-text">{{ updatedTitle }}</span
-        ><br />
-        {{ updatedDate }}<br />
-        {{ atTime }} {{ updatedTime }}
-      </p>
+  <div>
+    <div class="map-container">
+      <div class="warning-map-status" aria-hidden="true">
+        <p>
+          <span class="bold-text">{{ warningsTitle }}</span
+          ><br />
+          <span v-html="warningsDate"></span>
+        </p>
+        <p>
+          <span class="bold-text">{{ updatedTitle }}</span
+          ><br />
+          {{ updatedDate }}<br />
+          {{ atTime }} {{ updatedTime }}
+        </p>
+      </div>
+      <MapLarge
+        :index="index"
+        :input="regions"
+        :visible-warnings="visibleWarnings"
+        :warnings="warnings"
+        :geometry-id="geometryId"
+        :loading="loading"
+        :theme="theme"
+        :language="language"
+        :spinner-enabled="spinnerEnabled"
+        @loaded="onLoaded" />
     </div>
     <div class="data-providers noselect" aria-hidden="true">
-      <span>{{ dataProviderFirst }}</span
-      ><br />
+      <span>{{ dataProviderFirst }}</span>
+      <br />
       <span>{{ dataProviderSecond }}</span>
     </div>
-    <MapLarge
-      :index="index"
-      :input="regions"
-      :visible-warnings="visibleWarnings"
-      :warnings="warnings"
-      :geometry-id="geometryId"
-      :loading="loading"
-      :theme="theme"
-      :language="language"
-      :spinner-enabled="spinnerEnabled"
-      @loaded="onLoaded" />
   </div>
 </template>
 
@@ -187,12 +189,13 @@ div.warning-map-status {
 }
 
 div.data-providers {
-  position: absolute;
-  bottom: 4px;
-  right: 16px;
-  text-align: left;
-  z-index: 5;
+  position: relative;
+  text-align: right;
+  z-index: 15;
   pointer-events: none;
+  padding-left: 50%;
+  margin-top: -50px;
+  margin-right: 15px;
 }
 
 @media screen and (orientation: landscape) {
