@@ -46,14 +46,22 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'es2019',
+    target: 'es2020',
     outDir: 'dist',
     assetsDir: '',
     sourcemap: true,
-    minify: true,
+    minify: 'esbuild',
+    cssCodeSplit: false,
+    cssMinify: true,
     rollupOptions: {
       output: {
         entryFileNames: 'index.mjs',
+        compact: true,
+        inlineDynamicImports: true,
+        generatedCode: {
+          constBindings: true,
+          objectShorthand: true,
+        },
       },
     },
   },
