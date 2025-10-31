@@ -29,13 +29,20 @@ export default defineConfig({
           src: 'dist/index.mjs',
           dest: './',
           rename: 'index.js',
-        }
-      ]
-    })
+        },
+      ],
+    }),
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
     },
   },
   build: {
