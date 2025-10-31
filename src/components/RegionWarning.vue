@@ -9,8 +9,7 @@
       `level-${input.severity}`,
       `${typeClass}`,
     ]"
-    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`"
-  >
+    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`">
     <span
       aria-hidden="true"
       :class="[
@@ -45,14 +44,16 @@ export default {
       return this.t(`warningLevel${this.input.severity}`)
     },
     warningTypeText() {
-      return this.t(this.input.type).toLowerCase();
+      return this.t(this.input.type).toLowerCase()
     },
     warningDetails() {
       if (this.input.text == null || this.input.direction == null) {
         return ''
       }
-      return ` (${this.input.text} m/s ${this.t("fromDirection")} ${this.input.direction + 180}°)`
-    }
+      return ` (${this.input.text} m/s ${this.t('fromDirection')} ${
+        this.input.direction + 180
+      }°)`
+    },
   },
 }
 </script>

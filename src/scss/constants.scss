@@ -35,7 +35,8 @@ $popup-width: 250px;
   font-family: 'Noto Sans';
   font-weight: normal;
   font-style: normal;
-  src: url($font-base-path + 'Noto_Sans/Noto-Sans-regular.woff2') format('woff2');
+  src: url($font-base-path + 'Noto_Sans/Noto-Sans-regular.woff2')
+    format('woff2');
   font-display: swap;
 }
 $font-family: Roboto, Helvetica, Arial, 'Noto Sans', sans-serif;

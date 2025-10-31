@@ -3,8 +3,7 @@
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"
-        :aria-label="`${warningLevelText} ${title.toLowerCase()}`">
-      </div>
+        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"></div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
@@ -28,10 +27,10 @@
             @click="toggle"
             @keydown.enter="toggle"
             @keydown.space="toggle">
-              <span>
-                {{ toggleText }}
-              </span>
-            </div>
+            <span>
+              {{ toggleText }}
+            </span>
+          </div>
         </div>
       </div>
       <hr />
@@ -222,7 +221,7 @@ div.symbol-list-text {
     }
   }
   span {
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'Noto Sans', sans-serif;
     font-size: $font-size;
     forced-color-adjust: none;
   }

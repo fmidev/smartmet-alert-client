@@ -128,7 +128,7 @@ export default {
     },
     geometryId: {
       type: Number,
-      default: config.props.defaultGeometryId,
+      default: Number(config.props.defaultGeometryId),
     },
     language: {
       type: String,
@@ -140,7 +140,7 @@ export default {
     },
     loading: {
       type: Number,
-      default: true,
+      default: 1,
     },
     sleep: {
       type: Boolean,

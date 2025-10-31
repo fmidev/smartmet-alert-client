@@ -3,8 +3,7 @@
     <div class="current-description-image-cell" aria-hidden="true">
       <div
         :class="`current-description-image warning-image symbol-image transform-rotate-${rotation} level-${input.severity} ${typeClass}`"
-        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`"
-      >
+        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`">
         <span
           :class="`symbol-text transform-rotate-${invertedRotation} region-warning-symbol-text`"
           >{{ input.text }}</span
@@ -58,7 +57,9 @@ export default {
       if (this.input.text == null || this.input.direction == null) {
         return ''
       }
-      return ` (${this.input.text} m/s ${this.t("fromDirection")} ${this.input.direction + 180}°)`
+      return ` (${this.input.text} m/s ${this.t('fromDirection')} ${
+        this.input.direction + 180
+      }°)`
     },
     info() {
       return this.input.info[this.language]

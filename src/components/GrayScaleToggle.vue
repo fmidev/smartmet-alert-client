@@ -16,10 +16,10 @@
         @click="toggleGrayScale"
         @keydown.enter="toggleGrayScale"
         @keydown.space="toggleGrayScale">
-          <span>
-            {{ toggleText }}
-          </span>
-        </div>
+        <span>
+          {{ toggleText }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

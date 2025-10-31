@@ -98,7 +98,7 @@
           class="border-path"
           :key="path.key"
           :stroke="strokeColor"
-          :stroke-width="1.5*path.strokeWidth"
+          :stroke-width="1.5 * path.strokeWidth"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -177,7 +177,7 @@ export default {
       return 'Small'
     },
     strokeColor() {
-     return 'DarkSlateGray'
+      return 'DarkSlateGray'
     },
     strokeWidth() {
       return 0.6
@@ -231,7 +231,7 @@ export default {
         : []
     },
     isFullMode() {
-      return true;
+      return true
     },
   },
 }

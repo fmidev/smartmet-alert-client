@@ -83,14 +83,14 @@ export default {
       return this.t('regionSea')
     },
     fromLandToNextContentText() {
-      return `${this.t('warningsInAreasStart')} ${
-        this.t(`in${this.regions.land.length}Areas`)
-      }. ${this.t('toNextContent')}`
+      return `${this.t('warningsInAreasStart')} ${this.t(
+        `in${this.regions.land.length}Areas`
+      )}. ${this.t('toNextContent')}`
     },
     fromSeaToNextContentText() {
-      return `${this.t('warningsInAreasStart')} ${
-        this.t(`in${this.regions.sea.length}Areas`)
-      }. ${this.t('toNextContent')}`
+      return `${this.t('warningsInAreasStart')} ${this.t(
+        `in${this.regions.sea.length}Areas`
+      )}. ${this.t('toNextContent')}`
     },
     fromLandToNextContentHref() {
       return this.anySeaWarnings

@@ -21,9 +21,7 @@
           </RegionWarning>
         </div>
       </div>
-      <div
-        block
-        :class="['current-warning-toggle', open ? '' : 'collapsed']" />
+      <div block :class="['current-warning-toggle', open ? '' : 'collapsed']" />
     </button>
   </h3>
   <div
@@ -32,17 +30,15 @@
     :aria-labelledby="`accordion-${code}`"
     :aria-expanded="open"
     class="accordion-panel"
-    :hidden="open ? null : ''"
-  >
+    :hidden="open ? null : ''">
     <div class="current-description">
       <div class="current-description-table">
         <DescriptionWarning
           v-for="warning in reducedWarnings"
-            :key="warning.identification"
-            :input="warning"
-            :theme="theme"
-            :language="language"
-        />
+          :key="warning.identification"
+          :input="warning"
+          :theme="theme"
+          :language="language" />
       </div>
     </div>
   </div>
@@ -366,7 +362,10 @@ h3 {
   border-radius: 0;
 }
 
-.accordion > div:first-child:last-child .accordion-trigger.collapsed > .region-header {
+.accordion
+  > div:first-child:last-child
+  .accordion-trigger.collapsed
+  > .region-header {
   border-radius: 0;
 }
 
@@ -398,15 +397,30 @@ h3 {
   border-radius: 0;
 }
 
-.accordion > div:last-child > div > h3 > button > div.current-warning-toggle.collapsed {
+.accordion
+  > div:last-child
+  > div
+  > h3
+  > button
+  > div.current-warning-toggle.collapsed {
   border-radius: 0;
 }
 
-.accordion > div:first-child:last-child > div > h3 > button > div.current-warning-toggle {
+.accordion
+  > div:first-child:last-child
+  > div
+  > h3
+  > button
+  > div.current-warning-toggle {
   border-radius: 0;
 }
 
-.accordion > div:first-child:last-child > div > h3 > button > div.current-warning-toggle.collapsed {
+.accordion
+  > div:first-child:last-child
+  > div
+  > h3
+  > button
+  > div.current-warning-toggle.collapsed {
   border-radius: 0;
 }
 

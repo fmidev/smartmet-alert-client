@@ -134,17 +134,17 @@
             :d="path.d"
             fill-opacity="0"
             style="cursor: pointer; pointer-events: none" />
-        <path
-          v-for="path in landBorders"
-          :id="path.key"
-          class="border-path"
-          :key="path.key"
-          :stroke="strokeColor"
-          :stroke-width="2*path.strokeWidth"
-          :stroke-opacity="strokeOpacity"
-          :d="path.d"
-          fill-opacity="0"
-          style="cursor: pointer; pointer-events: none" />
+          <path
+            v-for="path in landBorders"
+            :id="path.key"
+            class="border-path"
+            :key="path.key"
+            :stroke="strokeColor"
+            :stroke-width="2 * path.strokeWidth"
+            :stroke-opacity="strokeOpacity"
+            :d="path.d"
+            fill-opacity="0"
+            style="cursor: pointer; pointer-events: none" />
         </g>
         <g v-if="!loading">
           <path
@@ -391,18 +391,27 @@ export default {
           region != null &&
           geometry.children.length === 0 &&
           (!this.mergedRegions.has(regionId) ||
-          (geometry.weight > this.maxMergedWeight && region?.warnings?.filter((warning) =>
-          this.visibleWarnings.includes(warning.type)).length === 1) &&
-          !(geometry?.parent?.length && this.regionData(geometry.parent)?.warnings?.some((warning) =>
-          this.visibleWarnings.includes(warning.type))))
+            (geometry.weight > this.maxMergedWeight &&
+              region?.warnings?.filter((warning) =>
+                this.visibleWarnings.includes(warning.type)
+              ).length === 1 &&
+              !(
+                geometry?.parent?.length &&
+                this.regionData(geometry.parent)?.warnings?.some((warning) =>
+                  this.visibleWarnings.includes(warning.type)
+                )
+              )))
         ) {
           const iconSizes = []
           const aspectRatios = []
           const keys = []
           const geoms = []
           region.warnings
-            .filter((warning) => this.visibleWarnings.includes(warning.type) &&
-              warning.coverage === 100 )
+            .filter(
+              (warning) =>
+                this.visibleWarnings.includes(warning.type) &&
+                warning.coverage === 100
+            )
             .forEach((regionWarning, index, regionWarnings) => {
               const identifier = regionWarning.identifiers.find(
                 (id) => warnings[id] && warnings[id].covRegions.size === 0
@@ -920,12 +929,13 @@ export default {
         if (currentNode.parentNode === document) {
           return true
         }
-        currentNode = currentNode.parentNode instanceof ShadowRoot
-          ? currentNode.parentNode.host
-          : currentNode.parentNode
+        currentNode =
+          currentNode.parentNode instanceof ShadowRoot
+            ? currentNode.parentNode.host
+            : currentNode.parentNode
       }
       return false
-    }
+    },
   },
 }
 </script>

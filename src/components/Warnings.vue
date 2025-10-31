@@ -35,8 +35,7 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="gray several symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-several-warnings-text">
-          </div>
+            aria-labelledby="symbol-list-several-warnings-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
@@ -52,8 +51,7 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-1 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-1-text">
-          </div>
+            aria-labelledby="symbol-list-warning-level-1-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
@@ -69,8 +67,7 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-2 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-2-text">
-          </div>
+            aria-labelledby="symbol-list-warning-level-2-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
@@ -86,8 +83,7 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-3 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-3-text">
-          </div>
+            aria-labelledby="symbol-list-warning-level-3-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
@@ -103,8 +99,7 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-4 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-4-text">
-          </div>
+            aria-labelledby="symbol-list-warning-level-4-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
