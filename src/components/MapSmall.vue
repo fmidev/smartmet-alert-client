@@ -21,8 +21,8 @@
           :opacity="path.opacity" />
         <path
           v-for="path in seaBorders"
-          class="border-path"
           :key="path.key"
+          class="border-path"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
@@ -95,8 +95,8 @@
           fill-opacity="0" />
         <path
           v-for="path in landBorders"
-          class="border-path"
           :key="path.key"
+          class="border-path"
           :stroke="strokeColor"
           :stroke-width="1.5 * path.strokeWidth"
           :d="path.d"

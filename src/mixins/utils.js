@@ -140,7 +140,7 @@ export default {
       return [
         {
           key: `border.${area}`,
-          d: this.geometries[this.geometryId]['borders'][area][`path${this.size}`],
+          d: this.geometries[this.geometryId].borders[area][`path${this.size}`],
           opacity: '1',
           strokeWidth: this.strokeWidth,
         },
@@ -195,7 +195,9 @@ export default {
     },
     msSinceStartOfDay(timestamp) {
       const moment = this.toTimeZone(timestamp)
-      const ms = ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 + moment.millisecond
+      const ms =
+        ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 +
+        moment.millisecond
       // Daylight saving time
       const ref = this.toTimeZone(timestamp - ms)
       if (ref.day !== moment.day) {
@@ -547,8 +549,10 @@ export default {
             ;[...this.warnings[key].covRegions.keys()].forEach((covRegion) => {
               if (
                 (this.coverageRegions[covRegion] == null ||
-                this.coverageRegions[covRegion] < this.warnings[key].severity) &&
-                this.warnings[key].covRegions.get(covRegion) >= this.coverageCriterion
+                  this.coverageRegions[covRegion] <
+                    this.warnings[key].severity) &&
+                this.warnings[key].covRegions.get(covRegion) >=
+                  this.coverageCriterion
               ) {
                 this.coverageRegions[covRegion] = this.warnings[key].severity
               }
@@ -810,18 +814,24 @@ export default {
     },
     // Include also lakes to prevent overlapping symbols in Saimaa
     optimizeCovRegions(warnings, regions) {
-      Object.keys(this.geometries[this.geometryId]).filter((regionId) =>
-        this.geometries[this.geometryId][regionId]?.type === 'sea' &&
-        this.geometries[this.geometryId][regionId]?.subType === 'lake'
-      ).filter((regionId) => regions.some((day) =>
-        day['sea'].some((region) => region['key'] === regionId
-      ))).forEach((regionId) =>
-        Object.keys(warnings).filter((warningKey) =>
-          warnings[warningKey].covRegions.size > 0
-        ).forEach((warningKey) => {
-          warnings[warningKey].covRegions.set(regionId, 0)
-        }
-      ))
+      Object.keys(this.geometries[this.geometryId])
+        .filter(
+          (regionId) =>
+            this.geometries[this.geometryId][regionId]?.type === 'sea' &&
+            this.geometries[this.geometryId][regionId]?.subType === 'lake'
+        )
+        .filter((regionId) =>
+          regions.some((day) =>
+            day.sea.some((region) => region.key === regionId)
+          )
+        )
+        .forEach((regionId) =>
+          Object.keys(warnings)
+            .filter((warningKey) => warnings[warningKey].covRegions.size > 0)
+            .forEach((warningKey) => {
+              warnings[warningKey].covRegions.set(regionId, 0)
+            })
+        )
     },
     regionsDefault() {
       return [

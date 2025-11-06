@@ -5,6 +5,7 @@ import {
   h,
 } from 'vue'
 import { createWebComponent } from 'vue-web-component-wrapper'
+
 import app from './App.vue'
 
 createWebComponent({

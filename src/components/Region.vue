@@ -1,11 +1,11 @@
 <template>
   <h3>
     <button
+      :id="`accordion-${code}`"
       type="button"
       :aria-expanded="open"
       :class="['accordion-trigger', 'focus-ring', open ? '' : 'collapsed']"
       :aria-controls="`accordion-section-${code}`"
-      :id="`accordion-${code}`"
       :aria-label="ariaButton"
       @click="onRegionToggle">
       <div class="region-header">

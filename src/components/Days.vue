@@ -47,17 +47,17 @@
 </template>
 
 <script>
+import keycodes from '../mixins/keycodes'
 import DayLarge from './DayLarge.vue'
 import DaySmall from './DaySmall.vue'
-import keycodes from '../mixins/keycodes'
 
 export default {
   name: 'Days',
-  mixins: [keycodes],
   components: {
     DaySmall,
     DayLarge,
   },
+  mixins: [keycodes],
   props: {
     input: {
       type: Array,

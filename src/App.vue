@@ -215,8 +215,11 @@ export default {
     }
   },
   mounted() {
-    if (this.fontScale != null && this.fontScale.trim() !== ''
-    && Number(this.fontScale) !== 1) {
+    if (
+      this.fontScale != null &&
+      this.fontScale.trim() !== '' &&
+      Number(this.fontScale) !== 1
+    ) {
       const newFontScale = Number(this.fontScale)
       if (!Number.isNaN(newFontScale)) {
         let originalFontSize
