@@ -1,5 +1,3 @@
-import 'url-search-params-polyfill'
-
 import { DOMParser } from '@xmldom/xmldom'
 import he from 'he'
 import xpath from 'xpath'
