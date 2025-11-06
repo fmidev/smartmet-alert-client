@@ -49,7 +49,7 @@ export default defineConfig({
     target: 'es2020',
     outDir: 'dist',
     assetsDir: '',
-    sourcemap: true,
+    sourcemap: false,
     minify: 'esbuild',
     cssCodeSplit: false,
     cssMinify: true,
@@ -57,7 +57,26 @@ export default defineConfig({
       output: {
         entryFileNames: 'index.mjs',
         compact: true,
-        inlineDynamicImports: true,
+        inlineDynamicImports: false,
+        manualChunks: (id) => {
+          // XML parsers as separate chunk
+          if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
+            return 'xml-parser'
+          }
+          // Locale files as separate chunks
+          if (id.includes('/locales/')) {
+            const match = id.match(/locales\/(\w+)\.json/)
+            if (match) {
+              return `locale-${match[1]}`
+            }
+          }
+          // Core vendor libraries
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('bootstrap')) {
+              return 'vendor'
+            }
+          }
+        },
         generatedCode: {
           constBindings: true,
           objectShorthand: true,
