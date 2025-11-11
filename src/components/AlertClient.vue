@@ -401,6 +401,7 @@ div#fmi-warnings {
   h2.valid-warnings {
     text-align: left;
     font-weight: bold;
+    margin-top: 0;
     margin-bottom: 3px;
   }
 

@@ -203,6 +203,7 @@ div.symbol-list-text {
   justify-content: center;
   width: 100%;
   height: $symbol-list-select-height;
+  cursor: pointer;
   margin: 0;
   background-repeat: no-repeat;
   background-position: center;

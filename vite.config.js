@@ -2,8 +2,6 @@
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
@@ -15,9 +13,6 @@ export default defineConfig({
   plugins: [
     vue({
       customElement: true,
-    }),
-    Components({
-      resolvers: [BootstrapVueNextResolver()],
     }),
     banner(
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n * homepage: ${pkg.homepage}\n */`
@@ -72,7 +67,7 @@ export default defineConfig({
           }
           // Core vendor libraries
           if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('bootstrap')) {
+            if (id.includes('vue')) {
               return 'vendor'
             }
           }

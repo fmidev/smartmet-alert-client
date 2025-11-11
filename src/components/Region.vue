@@ -188,6 +188,7 @@ export default {
 
 button {
   border: none;
+  cursor: pointer;
   &:focus:not(:focus-visible) {
     box-shadow: none;
   }

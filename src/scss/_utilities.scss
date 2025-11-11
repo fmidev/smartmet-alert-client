@@ -1,0 +1,159 @@
+// Responsive display utilities
+.mobile-only {
+  display: block;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.desktop-only {
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+// Medium breakpoint and up (768px+)
+@media (min-width: 768px) {
+  .d-md-none {
+    display: none !important;
+  }
+
+  .d-md-block {
+    display: block !important;
+  }
+
+  .d-md-table-cell {
+    display: table-cell !important;
+  }
+}
+
+// Display inline
+.d-inline {
+  display: inline !important;
+}
+
+// Accessibility utilities
+.visually-hidden-focusable {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+
+  &:focus,
+  &:focus-within {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+  }
+}
+
+.focus-ring {
+  outline: none;
+
+  &:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+  }
+}
+
+// Small breakpoint specific (576px+)
+@media (min-width: 576px) {
+  .d-sm-block {
+    display: block !important;
+  }
+
+  .d-sm-none {
+    display: none !important;
+  }
+}
+
+// Spacing utilities
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
+// Position utilities
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+// Grid/Layout utilities
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+// Tab navigation utilities
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-tabs {
+  border-bottom: none;
+}
+
+.nav-item {
+  margin-bottom: 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.tab-content {
+  > .tab-pane {
+    display: none;
+
+    &.active,
+    &.show {
+      display: block;
+    }
+  }
+}

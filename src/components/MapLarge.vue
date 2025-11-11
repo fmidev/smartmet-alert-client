@@ -985,22 +985,8 @@ button.fmi-warnings-map-tool {
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
-}
-
-.light-theme button.fmi-warnings-map-tool {
-  border-color: $light-button-border-color;
-}
-
-.dark-theme button.fmi-warnings-map-tool {
-  border-color: $dark-button-border-color;
-}
-
-.light-gray-theme button.fmi-warnings-map-tool {
-  border-color: $light-gray-button-border-color;
-}
-
-.dark-gray-theme button.fmi-warnings-map-tool {
-  border-color: $dark-gray-button-border-color;
+  border: none;
+  padding: 0;
 }
 
 div.map-large div.day-map-large button {

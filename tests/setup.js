@@ -5,17 +5,10 @@ import { config } from '@vue/test-utils'
 // Mock environment variables
 process.env.VITE_LANGUAGE = 'fi'
 
-// Configure global stubs for Bootstrap Vue Next components
+// Configure global stubs for components
 config.global.stubs = {
-  BSpinner: true,
-  BTabs: true,
-  BTab: true,
-  BButton: true,
-  BCard: true,
-  BCardHeader: true,
-  BCardBody: true,
-  BCollapse: true,
   GrayScaleToggle: true,
+  CollapsiblePanel: true,
 }
 
 // Mock window.getComputedStyle

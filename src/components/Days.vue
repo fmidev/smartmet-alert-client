@@ -1,48 +1,59 @@
 <template>
   <div class="row date-selector" :class="theme">
-    <b-tabs
-      id="fmi-warnings-date-selector"
-      v-model="day"
-      :lazy="true"
-      :no-fade="true"
-      nav-class="fmi-warnings-date-nav"
-      nav-wrapper-class="fmi-warnings-date-wrapper"
-      :justified="true">
-      <b-tab
-        v-for="(n, i) in numberOfDays"
-        :key="i"
-        :active="i === day"
-        :title-link-class="['day', `day${i}`]">
-        <template #title>
-          <DaySmall
+    <div id="fmi-warnings-date-selector" class="tabs">
+      <div class="fmi-warnings-date-wrapper">
+        <ul class="nav nav-tabs fmi-warnings-date-nav" role="tablist">
+          <li
+            v-for="(n, i) in numberOfDays"
+            :key="i"
+            class="nav-item"
+            role="presentation">
+            <button
+              :class="['nav-link', 'day', `day${i}`, { active: i === day }]"
+              type="button"
+              role="tab"
+              :aria-selected="i === day"
+              @click="day = i">
+              <DaySmall
+                :index="i"
+                :input="input[i]"
+                :visible-warnings="visibleWarnings"
+                :warnings="warnings"
+                :regions="regions[i]"
+                :geometry-id="geometryId"
+                :active="i === day"
+                :static-days="staticDays"
+                :loading="loading"
+                :theme="theme"
+                :language="language" />
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content">
+        <div
+          v-for="(n, i) in numberOfDays"
+          :key="i"
+          :class="['tab-pane', { active: i === day, show: i === day }]"
+          role="tabpanel">
+          <DayLarge
+            v-if="i === day"
             :index="i"
             :input="input[i]"
             :visible-warnings="visibleWarnings"
             :warnings="warnings"
             :regions="regions[i]"
             :geometry-id="geometryId"
-            :active="i === day"
             :static-days="staticDays"
+            :time-offset="timeOffset"
             :loading="loading"
             :theme="theme"
-            :language="language" />
-        </template>
-        <DayLarge
-          :index="i"
-          :input="input[i]"
-          :visible-warnings="visibleWarnings"
-          :warnings="warnings"
-          :regions="regions[i]"
-          :geometry-id="geometryId"
-          :static-days="staticDays"
-          :time-offset="timeOffset"
-          :loading="loading"
-          :theme="theme"
-          :language="language"
-          :spinner-enabled="spinnerEnabled"
-          @loaded="onLoaded" />
-      </b-tab>
-    </b-tabs>
+            :language="language"
+            :spinner-enabled="spinnerEnabled"
+            @loaded="onLoaded" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -210,8 +221,12 @@ div#fmi-warnings-date-selector.tabs {
   flex-wrap: nowrap;
 }
 
+:deep(div.fmi-warnings-date-wrapper li.nav-item) {
+  flex: 1;
+}
+
 :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
-  width: $day-small-width;
+  width: 100%;
   height: $day-small-height;
   border-radius: 0;
   border: 0;
@@ -222,8 +237,8 @@ div#fmi-warnings-date-selector.tabs {
 }
 
 :deep(button.day div.date-selector-cell) {
-  height: $day-small-height;
-  overflow: hidden;
+  min-height: $day-small-height;
+  overflow: visible;
 }
 
 :deep(button.day) {
@@ -298,7 +313,7 @@ div#fmi-warnings-date-selector.tabs {
 }
 
 :deep(div.tab-content) {
-  margin-top: 4px;
+  margin-top: 20px;
 }
 
 @media (max-width: 767px) {
