@@ -1,5 +1,8 @@
 <template>
-  <div :id="`day-map-small-${index}`" class="map-small">
+  <div
+    :id="`day-map-small-${index}`"
+    class="map-small"
+  >
     <svg
       class="finland-small"
       xmlns="http://www.w3.org/2000/svg"
@@ -9,8 +12,12 @@
       height="120"
       viewBox="0 0 75 120"
       stroke-linecap="round"
-      stroke-linejoin="round">
-      <g v-if="pathsNeeded" :id="`finland-small-${index}`">
+      stroke-linejoin="round"
+    >
+      <g
+        v-if="pathsNeeded"
+        :id="`finland-small-${index}`"
+      >
         <path
           v-for="path in bluePaths"
           :key="path.key"
@@ -18,7 +25,8 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity" />
+          :opacity="path.opacity"
+        />
         <path
           v-for="path in seaBorders"
           :key="path.key"
@@ -26,7 +34,8 @@
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
-          fill-opacity="0" />
+          fill-opacity="0"
+        />
         <path
           v-for="path in greenPaths"
           :key="path.key"
@@ -34,7 +43,8 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity" />
+          :opacity="path.opacity"
+        />
         <path
           v-for="path in yellowPaths"
           :key="path.key"
@@ -42,7 +52,8 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity" />
+          :opacity="path.opacity"
+        />
         <path
           v-for="coverage in yellowCoverages"
           :key="coverage.key"
@@ -51,7 +62,8 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill" />
+          pointer-events="fill"
+        />
         <path
           v-for="path in orangePaths"
           :key="path.key"
@@ -59,7 +71,8 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity" />
+          :opacity="path.opacity"
+        />
         <path
           v-for="coverage in orangeCoverages"
           :key="coverage.key"
@@ -68,7 +81,8 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill" />
+          pointer-events="fill"
+        />
         <path
           v-for="path in redPaths"
           :key="path.key"
@@ -76,7 +90,8 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity" />
+          :opacity="path.opacity"
+        />
         <path
           v-for="coverage in redCoverages"
           :key="coverage.key"
@@ -85,14 +100,16 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill" />
+          pointer-events="fill"
+        />
         <path
           v-for="path in overlayPaths"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
-          fill-opacity="0" />
+          fill-opacity="0"
+        />
         <path
           v-for="path in landBorders"
           :key="path.key"
@@ -100,7 +117,8 @@
           :stroke="strokeColor"
           :stroke-width="1.5 * path.strokeWidth"
           :d="path.d"
-          fill-opacity="0" />
+          fill-opacity="0"
+        />
         <path
           v-for="coverage in overlayCoverages"
           :key="coverage.key"
@@ -109,7 +127,8 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill" />
+          pointer-events="fill"
+        />
       </g>
     </svg>
   </div>

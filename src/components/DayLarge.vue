@@ -1,15 +1,16 @@
 <template>
   <div>
     <div class="map-container">
-      <div class="warning-map-status" aria-hidden="true">
+      <div
+        class="warning-map-status"
+        aria-hidden="true"
+      >
         <p>
-          <span class="bold-text">{{ warningsTitle }}</span
-          ><br />
+          <span class="bold-text">{{ warningsTitle }}</span><br />
           <span v-html="warningsDate"></span>
         </p>
         <p>
-          <span class="bold-text">{{ updatedTitle }}</span
-          ><br />
+          <span class="bold-text">{{ updatedTitle }}</span><br />
           {{ updatedDate }}<br />
           {{ atTime }} {{ updatedTime }}
         </p>
@@ -24,9 +25,13 @@
         :theme="theme"
         :language="language"
         :spinner-enabled="spinnerEnabled"
-        @loaded="onLoaded" />
+        @loaded="onLoaded"
+      />
     </div>
-    <div class="data-providers noselect" aria-hidden="true">
+    <div
+      class="data-providers noselect"
+      aria-hidden="true"
+    >
       <span>{{ dataProviderFirst }}</span>
       <br />
       <span>{{ dataProviderSecond }}</span>

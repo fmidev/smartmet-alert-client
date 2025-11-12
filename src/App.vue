@@ -17,8 +17,9 @@
     :loading="loading"
     :spinner-enabled="spinnerEnabledParsed"
     @loaded="onLoaded"
-    @themeChanged="onThemeChanged"
-    @update-warnings="fetchWarnings" />
+    @theme-changed="onThemeChanged"
+    @update-warnings="fetchWarnings"
+  />
 </template>
 <script>
 import fetch from 'cross-fetch'
@@ -66,10 +67,22 @@ export default {
       type: String,
       default: '',
     },
-    weatherUpdated: String,
-    floodUpdated: String,
-    weatherWarnings: String,
-    floodWarnings: String,
+    weatherUpdated: {
+      type: String,
+      default: '',
+    },
+    floodUpdated: {
+      type: String,
+      default: '',
+    },
+    weatherWarnings: {
+      type: String,
+      default: '',
+    },
+    floodWarnings: {
+      type: String,
+      default: '',
+    },
     warnings: {
       type: String,
       default: '',
@@ -99,10 +112,6 @@ export default {
       default: '1',
     },
     sleep: {
-      type: String,
-      default: 'true',
-    },
-    spinnerEnabled: {
       type: String,
       default: 'true',
     },

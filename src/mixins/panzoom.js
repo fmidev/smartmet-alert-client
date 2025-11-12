@@ -1,7 +1,10 @@
+/* eslint-disable */
 /**
- * Panzoom 4.5.1 for panning and zooming elements using CSS transforms
+ * Panzoom for panning and zooming elements using CSS transforms
  * Copyright Timmy Willison and other contributors
- * https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
+ * https://github.com/timmywil/panzoom/
+ *
+ * Released under the MIT License
  */
 /******************************************************************************
 Copyright (c) Microsoft Corporation.

@@ -1,14 +1,21 @@
 <template>
-  <div class="symbol-list-table" :class="theme">
+  <div
+    class="symbol-list-table"
+    :class="theme"
+  >
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"
-        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"></div>
+        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"
+      ></div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="item-text symbol-list-text" v-html="title"></div>
+        <div
+          class="item-text symbol-list-text"
+          v-html="title"
+        ></div>
         <div class="symbol-list-select-container d-none d-md-table-cell">
           <div
             :id="id"
@@ -26,7 +33,8 @@
             @mousedown="preventEvents"
             @click="toggle"
             @keydown.enter="toggle"
-            @keydown.space="toggle">
+            @keydown.space="toggle"
+          >
             <span>
               {{ toggleText }}
             </span>

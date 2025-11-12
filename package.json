@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "lint": "eslint --ext .js,.vue src",
+    "lint:fix": "eslint --ext .js,.vue --fix src",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
@@ -61,22 +62,37 @@
     "vitest": "^3.2.4"
   },
   "eslintConfig": {
+    "root": true,
     "env": {
-      "node": true,
-      "es2022": true
+      "node": true
     },
     "extends": [
-      "@vue/standard",
-      "plugin:vue/recommended",
-      "plugin:sonarjs/recommended",
-      "plugin:prettier/recommended"
+      "plugin:vue/vue3-recommended",
+      "eslint:recommended",
+      "plugin:sonarjs/recommended"
     ],
-    "plugins": [
-      "simple-import-sort"
-    ],
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
     "rules": {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error"
+      "no-extra-semi": "off",
+      "vue/html-self-closing": "off",
+      "vue/require-explicit-emits": "off",
+      "vue/singleline-html-element-content-newline": "off",
+      "vue/no-v-for-template-key": "off",
+      "vue/multi-word-component-names": "off",
+      "vue/no-reserved-component-names": "off",
+      "vue/require-default-prop": "off",
+      "vue/require-prop-types": "off",
+      "vue/no-v-html": "off",
+      "vue/v-on-event-hyphenation": "off",
+      "vue/html-closing-bracket-newline": "off",
+      "vue/max-attributes-per-line": "off",
+      "vue/html-indent": "off",
+      "vue/order-in-components": "off",
+      "sonarjs/cognitive-complexity": "off",
+      "sonarjs/no-duplicate-string": "off",
+      "sonarjs/no-nested-switch": "off"
     }
   },
   "prettier": {

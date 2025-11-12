@@ -1,5 +1,9 @@
 <template>
-  <div v-if="grayScaleSelector" id="gray-scale-select-row" :class="theme">
+  <div
+    v-if="grayScaleSelector"
+    id="gray-scale-select-row"
+    :class="theme"
+  >
     <div id="gray-scale-select-text">{{ grayScaleText }}</div>
     <div id="gray-scale-select-container">
       <div
@@ -15,7 +19,8 @@
         @mousedown="preventEvents"
         @click="toggleGrayScale"
         @keydown.enter="toggleGrayScale"
-        @keydown.space="toggleGrayScale">
+        @keydown.space="toggleGrayScale"
+      >
         <span>
           {{ toggleText }}
         </span>

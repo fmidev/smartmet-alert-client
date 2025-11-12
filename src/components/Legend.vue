@@ -1,42 +1,56 @@
 <template>
-  <div class="sticky-top" :class="theme">
+  <div
+    class="sticky-top"
+    :class="theme"
+  >
     <GrayScaleToggle
       class="narrow-screen"
       :language="language"
       :gray-scale-selector="grayScaleSelector"
       :theme="theme"
-      @themeChanged="onThemeChanged" />
+      @theme-changed="onThemeChanged"
+    />
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">
         {{ warningSymbolsText }}
-        <br v-if="input.length > 0" class="symbol-list-header-line-break" />
+        <br
+          v-if="input.length > 0"
+          class="symbol-list-header-line-break"
+        />
       </nav>
     </div>
     <CollapsiblePanel
       :visible="visible"
       :title="toggleLegendsText"
       :theme="theme"
-      @toggle="onLegendToggle">
-      <Warnings
-        :input="input"
-        :visible-warnings="visibleWarnings"
-        :theme="theme"
-        :language="language" />
-    </CollapsiblePanel>
-    <div ref="warningsContainer" class="desktop-only">
+      @toggle="onLegendToggle"
+    >
       <Warnings
         :input="input"
         :visible-warnings="visibleWarnings"
         :theme="theme"
         :language="language"
-        @warningsToggled="onWarningsToggled"
-        @showAllWarnings="onShowAllWarnings" />
+      />
+    </CollapsiblePanel>
+    <div
+      ref="warningsContainer"
+      class="desktop-only"
+    >
+      <Warnings
+        :input="input"
+        :visible-warnings="visibleWarnings"
+        :theme="theme"
+        :language="language"
+        @warnings-toggled="onWarningsToggled"
+        @show-all-warnings="onShowAllWarnings"
+      />
     </div>
     <GrayScaleToggle
       :language="language"
       :gray-scale-selector="grayScaleSelector"
       :theme="theme"
-      @themeChanged="onThemeChanged" />
+      @theme-changed="onThemeChanged"
+    />
   </div>
 </template>
 

@@ -1,9 +1,19 @@
 <template>
-  <div class="map-large focus-ring" :class="theme" tabindex="0">
-    <div v-if="spinnerEnabled && loading" class="spinner-container text-center">
+  <div
+    class="map-large focus-ring"
+    :class="theme"
+    tabindex="0"
+  >
+    <div
+      v-if="spinnerEnabled && loading"
+      class="spinner-container text-center"
+    >
       <BSpinner />
     </div>
-    <div ref="dayMapLarge" class="day-map-large">
+    <div
+      ref="dayMapLarge"
+      class="day-map-large"
+    >
       <svg
         id="finland-large"
         xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +24,8 @@
         stroke-linejoin="round"
         style="max-height: 550px"
         aria-labelledby="finland-large-title"
-        role="img">
+        role="img"
+      >
         <title id="finland-large-title">{{ mapText }}</title>
         <g v-if="!loading">
           <path
@@ -31,7 +42,8 @@
             :data-region="path.dataRegion"
             :data-severity="path.dataSeverity"
             class="region-path"
-            @click="regionClicked" />
+            @click="regionClicked"
+          />
           <path
             v-for="path in seaBorders"
             :id="path.key"
@@ -42,7 +54,8 @@
             :stroke-opacity="strokeOpacity"
             :d="path.d"
             fill-opacity="0"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
           <path
             v-for="path in greenPaths"
             :id="path.key"
@@ -55,7 +68,8 @@
             :data-region="path.dataRegion"
             :data-severity="path.dataSeverity"
             class="region-path"
-            @click="regionClicked" />
+            @click="regionClicked"
+          />
           <path
             v-for="path in yellowPaths"
             :id="path.key"
@@ -68,7 +82,8 @@
             :data-region="path.dataRegion"
             :data-severity="path.dataSeverity"
             class="region-path"
-            @click="regionClicked" />
+            @click="regionClicked"
+          />
           <path
             v-for="coverage in yellowCoverages"
             :id="coverage.key"
@@ -77,7 +92,8 @@
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
           <path
             v-for="path in orangePaths"
             :id="path.key"
@@ -90,7 +106,8 @@
             :data-region="path.dataRegion"
             :data-severity="path.dataSeverity"
             class="region-path"
-            @click="regionClicked" />
+            @click="regionClicked"
+          />
           <path
             v-for="coverage in orangeCoverages"
             :id="coverage.key"
@@ -99,7 +116,8 @@
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
           <path
             v-for="path in redPaths"
             :id="path.key"
@@ -112,7 +130,8 @@
             :data-region="path.dataRegion"
             :data-severity="path.dataSeverity"
             class="region-path"
-            @click="regionClicked" />
+            @click="regionClicked"
+          />
           <path
             v-for="coverage in redCoverages"
             :id="coverage.key"
@@ -121,7 +140,8 @@
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
         </g>
         <g>
           <path
@@ -133,7 +153,8 @@
             :stroke-opacity="strokeOpacity"
             :d="path.d"
             fill-opacity="0"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
           <path
             v-for="path in landBorders"
             :id="path.key"
@@ -144,7 +165,8 @@
             :stroke-opacity="strokeOpacity"
             :d="path.d"
             fill-opacity="0"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
         </g>
         <g v-if="!loading">
           <path
@@ -157,7 +179,8 @@
             :fill="coverage.fill"
             :d="coverage.d"
             :fill-opacity="coverage.fillOpacity"
-            style="cursor: pointer; pointer-events: none" />
+            style="cursor: pointer; pointer-events: none"
+          />
         </g>
         <svg
           v-for="icon in icons"
@@ -170,7 +193,8 @@
           :viewBox="icon.viewBox"
           pointer-events="none"
           aria-hidden="true"
-          v-html="icon.geom" />
+          v-html="icon.geom"
+        />
         <svg
           v-for="icon in coverageIcons"
           :key="icon.key"
@@ -182,7 +206,8 @@
           :viewBox="icon.viewBox"
           pointer-events="none"
           aria-hidden="true"
-          v-html="icon.geom" />
+          v-html="icon.geom"
+        />
       </svg>
       <button
         id="fmi-warnings-zoom-in"
@@ -191,14 +216,16 @@
         type="button"
         :disabled="scale > 2"
         :aria-label="zoomInText"
-        @click="zoomIn" />
+        @click="zoomIn"
+      />
       <button
         id="fmi-warnings-zoom-out"
         class="btn btn-md btn-secondary fmi-warnings-map-tool"
         type="button"
         :disabled="scale < 2"
         :aria-label="zoomOutText"
-        @click="zoomOut" />
+        @click="zoomOut"
+      />
       <button
         id="fmi-warnings-move"
         :class="[
@@ -213,19 +240,31 @@
         @keydown.left="moveWest"
         @keydown.right="moveEast"
         @keydown.up="moveNorth"
-        @keydown.down="moveSouth" />
-      <div id="fmi-warnings-region-tooltip-reference" :style="tooltipStyle">
+        @keydown.down="moveSouth"
+      />
+      <div
+        id="fmi-warnings-region-tooltip-reference"
+        :style="tooltipStyle"
+      >
         <div
           id="fmi-warnings-region-tooltip"
           class="tooltip b-tooltip bs-tooltip-top"
-          :class="[showTooltip ? '' : 'd-none', theme]">
-          <div class="arrow" style="left: 0" />
-          <div id="day-map-large-base-popup" class="fmi-warnings-popup">
+          :class="[showTooltip ? '' : 'd-none', theme]"
+        >
+          <div
+            class="arrow"
+            style="left: 0"
+          />
+          <div
+            id="day-map-large-base-popup"
+            class="fmi-warnings-popup"
+          >
             <a
               id="day-map-large-base-popup-closer"
               :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
               href="#"
-              @mousedown="closeTooltip"></a>
+              @mousedown="closeTooltip"
+            ></a>
             <div id="day-map-large-base-popup-content">
               <div class="region-popup">
                 <div :class="['region-popup-header', `${popupLevel}`]">
@@ -240,7 +279,8 @@
                         <PopupRow
                           v-for="popupWarning in popupWarnings"
                           :key="popupWarning.id"
-                          :input="popupWarning"></PopupRow>
+                          :input="popupWarning"
+                        ></PopupRow>
                       </div>
                     </div>
                   </div>

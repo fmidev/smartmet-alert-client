@@ -9,7 +9,8 @@
       `level-${input.severity}`,
       `${typeClass}`,
     ]"
-    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`">
+    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`"
+  >
     <span
       aria-hidden="true"
       :class="[
@@ -17,8 +18,7 @@
         'symbol-text',
         `transform-rotate-${invertedRotation}`,
       ]"
-      >{{ input.text }}</span
-    >
+    >{{ input.text }}</span>
   </div>
 </template>
 

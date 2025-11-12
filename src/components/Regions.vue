@@ -1,17 +1,33 @@
 <template>
-  <div id="region-warnings" class="row">
-    <div v-if="anyLandWarnings" class="region-type-container">
-      <h3 id="header-land" class="header-region">{{ landText }}</h3>
+  <div
+    id="region-warnings"
+    class="row"
+  >
+    <div
+      v-if="anyLandWarnings"
+      class="region-type-container"
+    >
+      <h3
+        id="header-land"
+        class="header-region"
+      >
+        {{ landText }}
+      </h3>
       <a
         id="fmi-warnings-region-content"
         :href="fromLandToNextContentHref"
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
         @click="fromLandToNextContentClicked"
-        >{{ fromLandToNextContentText }}</a
+      >{{ fromLandToNextContentText }}</a>
+      <div
+        id="accordion-group-land"
+        class="accordion"
       >
-      <div id="accordion-group-land" class="accordion">
-        <div v-for="region in regions.land" :key="region.key">
+        <div
+          v-for="region in regions.land"
+          :key="region.key"
+        >
           <Region
             v-if="region.warnings.length"
             type="land"
@@ -20,23 +36,37 @@
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language" />
+            :language="language"
+          />
         </div>
       </div>
     </div>
 
-    <div v-if="anySeaWarnings" class="region-type-container">
-      <h3 id="header-sea" class="header-region">{{ seaText }}</h3>
+    <div
+      v-if="anySeaWarnings"
+      class="region-type-container"
+    >
+      <h3
+        id="header-sea"
+        class="header-region"
+      >
+        {{ seaText }}
+      </h3>
       <a
         :id="fromSeaToNextContentId"
         href="#fmi-warnings-end-of-regions"
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
         @click="fromSeaToNextContentClicked"
-        >{{ fromSeaToNextContentText }}</a
+      >{{ fromSeaToNextContentText }}</a>
+      <div
+        id="accordion-group-sea"
+        class="accordion"
       >
-      <div id="accordion-group-sea" class="accordion">
-        <div v-for="region in regions.sea" :key="region.key">
+        <div
+          v-for="region in regions.sea"
+          :key="region.key"
+        >
           <Region
             v-if="region.warnings.length"
             type="sea"
@@ -45,7 +75,8 @@
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language" />
+            :language="language"
+          />
         </div>
       </div>
     </div>

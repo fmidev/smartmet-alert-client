@@ -9,20 +9,23 @@
         `level-${severity}`,
         typeClass,
         'warning-image',
-      ]">
+      ]"
+    >
       <span
         :class="[
           'symbol-text',
           `transform-rotate-${invertedRotation}`,
           'warning-symbol-text',
-        ]">
+        ]"
+      >
         {{ input.text }}
       </span>
     </div>
     <div
       class="popup-table-cell popup-table-text-cell"
       :class="[`text-level-${severity}`]"
-      v-html="input.interval"></div>
+      v-html="input.interval"
+    ></div>
   </div>
 </template>
 

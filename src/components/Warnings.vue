@@ -1,18 +1,26 @@
 <template>
-  <div id="fmi-warnings-view" :class="theme">
+  <div
+    id="fmi-warnings-view"
+    :class="theme"
+  >
     <div
       v-if="input.length > 0"
-      :class="['row', 'symbol-list-main-row', 'show-text-row']">
+      :class="['row', 'symbol-list-main-row', 'show-text-row']"
+    >
       <button
         tabindex="0"
         type="button"
         class="bold-text show-text d-none focus-ring"
         :class="{ 'd-sm-block': hiddenWarnings }"
-        @click="showAll">
+        @click="showAll"
+      >
         {{ showWarningsText }}
       </button>
     </div>
-    <div v-if="input.length > 0" class="row symbol-list-main-row">
+    <div
+      v-if="input.length > 0"
+      class="row symbol-list-main-row"
+    >
       <hr class="symbol-block-separator" />
     </div>
     <div id="fmi-warnings-list">
@@ -23,24 +31,28 @@
         :hideable="warnings.length > 1"
         :theme="theme"
         :language="language"
-        @warningToggled="onWarningToggled" />
+        @warning-toggled="onWarningToggled"
+      />
     </div>
     <div class="row symbol-list-main-row">
       <hr
         class="symbol-block-separator legend-separator"
-        :class="noWarnings ? 'no-warnings' : ''" />
+        :class="noWarnings ? 'no-warnings' : ''"
+      />
     </div>
     <div class="row symbol-list-main-row">
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="gray several symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-several-warnings-text"></div>
+            aria-labelledby="symbol-list-several-warnings-text"
+          ></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-several-warnings-text"
-            class="item-text symbol-list-text">
+            class="item-text symbol-list-text"
+          >
             {{ severalWarningsText }}
           </div>
         </div>
@@ -51,12 +63,14 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-1 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-1-text"></div>
+            aria-labelledby="symbol-list-warning-level-1-text"
+          ></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-1-text"
-            class="item-text symbol-list-text">
+            class="item-text symbol-list-text"
+          >
             {{ warningLevel1Text }}
           </div>
         </div>
@@ -67,12 +81,14 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-2 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-2-text"></div>
+            aria-labelledby="symbol-list-warning-level-2-text"
+          ></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-2-text"
-            class="item-text symbol-list-text">
+            class="item-text symbol-list-text"
+          >
             {{ warningLevel2Text }}
           </div>
         </div>
@@ -83,12 +99,14 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-3 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-3-text"></div>
+            aria-labelledby="symbol-list-warning-level-3-text"
+          ></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-3-text"
-            class="item-text symbol-list-text">
+            class="item-text symbol-list-text"
+          >
             {{ warningLevel3Text }}
           </div>
         </div>
@@ -99,12 +117,14 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-4 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-4-text"></div>
+            aria-labelledby="symbol-list-warning-level-4-text"
+          ></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-4-text"
-            class="item-text symbol-list-text">
+            class="item-text symbol-list-text"
+          >
             {{ warningLevel4Text }}
           </div>
           <hr class="bottom-separator" />

@@ -2,16 +2,29 @@
   <div
     id="fmi-warnings"
     :class="theme"
-    :data-smartmet-alert-client-version="version">
-    <div id="fmi-warnings-errors" :class="errors" />
+    :data-smartmet-alert-client-version="version"
+  >
+    <div
+      id="fmi-warnings-errors"
+      :class="errors"
+    />
     <div>
-      <div class="container-fluid" :class="theme">
+      <div
+        class="container-fluid"
+        :class="theme"
+      >
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h2 v-if="!loading" class="valid-warnings">
+            <h2
+              v-if="!loading"
+              class="valid-warnings"
+            >
               {{ validWarningsText }}
             </h2>
-            <div v-if="loading" class="not-ready">
+            <div
+              v-if="loading"
+              class="not-ready"
+            >
               <p>
                 {{ mainInfoText }}
                 {{ additionalInfoText }}
@@ -20,9 +33,9 @@
                 :href="supportedBrowsersLink"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="supported-browsers">
-                {{ supportedBrowsers }}</a
+                class="supported-browsers"
               >
+                {{ supportedBrowsers }}</a>
             </div>
             <div v-if="regionListEnabled">
               <a
@@ -32,9 +45,11 @@
                 tabindex="0"
                 class="visually-hidden-focusable focus-ring"
                 @click="toContentClicked"
-                >{{ toContentText }}</a
-              >
-              <div v-else :aria-label="noWarningsText"></div>
+              >{{ toContentText }}</a>
+              <div
+                v-else
+                :aria-label="noWarningsText"
+              ></div>
             </div>
             <Days
               :input="days"
@@ -49,8 +64,9 @@
               :theme="theme"
               :language="language"
               :spinner-enabled="spinnerEnabled"
-              @daySelected="onDaySelected"
-              @loaded="onLoaded" />
+              @day-selected="onDaySelected"
+              @loaded="onLoaded"
+            />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
             <Legend
@@ -60,11 +76,15 @@
               :gray-scale-selector="grayScaleSelector"
               :theme="theme"
               :language="language"
-              @themeChanged="onThemeChanged"
-              @warningsToggled="onWarningsToggled" />
+              @theme-changed="onThemeChanged"
+              @warnings-toggled="onWarningsToggled"
+            />
           </div>
         </div>
-        <div v-if="regionListEnabled" class="row">
+        <div
+          v-if="regionListEnabled"
+          class="row"
+        >
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <Regions
               :input="regions"
@@ -73,7 +93,8 @@
               :parents="parents"
               :geometry-id="geometryId"
               :theme="theme"
-              :language="language" />
+              :language="language"
+            />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list"></div>
         </div>
@@ -251,7 +272,7 @@ export default {
       )
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.isClientSide()) {
       document.removeEventListener('visibilitychange', this.visibilityListener)
     }

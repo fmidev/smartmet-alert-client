@@ -1215,10 +1215,11 @@ export default {
           }
           break
         case 'seaWind':
-          const dx = -1.5 * Math.sin((warning.direction * Math.PI) / 180)
-          icon.aspectRatio = [22, 22]
-          icon.scale = 1.5
-          icon.geom = `
+          {
+            const dx = -1.5 * Math.sin((warning.direction * Math.PI) / 180)
+            icon.aspectRatio = [22, 22]
+            icon.scale = 1.5
+            icon.geom = `
             <title>seawind-symbol</title>
             <g>
                 <path d="${svgpath(
@@ -1236,6 +1237,7 @@ export default {
                       }
                 </text>
             </g>`
+          }
           break
         case 'seaThunderStorm':
           icon.aspectRatio = [14, 22]

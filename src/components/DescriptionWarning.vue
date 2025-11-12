@@ -1,20 +1,27 @@
 <template>
-  <div class="current-description-row" :class="theme">
-    <div class="current-description-image-cell" aria-hidden="true">
+  <div
+    class="current-description-row"
+    :class="theme"
+  >
+    <div
+      class="current-description-image-cell"
+      aria-hidden="true"
+    >
       <div
         :class="`current-description-image warning-image symbol-image transform-rotate-${rotation} level-${input.severity} ${typeClass}`"
-        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`">
+        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`"
+      >
         <span
           :class="`symbol-text transform-rotate-${invertedRotation} region-warning-symbol-text`"
-          >{{ input.text }}</span
-        >
+        >{{ input.text }}</span>
       </div>
     </div>
     <div class="current-description-text-cell">
       <div class="description-info">
         <span
           class="warning-valid bold-text"
-          v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
+          v-html="`${warningTitle} — ${validText} ${input.validInterval}`"
+        />
         <span>
           {{ info }}
         </span>
@@ -29,8 +36,7 @@
             :class="['ext-link', { 'd-none': linkHidden }]"
             :href="`${input.link}`"
             target="_blank"
-            >{{ input.linkText }}</a
-          >
+          >{{ input.linkText }}</a>
         </div>
       </div>
     </div>

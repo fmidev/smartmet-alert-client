@@ -10,10 +10,14 @@
         :class="['panel-toggle', visible ? '' : 'collapsed']"
         :aria-expanded="visible"
         :aria-label="title"
-        @click="onToggle"></button>
+        @click="onToggle"
+      ></button>
     </div>
     <Transition name="collapse">
-      <div v-if="visible" class="panel-body">
+      <div
+        v-if="visible"
+        class="panel-body"
+      >
         <div class="panel-content">
           <slot></slot>
         </div>

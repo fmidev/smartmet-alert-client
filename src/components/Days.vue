@@ -1,19 +1,30 @@
 <template>
-  <div class="row date-selector" :class="theme">
-    <div id="fmi-warnings-date-selector" class="tabs">
+  <div
+    class="row date-selector"
+    :class="theme"
+  >
+    <div
+      id="fmi-warnings-date-selector"
+      class="tabs"
+    >
       <div class="fmi-warnings-date-wrapper">
-        <ul class="nav nav-tabs fmi-warnings-date-nav" role="tablist">
+        <ul
+          class="nav nav-tabs fmi-warnings-date-nav"
+          role="tablist"
+        >
           <li
             v-for="(n, i) in numberOfDays"
             :key="i"
             class="nav-item"
-            role="presentation">
+            role="presentation"
+          >
             <button
               :class="['nav-link', 'day', `day${i}`, { active: i === day }]"
               type="button"
               role="tab"
               :aria-selected="i === day"
-              @click="day = i">
+              @click="day = i"
+            >
               <DaySmall
                 :index="i"
                 :input="input[i]"
@@ -25,7 +36,8 @@
                 :static-days="staticDays"
                 :loading="loading"
                 :theme="theme"
-                :language="language" />
+                :language="language"
+              />
             </button>
           </li>
         </ul>
@@ -35,7 +47,8 @@
           v-for="(n, i) in numberOfDays"
           :key="i"
           :class="['tab-pane', { active: i === day, show: i === day }]"
-          role="tabpanel">
+          role="tabpanel"
+        >
           <DayLarge
             v-if="i === day"
             :index="i"
@@ -50,7 +63,8 @@
             :theme="theme"
             :language="language"
             :spinner-enabled="spinnerEnabled"
-            @loaded="onLoaded" />
+            @loaded="onLoaded"
+          />
         </div>
       </div>
     </div>
@@ -131,18 +145,14 @@ export default {
     },
   },
   mounted() {
-    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
-      (button) => {
-        button.addEventListener('keydown', this.switchDay, true)
-      }
-    )
+    Array.from(this.$el.querySelectorAll('button.day')).forEach((button) => {
+      button.addEventListener('keydown', this.switchDay, true)
+    })
   },
   beforeUnmount() {
-    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
-      (button) => {
-        button.removeEventListener('keydown', this.switchDay, true)
-      }
-    )
+    Array.from(this.$el.querySelectorAll('button.day')).forEach((button) => {
+      button.removeEventListener('keydown', this.switchDay, true)
+    })
   },
   updated() {
     Array.from(this.$el.querySelectorAll('button.day')).forEach((button) => {

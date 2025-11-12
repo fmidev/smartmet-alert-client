@@ -1,7 +1,8 @@
 <template>
   <div
     :class="['date-selector-cell', theme, { active: active }]"
-    :aria-label="ariaLabel">
+    :aria-label="ariaLabel"
+  >
     <div class="date-selector-cell-header"></div>
     <div class="date-selector-cell-body map-container">
       <MapSmall
@@ -11,14 +12,21 @@
         :warnings="warnings"
         :geometry-id="geometryId"
         :loading="loading"
-        :theme="theme" />
+        :theme="theme"
+      />
     </div>
     <div class="date-selector-cell-date">
       <div :class="`date-selector-text mobile-level-${severity}`">
-        <span v-if="staticDays" class="bold-text weekday-text">{{
+        <span
+          v-if="staticDays"
+          class="bold-text weekday-text"
+        >{{
           weekday
         }}</span>
-        <br v-if="staticDays" class="d-inline d-sm-none" />
+        <br
+          v-if="staticDays"
+          class="d-inline d-sm-none"
+        />
         {{ date }}
       </div>
     </div>
