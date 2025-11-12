@@ -199,11 +199,10 @@ export default {
     paths(options) {
       return this.pathsNeeded
         ? this.regionIds.reduce((regions, regionId) => {
+            const region = this.geometries?.[this.geometryId]?.[regionId]
             if (
-              this.geometries[this.geometryId][regionId].pathSmall &&
-              (this.geometries[this.geometryId][regionId].type ===
-                options.type) ===
-                (this.geometries[this.geometryId][regionId].subType == null)
+              region?.pathSmall &&
+              (region.type === options.type) === (region.subType == null)
             ) {
               const visualization = this.regionVisualization(regionId)
               if (
@@ -213,14 +212,12 @@ export default {
                 regions.push({
                   key: `${regionId}${this.size}${this.index}Path`,
                   fill: this.loading
-                    ? this.colors[this.theme].missing
+                    ? this.colors?.[this.theme]?.missing || '#cccccc'
                     : visualization.color,
                   d: visualization.geom.pathSmall,
                   opacity: visualization.visible ? '1' : '0',
                   strokeWidth:
-                    this.geometries[this.geometryId][regionId].type === 'sea' &&
-                    this.geometries[this.geometryId][regionId].subType !==
-                      'lake'
+                    region.type === 'sea' && region.subType !== 'lake'
                       ? this.strokeWidth
                       : 0,
                 })

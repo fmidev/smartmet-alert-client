@@ -41,7 +41,7 @@ export default {
       extreme: 4,
     }),
     strokeColor() {
-      return this.colors[this.theme].stroke
+      return this.colors?.[this.theme]?.stroke || 'DarkSlateGray'
     },
     bluePaths() {
       return this.paths({
@@ -74,10 +74,10 @@ export default {
     },
     overlayPaths() {
       return this.regionIds.reduce((regions, regionId) => {
+        const region = this.geometries?.[this.geometryId]?.[regionId]
         if (
-          this.geometries[this.geometryId][regionId].pathLarge &&
-          (this.geometries[this.geometryId][regionId].type === 'land' ||
-            this.geometries[this.geometryId][regionId].subType === 'lake')
+          region?.pathLarge &&
+          (region.type === 'land' || region.subType === 'lake')
         ) {
           const visualization = this.regionVisualization(regionId)
           regions.push({
@@ -138,7 +138,10 @@ export default {
       return [
         {
           key: `border.${area}`,
-          d: this.geometries[this.geometryId].borders[area][`path${this.size}`],
+          d:
+            this.geometries?.[this.geometryId]?.borders?.[area]?.[
+              `path${this.size}`
+            ] || '',
           opacity: '1',
           strokeWidth: this.strokeWidth,
         },
@@ -764,8 +767,10 @@ export default {
       return typeof document !== 'undefined' && document
     },
     regionData(regionId) {
-      const regionType = this.geometries[this.geometryId][regionId].type
-      return this.input[regionType].find(
+      const region = this.geometries?.[this.geometryId]?.[regionId]
+      if (!region) return null
+      const regionType = region.type
+      return this.input?.[regionType]?.find(
         (regionData) => regionData.key === regionId
       )
     },
@@ -798,10 +803,11 @@ export default {
       const severity = this.regionSeverity(regionId)
       const isLand =
         this.geometries[this.geometryId][regionId].type === this.REGION_LAND
+      const themeColors = this.colors?.[this.theme]
       const color =
         severity || isLand
-          ? this.colors[this.theme].levels[severity]
-          : this.colors[this.theme].sea
+          ? themeColors?.levels?.[severity] || '#cccccc'
+          : themeColors?.sea || '#add8e6'
       const visible = severity > 0 || geom.subType !== this.REGION_LAKE
       return {
         geom,

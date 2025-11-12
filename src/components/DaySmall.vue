@@ -100,11 +100,13 @@ export default {
         : ''
     },
     ariaLabel() {
+      const landCount = this.regions?.land?.length || 0
+      const seaCount = this.regions?.sea?.length || 0
       return `${this.t(this.input.weekdayName)} ${this.input.day}.${
         this.input.month
-      }. ${this.t('warningsInEffect')} ${this.regions.land.length} ${this.t(
+      }. ${this.t('warningsInEffect')} ${landCount} ${this.t(
         'landAreas'
-      )} ${this.regions.sea.length} ${this.t('seaAreas')}.`
+      )} ${seaCount} ${this.t('seaAreas')}.`
     },
   },
 }

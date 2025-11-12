@@ -386,8 +386,9 @@ export default {
       const maxWarningIcons = this.maxWarningIcons
       this.regionIds.forEach((regionId) => {
         const region = this.regionData(regionId)
-        const geometry = this.geometries[this.geometryId][regionId]
+        const geometry = this.geometries?.[this.geometryId]?.[regionId]
         if (
+          geometry &&
           region != null &&
           geometry.children.length === 0 &&
           (!this.mergedRegions.has(regionId) ||
