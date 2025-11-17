@@ -259,17 +259,17 @@
 
 <script>
 import { onMounted, onUnmounted, ref } from 'vue'
+import Panzoom from '@panzoom/panzoom'
 
 import config from '../mixins/config'
 import i18n from '../mixins/i18n'
-import Panzoom from '../mixins/panzoom'
 import utils from '../mixins/utils'
 import PopupRow from './PopupRow.vue'
 
 export default {
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, i18n, Panzoom, utils],
+  mixins: [config, i18n, utils],
   props: {
     index: {
       type: Number,
