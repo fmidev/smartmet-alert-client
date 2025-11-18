@@ -28,18 +28,6 @@ export default defineConfig({
       ],
     }),
   ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern-compiler',
-      },
-    },
-  },
   build: {
     target: 'es2020',
     outDir: 'dist',
@@ -48,6 +36,7 @@ export default defineConfig({
     minify: 'esbuild',
     cssCodeSplit: false,
     cssMinify: true,
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         entryFileNames: 'index.mjs',
@@ -77,6 +66,19 @@ export default defineConfig({
           objectShorthand: true,
         },
       },
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+        silenceDeprecations: ['import', 'legacy-js-api'],
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   define: {
