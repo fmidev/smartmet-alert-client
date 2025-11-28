@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="55" height="30" viewBox="0 0 55 30" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="55" height="30">
   <defs>
     <clipPath id="outer-clip">
-      <rect x="0" y="5" width="55" height="20" rx="4" ry="4"/>
+      <rect width="55" height="20" y="5" rx="4" ry="4"/>
     </clipPath>
     <clipPath id="inner-clip">
-      <path d="M 4 5 L 20 5 L 20 25 L 4 25 A 4 4 0 0 1 0 21 L 0 9 A 4 4 0 0 1 4 5 Z"/>
+      <path d="M4 5h16v20H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4"/>
     </clipPath>
   </defs>
-  <rect x="0" y="5" width="55" height="20" rx="4" ry="4" fill="#ebebeb" stroke="#767676" stroke-width="1" clip-path="url(#outer-clip)"/>
-  <path d="M 4 5 L 20 5 L 20 25 L 4 25 A 4 4 0 0 1 0 21 L 0 9 A 4 4 0 0 1 4 5 Z" fill="#ffffff" stroke="#767676" stroke-width="1" clip-path="url(#inner-clip)"/>
+  <rect width="55" height="20" y="5" fill="#ebebeb" stroke="#767676" clip-path="url(#outer-clip)" rx="4" ry="4"/>
+  <path fill="#fff" stroke="#767676" d="M4 5h16v20H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z" clip-path="url(#inner-clip)"/>
 </svg>

@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28px" height="28px" viewBox="0 0 28 28" version="1.1">
-    <g id="surface1">
-        <path style="stroke:rgba(255, 255, 255, 1.0);stroke-width: 1.8px;stroke-linecap: round;paint-order: stroke;fill-rule:evenodd;fill:rgb(13.333333%,12.156863%,12.54902%);fill-opacity:1;" d="M 18.551 13.477 C 19.336 13.027 18.824 11.559 18.816 11.508 C 18.449 11.289 18.008 11.156 17.566 11.156 C 16.809 11.156 16.137 11.512 15.699 12.063 C 16.734 12.848 18.09 13.742 18.551 13.477 Z"/>
-        <path style="stroke:rgba(255, 255, 255, 1.0);stroke-width: 1.8px;stroke-linecap: round;paint-order: stroke;fill-rule:evenodd;fill:rgb(13.333333%,12.156863%,12.54902%);fill-opacity:1;" d="M 15.227 12.785 C 15.227 11.605 16.184 10.648 17.363 10.648 C 17.867 10.648 18.73 11.129 18.738 11.133 C 18.746 11.137 18.742 11.137 18.738 11.133 C 18.656 10.753 18.527 10.391 18.359 10.053 C 18.212 9.756 18.034 9.478 17.83 9.223 C 17.438 8.734 16.949 8.327 16.39 8.033 C 15.752 7.697 15.024 7.508 14.246 7.508 C 13.426 7.508 12.66 7.723 11.992 8.094 C 7.359 10.262 8.133 18.645 8.145 19.93 L 21.762 19.93 C 19.66 18.359 15.227 15.254 15.227 12.785 Z"/>
-    </g>
-  </svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+  <path fill="#221f20" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-width="1.8" d="M18.551 13.477c.785-.45.273-1.918.265-1.969a2.5 2.5 0 0 0-1.25-.352 2.38 2.38 0 0 0-1.867.907c1.035.785 2.391 1.679 2.852 1.414Z" paint-order="stroke"/>
+  <path fill="#221f20" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-width="1.8" d="M15.227 12.785c0-1.18.957-2.137 2.136-2.137.504 0 1.367.481 1.375.485s.004.004 0 0a4.61 4.61 0 0 0-2.348-3.1 4.6 4.6 0 0 0-2.144-.525c-.82 0-1.586.215-2.254.586-4.633 2.168-3.859 10.551-3.847 11.836h13.617c-2.102-1.571-6.535-4.676-6.535-7.145Z" paint-order="stroke"/>
+</svg>
