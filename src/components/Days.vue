@@ -231,8 +231,9 @@ div#fmi-warnings-date-selector.tabs {
   flex-wrap: nowrap;
 }
 
-:deep(div.fmi-warnings-date-wrapper li.nav-item) {
+:deep(div.fmi-warnings-date-wrapper>ul.nav.nav-tabs.fmi-warnings-date-nav>li.nav-item) {
   flex: 1;
+  margin: 0;
 }
 
 :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
