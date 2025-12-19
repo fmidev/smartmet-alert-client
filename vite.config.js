@@ -8,66 +8,105 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import pkg from './package.json'
 
+// Check build mode: 'vue' for library build, default for web component
+const buildMode = process.env.BUILD_MODE
+
 export default defineConfig({
   base: './',
   plugins: [
     vue({
-      customElement: true,
+      // Only use customElement mode for web component build
+      customElement: buildMode !== 'vue',
     }),
     banner(
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n * homepage: ${pkg.homepage}\n */`
     ),
     visualizer(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: 'dist/index.mjs',
-          dest: './',
-          rename: 'index.js',
-        },
-      ],
-    }),
+    ...(buildMode !== 'vue'
+      ? [
+          viteStaticCopy({
+            targets: [
+              {
+                src: 'dist/index.mjs',
+                dest: './',
+                rename: 'index.js',
+              },
+            ],
+          }),
+        ]
+      : []),
   ],
-  build: {
-    target: 'es2020',
-    outDir: 'dist',
-    assetsDir: '',
-    sourcemap: false,
-    minify: 'esbuild',
-    cssCodeSplit: false,
-    cssMinify: true,
-    chunkSizeWarningLimit: 1500,
-    rollupOptions: {
-      output: {
-        entryFileNames: 'index.mjs',
-        compact: true,
-        inlineDynamicImports: false,
-        manualChunks: (id) => {
-          // XML parsers as separate chunk
-          if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
-            return 'xml-parser'
-          }
-          // Locale files as separate chunks
-          if (id.includes('/locales/')) {
-            const match = id.match(/locales\/(\w+)\.json/)
-            if (match) {
-              return `locale-${match[1]}`
-            }
-          }
-          // Core vendor libraries
-          if (id.includes('node_modules')) {
-            if (id.includes('vue')) {
-              return 'vendor'
-            }
-          }
+  build:
+    buildMode === 'vue'
+      ? // Vue library build configuration
+        {
+          target: 'es2020',
+          outDir: 'dist/vue',
+          sourcemap: false,
+          minify: 'esbuild',
+          cssCodeSplit: false,
+          cssMinify: true,
+          copyPublicDir: false,
+          lib: {
+            entry: fileURLToPath(new URL('./src/vue.js', import.meta.url)),
+            name: 'SmartMetAlertClient',
+            formats: ['es'],
+            fileName: () => 'index.mjs',
+          },
+          rollupOptions: {
+            external: ['vue'],
+            output: {
+              globals: {
+                vue: 'Vue',
+              },
+              generatedCode: {
+                constBindings: true,
+                objectShorthand: true,
+              },
+            },
+          },
+        }
+      : // Web component build configuration (default)
+        {
+          target: 'es2020',
+          outDir: 'dist',
+          assetsDir: '',
+          sourcemap: false,
+          minify: 'esbuild',
+          cssCodeSplit: false,
+          cssMinify: true,
+          chunkSizeWarningLimit: 1500,
+          rollupOptions: {
+            output: {
+              entryFileNames: 'index.mjs',
+              compact: true,
+              inlineDynamicImports: false,
+              manualChunks: (id) => {
+                // XML parsers as separate chunk
+                if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
+                  return 'xml-parser'
+                }
+                // Locale files as separate chunks
+                if (id.includes('/locales/')) {
+                  const match = id.match(/locales\/(\w+)\.json/)
+                  if (match) {
+                    return `locale-${match[1]}`
+                  }
+                }
+                // Core vendor libraries
+                if (id.includes('node_modules')) {
+                  if (id.includes('vue')) {
+                    return 'vendor'
+                  }
+                }
+              },
+              generatedCode: {
+                constBindings: true,
+                objectShorthand: true,
+              },
+            },
+          },
         },
-        generatedCode: {
-          constBindings: true,
-          objectShorthand: true,
-        },
-      },
-    },
-  },
   css: {
     preprocessorOptions: {
       scss: {

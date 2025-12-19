@@ -1,18 +1,32 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.5.9",
+  "version": "4.6.0",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
   "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./vue": {
+      "import": "./dist/vue/index.mjs",
+      "types": "./dist/vue/index.d.ts"
+    },
+    "./vue/style.css": "./dist/vue/style.css"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fmidev/smartmet-alert-client.git"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run build:vue",
+    "build:ce": "vite build",
+    "build:vue": "BUILD_MODE=vue vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --ext .js,.vue --fix src",
