@@ -1,8 +1,5 @@
 <template>
-  <div
-    :id="`day-map-small-${index}`"
-    class="map-small"
-  >
+  <div :id="`day-map-small-${index}`" class="map-small">
     <svg
       class="finland-small"
       xmlns="http://www.w3.org/2000/svg"
@@ -12,12 +9,8 @@
       height="120"
       viewBox="0 0 75 120"
       stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <g
-        v-if="pathsNeeded"
-        :id="`finland-small-${index}`"
-      >
+      stroke-linejoin="round">
+      <g v-if="pathsNeeded" :id="`finland-small-${index}`">
         <path
           v-for="path in bluePaths"
           :key="path.key"
@@ -25,8 +18,7 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity"
-        />
+          :opacity="path.opacity" />
         <path
           v-for="path in seaBorders"
           :key="path.key"
@@ -34,8 +26,7 @@
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
-          fill-opacity="0"
-        />
+          fill-opacity="0" />
         <path
           v-for="path in greenPaths"
           :key="path.key"
@@ -43,8 +34,7 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity"
-        />
+          :opacity="path.opacity" />
         <path
           v-for="path in yellowPaths"
           :key="path.key"
@@ -52,8 +42,7 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity"
-        />
+          :opacity="path.opacity" />
         <path
           v-for="coverage in yellowCoverages"
           :key="coverage.key"
@@ -62,8 +51,7 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill"
-        />
+          pointer-events="fill" />
         <path
           v-for="path in orangePaths"
           :key="path.key"
@@ -71,8 +59,7 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity"
-        />
+          :opacity="path.opacity" />
         <path
           v-for="coverage in orangeCoverages"
           :key="coverage.key"
@@ -81,8 +68,7 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill"
-        />
+          pointer-events="fill" />
         <path
           v-for="path in redPaths"
           :key="path.key"
@@ -90,8 +76,7 @@
           :stroke-width="path.strokeWidth"
           :fill="path.fill"
           :d="path.d"
-          :opacity="path.opacity"
-        />
+          :opacity="path.opacity" />
         <path
           v-for="coverage in redCoverages"
           :key="coverage.key"
@@ -100,25 +85,22 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill"
-        />
+          pointer-events="fill" />
         <path
           v-for="path in overlayPaths"
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
           :d="path.d"
-          fill-opacity="0"
-        />
+          fill-opacity="0" />
         <path
           v-for="path in landBorders"
           :key="path.key"
           class="border-path"
           :stroke="strokeColor"
-          :stroke-width="1.5 * path.strokeWidth"
+          :stroke-width="1.5 * Number(path.strokeWidth)"
           :d="path.d"
-          fill-opacity="0"
-        />
+          fill-opacity="0" />
         <path
           v-for="coverage in overlayCoverages"
           :key="coverage.key"
@@ -127,130 +109,147 @@
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
-          pointer-events="fill"
-        />
+          pointer-events="fill" />
       </g>
     </svg>
   </div>
 </template>
 
-<script>
-import { onMounted, onUnmounted, ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onUnmounted, toRef } from 'vue'
+import type { DayRegions, WarningsMap, Theme } from '@/types'
+import { useMapPaths } from '@/composables/useMapPaths'
 
-import config from '../mixins/config'
-import utils from '../mixins/utils'
+// ============================================================================
+// Props
+// ============================================================================
 
-export default {
-  name: 'MapSmall',
-  mixins: [config, utils],
-  props: {
-    index: {
-      type: Number,
-    },
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    geometryId: {
-      type: Number,
-    },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-  },
-  setup() {
-    const windowWidth = ref(window.innerWidth)
-    const updateWidth = () => {
-      windowWidth.value = window.innerWidth
-    }
-    onMounted(() => {
-      window.addEventListener('resize', updateWidth)
-    })
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateWidth)
-    })
-    return { windowWidth }
-  },
-  data() {
-    return {
-      coverageRegions: {},
-      coverageWarnings: [],
-      pathsNeeded: false,
-    }
-  },
-  computed: {
-    size() {
-      return 'Small'
-    },
-    strokeColor() {
-      return 'DarkSlateGray'
-    },
-    strokeWidth() {
-      return 0.6
-    },
-  },
-  watch: {
-    windowWidth() {
-      this.pathsNeeded = this.isFullMode()
-    },
-    input() {
-      this.coverageRegions = {}
-      this.coverageWarnings = []
-    },
-  },
-  mounted() {
-    this.pathsNeeded = this.isFullMode()
-  },
-  methods: {
-    paths(options) {
-      return this.pathsNeeded
-        ? this.regionIds.reduce((regions, regionId) => {
-            const region = this.geometries?.[this.geometryId]?.[regionId]
-            if (
-              region?.pathSmall &&
-              (region.type === options.type) === (region.subType == null)
-            ) {
-              const visualization = this.regionVisualization(regionId)
-              if (
-                options.severity == null ||
-                visualization.severity === options.severity
-              ) {
-                regions.push({
-                  key: `${regionId}${this.size}${this.index}Path`,
-                  fill: this.loading
-                    ? this.colors?.[this.theme]?.missing || '#cccccc'
-                    : visualization.color,
-                  d: visualization.geom.pathSmall,
-                  opacity: visualization.visible ? '1' : '0',
-                  strokeWidth:
-                    region.type === 'sea' && region.subType !== 'lake'
-                      ? this.strokeWidth
-                      : 0,
-                })
-              }
-            }
-            return regions
-          }, [])
-        : []
-    },
-    isFullMode() {
-      return true
-    },
-  },
+const props = withDefaults(
+  defineProps<{
+    index?: number
+    input?: DayRegions
+    visibleWarnings?: string[]
+    warnings?: WarningsMap | null
+    geometryId?: number
+    loading?: boolean
+    theme?: Theme | string
+  }>(),
+  {
+    index: 0,
+    input: () => ({}) as DayRegions,
+    visibleWarnings: () => [],
+    warnings: null,
+    geometryId: 2021,
+    loading: true,
+    theme: 'light-theme',
+  }
+)
+
+// ============================================================================
+// Local State
+// ============================================================================
+
+const windowWidth = ref<number>(
+  typeof window !== 'undefined' ? window.innerWidth : 0
+)
+const pathsNeeded = ref<boolean>(false)
+const strokeWidthValue = ref<number>(0.6)
+
+// ============================================================================
+// Computed refs for composable
+// ============================================================================
+
+const size = computed<'Large' | 'Small'>(() => 'Small')
+const indexRef = toRef(props, 'index')
+const inputRef = toRef(props, 'input')
+const warningsRef = toRef(props, 'warnings')
+const visibleWarningsRef = toRef(props, 'visibleWarnings')
+const geometryIdRef = toRef(props, 'geometryId')
+const themeRef = toRef(props, 'theme')
+const loadingRef = toRef(props, 'loading')
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const {
+  strokeColor,
+  bluePaths,
+  greenPaths,
+  yellowPaths,
+  orangePaths,
+  redPaths,
+  overlayPaths,
+  landBorders,
+  seaBorders,
+  yellowCoverages,
+  orangeCoverages,
+  redCoverages,
+  overlayCoverages,
+  coverageRegions,
+  coverageWarnings,
+} = useMapPaths({
+  size,
+  index: indexRef,
+  input: inputRef,
+  warnings: warningsRef,
+  visibleWarnings: visibleWarningsRef,
+  geometryId: geometryIdRef,
+  theme: themeRef,
+  loading: loadingRef,
+  strokeWidth: strokeWidthValue,
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+function updateWidth(): void {
+  windowWidth.value = window.innerWidth
 }
+
+function isFullMode(): boolean {
+  return true
+}
+
+// ============================================================================
+// Watchers
+// ============================================================================
+
+watch(windowWidth, () => {
+  pathsNeeded.value = isFullMode()
+})
+
+watch(
+  () => props.input,
+  () => {
+    coverageRegions.value = {}
+    coverageWarnings.value = []
+  }
+)
+
+// ============================================================================
+// Lifecycle
+// ============================================================================
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth)
+  pathsNeeded.value = isFullMode()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth)
+})
+
+// ============================================================================
+// Expose for testing
+// ============================================================================
+
+defineExpose({
+  size,
+  strokeWidth: strokeWidthValue,
+  pathsNeeded,
+})
 </script>
 
 <style scoped lang="scss">

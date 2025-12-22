@@ -142,7 +142,7 @@
             :key="path.key"
             class="border-path"
             :stroke="strokeColor"
-            :stroke-width="2 * path.strokeWidth"
+            :stroke-width="2 * Number(path.strokeWidth)"
             :stroke-opacity="strokeOpacity"
             :d="path.d"
             fill-opacity="0"
@@ -257,56 +257,107 @@
   </div>
 </template>
 
-<script>
-import { onMounted, onUnmounted, ref } from 'vue'
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  ref,
+  computed,
+  toRef,
+  type PropType,
+} from 'vue'
 import Panzoom from '@panzoom/panzoom'
+import type { PanzoomObject } from '@panzoom/panzoom'
 
-import config from '../mixins/config'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
 import PopupRow from './PopupRow.vue'
+import { useMapPaths } from '@/composables/useMapPaths'
+import { useI18n } from '@/composables/useI18n'
+import { useConfig, MULTIPLE } from '@/composables/useConfig'
+import { isClientSide } from '@/composables/useUtils'
+import type {
+  DayRegions,
+  WarningsMap,
+  Theme,
+  RegionGeometry,
+  Language,
+  Severity,
+} from '@/types'
 
-export default {
+interface IconData {
+  key: string
+  x: string
+  y: string
+  width: string | number
+  height: string | number
+  version: string
+  viewBox: string
+  geom: string
+  regionId?: string
+}
+
+interface PopupWarning {
+  id: string
+  type: string
+  severity: Severity
+  direction: number
+  text: string
+  interval: string
+}
+
+interface PanCoords {
+  x: number
+  y: number
+}
+
+export default defineComponent({
   name: 'MapLarge',
   components: { PopupRow },
-  mixins: [config, i18n, utils],
   props: {
     index: {
-      type: Number,
+      type: Number as PropType<number>,
+      default: 0,
     },
     input: {
-      type: Object,
+      type: Object as PropType<DayRegions>,
+      default: () => ({}),
     },
     visibleWarnings: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default: () => [],
     },
     warnings: {
-      type: Object,
+      type: Object as PropType<WarningsMap | null>,
       default: null,
     },
     geometryId: {
-      type: Number,
+      type: Number as PropType<number>,
+      default: 2021,
     },
     loading: {
       type: Boolean,
       default: true,
     },
     theme: {
-      type: String,
+      type: String as PropType<Theme | string>,
       default: 'light-theme',
     },
     language: {
-      type: String,
+      type: String as PropType<Language | string>,
+      default: 'fi',
     },
     spinnerEnabled: {
       type: Boolean,
       default: true,
     },
   },
-  setup() {
-    const windowWidth = ref(window.innerWidth)
-    const updateWidth = () => {
+  emits: ['loaded'],
+  setup(props) {
+    // Window width tracking
+    const windowWidth = ref<number>(
+      typeof window !== 'undefined' ? window.innerWidth : 0
+    )
+    const updateWidth = (): void => {
       windowWidth.value = window.innerWidth
     }
     onMounted(() => {
@@ -315,146 +366,261 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('resize', updateWidth)
     })
-    return { windowWidth }
+
+    // Get config
+    const config = useConfig()
+    const {
+      geometries,
+      colors,
+      regionIds,
+      warningIcon,
+      panLimits,
+      maxMergedWeight,
+      coverageCriterion,
+    } = config
+
+    // Setup i18n
+    const languageRef = toRef(props, 'language')
+    const { t } = useI18n(languageRef)
+
+    // Setup refs for useMapPaths
+    const size = computed<'Large' | 'Small'>(() => 'Large')
+    const scale = ref<number>(1)
+    const strokeWidthComputed = computed<number>(
+      () => 1 - (scale.value - 1) / scale.value
+    )
+
+    const indexRef = toRef(props, 'index')
+    const inputRef = toRef(props, 'input')
+    const warningsRef = toRef(props, 'warnings')
+    const visibleWarningsRef = toRef(props, 'visibleWarnings')
+    const geometryIdRef = toRef(props, 'geometryId')
+    const themeRef = toRef(props, 'theme')
+    const loadingRef = toRef(props, 'loading')
+
+    // Setup map paths composable
+    const {
+      strokeColor,
+      bluePaths,
+      greenPaths,
+      yellowPaths,
+      orangePaths,
+      redPaths,
+      overlayPaths,
+      landBorders,
+      seaBorders,
+      yellowCoverages,
+      orangeCoverages,
+      redCoverages,
+      overlayCoverages,
+      coverageRegions,
+      coverageWarnings,
+      regionData,
+      regionVisualization,
+    } = useMapPaths({
+      size,
+      index: indexRef,
+      input: inputRef,
+      warnings: warningsRef,
+      visibleWarnings: visibleWarningsRef,
+      geometryId: geometryIdRef,
+      theme: themeRef,
+      loading: loadingRef,
+      strokeWidth: strokeWidthComputed,
+    })
+
+    return {
+      windowWidth,
+      t,
+      config,
+      geometries,
+      colors,
+      regionIds,
+      warningIcon,
+      panLimits,
+      maxMergedWeight,
+      coverageCriterion,
+      size,
+      scale,
+      strokeColor,
+      bluePaths,
+      greenPaths,
+      yellowPaths,
+      orangePaths,
+      redPaths,
+      overlayPaths,
+      landBorders,
+      seaBorders,
+      yellowCoverages,
+      orangeCoverages,
+      redCoverages,
+      overlayCoverages,
+      coverageRegions,
+      coverageWarnings,
+      regionData,
+      regionVisualization,
+    }
   },
   data() {
     return {
-      warningsDate: '',
-      updated: '',
-      updatedDate: '',
-      atTime: '',
-      updatedTime: '',
-      dataProviderFirst: '',
-      dataProviderSecond: '',
-      mapText: '',
-      actionStarted: false,
-      dragging: false,
-      showTooltip: false,
-      tooltipX: 0,
-      tooltipY: 0,
+      warningsDate: '' as string,
+      updated: '' as string,
+      updatedDate: '' as string,
+      atTime: '' as string,
+      updatedTime: '' as string,
+      dataProviderFirst: '' as string,
+      dataProviderSecond: '' as string,
+      mapText: '' as string,
+      actionStarted: false as boolean,
+      dragging: false as boolean,
+      showTooltip: false as boolean,
+      tooltipX: 0 as number,
+      tooltipY: 0 as number,
       pan: {
         x: 0,
         y: 0,
-      },
-      scale: 1,
-      popupRegion: {},
-      popupLevel: '',
-      popupWarnings: [],
-      coverageRegions: {},
-      coverageWarnings: [],
-      strokeOpacity: '0.5',
+      } as PanCoords,
+      popupRegion: {} as Partial<RegionGeometry>,
+      popupLevel: '' as string,
+      popupWarnings: [] as PopupWarning[],
+      strokeOpacity: '0.5' as string,
+      panzoom: null as PanzoomObject | null,
     }
   },
   computed: {
-    moveStep() {
+    moveStep(): number {
       return 25
     },
-    minIconDistSqr() {
+    minIconDistSqr(): number {
       return 500
     },
-    iconDistStep() {
+    iconDistStep(): number {
       return 10
     },
-    iconMaxIter() {
+    iconMaxIter(): number {
       return 40
     },
-    zoomInText() {
+    zoomInText(): string {
       return this.t('zoomIn')
     },
-    zoomOutText() {
+    zoomOutText(): string {
       return this.t('zoomOut')
     },
-    moveText() {
+    moveText(): string {
       return this.t('moveMap')
     },
-    tooltipStyle() {
+    tooltipStyle(): string {
       return `left: ${this.tooltipX}px; top: ${this.tooltipY}px`
     },
-    size() {
-      return 'Large'
-    },
-    strokeWidth() {
+    strokeWidth(): string {
       return String(1 - (this.scale - 1) / this.scale)
     },
-    iconSize() {
+    iconSize(): number {
       return 28 - 4 * this.scale
     },
-    maxWarningIcons() {
+    maxWarningIcons(): number {
       return this.scale + 1
     },
-    icons() {
-      const data = []
+    icons(): IconData[] {
+      const data: IconData[] = []
       const warnings = this.warnings
       const maxWarningIcons = this.maxWarningIcons
-      this.regionIds.forEach((regionId) => {
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+      const maxMergedWeightVal = this.maxMergedWeight as number
+
+      this.regionIds.forEach((regionId: string) => {
         const region = this.regionData(regionId)
-        const geometry = this.geometries?.[this.geometryId]?.[regionId]
+        const geometry = geometriesData?.[this.geometryId]?.[regionId]
         if (
           geometry &&
           region != null &&
           geometry.children.length === 0 &&
           (!this.mergedRegions.has(regionId) ||
-            (geometry.weight > this.maxMergedWeight &&
-              region?.warnings?.filter((warning) =>
+            (geometry.weight > maxMergedWeightVal &&
+              region?.warnings?.filter((warning: { type: string }) =>
                 this.visibleWarnings.includes(warning.type)
               ).length === 1 &&
               !(
                 geometry?.parent?.length &&
-                this.regionData(geometry.parent)?.warnings?.some((warning) =>
-                  this.visibleWarnings.includes(warning.type)
+                this.regionData(geometry.parent)?.warnings?.some(
+                  (warning: { type: string }) =>
+                    this.visibleWarnings.includes(warning.type)
                 )
               )))
         ) {
-          const iconSizes = []
-          const aspectRatios = []
-          const keys = []
-          const geoms = []
+          const iconSizes: [number, number][] = []
+          const aspectRatios: [number, number][] = []
+          const keys: string[] = []
+          const geoms: string[] = []
           region.warnings
             .filter(
-              (warning) =>
+              (warning: { type: string; coverage: number }) =>
                 this.visibleWarnings.includes(warning.type) &&
                 warning.coverage === 100
             )
-            .forEach((regionWarning, index, regionWarnings) => {
-              const identifier = regionWarning.identifiers.find(
-                (id) => warnings[id] && warnings[id].covRegions.size === 0
-              )
-              if (identifier && iconSizes.length < maxWarningIcons) {
-                const icon =
-                  iconSizes.length === maxWarningIcons - 1 &&
-                  regionWarnings.length > maxWarningIcons
-                    ? this.warningIcon({ type: this.MULTIPLE })
-                    : this.warningIcon(warnings[identifier])
-                const scale = icon.scale ? icon.scale : 1
-                const width =
-                  (scale * icon.aspectRatio[0] * this.iconSize) /
-                  icon.aspectRatio[1]
-                const height = scale * this.iconSize + 6
-                iconSizes.push([width, height])
-                aspectRatios.push(icon.aspectRatio)
-                geoms.push(icon.geom)
-                keys.push(`${regionId}-${identifier}`)
+            .forEach(
+              (
+                regionWarning: { identifiers: string[] },
+                _index: number,
+                regionWarnings: { identifiers: string[] }[]
+              ) => {
+                const identifier = regionWarning.identifiers.find(
+                  (id: string) =>
+                    warnings?.[id] && warnings[id].covRegions.size === 0
+                )
+                if (identifier && iconSizes.length < maxWarningIcons) {
+                  const warningData = warnings![identifier]
+                  const icon =
+                    iconSizes.length === maxWarningIcons - 1 &&
+                    regionWarnings.length > maxWarningIcons
+                      ? this.warningIcon({ type: MULTIPLE, severity: 0 })
+                      : warningData
+                        ? this.warningIcon(warningData)
+                        : null
+                  if (!icon) return
+                  const iconScale = icon.scale ? icon.scale : 1
+                  const width =
+                    (iconScale * icon.aspectRatio[0] * this.iconSize) /
+                    icon.aspectRatio[1]
+                  const height = iconScale * this.iconSize + 6
+                  iconSizes.push([width, height])
+                  aspectRatios.push(icon.aspectRatio)
+                  geoms.push(icon.geom || '')
+                  keys.push(`${regionId}-${identifier}`)
+                }
               }
-            })
+            )
+          const regionGeom = geometriesData[this.geometryId]?.[regionId] as
+            | RegionGeometry
+            | undefined
+          if (!regionGeom) return
+          const lastIconWidth = iconSizes[iconSizes.length - 1]?.[0] ?? 0
           let offsetX =
-            iconSizes.length > 0 &&
-            this.geometries[this.geometryId][regionId].align === 'right'
+            iconSizes.length > 0 && regionGeom.align === 'right'
               ? -iconSizes.reduce(
                   (acc, iconSize) => acc + iconSize[0],
-                  -iconSizes[iconSizes.length - 1][0] / 2
+                  -lastIconWidth / 2
                 )
               : -iconSizes.reduce((acc, iconSize) => acc + iconSize[0], 0) / 2
-          const coords = this.geometries[this.geometryId][regionId].center
-          iconSizes.forEach((iconSize, index) => {
+          const coords = regionGeom.center
+          if (!coords) return
+          iconSizes.forEach((iconSize, idx) => {
+            const aspectRatio = aspectRatios[idx]
+            const geom = geoms[idx]
+            const key = keys[idx]
+            if (!aspectRatio || geom == null || !key) return
             data.push({
-              key: keys[index],
+              key,
               x: `${coords[0] + offsetX}px`,
               y: `${coords[1] - iconSize[1] / 2}px`,
               width: `${iconSize[0]}px`,
               height: `${iconSize[1]}px`,
               version: '1.1',
-              viewBox: `0 0 ${aspectRatios[index][0]} ${aspectRatios[index][1]}`,
-              geom: geoms[index],
+              viewBox: `0 0 ${aspectRatio[0]} ${aspectRatio[1]}`,
+              geom,
               regionId,
             })
             offsetX += iconSize[0]
@@ -463,95 +629,129 @@ export default {
       })
       return data
     },
-    coverageIcons() {
+    coverageIcons(): IconData[] {
       const warnings = this.warnings
-      return this.coverageWarnings.reduce((iconData, warningId) => {
-        const warning = warnings[warningId]
-        if (
-          this.visibleWarnings.includes(warning.type) &&
-          warning.coveragesLarge.length > 0
-        ) {
-          let reference = warning.coveragesLarge[0].reference
-          let iterIndex = 0
-          let radius
-          let angle
-          // Prevent too close warning symbols
-          while (
-            !this.validIconLocation(reference, warningId) &&
-            iterIndex < this.iconMaxIter
+
+      return this.coverageWarnings.reduce(
+        (iconData: IconData[], warningId: string) => {
+          const warning = warnings?.[warningId]
+          const coverageLarge = warning?.coveragesLarge[0]
+          const baseReference = coverageLarge?.reference
+          if (
+            warning &&
+            this.visibleWarnings.includes(warning.type) &&
+            warning.coveragesLarge.length > 0 &&
+            baseReference &&
+            baseReference.length === 2
           ) {
-            angle = 0.25 * Math.PI * iterIndex
-            iterIndex++
-            radius = Math.ceil(iterIndex / 8) * this.iconDistStep
-            reference = [
-              warning.coveragesLarge[0].reference[0] + radius * Math.cos(angle),
-              warning.coveragesLarge[0].reference[1] + radius * Math.sin(angle),
+            let reference: [number, number] = [
+              baseReference[0],
+              baseReference[1],
             ]
+            let iterIndex = 0
+            let radius: number
+            let angle: number
+            // Prevent too close warning symbols
+            while (
+              !this.validIconLocation(reference, warningId) &&
+              iterIndex < this.iconMaxIter
+            ) {
+              angle = 0.25 * Math.PI * iterIndex
+              iterIndex++
+              radius = Math.ceil(iterIndex / 8) * this.iconDistStep
+              reference = [
+                baseReference[0] + radius * Math.cos(angle),
+                baseReference[1] + radius * Math.sin(angle),
+              ]
+            }
+            if (iterIndex >= this.iconMaxIter) {
+              reference = [baseReference[0], baseReference[1]]
+            }
+            const icon = this.warningIcon(warning)
+            const iconScale = icon.scale ? icon.scale : 1
+            const width =
+              (iconScale * icon.aspectRatio[0] * this.iconSize) /
+              icon.aspectRatio[1]
+            const height = iconScale * this.iconSize
+            iconData.push({
+              key: warningId + Math.random(),
+              x: `${reference[0] - width / 2}px`,
+              y: `${reference[1] - height / 2}px`,
+              width,
+              height,
+              version: '1.1',
+              viewBox: `0 0 ${icon.aspectRatio[0]} ${icon.aspectRatio[1]}`,
+              geom: icon.geom || '',
+            })
           }
-          if (iterIndex >= this.iconMaxIter) {
-            reference = warning.coveragesLarge[0].reference
-          }
-          const icon = this.warningIcon(warning)
-          const scale = icon.scale ? icon.scale : 1
-          const width =
-            (scale * icon.aspectRatio[0] * this.iconSize) / icon.aspectRatio[1]
-          const height = scale * this.iconSize
-          iconData.push({
-            key: warningId + Math.random(),
-            x: `${reference[0] - width / 2}px`,
-            y: `${reference[1] - height / 2}px`,
-            width,
-            height,
-            version: '1.1',
-            viewBox: `0 0 ${icon.aspectRatio[0]} ${icon.aspectRatio[1]}`,
-            geom: icon.geom,
-          })
-        }
-        return iconData
-      }, [])
+          return iconData
+        },
+        []
+      )
     },
-    regionTitle() {
-      return this.t(this.popupRegion.name)
+    regionTitle(): string {
+      return this.t(this.popupRegion.name || '')
     },
-    regionSets() {
-      const map = new Map()
+    regionSets(): Map<string, Set<string>> {
+      const map = new Map<string, Set<string>>()
       const warnings = this.warnings
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+
+      if (!this.input?.land) return map
+
+      const geomYear = geometriesData[this.geometryId]
       this.input.land
         .filter(
-          (regionItem) =>
-            this.geometries[this.geometryId][regionItem.key].neighbours.length >
-            0
+          (regionItem: { key: string }) =>
+            (geomYear?.[regionItem.key]?.neighbours?.length ?? 0) > 0
         )
-        .forEach((regionItem) => {
-          const serialized = regionItem.warnings.reduce((reduced, warning) => {
-            if (!this.visibleWarnings.includes(warning.type)) {
-              return reduced
+        .forEach(
+          (regionItem: {
+            key: string
+            warnings: Array<{ type: string; identifiers: string[] }>
+          }) => {
+            const serialized = regionItem.warnings.reduce(
+              (reduced: string, warning) => {
+                if (!this.visibleWarnings.includes(warning.type)) {
+                  return reduced
+                }
+                const warningIdentifier = warning.identifiers.find(
+                  (identifier) => {
+                    const warningById = warnings?.[identifier]
+                    return (
+                      warningById &&
+                      Object.keys(warningById.regions).length >
+                        warningById.covRegions.size
+                    )
+                  }
+                )
+                if (warningIdentifier == null) {
+                  return reduced
+                }
+                const w = warnings?.[warningIdentifier]
+                if (!w) return reduced
+                return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`
+              },
+              ''
+            )
+            if (serialized) {
+              const set = map.has(serialized)
+                ? map.get(serialized)!
+                : new Set<string>()
+              set.add(regionItem.key)
+              map.set(serialized, set)
             }
-            const warningIdentifier = warning.identifiers.find((identifier) => {
-              const warningById = warnings[identifier]
-              return (
-                Object.keys(warningById.regions).length >
-                warningById.covRegions.size
-              )
-            })
-            if (warningIdentifier == null) {
-              return reduced
-            }
-            const w = warnings[warningIdentifier]
-            return `${reduced}:${w.type}:${w.severity}:${w.value}:${w.direction}`
-          }, '')
-          if (serialized) {
-            const set = map.has(serialized) ? map.get(serialized) : new Set()
-            set.add(regionItem.key)
-            map.set(serialized, set)
           }
-        })
+        )
       return map
     },
-    networks() {
-      let allNetworks = []
+    networks(): string[][] {
+      let allNetworks: Set<string>[] = []
       this.regionSets.forEach((regionSet) => {
-        const networks = []
+        const networks: Set<string>[] = []
         regionSet.forEach((region) => {
           networks.push(new Set([region]))
         })
@@ -559,7 +759,7 @@ export default {
         while (this.mergeNetworks(networks)) {}
         allNetworks = allNetworks.concat(networks)
       })
-      const arrayNetworks = []
+      const arrayNetworks: string[][] = []
       allNetworks.forEach((network) => {
         if (network.size > 1) {
           arrayNetworks.push(Array.from(network.keys()))
@@ -567,52 +767,63 @@ export default {
       })
       return arrayNetworks
     },
-    networkCenters() {
+    networkCenters(): [number, number][] {
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+      const geomYear = geometriesData[this.geometryId]
+
       return this.networks.map((network) => {
         const arrayNetwork = Array.from(network)
-        const weightSum = arrayNetwork.reduce(
-          (sum, region) =>
-            sum + this.geometries[this.geometryId][region].weight,
-          0
-        )
+        const weightSum = arrayNetwork.reduce((sum, region) => {
+          const geom = geomYear?.[region]
+          return sum + (geom?.weight ?? 0)
+        }, 0)
         return arrayNetwork
           .reduce(
             (sum, region) => {
-              const geom = this.geometries[this.geometryId][region]
-              return sum.map(
-                (sumByIndex, index) =>
-                  sumByIndex + geom.weight * geom.center[index]
-              )
+              const geom = geomYear?.[region]
+              if (!geom?.center) return sum
+              return [
+                sum[0] + geom.weight * geom.center[0],
+                sum[1] + geom.weight * geom.center[1],
+              ] as [number, number]
             },
-            [0, 0]
+            [0, 0] as [number, number]
           )
-          .map((weightedSumByIndex) => weightedSumByIndex / weightSum)
+          .map((weightedSumByIndex) => weightedSumByIndex / weightSum) as [
+          number,
+          number,
+        ]
       })
     },
-    networkReps() {
-      return this.networks.map(
-        (network, networkIndex) =>
-          network[
-            this.indexOfSmallest(
-              network.map(
-                (region) =>
-                  [0, 1].reduce(
-                    (sum, coordIndex) =>
-                      sum +
-                      (this.geometries[this.geometryId][region].center[
-                        coordIndex
-                      ] -
-                        this.networkCenters[networkIndex][coordIndex]) **
-                        2,
-                    0
-                  ) / this.geometries[this.geometryId][region].weight
-              )
+    networkReps(): string[] {
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+      const geomYear = geometriesData[this.geometryId]
+
+      return this.networks
+        .map((network, networkIndex) => {
+          const distances = network.map((region) => {
+            const geom = geomYear?.[region]
+            if (!geom?.center) return Infinity
+            const networkCenter = this.networkCenters[networkIndex]
+            if (!networkCenter) return Infinity
+            return (
+              ((geom.center[0] - networkCenter[0]) ** 2 +
+                (geom.center[1] - networkCenter[1]) ** 2) /
+              geom.weight
             )
-          ]
-      )
+          })
+          return network[this.indexOfSmallest(distances)]
+        })
+        .filter((rep): rep is string => rep !== undefined)
     },
-    mergedRegions() {
-      const merged = new Set()
+    mergedRegions(): Set<string> {
+      const merged = new Set<string>()
       this.networks.forEach((network, index) => {
         network.forEach((region) => {
           if (region !== this.networkReps[index]) {
@@ -624,7 +835,7 @@ export default {
     },
   },
   watch: {
-    scale() {
+    scale(): void {
       if (this.panzoom != null) {
         if (this.scale === 1) {
           this.panzoom.setOptions({
@@ -640,27 +851,30 @@ export default {
         }
       }
     },
-    input() {
+    input(): void {
       this.coverageRegions = {}
       this.coverageWarnings = []
     },
-    warnings() {
+    warnings(): void {
       this.showTooltip = false
     },
-    visibleWarnings() {
+    visibleWarnings(): void {
       this.showTooltip = false
     },
-    windowWidth() {
+    windowWidth(): void {
       this.showTooltip = false
-      if (this.$refs.zoomButton.clientHeight === 0 && this.scale > 1) {
+      const zoomButton = this.$refs.zoomButton as HTMLButtonElement | undefined
+      if (zoomButton?.clientHeight === 0 && this.scale > 1) {
         this.scale = 1
       }
     },
   },
   mounted() {
-    if (this.isClientSide()) {
-      const finlandLarge = this.$el.querySelector('svg#finland-large')
-      if (this.isAttached(finlandLarge)) {
+    if (isClientSide()) {
+      const finlandLarge = this.$el.querySelector(
+        'svg#finland-large'
+      ) as SVGSVGElement | null
+      if (finlandLarge && this.isAttached(finlandLarge)) {
         this.panzoom = Panzoom(finlandLarge, {
           disableZoom: true,
           panOnlyWhenZoomed: true,
@@ -671,7 +885,7 @@ export default {
           touchAction: '',
         })
         finlandLarge.addEventListener('panzoomzoom', () => {
-          this.scale = this.panzoom.getScale()
+          this.scale = this.panzoom!.getScale()
           this.showTooltip = false
         })
         finlandLarge.addEventListener('panzoompan', (event) => {
@@ -679,12 +893,12 @@ export default {
           if (!this.actionStarted) {
             return
           }
-          const eventDetail = event.detail
+          const eventDetail = (event as CustomEvent).detail as PanCoords | null
           if (eventDetail == null) {
             return
           }
           let panned = false
-          ;['x', 'y'].forEach((axis) => {
+          ;(['x', 'y'] as const).forEach((axis) => {
             if (eventDetail[axis] !== this.pan[axis]) {
               this.pan[axis] = eventDetail[axis]
               panned = true
@@ -715,70 +929,53 @@ export default {
     }
   },
   methods: {
-    paths(options) {
-      return this.regionIds.reduce((regions, regionId) => {
-        if (
-          this.geometries[this.geometryId][regionId].pathLarge &&
-          (this.geometries[this.geometryId][regionId].type === options.type) ===
-            (this.geometries[this.geometryId][regionId].subType == null)
-        ) {
-          const visualization = this.regionVisualization(regionId)
-          if (
-            options.severity == null ||
-            visualization.severity === options.severity
-          ) {
-            regions.push({
-              key: `${regionId}${this.size}${this.index}Path`,
-              fill:
-                this.loading && this.isClientSide()
-                  ? this.colors[this.theme].missing
-                  : visualization.color,
-              d: visualization.visible ? visualization.geom.pathLarge : '',
-              opacity: '1',
-              dataRegion: regionId,
-              dataSeverity: visualization.severity,
-              strokeWidth:
-                this.geometries[this.geometryId][regionId].type === 'sea' &&
-                this.geometries[this.geometryId][regionId].subType !== 'lake'
-                  ? this.strokeWidth
-                  : 0,
-            })
-          }
-        }
-        return regions
-      }, [])
-    },
-    regionClicked(event) {
-      const regionId = event.target.getAttribute('data-region')
-      let severity = Number(event.target.getAttribute('data-severity'))
-      this.popupRegion = this.geometries[this.geometryId][regionId]
-      const region = this.input[this.popupRegion.type].find(
-        (regionWarning) => regionWarning.key === regionId
+    regionClicked(event: MouseEvent): void {
+      const target = event.target as SVGPathElement
+      const regionId = target.getAttribute('data-region')
+      if (!regionId) return
+
+      let severity = Number(target.getAttribute('data-severity'))
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+      const coverageCriterionVal = this.coverageCriterion as number
+
+      const regionGeom = geometriesData[this.geometryId]?.[regionId]
+      if (!regionGeom) return
+      this.popupRegion = regionGeom
+      const regionType = this.popupRegion.type as 'land' | 'sea'
+      const region = this.input?.[regionType]?.find(
+        (regionWarning: { key: string }) => regionWarning.key === regionId
       )
-      let popupWarnings = []
+      let popupWarningsData: PopupWarning[] = []
       if (region != null) {
         region.warnings
           .filter(
-            (warning) =>
+            (warning: { type: string; coverage: number }) =>
               this.visibleWarnings.includes(warning.type) &&
-              warning.coverage >= this.coverageCriterion
+              warning.coverage >= coverageCriterionVal
           )
-          .forEach((warningByType) => {
+          .forEach((warningByType: { type: string; identifiers: string[] }) => {
             warningByType.identifiers.forEach((identifier) => {
-              const warning = this.warnings[identifier]
-              popupWarnings.push({
-                type: warningByType.type,
-                severity: warning.severity,
-                direction: warning.direction,
-                text: warning.text != null ? warning.text : '',
-                interval: warning.validInterval,
-              })
+              const warning = this.warnings?.[identifier]
+              if (warning) {
+                popupWarningsData.push({
+                  id: identifier,
+                  type: warningByType.type,
+                  severity: warning.severity,
+                  direction: warning.direction,
+                  text: warning.text != null ? warning.text : '',
+                  interval: warning.validInterval,
+                })
+              }
             })
           })
       }
-      if (popupWarnings.length === 0) {
-        popupWarnings = [
+      if (popupWarningsData.length === 0) {
+        popupWarningsData = [
           {
+            id: 'no-warnings',
             type: '',
             severity: 0,
             direction: 0,
@@ -793,53 +990,66 @@ export default {
         severity = this.coverageRegions[regionId]
       }
       this.popupLevel = `level-${severity}`
-      this.popupWarnings = popupWarnings
-      const mapRect = this.$refs.dayMapLarge.getBoundingClientRect()
+      this.popupWarnings = popupWarningsData
+      const dayMapLarge = this.$refs.dayMapLarge as HTMLDivElement | undefined
+      const mapRect = dayMapLarge?.getBoundingClientRect()
       if (
-        [
-          mapRect,
-          mapRect.x,
-          mapRect.y,
-          window,
-          window.scrollX,
-          window.scrollY,
-        ].every((item) => item != null)
+        mapRect &&
+        [mapRect.x, mapRect.y, window.scrollX, window.scrollY].every(
+          (item) => item != null
+        )
       ) {
         this.tooltipX = event.pageX - mapRect.x - window.scrollX
         this.tooltipY = event.pageY - mapRect.y - window.scrollY
         this.showTooltip = true
       }
     },
-    validIconLocation(coord, warningId) {
+    validIconLocation(coord: [number, number], warningId: string): boolean {
       const warnings = this.warnings
-      const warning = warnings[warningId]
-      const activeIconRegions = {}
+      const warning = warnings?.[warningId]
+      if (!warning) return true
+
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+
+      const activeIconRegions: Record<string, boolean> = {}
       this.icons.forEach((icon) => {
-        activeIconRegions[icon.regionId] = true
+        if (icon.regionId) {
+          activeIconRegions[icon.regionId] = true
+        }
       })
+      const geomYear = geometriesData[this.geometryId]
       return ![...warning.covRegions.keys()].some((covRegion) => {
         if (!activeIconRegions[covRegion]) {
           return false
         }
-        const center = this.geometries[this.geometryId][covRegion].center
+        const center = geomYear?.[covRegion]?.center
+        if (!center) return false
         return (
           (center[0] - coord[0]) ** 2 + (center[1] - coord[1]) ** 2 <
           this.minIconDistSqr
         )
       })
     },
-    mergeNetworks(networks) {
+    mergeNetworks(networks: Set<string>[]): boolean {
+      const geometriesData = this.geometries as Record<
+        string,
+        Record<string, RegionGeometry>
+      >
+      const geomYear = geometriesData[this.geometryId]
+
       return networks.some((network1, index1) => {
         const neighbours = Array.from(network1.keys()).reduce(
-          (reduced, region) => {
-            this.geometries[this.geometryId][region].neighbours.forEach(
-              (neighbour) => {
-                reduced.add(neighbour)
-              }
-            )
+          (reduced: Set<string>, region: string) => {
+            const regionGeom = geomYear?.[region]
+            regionGeom?.neighbours?.forEach((neighbour: string) => {
+              reduced.add(neighbour)
+            })
             return reduced
           },
-          new Set()
+          new Set<string>()
         )
         return networks.some((network2, index2) => {
           if (index2 <= index1) {
@@ -849,7 +1059,10 @@ export default {
             (neighbour) => network2.has(neighbour)
           )
           if (ngbrIndex >= 0) {
-            network2.forEach(networks[index1].add, networks[index1])
+            const targetNetwork = networks[index1]
+            if (targetNetwork) {
+              network2.forEach(targetNetwork.add, targetNetwork)
+            }
             networks.splice(index2, 1)
             return true
           }
@@ -857,68 +1070,79 @@ export default {
         })
       })
     },
-    indexOfSmallest(array) {
+    indexOfSmallest(array: number[]): number {
       let lowest = 0
       for (let i = 1; i < array.length; i++) {
-        if (array[i] < array[lowest]) lowest = i
+        const current = array[i]
+        const lowestVal = array[lowest]
+        if (
+          current !== undefined &&
+          lowestVal !== undefined &&
+          current < lowestVal
+        ) {
+          lowest = i
+        }
       }
       return lowest
     },
-    zoomIn() {
+    zoomIn(): void {
       if (this.panzoom != null) {
         this.panzoom.zoom(this.panzoom.getScale() + 1, {
           force: true,
         })
       }
     },
-    zoomOut() {
+    zoomOut(): void {
       if (this.panzoom != null) {
         this.panzoom.zoom(this.panzoom.getScale() - 1, {
           force: true,
         })
       }
     },
-    closeTooltip(event) {
+    closeTooltip(event: MouseEvent): void {
       event.preventDefault()
       this.showTooltip = false
     },
-    moveWest(event) {
+    moveWest(event: KeyboardEvent): void {
       event.preventDefault()
-      this.panzoom.pan(this.moveStep, 0, {
+      this.panzoom?.pan(this.moveStep, 0, {
         relative: true,
       })
       this.limitPan()
     },
-    moveEast(event) {
+    moveEast(event: KeyboardEvent): void {
       event.preventDefault()
-      this.panzoom.pan(-this.moveStep, 0, {
+      this.panzoom?.pan(-this.moveStep, 0, {
         relative: true,
       })
       this.limitPan()
     },
-    moveNorth(event) {
+    moveNorth(event: KeyboardEvent): void {
       event.preventDefault()
-      this.panzoom.pan(0, this.moveStep, {
+      this.panzoom?.pan(0, this.moveStep, {
         relative: true,
       })
       this.limitPan()
     },
-    moveSouth(event) {
+    moveSouth(event: KeyboardEvent): void {
       event.preventDefault()
-      this.panzoom.pan(0, -this.moveStep, {
+      this.panzoom?.pan(0, -this.moveStep, {
         relative: true,
       })
       this.limitPan()
     },
-    limitPan() {
+    limitPan(): void {
+      if (!this.panzoom) return
+
       const pan = this.panzoom.getPan()
+      const panLimitsVal = this.panLimits as { x: number; y: number }
       let panChanged = false
-      ;['x', 'y'].forEach((coord) => {
-        if (pan[coord] > this.panLimits[coord]) {
-          pan[coord] = this.panLimits[coord]
+      ;(['x', 'y'] as const).forEach((coord) => {
+        if (pan[coord] > panLimitsVal[coord]) {
+          pan[coord] = panLimitsVal[coord]
           panChanged = true
-        } else if (pan[coord] < -this.panLimits[coord]) {
-          pan[coord] = -this.panLimits[coord]
+        } else if (pan[coord] < -panLimitsVal[coord]) {
+          pan[coord] = -panLimitsVal[coord]
           panChanged = true
         }
       })
@@ -926,8 +1150,8 @@ export default {
         this.panzoom.pan(pan.x, pan.y)
       }
     },
-    isAttached(node) {
-      let currentNode = node
+    isAttached(node: Node | null): boolean {
+      let currentNode: Node | null = node
       while (currentNode != null && currentNode.parentNode != null) {
         if (currentNode.parentNode === document) {
           return true
@@ -940,7 +1164,7 @@ export default {
       return false
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

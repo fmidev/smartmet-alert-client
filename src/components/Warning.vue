@@ -1,21 +1,14 @@
 <template>
-  <div
-    class="symbol-list-table"
-    :class="theme"
-  >
+  <div class="symbol-list-table" :class="theme">
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"
-        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"
-      ></div>
+        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"></div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div
-          class="item-text symbol-list-text"
-          v-html="title"
-        ></div>
+        <div class="item-text symbol-list-text" v-html="title"></div>
         <div class="symbol-list-select-container d-none d-md-table-cell">
           <div
             :id="id"
@@ -33,8 +26,7 @@
             @mousedown="preventEvents"
             @click="toggle"
             @keydown.enter="toggle"
-            @keydown.space="toggle"
-          >
+            @keydown.space="toggle">
             <span>
               {{ toggleText }}
             </span>
@@ -46,44 +38,69 @@
   </div>
 </template>
 
-<script>
-import fields from '../mixins/fields'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useFields } from '@/composables/useFields'
+import { useI18n } from '@/composables/useI18n'
+import type { LegendItem } from '@/types'
 
-export default {
-  name: 'Warning',
-  mixins: [fields, i18n, utils],
-  props: ['input', 'hideable', 'language', 'theme'],
-  computed: {
-    id() {
-      return `fmi-warnings-flag-${this.input.type}`
-    },
-    title() {
-      return this.t(this.input.type)
-    },
-    warningLevelText() {
-      return this.t(`warningLevel${this.severity}`)
-    },
-    toggleText() {
-      return this.input.visible ? this.t('toggleOn') : this.t('toggleOff')
-    },
-  },
-  methods: {
-    toggle(event) {
-      event.preventDefault()
-      this.setWarningVisibility(!this.input.visible)
-    },
-    setWarningVisibility(visible) {
-      this.$emit('warningToggled', {
-        warning: this.input.type,
-        visible,
-      })
-    },
-    preventEvents(event) {
-      event.preventDefault()
-    },
-  },
+// Props
+const props = defineProps<{
+  input: LegendItem
+  hideable?: boolean
+  language?: string
+  theme?: string
+}>()
+
+// Emits
+const emit = defineEmits<{
+  warningToggled: [data: { warning: string; visible: boolean }]
+}>()
+
+// Composables
+const { typeClass, rotation, invertedRotation, severity } = useFields(
+  toRef(props, 'input')
+)
+const { t } = useI18n(toRef(props, 'language'))
+
+// Expose for testing
+defineExpose({
+  rotation,
+  invertedRotation,
+})
+
+// Computed
+const id = computed((): string => {
+  return `fmi-warnings-flag-${props.input.type}`
+})
+
+const title = computed((): string => {
+  return t(props.input.type)
+})
+
+const warningLevelText = computed((): string => {
+  return t(`warningLevel${severity.value}`)
+})
+
+const toggleText = computed((): string => {
+  return props.input.visible ? t('toggleOn') : t('toggleOff')
+})
+
+// Methods
+function toggle(event: Event): void {
+  event.preventDefault()
+  setWarningVisibility(!props.input.visible)
+}
+
+function setWarningVisibility(visible: boolean): void {
+  emit('warningToggled', {
+    warning: props.input.type,
+    visible,
+  })
+}
+
+function preventEvents(event: Event): void {
+  event.preventDefault()
 }
 </script>
 

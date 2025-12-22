@@ -1,155 +1,144 @@
 <template>
-  <div
-    class="sticky-top"
-    :class="theme"
-  >
+  <div class="sticky-top" :class="theme">
     <GrayScaleToggle
       class="narrow-screen"
       :language="language"
       :gray-scale-selector="grayScaleSelector"
       :theme="theme"
-      @theme-changed="onThemeChanged"
-    />
+      @theme-changed="onThemeChanged" />
     <div class="row symbol-list-header-row">
       <nav class="symbol-list-header bold-text">
         {{ warningSymbolsText }}
-        <br
-          v-if="input.length > 0"
-          class="symbol-list-header-line-break"
-        />
+        <br v-if="input.length > 0" class="symbol-list-header-line-break" />
       </nav>
     </div>
     <CollapsiblePanel
       :visible="visible"
       :title="toggleLegendsText"
       :theme="theme"
-      @toggle="onLegendToggle"
-    >
+      @toggle="onLegendToggle">
       <Warnings
         :input="input"
         :visible-warnings="visibleWarnings"
         :theme="theme"
-        :language="language"
-      />
+        :language="language" />
     </CollapsiblePanel>
-    <div
-      ref="warningsContainer"
-      class="desktop-only"
-    >
+    <div ref="warningsContainer" class="desktop-only">
       <Warnings
         :input="input"
         :visible-warnings="visibleWarnings"
         :theme="theme"
         :language="language"
         @warnings-toggled="onWarningsToggled"
-        @show-all-warnings="onShowAllWarnings"
-      />
+        @show-all-warnings="onShowAllWarnings" />
     </div>
     <GrayScaleToggle
       :language="language"
       :gray-scale-selector="grayScaleSelector"
       :theme="theme"
-      @theme-changed="onThemeChanged"
-    />
+      @theme-changed="onThemeChanged" />
   </div>
 </template>
 
-<script>
-import { onMounted, onUnmounted, ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed, watch, toRef, onMounted, onUnmounted } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+import type { LegendItem, Language } from '@/types'
 
-import i18n from '../mixins/i18n'
 import CollapsiblePanel from './CollapsiblePanel.vue'
 import GrayScaleToggle from './GrayScaleToggle.vue'
 import Warnings from './Warnings.vue'
 
-export default {
-  name: 'Legend',
-  components: {
-    CollapsiblePanel,
-    GrayScaleToggle,
-    Warnings,
-  },
-  mixins: [i18n],
-  props: {
-    input: {
-      type: Array,
-      default: () => [],
-    },
-    language: {
-      type: String,
-      default: import.meta.env.VITE_LANGUAGE || 'fi',
-    },
-    grayScaleSelector: {
-      type: Boolean,
-      default: false,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  setup() {
-    const windowWidth = ref(window.innerWidth)
-    const updateWidth = () => {
-      windowWidth.value = window.innerWidth
-    }
-    onMounted(() => {
-      window.addEventListener('resize', updateWidth)
-    })
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateWidth)
-    })
-    return { windowWidth }
-  },
-  data() {
-    return {
-      visible: false,
-    }
-  },
-  computed: {
-    warnings() {
-      return this.input
-    },
-    warningSymbolsText() {
-      return this.t('legends')
-    },
-    toggleLegendsText() {
-      return this.visible ? this.t('hideLegends') : this.t('showLegends')
-    },
-  },
-  watch: {
-    windowWidth() {
-      if (this.$refs.warningsContainer.clientHeight === 0) {
-        this.onShowAllWarnings()
-      }
-    },
-  },
-  methods: {
-    onLegendToggle() {
-      this.visible = !this.visible
-    },
-    onWarningsToggled(newVisibleWarnings) {
-      this.$emit('warningsToggled', newVisibleWarnings)
-    },
-    onShowAllWarnings() {
-      this.$emit(
-        'warningsToggled',
-        this.warnings.reduce(
-          (types, warning) => types.concat([warning.type]),
-          []
-        )
-      )
-    },
-    onThemeChanged(newTheme) {
-      if (this.theme !== newTheme) {
-        this.$emit('themeChanged', newTheme)
-      }
-    },
-  },
+// Props
+const props = withDefaults(
+  defineProps<{
+    input?: LegendItem[]
+    language?: Language
+    grayScaleSelector?: boolean
+    theme?: string
+    visibleWarnings?: string[]
+  }>(),
+  {
+    input: () => [],
+    language: (import.meta.env.VITE_LANGUAGE as Language) || 'fi',
+    grayScaleSelector: false,
+    theme: 'light-theme',
+    visibleWarnings: () => [],
+  }
+)
+
+// Emits
+const emit = defineEmits<{
+  warningsToggled: [warnings: string[]]
+  themeChanged: [theme: string]
+}>()
+
+// Composables
+const { t } = useI18n(toRef(props, 'language'))
+
+// Template refs
+const warningsContainer = ref<HTMLDivElement | null>(null)
+
+// Reactive state
+const visible = ref(false)
+const windowWidth = ref(window.innerWidth)
+
+// Window resize handling
+function updateWidth(): void {
+  windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth)
+})
+
+// Computed
+const warnings = computed((): LegendItem[] => {
+  return props.input
+})
+
+const warningSymbolsText = computed((): string => {
+  return t('legends')
+})
+
+const toggleLegendsText = computed((): string => {
+  return visible.value ? t('hideLegends') : t('showLegends')
+})
+
+// Watchers
+watch(windowWidth, () => {
+  if (warningsContainer.value?.clientHeight === 0) {
+    onShowAllWarnings()
+  }
+})
+
+// Methods
+function onLegendToggle(): void {
+  visible.value = !visible.value
+}
+
+function onWarningsToggled(newVisibleWarnings: string[]): void {
+  emit('warningsToggled', newVisibleWarnings)
+}
+
+function onShowAllWarnings(): void {
+  emit(
+    'warningsToggled',
+    warnings.value.reduce<string[]>(
+      (types, warning) => types.concat([warning.type]),
+      []
+    )
+  )
+}
+
+function onThemeChanged(newTheme: string): void {
+  if (props.theme !== newTheme) {
+    emit('themeChanged', newTheme)
+  }
 }
 </script>
 

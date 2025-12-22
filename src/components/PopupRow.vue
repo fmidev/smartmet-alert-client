@@ -9,39 +9,48 @@
         `level-${severity}`,
         typeClass,
         'warning-image',
-      ]"
-    >
+      ]">
       <span
         :class="[
           'symbol-text',
           `transform-rotate-${invertedRotation}`,
           'warning-symbol-text',
-        ]"
-      >
+        ]">
         {{ input.text }}
       </span>
     </div>
     <div
       class="popup-table-cell popup-table-text-cell"
       :class="[`text-level-${severity}`]"
-      v-html="input.interval"
-    ></div>
+      v-html="input.interval"></div>
   </div>
 </template>
 
-<script>
-import fields from '../mixins/fields'
+<script setup lang="ts">
+import { toRef } from 'vue'
+import { useFields } from '@/composables/useFields'
+import type { PopupRowInput } from '@/types'
 
-export default {
-  name: 'PopupRow',
-  mixins: [fields],
-  props: {
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-}
+// Props
+const props = withDefaults(
+  defineProps<{
+    input?: PopupRowInput
+  }>(),
+  {
+    input: () => ({
+      type: '',
+      severity: 0,
+      direction: 0,
+      text: '',
+      interval: '',
+    }),
+  }
+)
+
+// Composables
+const { typeClass, rotation, invertedRotation, severity } = useFields(
+  toRef(props, 'input')
+)
 </script>
 
 <style scoped lang="scss">

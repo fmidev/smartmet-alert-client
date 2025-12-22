@@ -9,8 +9,7 @@
       `level-${input.severity}`,
       `${typeClass}`,
     ]"
-    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`"
-  >
+    :aria-label="`${warningLevel} ${warningTypeText}${warningDetails}`">
     <span
       aria-hidden="true"
       :class="[
@@ -18,44 +17,51 @@
         'symbol-text',
         `transform-rotate-${invertedRotation}`,
       ]"
-    >{{ input.text }}</span>
+      >{{ input.text }}</span
+    >
   </div>
 </template>
 
-<script>
-import fields from '../mixins/fields'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useFields } from '@/composables/useFields'
+import { useI18n } from '@/composables/useI18n'
+import type { WarningIconInput } from '@/types'
 
-export default {
-  name: 'RegionWarning',
-  mixins: [fields, i18n, utils],
-  props: {
-    input: {
-      type: Object,
-      default: null,
-    },
-    language: {
-      type: String,
-    },
-  },
-  computed: {
-    warningLevel() {
-      return this.t(`warningLevel${this.input.severity}`)
-    },
-    warningTypeText() {
-      return this.t(this.input.type).toLowerCase()
-    },
-    warningDetails() {
-      if (this.input.text == null || this.input.direction == null) {
-        return ''
-      }
-      return ` (${this.input.text} m/s ${this.t('fromDirection')} ${
-        this.input.direction + 180
-      }°)`
-    },
-  },
-}
+// Props
+const props = defineProps<{
+  input: WarningIconInput
+  language?: string
+}>()
+
+// Composables
+const { typeClass, rotation, invertedRotation, severity } = useFields(
+  toRef(props, 'input')
+)
+const { t } = useI18n(toRef(props, 'language'))
+
+// Expose for testing
+defineExpose({
+  severity,
+})
+
+// Computed
+const warningLevel = computed((): string => {
+  return t(`warningLevel${props.input.severity}`)
+})
+
+const warningTypeText = computed((): string => {
+  return t(props.input.type).toLowerCase()
+})
+
+const warningDetails = computed((): string => {
+  if (props.input.text == null || props.input.direction == null) {
+    return ''
+  }
+  return ` (${props.input.text} m/s ${t('fromDirection')} ${
+    props.input.direction + 180
+  }°)`
+})
 </script>
 
 <style scoped lang="scss">

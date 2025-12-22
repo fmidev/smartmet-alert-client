@@ -15,7 +15,7 @@
         <div>
           <RegionWarning
             v-for="warning in warningsSummary"
-            :key="warning.key"
+            :key="warning.id"
             :input="warning"
             :language="language">
           </RegionWarning>
@@ -30,12 +30,12 @@
     :aria-labelledby="`accordion-${code}`"
     :aria-expanded="open"
     class="accordion-panel"
-    :hidden="open ? null : ''">
+    :hidden="open ? undefined : ''">
     <div class="current-description">
       <div class="current-description-table">
         <DescriptionWarning
           v-for="warning in reducedWarnings"
-          :key="warning.identification"
+          :key="warning.id"
           :input="warning"
           :theme="theme"
           :language="language" />
@@ -44,112 +44,147 @@
   </div>
 </template>
 
-<script>
-import config from '../mixins/config'
-import i18n from '../mixins/i18n'
+<script setup lang="ts">
+import { ref, computed, toRef } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+import { useConfig } from '@/composables/useConfig'
 import DescriptionWarning from './DescriptionWarning.vue'
 import RegionWarning from './RegionWarning.vue'
+import type {
+  Warning,
+  WarningsMap,
+  RegionWarningItem,
+  Theme,
+  Language,
+} from '@/types'
 
-export default {
-  name: 'Region',
-  components: { RegionWarning, DescriptionWarning },
-  mixins: [i18n, config],
-  props: {
-    type: {
-      type: String,
-    },
-    code: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    input: {
-      type: Array,
-      default: () => [],
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-    language: {
-      type: String,
-    },
-  },
-  data() {
-    return {
-      open: false,
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    type?: string
+    code?: string
+    name?: string
+    input?: RegionWarningItem[]
+    warnings?: WarningsMap | null
+    theme?: Theme | string
+    language?: Language
+  }>(),
+  {
+    type: undefined,
+    code: undefined,
+    name: undefined,
+    input: () => [],
+    warnings: null,
+    theme: 'light-theme',
+    language: undefined,
+  }
+)
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { t } = useI18n(toRef(() => props.language))
+const { coverageCriterion } = useConfig()
+
+// ============================================================================
+// State
+// ============================================================================
+
+const open = ref<boolean>(false)
+
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+const identifier = computed<string>(() => {
+  return `accordion-item-${props.code}`
+})
+
+const regionName = computed<string>(() => {
+  return t(props.name)
+})
+
+const warningsSummary = computed<Warning[]>(() => {
+  return props.input.reduce((summaryWarnings: Warning[], warningInfo) => {
+    const firstIdentifier = warningInfo?.identifiers?.[0]
+    if (
+      warningInfo != null &&
+      firstIdentifier != null &&
+      warningInfo.coverage >= coverageCriterion
+    ) {
+      const warning = props.warnings?.[firstIdentifier]
+      if (warning != null) {
+        summaryWarnings.push(warning)
+      }
     }
-  },
-  computed: {
-    identifier() {
-      return `accordion-item-${this.code}`
-    },
-    regionName() {
-      return this.t(this.name)
-    },
-    warningsSummary() {
-      return this.input.reduce((summaryWarnings, warningInfo) => {
-        if (
-          warningInfo != null &&
-          warningInfo.identifiers != null &&
-          warningInfo.identifiers.length > 0 &&
-          warningInfo.coverage >= this.coverageCriterion
-        ) {
-          const warning = this.warnings[warningInfo.identifiers[0]]
-          if (warning != null) {
-            summaryWarnings.push(warning)
+    return summaryWarnings
+  }, [])
+})
+
+const reducedWarnings = computed<Warning[]>(() => {
+  return props.input.reduce(
+    (allWarnings: Warning[], warningInfo) =>
+      allWarnings.concat(
+        warningInfo.identifiers.reduce((identifiers: Warning[], identifier) => {
+          const warning = props.warnings?.[identifier]
+          if (
+            warning != null &&
+            warningsSummary.value.some(
+              (summaryWarning) => summaryWarning.type === warning.type
+            )
+          ) {
+            identifiers.push(warning)
           }
-        }
-        return summaryWarnings
-      }, [])
-    },
-    reducedWarnings() {
-      return this.input.reduce(
-        (allWarnings, warningInfo) =>
-          allWarnings.concat(
-            warningInfo.identifiers.reduce((identifiers, identifier) => {
-              const warning = this.warnings[identifier]
-              if (
-                warning != null &&
-                this.warningsSummary.some(
-                  (summaryWarning) => summaryWarning.type === warning.type
-                )
-              ) {
-                identifiers.push(warning)
-              }
-              return identifiers
-            }, [])
-          ),
-        []
-      )
-    },
-    ariaButton() {
-      return `${
-        this.open
-          ? this.t('infoButtonAriaLabelCloseRegion')
-          : this.t('infoButtonAriaLabelShowRegion')
-      } ${this.regionName} ${this.t('infoButtonAriaLabelValidWarnings')}`
-    },
-    ariaInfo() {
-      return this.reducedWarnings.map(
-        (warning, index) =>
-          `${index > 0 ? ' ' : ''}${this.t(warning.type)}: ${this.t(
-            `warningLevel${warning.severity}`
-          )}.`
-      )
-    },
-  },
-  methods: {
-    onRegionToggle() {
-      this.open = !this.open
-    },
-  },
+          return identifiers
+        }, [])
+      ),
+    []
+  )
+})
+
+const ariaButton = computed<string>(() => {
+  return `${
+    open.value
+      ? t('infoButtonAriaLabelCloseRegion')
+      : t('infoButtonAriaLabelShowRegion')
+  } ${regionName.value} ${t('infoButtonAriaLabelValidWarnings')}`
+})
+
+const ariaInfo = computed<string[]>(() => {
+  return reducedWarnings.value.map(
+    (warning, index) =>
+      `${index > 0 ? ' ' : ''}${t(warning.type)}: ${t(
+        `warningLevel${warning.severity}`
+      )}.`
+  )
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+const onRegionToggle = (): void => {
+  open.value = !open.value
 }
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  open,
+  identifier,
+  regionName,
+  warningsSummary,
+  reducedWarnings,
+  ariaButton,
+  ariaInfo,
+  onRegionToggle,
+})
 </script>
 
 <style scoped lang="scss">

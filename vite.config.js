@@ -48,7 +48,7 @@ export default defineConfig({
           cssMinify: true,
           copyPublicDir: false,
           lib: {
-            entry: fileURLToPath(new URL('./src/vue.js', import.meta.url)),
+            entry: fileURLToPath(new URL('./src/vue.ts', import.meta.url)),
             name: 'SmartMetAlertClient',
             formats: ['es'],
             fileName: () => 'index.mjs',

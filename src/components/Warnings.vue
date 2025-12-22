@@ -1,58 +1,46 @@
 <template>
-  <div
-    id="fmi-warnings-view"
-    :class="theme"
-  >
+  <div id="fmi-warnings-view" :class="theme">
     <div
       v-if="input.length > 0"
-      :class="['row', 'symbol-list-main-row', 'show-text-row']"
-    >
+      :class="['row', 'symbol-list-main-row', 'show-text-row']">
       <button
         tabindex="0"
         type="button"
         class="bold-text show-text d-none focus-ring"
         :class="{ 'd-sm-block': hiddenWarnings }"
-        @click="showAll"
-      >
+        @click="showAll">
         {{ showWarningsText }}
       </button>
     </div>
-    <div
-      v-if="input.length > 0"
-      class="row symbol-list-main-row"
-    >
+    <div v-if="input.length > 0" class="row symbol-list-main-row">
       <hr class="symbol-block-separator" />
     </div>
     <div id="fmi-warnings-list">
       <Warning
         v-for="warning in warnings"
-        :key="warning.key"
+        :key="warning.type"
         :input="warning"
         :hideable="warnings.length > 1"
         :theme="theme"
         :language="language"
-        @warning-toggled="onWarningToggled"
-      />
+        @warning-toggled="onWarningToggled" />
     </div>
     <div class="row symbol-list-main-row">
       <hr
         class="symbol-block-separator legend-separator"
-        :class="noWarnings ? 'no-warnings' : ''"
-      />
+        :class="noWarnings ? 'no-warnings' : ''" />
     </div>
     <div class="row symbol-list-main-row">
       <div class="symbol-list-table">
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="gray several symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-several-warnings-text"
-          ></div>
+            aria-labelledby="symbol-list-several-warnings-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-several-warnings-text"
-            class="item-text symbol-list-text"
-          >
+            class="item-text symbol-list-text">
             {{ severalWarningsText }}
           </div>
         </div>
@@ -63,14 +51,12 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-1 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-1-text"
-          ></div>
+            aria-labelledby="symbol-list-warning-level-1-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-1-text"
-            class="item-text symbol-list-text"
-          >
+            class="item-text symbol-list-text">
             {{ warningLevel1Text }}
           </div>
         </div>
@@ -81,14 +67,12 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-2 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-2-text"
-          ></div>
+            aria-labelledby="symbol-list-warning-level-2-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-2-text"
-            class="item-text symbol-list-text"
-          >
+            class="item-text symbol-list-text">
             {{ warningLevel2Text }}
           </div>
         </div>
@@ -99,14 +83,12 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-3 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-3-text"
-          ></div>
+            aria-labelledby="symbol-list-warning-level-3-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-3-text"
-            class="item-text symbol-list-text"
-          >
+            class="item-text symbol-list-text">
             {{ warningLevel3Text }}
           </div>
         </div>
@@ -117,14 +99,12 @@
         <div class="symbol-list-cell symbol-list-cell-image">
           <div
             class="level-4 symbol-list-image-column symbol-list-image warning-image"
-            aria-labelledby="symbol-list-warning-level-4-text"
-          ></div>
+            aria-labelledby="symbol-list-warning-level-4-text"></div>
         </div>
         <div class="symbol-list-cell symbol-list-cell-text">
           <div
             id="symbol-list-warning-level-4-text"
-            class="item-text symbol-list-text"
-          >
+            class="item-text symbol-list-text">
             {{ warningLevel4Text }}
           </div>
           <hr class="bottom-separator" />
@@ -134,69 +114,138 @@
   </div>
 </template>
 
-<script>
-import i18n from '../mixins/i18n'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 import Warning from './Warning.vue'
+import type { LegendItem, Theme, Language } from '@/types'
 
-export default {
-  name: 'Warnings',
-  components: {
-    Warning,
-  },
-  mixins: [i18n],
-  props: ['input', 'visibleWarnings', 'language', 'theme'],
-  computed: {
-    warnings() {
-      return this.input
-    },
-    hiddenWarnings() {
-      return this.visibleWarnings.length !== this.input.length
-    },
-    noWarnings() {
-      return this.warnings.length === 0
-    },
-    warningSymbolsText() {
-      return this.noWarnings ? this.t('noWarnings') : this.t('warningSymbols')
-    },
-    warningSymbolDaysText() {
-      return this.noWarnings ? '' : this.t('warningSymbolDays')
-    },
-    showWarningsText() {
-      return this.t('showWarnings')
-    },
-    severalWarningsText() {
-      return this.t('severalWarnings')
-    },
-    warningLevel1Text() {
-      return this.t('warningLevel1')
-    },
-    warningLevel2Text() {
-      return this.t('warningLevel2')
-    },
-    warningLevel3Text() {
-      return this.t('warningLevel3')
-    },
-    warningLevel4Text() {
-      return this.t('warningLevel4')
-    },
-  },
-  methods: {
-    onWarningToggled({ warning, visible }) {
-      let newVisibleWarnings = this.visibleWarnings
-      if (visible && !this.visibleWarnings.includes(warning)) {
-        newVisibleWarnings.push(warning)
-      } else if (!visible) {
-        newVisibleWarnings = newVisibleWarnings.filter(
-          (visibleWarning) => visibleWarning !== warning
-        )
-      }
-      this.$emit('warningsToggled', newVisibleWarnings)
-    },
-    showAll() {
-      this.$emit('showAllWarnings')
-    },
-  },
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    input?: LegendItem[]
+    visibleWarnings?: string[]
+    language?: Language
+    theme?: Theme | string
+  }>(),
+  {
+    input: () => [],
+    visibleWarnings: () => [],
+    language: undefined,
+    theme: 'light-theme',
+  }
+)
+
+// ============================================================================
+// Emits
+// ============================================================================
+
+const emit = defineEmits<{
+  warningsToggled: [visibleWarnings: string[]]
+  showAllWarnings: []
+}>()
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { t } = useI18n(toRef(() => props.language))
+
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+const warnings = computed<LegendItem[]>(() => {
+  return props.input
+})
+
+const hiddenWarnings = computed<boolean>(() => {
+  return props.visibleWarnings.length !== props.input.length
+})
+
+const noWarnings = computed<boolean>(() => {
+  return warnings.value.length === 0
+})
+
+const warningSymbolsText = computed<string>(() => {
+  return noWarnings.value ? t('noWarnings') : t('warningSymbols')
+})
+
+const warningSymbolDaysText = computed<string>(() => {
+  return noWarnings.value ? '' : t('warningSymbolDays')
+})
+
+const showWarningsText = computed<string>(() => {
+  return t('showWarnings')
+})
+
+const severalWarningsText = computed<string>(() => {
+  return t('severalWarnings')
+})
+
+const warningLevel1Text = computed<string>(() => {
+  return t('warningLevel1')
+})
+
+const warningLevel2Text = computed<string>(() => {
+  return t('warningLevel2')
+})
+
+const warningLevel3Text = computed<string>(() => {
+  return t('warningLevel3')
+})
+
+const warningLevel4Text = computed<string>(() => {
+  return t('warningLevel4')
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+interface WarningToggleEvent {
+  warning: string
+  visible: boolean
 }
+
+const onWarningToggled = ({ warning, visible }: WarningToggleEvent): void => {
+  let newVisibleWarnings = [...props.visibleWarnings]
+  if (visible && !props.visibleWarnings.includes(warning)) {
+    newVisibleWarnings.push(warning)
+  } else if (!visible) {
+    newVisibleWarnings = newVisibleWarnings.filter(
+      (visibleWarning) => visibleWarning !== warning
+    )
+  }
+  emit('warningsToggled', newVisibleWarnings)
+}
+
+const showAll = (): void => {
+  emit('showAllWarnings')
+}
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  warnings,
+  hiddenWarnings,
+  noWarnings,
+  warningSymbolsText,
+  warningSymbolDaysText,
+  showWarningsText,
+  severalWarningsText,
+  warningLevel1Text,
+  warningLevel2Text,
+  warningLevel3Text,
+  warningLevel4Text,
+  onWarningToggled,
+  showAll,
+})
 </script>
 
 <style scoped lang="scss">

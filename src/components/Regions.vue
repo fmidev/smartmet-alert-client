@@ -1,16 +1,7 @@
 <template>
-  <div
-    id="region-warnings"
-    class="row"
-  >
-    <div
-      v-if="anyLandWarnings"
-      class="region-type-container"
-    >
-      <h3
-        id="header-land"
-        class="header-region"
-      >
+  <div id="region-warnings" class="row">
+    <div v-if="anyLandWarnings" class="region-type-container">
+      <h3 id="header-land" class="header-region">
         {{ landText }}
       </h3>
       <a
@@ -19,15 +10,10 @@
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
         @click="fromLandToNextContentClicked"
-      >{{ fromLandToNextContentText }}</a>
-      <div
-        id="accordion-group-land"
-        class="accordion"
+        >{{ fromLandToNextContentText }}</a
       >
-        <div
-          v-for="region in regions.land"
-          :key="region.key"
-        >
+      <div id="accordion-group-land" class="accordion">
+        <div v-for="region in regions.land" :key="region.key">
           <Region
             v-if="region.warnings.length"
             type="land"
@@ -36,20 +22,13 @@
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language"
-          />
+            :language="language" />
         </div>
       </div>
     </div>
 
-    <div
-      v-if="anySeaWarnings"
-      class="region-type-container"
-    >
-      <h3
-        id="header-sea"
-        class="header-region"
-      >
+    <div v-if="anySeaWarnings" class="region-type-container">
+      <h3 id="header-sea" class="header-region">
         {{ seaText }}
       </h3>
       <a
@@ -58,15 +37,10 @@
         tabindex="0"
         class="fmi-warnings-to-next-content visually-hidden-focusable focus-ring"
         @click="fromSeaToNextContentClicked"
-      >{{ fromSeaToNextContentText }}</a>
-      <div
-        id="accordion-group-sea"
-        class="accordion"
+        >{{ fromSeaToNextContentText }}</a
       >
-        <div
-          v-for="region in regions.sea"
-          :key="region.key"
-        >
+      <div id="accordion-group-sea" class="accordion">
+        <div v-for="region in regions.sea" :key="region.key">
           <Region
             v-if="region.warnings.length"
             type="sea"
@@ -75,8 +49,7 @@
             :input="region.warnings"
             :warnings="warnings"
             :theme="theme"
-            :language="language"
-          />
+            :language="language" />
         </div>
       </div>
     </div>
@@ -84,113 +57,193 @@
   </div>
 </template>
 
-<script>
-import config from '../mixins/config'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import { computed, toRef, getCurrentInstance } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+import { useConfig } from '@/composables/useConfig'
+import { REGION_LAND, REGION_SEA } from '@/composables/useUtils'
 import Region from './Region.vue'
+import type {
+  RegionsData,
+  WarningsMap,
+  DayRegions,
+  RegionListItem,
+  Theme,
+  Language,
+} from '@/types'
 
-export default {
-  name: 'Regions',
-  components: { Region },
-  mixins: [config, i18n, utils],
-  props: {
-    input: Array,
-    selectedDay: Number,
-    warnings: {
-      type: Object,
-      default: null,
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    input?: RegionsData
+    selectedDay?: number
+    warnings?: WarningsMap | null
+    parents?: Record<string, boolean[]>
+    geometryId?: number
+    theme?: Theme | string
+    language?: Language
+  }>(),
+  {
+    input: () => [],
+    selectedDay: 0,
+    warnings: null,
+    parents: () => ({}),
+    geometryId: 2021,
+    theme: 'light-theme',
+    language: undefined,
+  }
+)
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { t } = useI18n(toRef(() => props.language))
+const { geometries, coverageCriterion } = useConfig()
+
+const instance = getCurrentInstance()
+
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+const landText = computed<string>(() => {
+  return t('regionLand')
+})
+
+const seaText = computed<string>(() => {
+  return t('regionSea')
+})
+
+const fromLandToNextContentText = computed<string>(() => {
+  return `${t('warningsInAreasStart')} ${t(
+    `in${regions.value.land.length}Areas`
+  )}. ${t('toNextContent')}`
+})
+
+const fromSeaToNextContentText = computed<string>(() => {
+  return `${t('warningsInAreasStart')} ${t(
+    `in${regions.value.sea.length}Areas`
+  )}. ${t('toNextContent')}`
+})
+
+const fromLandToNextContentHref = computed<string>(() => {
+  return anySeaWarnings.value
+    ? '#fmi-warnings-from-sea-to-next-content'
+    : '#fmi-warnings-end-of-regions'
+})
+
+const fromSeaToNextContentId = computed<string>(() => {
+  return anyLandWarnings.value
+    ? 'fmi-warnings-from-sea-to-next-content'
+    : 'fmi-warnings-region-content'
+})
+
+const regions = computed<DayRegions>(() => {
+  const compareRegions = (region1: RegionListItem, region2: RegionListItem) =>
+    region1.regionIndex - region2.regionIndex
+
+  const overriddenRegions = props.parents
+  const overriddenIds = Object.keys(overriddenRegions).filter(
+    (regionId) => overriddenRegions[regionId]?.[props.selectedDay]
+  )
+
+  const geometryData = geometries[props.geometryId]
+
+  return [REGION_LAND, REGION_SEA].reduce(
+    (regionData, regionType) => {
+      const dayData = props.input[props.selectedDay]
+      if (!dayData) {
+        regionData[regionType as keyof DayRegions] = []
+        return regionData
+      }
+
+      regionData[regionType as keyof DayRegions] = dayData[
+        regionType as keyof DayRegions
+      ].reduce((filteredRegions: RegionListItem[], region) => {
+        const regionGeometry = geometryData?.[region.key]
+        const parentId =
+          regionGeometry && 'parent' in regionGeometry
+            ? regionGeometry.parent
+            : ''
+        if (
+          !overriddenIds.includes(region.key) &&
+          (!parentId || overriddenIds.includes(parentId)) &&
+          region.warnings.some(
+            (warning) => warning.coverage >= coverageCriterion
+          )
+        ) {
+          filteredRegions.push(region)
+        }
+        return filteredRegions
+      }, [])
+
+      regionData[regionType as keyof DayRegions].sort(compareRegions)
+      return regionData
     },
-    parents: Object,
-    geometryId: Number,
-    theme: String,
-    language: String,
-  },
-  computed: {
-    landText() {
-      return this.t('regionLand')
-    },
-    seaText() {
-      return this.t('regionSea')
-    },
-    fromLandToNextContentText() {
-      return `${this.t('warningsInAreasStart')} ${this.t(
-        `in${this.regions.land.length}Areas`
-      )}. ${this.t('toNextContent')}`
-    },
-    fromSeaToNextContentText() {
-      return `${this.t('warningsInAreasStart')} ${this.t(
-        `in${this.regions.sea.length}Areas`
-      )}. ${this.t('toNextContent')}`
-    },
-    fromLandToNextContentHref() {
-      return this.anySeaWarnings
-        ? '#fmi-warnings-from-sea-to-next-content'
-        : '#fmi-warnings-end-of-regions'
-    },
-    fromSeaToNextContentId() {
-      return this.anyLandWarnings
-        ? 'fmi-warnings-from-sea-to-next-content'
-        : 'fmi-warnings-region-content'
-    },
-    regions() {
-      const compareRegions = (region1, region2) =>
-        region1.regionIndex - region2.regionIndex
-      const overriddenRegions = this.parents
-      const overriddenIds = Object.keys(overriddenRegions).filter(
-        (regionId) => overriddenRegions[regionId][this.selectedDay]
-      )
-      return [this.REGION_LAND, this.REGION_SEA].reduce(
-        (regionData, regionType) => {
-          // eslint-disable-next-line no-param-reassign
-          regionData[regionType] = this.input[this.selectedDay][
-            regionType
-          ].reduce((regions, region) => {
-            const parentId = this.geometries[this.geometryId][region.key].parent
-            if (
-              !overriddenIds.includes(region.key) &&
-              (!parentId || overriddenIds.includes(parentId)) &&
-              region.warnings.some(
-                (warning) => warning.coverage >= this.coverageCriterion
-              )
-            ) {
-              regions.push(region)
-            }
-            return regions
-          }, [])
-          regionData[regionType].sort(compareRegions)
-          return regionData
-        },
-        {}
-      )
-    },
-    anyLandWarnings() {
-      return this.anyRegionWarnings('land')
-    },
-    anySeaWarnings() {
-      return this.anyRegionWarnings('sea')
-    },
-  },
-  methods: {
-    anyRegionWarnings(regionType) {
-      return (
-        this.regions != null &&
-        this.regions[regionType] != null &&
-        this.regions[regionType].length > 0
-      )
-    },
-    fromLandToNextContentClicked() {
-      const nextContent = this.$el.querySelector(this.fromLandToNextContentHref)
-      nextContent.scrollIntoView()
-      nextContent.focus()
-    },
-    fromSeaToNextContentClicked() {
-      const nextContent = this.$el.querySelector('#fmi-warnings-end-of-regions')
-      nextContent.scrollIntoView()
-      nextContent.focus()
-    },
-  },
+    { land: [], sea: [] } as DayRegions
+  )
+})
+
+const anyLandWarnings = computed<boolean>(() => {
+  return anyRegionWarnings('land')
+})
+
+const anySeaWarnings = computed<boolean>(() => {
+  return anyRegionWarnings('sea')
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+const anyRegionWarnings = (regionType: 'land' | 'sea'): boolean => {
+  return (
+    regions.value != null &&
+    regions.value[regionType] != null &&
+    regions.value[regionType].length > 0
+  )
 }
+
+const fromLandToNextContentClicked = (): void => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  const nextContent = el?.querySelector<HTMLElement>(
+    fromLandToNextContentHref.value
+  )
+  nextContent?.scrollIntoView()
+  nextContent?.focus()
+}
+
+const fromSeaToNextContentClicked = (): void => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  const nextContent = el?.querySelector<HTMLElement>(
+    '#fmi-warnings-end-of-regions'
+  )
+  nextContent?.scrollIntoView()
+  nextContent?.focus()
+}
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  landText,
+  seaText,
+  fromLandToNextContentText,
+  fromSeaToNextContentText,
+  fromLandToNextContentHref,
+  fromSeaToNextContentId,
+  regions,
+  anyLandWarnings,
+  anySeaWarnings,
+  anyRegionWarnings,
+  fromLandToNextContentClicked,
+  fromSeaToNextContentClicked,
+})
 </script>
 
 <style scoped lang="scss">

@@ -2,29 +2,16 @@
   <div
     id="fmi-warnings"
     :class="theme"
-    :data-smartmet-alert-client-version="version"
-  >
-    <div
-      id="fmi-warnings-errors"
-      :class="errors"
-    />
+    :data-smartmet-alert-client-version="version">
+    <div id="fmi-warnings-errors" :class="errors" />
     <div>
-      <div
-        class="container-fluid"
-        :class="theme"
-      >
+      <div class="container-fluid" :class="theme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h2
-              v-if="!loading"
-              class="valid-warnings"
-            >
+            <h2 v-if="!loading" class="valid-warnings">
               {{ validWarningsText }}
             </h2>
-            <div
-              v-if="loading"
-              class="not-ready"
-            >
+            <div v-if="loading" class="not-ready">
               <p>
                 {{ mainInfoText }}
                 {{ additionalInfoText }}
@@ -33,9 +20,9 @@
                 :href="supportedBrowsersLink"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="supported-browsers"
+                class="supported-browsers">
+                {{ supportedBrowsers }}</a
               >
-                {{ supportedBrowsers }}</a>
             </div>
             <div v-if="regionListEnabled">
               <a
@@ -45,11 +32,9 @@
                 tabindex="0"
                 class="visually-hidden-focusable focus-ring"
                 @click="toContentClicked"
-              >{{ toContentText }}</a>
-              <div
-                v-else
-                :aria-label="noWarningsText"
-              ></div>
+                >{{ toContentText }}</a
+              >
+              <div v-else :aria-label="noWarningsText"></div>
             </div>
             <Days
               :input="days"
@@ -65,8 +50,7 @@
               :language="language"
               :spinner-enabled="spinnerEnabled"
               @day-selected="onDaySelected"
-              @loaded="onLoaded"
-            />
+              @loaded="onLoaded" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list">
             <Legend
@@ -77,14 +61,10 @@
               :theme="theme"
               :language="language"
               @theme-changed="onThemeChanged"
-              @warnings-toggled="onWarningsToggled"
-            />
+              @warnings-toggled="onWarningsToggled" />
           </div>
         </div>
-        <div
-          v-if="regionListEnabled"
-          class="row"
-        >
+        <div v-if="regionListEnabled" class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
             <Regions
               :input="regions"
@@ -93,8 +73,7 @@
               :parents="parents"
               :geometry-id="geometryId"
               :theme="theme"
-              :language="language"
-            />
+              :language="language" />
           </div>
           <div class="col-12 col-md-4 col-lg-4 col-xl-4 symbol-list"></div>
         </div>
@@ -103,262 +82,340 @@
   </div>
 </template>
 
-<script>
-import config from '../mixins/config'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  onServerPrefetch,
+  getCurrentInstance,
+  toRef,
+} from 'vue'
 import Days from './Days.vue'
 import Legend from './Legend.vue'
 import Regions from './Regions.vue'
+import { useConfig } from '@/composables/useConfig'
+import { useI18n } from '@/composables/useI18n'
+import { useWarningsProcessor } from '@/composables/useWarningsProcessor'
+import {
+  regionsDefault,
+  isClientSide,
+  REGION_LAND,
+  REGION_SEA,
+} from '@/composables/useUtils'
+import geojsonsvg from '@/mixins/geojsonsvg'
+import type {
+  WarningsMap,
+  Day,
+  LegendItem,
+  RegionsData,
+  WarningsDataResponse,
+  Language,
+} from '@/types'
+import type { ParentsMap } from '@/composables/useWarningsProcessor'
 
-export default {
-  name: 'AlertClient',
-  props: {
-    refreshInterval: {
-      type: Number,
-      default: 1000 * 60 * 15,
-    },
-    defaultDay: {
-      type: Number,
-      default: 0,
-    },
-    staticDays: {
-      type: Boolean,
-      default: true,
-    },
-    startFrom: {
-      type: String,
-      default: '',
-    },
-    regionListEnabled: {
-      type: Boolean,
-      default: true,
-    },
-    grayScaleSelector: {
-      type: Boolean,
-      default: false,
-    },
-    currentTime: {
-      type: Number,
-      default: Date.now(),
-    },
-    warningsData: Object,
-    dailyWarningTypes: {
-      type: Array,
-      default: () => [],
-    },
-    geometryId: {
-      type: Number,
-      default: Number(config.props.defaultGeometryId),
-    },
-    language: {
-      type: String,
-      default: 'en',
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-    loading: {
-      type: Number,
-      default: 1,
-    },
-    sleep: {
-      type: Boolean,
-      default: true,
-    },
-    spinnerEnabled: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  components: {
-    Days,
-    Regions,
-    Legend,
-  },
-  mixins: [config, i18n, utils],
-  data() {
-    return {
-      selectedDay: this.defaultDay,
-      visibleWarnings: [],
-      timer: null,
-      visibilityListener: null,
-      warnings: null,
-      days: [],
-      regions: this.regionsDefault(),
-      parents: {},
-      legend: [],
-      timeOffset: 0,
-      // eslint-disable-next-line no-undef
-      version: __APP_VERSION__,
-      errors: [],
+// Props
+const props = withDefaults(
+  defineProps<{
+    refreshInterval?: number
+    defaultDay?: number
+    staticDays?: boolean
+    startFrom?: string
+    regionListEnabled?: boolean
+    grayScaleSelector?: boolean
+    currentTime?: number
+    warningsData?: WarningsDataResponse | null
+    dailyWarningTypes?: string[]
+    geometryId?: number
+    language?: Language
+    theme?: string
+    loading?: number
+    sleep?: boolean
+    spinnerEnabled?: boolean
+  }>(),
+  {
+    refreshInterval: 1000 * 60 * 15,
+    defaultDay: 0,
+    staticDays: true,
+    startFrom: '',
+    regionListEnabled: true,
+    grayScaleSelector: false,
+    currentTime: () => Date.now(),
+    warningsData: null,
+    dailyWarningTypes: () => [],
+    geometryId: 2021,
+    language: 'en',
+    theme: 'light-theme',
+    loading: 1,
+    sleep: true,
+    spinnerEnabled: true,
+  }
+)
+
+// Emits
+const emit = defineEmits<{
+  loaded: [value: number]
+  themeChanged: [theme: string]
+  'update-warnings': []
+}>()
+
+// Config
+const config = useConfig()
+
+// i18n
+const { t } = useI18n(toRef(props, 'language'))
+
+// Types
+type DayIndex = 0 | 1 | 2 | 3 | 4
+
+// State
+const selectedDay = ref<DayIndex>(props.defaultDay as DayIndex)
+const visibleWarnings = ref<string[]>([])
+const timer = ref<ReturnType<typeof setInterval> | null>(null)
+const visibilityListener = ref<(() => void) | null>(null)
+const warnings = ref<WarningsMap | null>(null)
+const days = ref<Day[]>([])
+const regions = ref<RegionsData>(regionsDefault())
+const parents = ref<ParentsMap>({})
+const legend = ref<LegendItem[]>([])
+const timeOffset = ref(0)
+// eslint-disable-next-line no-undef
+const version = __APP_VERSION__
+const errors = ref<string[]>([])
+
+// Create bound geoJSONToSVG function
+const geoJSONToSVG = geojsonsvg.methods.geoJSONToSVG.bind(geojsonsvg.methods)
+
+// Create refs for useWarningsProcessor options
+const geometryIdRef = computed(() => String(props.geometryId))
+const geometriesRef = computed(() => config.geometries)
+const regionIdsRef = computed(() => config.regionIds)
+const warningTypesRef = computed(() => config.warningTypes)
+const timeZoneRef = computed(() => config.timeZone)
+const localeRef = computed(() => config.dateTimeFormatLocale)
+const currentTimeRef = computed(() => props.currentTime)
+const startFromRef = computed(() => props.startFrom)
+const staticDaysRef = computed(() => props.staticDays)
+const dailyWarningTypesRef = computed(() => props.dailyWarningTypes)
+const maxUpdateDelayRef = computed(
+  () =>
+    config.maxUpdateDelay as {
+      weather_update_time: number
+      flood_update_time: number
     }
-  },
-  computed: {
-    toContentText() {
-      if (
-        [this.REGION_LAND, this.REGION_SEA].some(
-          (regionType) =>
-            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
-        )
-      ) {
-        return this.t('toContent') || ''
-      }
-      return this.t('toNextContent') || ''
-    },
-    toContentId() {
-      if (
-        [this.REGION_LAND, this.REGION_SEA].some(
-          (regionType) =>
-            this?.regions?.[this.selectedDay]?.[regionType]?.length > 0
-        )
-      ) {
-        return '#fmi-warnings-region-content'
-      }
-      return '#fmi-warnings-end-of-regions'
-    },
-    noWarningsText() {
-      return this.t('noWarnings')
-    },
-    validWarningsText() {
-      return this.legend.length > 0
-        ? this.t('validWarnings')
-        : this.t('noWarnings')
-    },
-    supportedBrowsersLink() {
-      return this.t('supportedBrowsersLink')
-    },
-    supportedBrowsers() {
-      return this.t('supportedBrowsers')
-    },
-    mainInfoText() {
-      return this.loading === -1
-        ? this.t('failed')
-        : this.t('notInitializedStart')
-    },
-    additionalInfoText() {
-      return this.loading === -1 ? '' : this.t('notInitializedEnd')
-    },
-    numWarnings() {
-      return this.warnings != null ? Object.keys(this.warnings).length : 0
-    },
-    validData() {
-      return (
-        this.days != null &&
-        this.days.length === 5 &&
-        this.days[0].updatedDate != null &&
-        this.days[0].updatedDate.length > 0
-      )
-    },
-  },
-  watch: {
-    warningsData() {
-      this.createDataForChildren()
-    },
-  },
-  created() {
-    this.createDataForChildren()
-    if (this.warningsData == null) {
-      this.update()
-    }
-  },
-  mounted() {
-    this.initTimer()
-    if (this.isClientSide() && this.sleep) {
-      this.visibilityListener = document.addEventListener(
-        'visibilitychange',
-        this.visibilityChange
-      )
-    }
-  },
-  beforeUnmount() {
-    if (this.isClientSide()) {
-      document.removeEventListener('visibilitychange', this.visibilityListener)
-    }
-    this.cancelTimer()
-  },
-  serverPrefetch() {
-    this.createDataForChildren()
-  },
-  methods: {
-    onDaySelected(newSelectedDay) {
-      this.selectedDay = newSelectedDay
-    },
-    onWarningsToggled(newVisibleWarnings) {
-      this.visibleWarnings = newVisibleWarnings
-      this.legend.forEach((warning, i) => {
-        const isVisible = newVisibleWarnings.includes(warning.type)
-        if (isVisible !== warning.visible) {
-          this.legend[i].visible = isVisible
-        }
-      })
-    },
-    onLoaded(loaded) {
-      if (this.loading !== -1 && loaded) {
-        this.$emit('loaded', 1)
-      }
-    },
-    onDataError() {
-      this.$emit('loaded', -1)
-    },
-    onThemeChanged(newTheme) {
-      if (this.theme !== newTheme) {
-        this.$emit('themeChanged', newTheme)
-      }
-    },
-    toContentClicked() {
-      const textContent = this.$el.querySelector(this.toContentId)
-      textContent.scrollIntoView()
-      textContent.focus()
-    },
-    createDataForChildren() {
-      if (this.warningsData != null) {
-        const result = this.handleMapWarnings(this.warningsData)
-        this.warnings = result.warnings
-        this.days = result.days
-        this.regions = result.regions
-        this.parents = result.parents
-        this.legend = result.legend
-        this.visibleWarnings = this.legend
-          .filter((legendWarning) => legendWarning.visible)
-          .map((legendWarning) => legendWarning.type)
-      }
-    },
-    visibilityChange() {
-      if (this.isClientSide() && this.refreshInterval) {
-        if (document.hidden) {
-          this.cancelTimer()
-        } else {
-          this.cancelTimer()
-          this.update()
-          this.initTimer()
-        }
-      }
-    },
-    initTimer() {
-      if (this.refreshInterval) {
-        this.timer = setInterval(this.update, this.refreshInterval)
-      }
-    },
-    cancelTimer() {
-      if (this.timer != null) {
-        clearInterval(this.timer)
-      }
-    },
-    update() {
-      if (this.refreshInterval > 0) {
-        this.$emit('update-warnings')
-      }
-    },
-    handleError(error) {
-      if (!this.errors.includes(error)) {
-        this.errors.push(error)
-      }
-      console.log(error)
-    },
-  },
+)
+const bboxRef = computed(
+  () => config.bbox as unknown as import('@/types').GeoJSONFeature
+)
+
+// Error handlers
+const handleError = (error: string) => {
+  if (!errors.value.includes(error)) {
+    errors.value.push(error)
+  }
+  console.log(error)
 }
+
+const onDataError = () => {
+  emit('loaded', -1)
+}
+
+// Warnings processor
+const { handleMapWarnings } = useWarningsProcessor({
+  geometryId: geometryIdRef,
+  geometries: geometriesRef,
+  regionIds: regionIdsRef,
+  warningTypes: warningTypesRef,
+  timeZone: timeZoneRef,
+  locale: localeRef,
+  currentTime: currentTimeRef,
+  startFrom: startFromRef,
+  staticDays: staticDaysRef,
+  dailyWarningTypes: dailyWarningTypesRef,
+  maxUpdateDelay: maxUpdateDelayRef,
+  bbox: bboxRef,
+  geoJSONToSVG,
+  t,
+  handleError,
+  onDataError,
+})
+
+// Computed
+const toContentText = computed(() => {
+  if (
+    [REGION_LAND, REGION_SEA].some(
+      (regionType) =>
+        ((
+          regions.value?.[selectedDay.value] as
+            | Record<string, unknown[]>
+            | undefined
+        )?.[regionType]?.length ?? 0) > 0
+    )
+  ) {
+    return t('toContent') || ''
+  }
+  return t('toNextContent') || ''
+})
+
+const toContentId = computed(() => {
+  if (
+    [REGION_LAND, REGION_SEA].some(
+      (regionType) =>
+        ((
+          regions.value?.[selectedDay.value] as
+            | Record<string, unknown[]>
+            | undefined
+        )?.[regionType]?.length ?? 0) > 0
+    )
+  ) {
+    return '#fmi-warnings-region-content'
+  }
+  return '#fmi-warnings-end-of-regions'
+})
+
+const noWarningsText = computed(() => t('noWarnings'))
+
+const validWarningsText = computed(() =>
+  legend.value.length > 0 ? t('validWarnings') : t('noWarnings')
+)
+
+const supportedBrowsersLink = computed(() => t('supportedBrowsersLink'))
+
+const supportedBrowsers = computed(() => t('supportedBrowsers'))
+
+const mainInfoText = computed(() =>
+  props.loading === -1 ? t('failed') : t('notInitializedStart')
+)
+
+const additionalInfoText = computed(() =>
+  props.loading === -1 ? '' : t('notInitializedEnd')
+)
+
+const numWarnings = computed(() =>
+  warnings.value != null ? Object.keys(warnings.value).length : 0
+)
+
+const validData = computed(
+  () =>
+    days.value != null &&
+    days.value.length === 5 &&
+    days.value[0]?.updatedDate != null &&
+    days.value[0]?.updatedDate.length > 0
+)
+
+// Methods
+const onDaySelected = (newSelectedDay: number) => {
+  selectedDay.value = newSelectedDay as DayIndex
+}
+
+const onWarningsToggled = (newVisibleWarnings: string[]) => {
+  visibleWarnings.value = newVisibleWarnings
+  legend.value.forEach((warning, i) => {
+    const isVisible = newVisibleWarnings.includes(warning.type)
+    if (isVisible !== warning.visible && legend.value[i]) {
+      legend.value[i].visible = isVisible
+    }
+  })
+}
+
+const onLoaded = (loaded: boolean) => {
+  if (props.loading !== -1 && loaded) {
+    emit('loaded', 1)
+  }
+}
+
+const onThemeChanged = (newTheme: string) => {
+  if (props.theme !== newTheme) {
+    emit('themeChanged', newTheme)
+  }
+}
+
+const toContentClicked = () => {
+  const instance = getCurrentInstance()
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  const textContent = el?.querySelector(toContentId.value) as HTMLElement | null
+  textContent?.scrollIntoView()
+  textContent?.focus()
+}
+
+const createDataForChildren = () => {
+  if (props.warningsData != null) {
+    const result = handleMapWarnings(props.warningsData)
+    warnings.value = result.warnings
+    days.value = result.days
+    regions.value = result.regions
+    parents.value = result.parents
+    legend.value = result.legend
+    visibleWarnings.value = legend.value
+      .filter((legendWarning) => legendWarning.visible)
+      .map((legendWarning) => legendWarning.type)
+  }
+}
+
+const visibilityChange = () => {
+  if (isClientSide() && props.refreshInterval) {
+    if (document.hidden) {
+      cancelTimer()
+    } else {
+      cancelTimer()
+      update()
+      initTimer()
+    }
+  }
+}
+
+const initTimer = () => {
+  if (props.refreshInterval) {
+    timer.value = setInterval(update, props.refreshInterval)
+  }
+}
+
+const cancelTimer = () => {
+  if (timer.value != null) {
+    clearInterval(timer.value)
+  }
+}
+
+const update = () => {
+  if (props.refreshInterval > 0) {
+    emit('update-warnings')
+  }
+}
+
+// Watch
+watch(
+  () => props.warningsData,
+  () => {
+    createDataForChildren()
+  }
+)
+
+// Lifecycle
+createDataForChildren()
+if (props.warningsData == null) {
+  update()
+}
+
+onMounted(() => {
+  initTimer()
+  if (isClientSide() && props.sleep) {
+    document.addEventListener('visibilitychange', visibilityChange)
+    visibilityListener.value = visibilityChange
+  }
+})
+
+onBeforeUnmount(() => {
+  if (isClientSide() && visibilityListener.value) {
+    document.removeEventListener('visibilitychange', visibilityListener.value)
+  }
+  cancelTimer()
+})
+
+onServerPrefetch(() => {
+  createDataForChildren()
+})
 </script>
 
 <style scoped lang="scss">

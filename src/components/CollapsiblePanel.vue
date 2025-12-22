@@ -10,14 +10,10 @@
         :class="['panel-toggle', visible ? '' : 'collapsed']"
         :aria-expanded="visible"
         :aria-label="title"
-        @click="onToggle"
-      ></button>
+        @click="onToggle"></button>
     </div>
     <Transition name="collapse">
-      <div
-        v-if="visible"
-        class="panel-body"
-      >
+      <div v-if="visible" class="panel-body">
         <div class="panel-content">
           <slot></slot>
         </div>
@@ -26,28 +22,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'CollapsiblePanel',
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-  },
-  methods: {
-    onToggle() {
-      this.$emit('toggle')
-    },
-  },
+<script setup lang="ts">
+// Props
+withDefaults(
+  defineProps<{
+    visible?: boolean
+    title?: string
+    theme?: string
+  }>(),
+  {
+    visible: false,
+    title: '',
+    theme: 'light-theme',
+  }
+)
+
+// Emits
+const emit = defineEmits<{
+  toggle: []
+}>()
+
+// Methods
+function onToggle(): void {
+  emit('toggle')
 }
 </script>
 

@@ -1,8 +1,7 @@
 <template>
   <div
     :class="['date-selector-cell', theme, { active: active }]"
-    :aria-label="ariaLabel"
-  >
+    :aria-label="ariaLabel">
     <div class="date-selector-cell-header"></div>
     <div class="date-selector-cell-body map-container">
       <MapSmall
@@ -12,21 +11,14 @@
         :warnings="warnings"
         :geometry-id="geometryId"
         :loading="loading"
-        :theme="theme"
-      />
+        :theme="theme" />
     </div>
     <div class="date-selector-cell-date">
       <div :class="`date-selector-text mobile-level-${severity}`">
-        <span
-          v-if="staticDays"
-          class="bold-text weekday-text"
-        >{{
+        <span v-if="staticDays" class="bold-text weekday-text">{{
           weekday
         }}</span>
-        <br
-          v-if="staticDays"
-          class="d-inline d-sm-none"
-        />
+        <br v-if="staticDays" class="d-inline d-sm-none" />
         {{ date }}
       </div>
     </div>
@@ -34,90 +26,104 @@
   </div>
 </template>
 
-<script>
-import i18n from '../mixins/i18n'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 import MapSmall from './MapSmall.vue'
+import type {
+  Day,
+  DayRegions,
+  WarningsMap,
+  Theme,
+  Language,
+  Severity,
+} from '@/types'
 
-export default {
-  name: 'DaySmall',
-  components: {
-    MapSmall,
-  },
-  mixins: [i18n],
-  props: {
-    index: {
-      type: Number,
-    },
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    regions: {
-      type: Object,
-      default: () => ({}),
-    },
-    geometryId: {
-      type: Number,
-    },
-    active: {
-      type: Boolean,
-    },
-    staticDays: {
-      type: Boolean,
-      default: true,
-    },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-    language: {
-      type: String,
-    },
-  },
-  computed: {
-    weekday() {
-      return this.t(this.input.weekdayName) || ''
-    },
-    severity() {
-      return this.input.severity
-    },
-    date() {
-      if (!this.staticDays) {
-        return [
-          '0...24 h',
-          '24...48 h',
-          '48...72 h',
-          '72...96 h',
-          '96...120 h',
-        ][this.index]
-      }
-      return this.input.day != null && this.input.month != null
-        ? `${this.input.day}.${this.input.month}.`
-        : ''
-    },
-    ariaLabel() {
-      const landCount = this.regions?.land?.length || 0
-      const seaCount = this.regions?.sea?.length || 0
-      return `${this.t(this.input.weekdayName)} ${this.input.day}.${
-        this.input.month
-      }. ${this.t('warningsInEffect')} ${landCount} ${this.t(
-        'landAreas'
-      )} ${seaCount} ${this.t('seaAreas')}.`
-    },
-  },
-}
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    index: number
+    input?: Day
+    visibleWarnings?: string[]
+    warnings?: WarningsMap | null
+    regions?: DayRegions
+    geometryId?: number
+    active?: boolean
+    staticDays?: boolean
+    loading?: boolean
+    theme?: Theme | string
+    language?: Language
+  }>(),
+  {
+    input: () => ({}) as Day,
+    visibleWarnings: () => [],
+    warnings: null,
+    regions: () => ({ land: [], sea: [] }),
+    geometryId: undefined,
+    active: false,
+    staticDays: true,
+    loading: true,
+    theme: 'light-theme',
+    language: undefined,
+  }
+)
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { t } = useI18n(toRef(() => props.language))
+
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+const weekday = computed<string>(() => {
+  return t(props.input?.weekdayName) || ''
+})
+
+const severity = computed<Severity>(() => {
+  return props.input?.severity ?? 0
+})
+
+const date = computed<string>(() => {
+  if (!props.staticDays) {
+    const timeRanges = [
+      '0...24 h',
+      '24...48 h',
+      '48...72 h',
+      '72...96 h',
+      '96...120 h',
+    ]
+    return timeRanges[props.index] || ''
+  }
+  return props.input?.day != null && props.input?.month != null
+    ? `${props.input.day}.${props.input.month}.`
+    : ''
+})
+
+const ariaLabel = computed<string>(() => {
+  const landCount = props.regions?.land?.length || 0
+  const seaCount = props.regions?.sea?.length || 0
+  return `${t(props.input?.weekdayName)} ${props.input?.day}.${props.input
+    ?.month}. ${t('warningsInEffect')} ${landCount} ${t(
+    'landAreas'
+  )} ${seaCount} ${t('seaAreas')}.`
+})
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  weekday,
+  severity,
+  date,
+  ariaLabel,
+})
 </script>
 
 <style scoped lang="scss">
