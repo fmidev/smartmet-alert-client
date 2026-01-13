@@ -171,26 +171,45 @@ div.current-description-text-cell {
 }
 
 a.ext-link {
-  padding-right: 14px;
-  background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
+  padding-right: 20px;
+  background: transparent url($ui-image-path + 'ext-link.svg') no-repeat center
     right;
   margin-right: 2px;
+  background-size: 16px 16px;
+  font-style: normal;
+  text-decoration: none;
 }
 
 .light-theme a.ext-link {
   color: $light-ext-link-color;
+  border-bottom: 1px solid $light-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $dark-blue;
+  }
 }
 
 .dark-theme a.ext-link {
   color: $dark-ext-link-color;
+  border-bottom: 1px solid $dark-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $notification-color;
+  }
 }
 
 .light-gray-theme a.ext-link {
   color: $light-gray-ext-link-color;
+  border-bottom: 1px solid $light-gray-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $black;
+  }
 }
 
 .dark-gray-theme a.ext-link {
   color: $dark-gray-ext-link-color;
+  border-bottom: 1px solid $dark-gray-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $white;
+  }
 }
 
 span.warning-valid {

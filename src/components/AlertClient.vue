@@ -497,10 +497,10 @@ div#fmi-warnings {
     border: 1px solid $dark-blue;
     a.supported-browsers {
       color: $light-ext-link-color;
-      border-bottom: 1px solid $light-ext-link-color;
+      border-bottom: 1px solid $light-ext-link-underground-color;
     }
     a.supported-browsers:hover {
-      border-color: $dark-blue;
+      border-bottom-color: $dark-blue;
     }
   }
 
@@ -509,10 +509,10 @@ div#fmi-warnings {
     border: 1px solid $notification-color;
     a.supported-browsers {
       color: $dark-ext-link-color;
-      border-bottom: 1px solid $dark-ext-link-color;
+      border-bottom: 1px solid $dark-ext-link-underground-color;
     }
     a.supported-browsers:hover {
-      border-color: $notification-color;
+      border-bottom-color: $notification-color;
     }
   }
 
@@ -521,10 +521,10 @@ div#fmi-warnings {
     border: 1px solid $dark-blue;
     a.supported-browsers {
       color: $light-gray-ext-link-color;
-      border-bottom: 1px solid $light-gray-ext-link-color;
+      border-bottom: 1px solid $light-gray-ext-link-underground-color;
     }
     a.supported-browsers:hover {
-      border-color: $dark-blue;
+      border-bottom-color: $black;
     }
   }
 
@@ -533,10 +533,10 @@ div#fmi-warnings {
     border: 1px solid $light-blue;
     a.supported-browsers {
       color: $dark-gray-ext-link-color;
-      border-bottom: 1px solid $dark-gray-ext-link-color;
+      border-bottom: 1px solid $dark-gray-ext-link-underground-color;
     }
     a.supported-browsers:hover {
-      border-color: $light-blue;
+      border-bottom-color: $white;
     }
   }
 
