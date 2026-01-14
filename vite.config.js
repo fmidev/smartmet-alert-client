@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
+import dts from 'vite-plugin-dts'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import pkg from './package.json'
@@ -22,8 +23,15 @@ export default defineConfig({
       `/**\n * name: ${pkg.name}\n * version: v${pkg.version}\n * description: ${pkg.description}\n * author: ${pkg.author}\n * homepage: ${pkg.homepage}\n */`
     ),
     visualizer(),
-    ...(buildMode !== 'vue'
+    // Generate .d.ts files for Vue library build
+    ...(buildMode === 'vue'
       ? [
+          dts({
+            include: ['src/vue.ts', 'src/AlertClientVue.vue'],
+            outDir: 'dist/vue',
+          }),
+        ]
+      : [
           viteStaticCopy({
             targets: [
               {
@@ -33,8 +41,7 @@ export default defineConfig({
               },
             ],
           }),
-        ]
-      : []),
+        ]),
   ],
   build:
     buildMode === 'vue'

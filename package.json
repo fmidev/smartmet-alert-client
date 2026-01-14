@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.7.0-beta.2",
+  "version": "4.7.0-beta.3",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -14,7 +14,7 @@
     },
     "./vue": {
       "import": "./dist/vue/index.mjs",
-      "types": "./dist/vue/index.d.ts"
+      "types": "./dist/vue/vue.d.ts"
     },
     "./vue/style.css": "./dist/vue/style.css"
   },
@@ -81,6 +81,7 @@
     "unplugin-vue-components": "0.26.0",
     "vite": "5.1.8",
     "vite-plugin-banner": "0.7.1",
+    "vite-plugin-dts": "4.5.4",
     "vite-plugin-static-copy": "1.0.6",
     "vitest": "3.2.4",
     "vue-tsc": "3.2.0"
