@@ -1330,7 +1330,7 @@ div.day-map-large
   height: 1px;
   background-color: transparent;
   pointer-events: none;
-  z-index: 10;
+  z-index: 8;
 }
 
 .fmi-warnings-popup {

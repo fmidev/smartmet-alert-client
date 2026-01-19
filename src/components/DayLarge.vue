@@ -227,7 +227,7 @@ div.warning-map-status {
 div.data-providers {
   position: relative;
   text-align: right;
-  z-index: 15;
+  z-index: 7;
   pointer-events: none;
   padding-left: 50%;
   margin-top: -50px;
