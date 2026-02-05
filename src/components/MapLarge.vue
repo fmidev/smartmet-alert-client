@@ -223,11 +223,11 @@
           :class="[showTooltip ? '' : 'd-none', theme]">
           <div class="arrow" style="left: 0" />
           <div id="day-map-large-base-popup" class="fmi-warnings-popup">
-            <a
+            <button
               id="day-map-large-base-popup-closer"
               :class="['fmi-warnings-popup-closer', `shadow-${popupLevel}`]"
               href="#"
-              @mousedown="closeTooltip"></a>
+              @mousedown="closeTooltip"></button>
             <div id="day-map-large-base-popup-content">
               <div class="region-popup">
                 <div :class="['region-popup-header', `${popupLevel}`]">
@@ -1341,6 +1341,8 @@ div.day-map-large
   left: -50px;
   min-width: $popup-width;
   z-index: 9;
+  cursor: default;
+  pointer-events: auto;
 }
 
 .light-theme .fmi-warnings-popup {
@@ -1437,8 +1439,9 @@ div.day-map-large
   }
 }
 
-a.fmi-warnings-popup-closer {
-  border-bottom: none;
+button.fmi-warnings-popup-closer {
+  cursor: pointer;
+  border: none;
   position: absolute;
   top: 0;
   right: 0;
