@@ -171,9 +171,10 @@ div.current-description-text-cell {
 }
 
 a.ext-link {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center right;
   padding-right: 20px;
-  background: transparent url($ui-image-path + 'ext-link.svg') no-repeat center
-    right;
   margin-right: 2px;
   background-size: 16px 16px;
   font-style: normal;
@@ -182,6 +183,7 @@ a.ext-link {
 
 .light-theme a.ext-link {
   color: $light-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-blue.svg');
   border-bottom: 1px solid $light-ext-link-underground-color;
   &:hover {
     border-bottom-color: $dark-blue;
@@ -190,6 +192,7 @@ a.ext-link {
 
 .dark-theme a.ext-link {
   color: $dark-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-white.svg');
   border-bottom: 1px solid $dark-ext-link-underground-color;
   &:hover {
     border-bottom-color: $notification-color;
@@ -198,6 +201,7 @@ a.ext-link {
 
 .light-gray-theme a.ext-link {
   color: $light-gray-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-blue.svg');
   border-bottom: 1px solid $light-gray-ext-link-underground-color;
   &:hover {
     border-bottom-color: $black;
@@ -206,6 +210,7 @@ a.ext-link {
 
 .dark-gray-theme a.ext-link {
   color: $dark-gray-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-white.svg');
   border-bottom: 1px solid $dark-gray-ext-link-underground-color;
   &:hover {
     border-bottom-color: $white;
