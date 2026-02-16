@@ -153,7 +153,7 @@ const windowWidth = ref<number>(
   typeof window !== 'undefined' ? window.innerWidth : 0
 )
 const pathsNeeded = ref<boolean>(false)
-const strokeWidthValue = ref<number>(0.6)
+const strokeWidthValue = ref<number>(0.4)
 
 // ============================================================================
 // Computed refs for composable
