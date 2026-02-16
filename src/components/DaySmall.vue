@@ -108,10 +108,11 @@ const date = computed<string>(() => {
 const ariaLabel = computed<string>(() => {
   const landCount = props.regions?.land?.length || 0
   const seaCount = props.regions?.sea?.length || 0
-  return `${t(props.input?.weekdayName)} ${props.input?.day}.${props.input
-    ?.month}. ${t('warningsInEffect')} ${landCount} ${t(
-    'landAreas'
-  )} ${seaCount} ${t('seaAreas')}.`
+  const weekdayKey = `${props.input?.weekdayName}Full`;
+  const monthName = t(`month${props.input?.month}`)
+  return `${t(weekdayKey)} ${props.input?.day}. ${monthName}: `
+    + `${t('warningsInEffect')} ${landCount} ${t('landAreas')} `
+    + `${seaCount} ${t('seaAreas')}.`
 })
 
 // ============================================================================
