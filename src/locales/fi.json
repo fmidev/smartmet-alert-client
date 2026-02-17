@@ -7,6 +7,7 @@
   "regionLand": "Varoituksia voimassa seuraavilla maa-alueilla",
   "regionSea": "Varoituksia voimassa seuraavilla merialueilla",
   "validWarnings": "Voimassa olevat varoitukset, 5 vrk",
+  "validWarningsAriaLabel": "Voimassa olevat varoitukset, viisi vuorokautta",
   "showWarnings": "Näytä kaikki varoitukset",
   "ma": "ma",
   "ti": "ti",

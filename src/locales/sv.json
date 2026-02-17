@@ -7,6 +7,7 @@
   "regionLand": "Varningar är i kraft i följande landområden",
   "regionSea": "Varningar är i kraft i följande havsområden",
   "validWarnings": "Varningar i kraft, 5 dygn",
+  "validWarningsAriaLabel": "Varningar i kraft, fem dygn",
   "showWarnings": "Visa alla varningar",
   "ma": "må",
   "ti": "ti",

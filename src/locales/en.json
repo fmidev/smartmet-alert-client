@@ -7,6 +7,7 @@
   "regionLand": "Warnings for following land areas",
   "regionSea": "Warnings for following sea areas",
   "validWarnings": "Warnings in effect, 5 days",
+  "validWarningsAriaLabel": "Warnings in effect, five days",
   "showWarnings": "Show all warnings",
   "ma": "Mon",
   "ti": "Tue",

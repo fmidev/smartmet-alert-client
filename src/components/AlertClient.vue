@@ -8,7 +8,10 @@
       <div class="container-fluid" :class="theme">
         <div class="row">
           <div class="col-12 col-md-8 col-lg-8 col-xl-8 day-region-views">
-            <h2 v-if="!loading" class="valid-warnings">
+            <h2
+              v-if="!loading"
+              class="valid-warnings"
+              :aria-label="validWarningsAriaLabel">
               {{ validWarningsText }}
             </h2>
             <div v-if="loading" class="not-ready">
@@ -279,6 +282,10 @@ const noWarningsText = computed(() => t('noWarnings'))
 
 const validWarningsText = computed(() =>
   legend.value.length > 0 ? t('validWarnings') : t('noWarnings')
+)
+
+const validWarningsAriaLabel = computed(() =>
+  legend.value.length > 0 ? t('validWarningsAriaLabel') : t('noWarnings')
 )
 
 const supportedBrowsersLink = computed(() => t('supportedBrowsersLink'))
