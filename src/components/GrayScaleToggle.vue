@@ -115,9 +115,8 @@ div#gray-scale-select-container {
 }
 
 div#gray-scale-select {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 100%;
   height: $symbol-list-select-height;
   margin: 0;
@@ -142,6 +141,8 @@ div#gray-scale-select {
     font-family: $symbol-font-family;
     font-size: $font-size;
     forced-color-adjust: none;
+    height: 20px;
+    line-height: 20px;
   }
 }
 

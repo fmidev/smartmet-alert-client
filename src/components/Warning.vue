@@ -223,9 +223,8 @@ div.symbol-list-text {
 }
 
 .symbol-list-select.d-md-block {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+  display: grid !important;
+  place-items: center;
   width: 100%;
   height: $symbol-list-select-height;
   cursor: pointer;
@@ -250,6 +249,8 @@ div.symbol-list-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: $font-size;
     forced-color-adjust: none;
+    height: 20px;
+    line-height: 20px;
   }
 }
 
