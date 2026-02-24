@@ -292,7 +292,8 @@ function createWeatherWarning(
   startFrom: string,
   timeOffset: number,
   timeZone: string,
-  locale: string
+  locale: string,
+  t: (key: string) => string
 ): Warning {
   const properties = warning.properties
   let direction = 0
@@ -339,7 +340,8 @@ function createWeatherWarning(
       properties[EFFECTIVE_FROM] as string,
       properties[EFFECTIVE_UNTIL] as string,
       timeZone,
-      locale
+      locale,
+      t
     ),
     severity,
     direction,
@@ -414,7 +416,8 @@ function createFloodWarning(
       properties[ONSET] as string,
       properties[EXPIRES] as string,
       timeZone,
-      locale
+      locale,
+      t
     ),
     severity: (FLOOD_LEVELS[(properties.severity as string)?.toLowerCase()] ??
       0) as Severity,
@@ -775,7 +778,8 @@ export function processWarnings(
         ctx.startFrom,
         timeOffset,
         ctx.timeZone,
-        ctx.locale
+        ctx.locale,
+        ctx.t
       ),
     [FLOOD_WARNINGS]: (warning: GeoJSONFeature) =>
       createFloodWarning(

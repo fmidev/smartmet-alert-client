@@ -272,25 +272,41 @@ export function toTimeZone(
 }
 
 /**
- * Format valid interval string
+ * Format a single time moment as an HTML <time> element
+ */
+function formatTimeMoment(
+  moment: TimeZoneMoment,
+  t: (key: string) => string
+): string {
+  const display = `${moment.day}.${moment.month}. ${twoDigits(
+    moment.hour
+  )}:${twoDigits(moment.minute)}`
+  const datetime = `${moment.year}-${twoDigits(moment.month)}-${twoDigits(
+    moment.day
+  )}T${twoDigits(moment.hour)}:${twoDigits(moment.minute)}`
+  const monthName = t(`month${moment.month}`)
+  const ariaLabel = `${moment.day}. ${monthName} ${twoDigits(
+    moment.hour
+  )}:${twoDigits(moment.minute)}`
+  return `<time datetime="${datetime}" aria-label="${ariaLabel}" class="bold-text">${display}</time>`
+}
+
+/**
+ * Format valid interval string with HTML <time> elements
  */
 export function validInterval(
   start: string,
   end: string,
   timeZone: string,
-  locale: string
+  locale: string,
+  t: (key: string) => string
 ): string {
-  return [
-    toTimeZone(start, timeZone, locale),
-    toTimeZone(end, timeZone, locale),
-  ]
-    .map(
-      (moment) =>
-        `${moment.day}.${moment.month}. ${twoDigits(moment.hour)}:${twoDigits(
-          moment.minute
-        )}`
-    )
-    .join(' – ')
+  const startMoment = toTimeZone(start, timeZone, locale)
+  const endMoment = toTimeZone(end, timeZone, locale)
+  return `${formatTimeMoment(startMoment, t)} – ${formatTimeMoment(
+    endMoment,
+    t
+  )}`
 }
 
 /**
@@ -414,7 +430,7 @@ export function createWeatherWarning(
   warning: { properties: Record<string, unknown> },
   context: WarningCreationContext
 ): Warning {
-  const { geometryId, geometries, timeZone, locale, dailyWarningTypes } =
+  const { geometryId, geometries, timeZone, locale, dailyWarningTypes, t } =
     context
   let direction = 0
   let severity = Number(
@@ -458,7 +474,8 @@ export function createWeatherWarning(
       warning.properties[EFFECTIVE_FROM] as string,
       warning.properties[EFFECTIVE_UNTIL] as string,
       timeZone,
-      locale
+      locale,
+      t
     ),
     severity,
     direction,
@@ -526,7 +543,8 @@ export function createFloodWarning(
       warning.properties[ONSET] as string,
       warning.properties[EXPIRES] as string,
       timeZone,
-      locale
+      locale,
+      t
     ),
     severity: (FLOOD_LEVELS[
       (warning.properties.severity as string)?.toLowerCase()
