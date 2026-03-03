@@ -25,6 +25,7 @@
           class="border-path"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -91,6 +92,7 @@
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -99,6 +101,7 @@
           class="border-path"
           :stroke="strokeColor"
           :stroke-width="1.5 * Number(path.strokeWidth)"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -106,6 +109,7 @@
           :key="coverage.key"
           :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
@@ -153,7 +157,8 @@ const windowWidth = ref<number>(
   typeof window !== 'undefined' ? window.innerWidth : 0
 )
 const pathsNeeded = ref<boolean>(false)
-const strokeWidthValue = ref<number>(0.4)
+const strokeWidthValue = ref<number>(0.6)
+const strokeOpacity = ref<string>('0.5')
 
 // ============================================================================
 // Computed refs for composable

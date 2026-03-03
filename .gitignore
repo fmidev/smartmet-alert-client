@@ -151,3 +151,6 @@ stats.html
 
 # Build
 dist
+
+# Coding agents
+AGENTS.md

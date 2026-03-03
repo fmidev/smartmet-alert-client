@@ -61,7 +61,7 @@ describe('MapSmall.vue', () => {
         props: {},
       })
 
-      expect((wrapper.vm as ComponentInstance).strokeWidth).toBe(0.4)
+      expect((wrapper.vm as ComponentInstance).strokeWidth).toBe(0.6)
     })
 
     it('should have pathsNeeded property', () => {
