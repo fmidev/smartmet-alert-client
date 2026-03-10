@@ -388,6 +388,8 @@ div#fmi-warnings-date-selector.tabs {
 
   :deep(button.day div.date-selector-cell) {
     height: $day-small-mobile-height;
+    min-height: $day-small-mobile-height;
+    max-height: $day-small-mobile-height;
   }
 }
 </style>
