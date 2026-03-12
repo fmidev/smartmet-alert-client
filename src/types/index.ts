@@ -78,6 +78,7 @@ export interface Warning {
   effectiveUntil: string
   effectiveDays: boolean[]
   validInterval: string
+  validIntervalAriaLabel: string
   severity: Severity
   direction: number
   value: number

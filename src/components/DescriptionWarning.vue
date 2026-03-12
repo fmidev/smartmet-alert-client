@@ -13,8 +13,14 @@
     <div class="current-description-text-cell">
       <div class="description-info">
         <span
-          class="warning-valid bold-text"
-          v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
+          tabindex="0"
+          :aria-label="`${warningTitle}: ${validText} ${input.validIntervalAriaLabel}`">
+          <span
+            class="warning-valid bold-text"
+            aria-hidden="true">
+            {{ warningTitle }} — {{ validText }} {{ input.validInterval }}
+          </span>
+        </span>
         <span>
           {{ info }}
         </span>
@@ -63,7 +69,7 @@ defineExpose({
 
 // Computed
 const warningTitle = computed((): string => {
-  return t(props.input.type)
+  return t(props.input.type).replace(/&shy;/g, '');
 })
 
 const warningLevel = computed((): string => {
@@ -221,7 +227,6 @@ span.warning-valid {
   display: block;
   font-family: $font-family;
   font-size: $font-size;
-  font-weight: bold;
   margin-top: 0;
   margin-bottom: 5px;
 }

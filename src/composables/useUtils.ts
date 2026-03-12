@@ -276,19 +276,10 @@ export function toTimeZone(
  */
 function formatTimeMoment(
   moment: TimeZoneMoment,
-  t: (key: string) => string
 ): string {
-  const display = `${moment.day}.${moment.month}. ${twoDigits(
+  return `${moment.day}.${moment.month}. ${twoDigits(
     moment.hour
   )}:${twoDigits(moment.minute)}`
-  const datetime = `${moment.year}-${twoDigits(moment.month)}-${twoDigits(
-    moment.day
-  )}T${twoDigits(moment.hour)}:${twoDigits(moment.minute)}`
-  const monthName = t(`month${moment.month}`)
-  const ariaLabel = `${moment.day}. ${monthName} ${twoDigits(
-    moment.hour
-  )}:${twoDigits(moment.minute)}`
-  return `<time datetime="${datetime}" aria-label="${ariaLabel}" class="bold-text">${display}</time>`
 }
 
 /**
@@ -298,12 +289,41 @@ export function validInterval(
   start: string,
   end: string,
   timeZone: string,
+  locale: string
+): string {
+  const startMoment = toTimeZone(start, timeZone, locale)
+  const endMoment = toTimeZone(end, timeZone, locale)
+  return `${formatTimeMoment(startMoment)} – ${formatTimeMoment(
+    endMoment
+  )}`
+}
+
+/**
+ * Format a single time moment as an ARIA label
+ */
+function formatTimeMomentAriaLabel(
+  moment: TimeZoneMoment,
+  t: (key: string) => string
+): string {
+  const monthName = t(`month${moment.month}`)
+  return `${moment.day}. ${monthName}${t('monthPartitive')} ${twoDigits(
+    moment.hour
+  )}:${twoDigits(moment.minute)}`
+}
+
+/**
+ * Format valid interval ARIA label
+ */
+export function validIntervalAriaLabel(
+  start: string,
+  end: string,
+  timeZone: string,
   locale: string,
   t: (key: string) => string
 ): string {
   const startMoment = toTimeZone(start, timeZone, locale)
   const endMoment = toTimeZone(end, timeZone, locale)
-  return `${formatTimeMoment(startMoment, t)} – ${formatTimeMoment(
+  return `${formatTimeMomentAriaLabel(startMoment, t)} – ${formatTimeMomentAriaLabel(
     endMoment,
     t
   )}`
@@ -474,6 +494,12 @@ export function createWeatherWarning(
       warning.properties[EFFECTIVE_FROM] as string,
       warning.properties[EFFECTIVE_UNTIL] as string,
       timeZone,
+      locale
+    ),
+    validIntervalAriaLabel: validIntervalAriaLabel(
+      warning.properties[EFFECTIVE_FROM] as string,
+      warning.properties[EFFECTIVE_UNTIL] as string,
+      timeZone,
       locale,
       t
     ),
@@ -540,6 +566,12 @@ export function createFloodWarning(
       context
     ),
     validInterval: validInterval(
+      warning.properties[ONSET] as string,
+      warning.properties[EXPIRES] as string,
+      timeZone,
+      locale
+    ),
+    validIntervalAriaLabel: validIntervalAriaLabel(
       warning.properties[ONSET] as string,
       warning.properties[EXPIRES] as string,
       timeZone,

@@ -56,6 +56,7 @@ import {
   twoDigits,
   toTimeZone,
   validInterval,
+  validIntervalAriaLabel,
   msSinceStartOfDay,
   coverageData,
 } from './useUtils'
@@ -340,6 +341,12 @@ function createWeatherWarning(
       properties[EFFECTIVE_FROM] as string,
       properties[EFFECTIVE_UNTIL] as string,
       timeZone,
+      locale
+    ),
+    validIntervalAriaLabel: validIntervalAriaLabel(
+      properties[EFFECTIVE_FROM] as string,
+      properties[EFFECTIVE_UNTIL] as string,
+      timeZone,
       locale,
       t
     ),
@@ -413,6 +420,12 @@ function createFloodWarning(
       locale
     ),
     validInterval: validInterval(
+      properties[ONSET] as string,
+      properties[EXPIRES] as string,
+      timeZone,
+      locale
+    ),
+    validIntervalAriaLabel: validIntervalAriaLabel(
       properties[ONSET] as string,
       properties[EXPIRES] as string,
       timeZone,

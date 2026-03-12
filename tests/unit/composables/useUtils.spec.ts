@@ -9,7 +9,6 @@ import {
   msSinceStartOfDay,
   validInterval,
 } from '@/composables/useUtils'
-import fi from '@/locales/fi.json'
 
 describe('useUtils composable - pure functions', () => {
   describe('uncapitalize', () => {
@@ -191,44 +190,22 @@ describe('useUtils composable - pure functions', () => {
   describe('validInterval', () => {
     const timeZone = 'Europe/Helsinki'
     const locale = 'fi-FI'
-    const t = (key: string): string => fi[key as keyof typeof fi] ?? ''
 
     it('should format time interval with HTML time elements', () => {
       const start = '2025-10-31T12:00:00Z'
       const end = '2025-11-01T18:00:00Z'
-      const result = validInterval(start, end, timeZone, locale, t)
+      const result = validInterval(start, end, timeZone, locale)
 
-      // Should contain <time> elements
-      expect(result).toContain('<time')
-      expect(result).toContain('</time>')
       // Should contain both dates and times as display text
       expect(result).toContain('31.10.')
       expect(result).toContain('1.11.')
       expect(result).toContain('–') // en-dash separator
     })
 
-    it('should include datetime attribute in ISO format', () => {
-      const start = '2025-10-31T12:00:00Z'
-      const end = '2025-11-01T18:00:00Z'
-      const result = validInterval(start, end, timeZone, locale, t)
-
-      expect(result).toMatch(/datetime="2025-10-31T14:00"/)
-      expect(result).toMatch(/datetime="2025-11-01T20:00"/)
-    })
-
-    it('should include aria-label with localized month name', () => {
-      const start = '2025-10-31T12:00:00Z'
-      const end = '2025-11-01T18:00:00Z'
-      const result = validInterval(start, end, timeZone, locale, t)
-
-      expect(result).toContain('aria-label="31. lokakuu 14:00"')
-      expect(result).toContain('aria-label="1. marraskuu 20:00"')
-    })
-
     it('should include time in HH:MM format', () => {
       const start = '2025-10-31T12:00:00Z'
       const end = '2025-10-31T18:00:00Z'
-      const result = validInterval(start, end, timeZone, locale, t)
+      const result = validInterval(start, end, timeZone, locale)
 
       expect(result).toMatch(/\d{2}:\d{2}/)
     })

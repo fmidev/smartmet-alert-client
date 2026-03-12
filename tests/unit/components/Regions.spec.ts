@@ -23,6 +23,7 @@ const mockWarning: Warning = {
   effectiveUntil: '2025-11-01T12:00:00Z',
   effectiveDays: [true, true, false, false, false],
   validInterval: '31.10.2025 14:00 – 1.11.2025 14:00',
+  validIntervalAriaLabel: '31. lokakuuta 2025 14:00 – 1. marraskuuta 2025 14:00',
   severity: 3,
   direction: 270,
   value: 25,
