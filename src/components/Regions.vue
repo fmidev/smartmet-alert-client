@@ -119,14 +119,20 @@ const seaText = computed<string>(() => {
 })
 
 const fromLandToNextContentText = computed<string>(() => {
+  const numAreas = regions.value.land.length
+  const plural = regions.value.land.length ? 's' : ''
   return `${t('warningsInAreasStart')} ${t(
-    `in${regions.value.land.length}Areas`
+    `in${numAreas}`)} ${t(
+    `landArea${plural}`
   )}. ${t('toNextContent')}`
 })
 
 const fromSeaToNextContentText = computed<string>(() => {
+  const numAreas = regions.value.sea.length
+  const plural = regions.value.sea.length ? 's' : ''
   return `${t('warningsInAreasStart')} ${t(
-    `in${regions.value.sea.length}Areas`
+    `in${numAreas}`)} ${t(
+    `seaArea${plural}`
   )}. ${t('toNextContent')}`
 })
 

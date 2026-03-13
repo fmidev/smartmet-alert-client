@@ -110,9 +110,16 @@ const ariaLabel = computed<string>(() => {
   const seaCount = props.regions?.sea?.length || 0
   const weekdayKey = `${props.input?.weekdayName}Full`;
   const monthName = t(`month${props.input?.month}`)
+  const inLandCount = `in${landCount}`
+  const inSeaCount = `in${seaCount}`
+  const pluralLand = landCount ? 's' : ''
+  const pluralSea = seaCount ? 's' : ''
+  const landAreas = `landArea${pluralLand}`
+  const seaAreas = `seaArea${pluralSea}`
+
   return `${t(weekdayKey)} ${props.input?.day}. ${monthName}${t('monthPartitive')}: `
-    + `${t('warningsInEffect')} ${landCount} ${t('landAreas')} `
-    + `${seaCount} ${t('seaAreas')}.`
+    + `${t('warningsInEffect')} ${t(inLandCount)} ${t(landAreas)} `
+    + `${t('and')} ${t(inSeaCount)} ${t(seaAreas)}.`
 })
 
 // ============================================================================
