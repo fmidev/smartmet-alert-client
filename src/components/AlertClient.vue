@@ -382,6 +382,7 @@ const initTimer = () => {
 const cancelTimer = () => {
   if (timer.value != null) {
     clearInterval(timer.value)
+    timer.value = null
   }
 }
 

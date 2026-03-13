@@ -137,6 +137,7 @@ export function useAlertClient(
   const themeClass = ref<string>(`${theme.value}-theme`)
   const warningsData = ref<WarningsData | null>(null)
   const visible = ref<boolean>(true)
+  const fetchInProgress = ref<boolean>(false)
 
   // -------------------------------------------------------------------------
   // Helper: CAP Language mapping
@@ -275,11 +276,20 @@ export function useAlertClient(
       return
     }
 
+    if (fetchInProgress.value) {
+      return
+    }
+
+    fetchInProgress.value = true
     loading.value = 1
 
     if (debugMode?.value) {
       console.log(`Updating warnings at ${new Date()}`)
     }
+
+    const cacheBuster = `_t=${Date.now()}`
+    const appendCacheBuster = (url: string) =>
+      url.includes('?') ? `${url}&${cacheBuster}` : `${url}?${cacheBuster}`
 
     const queries = new Map<string, string>([
       [`${baseUrl.value}${weatherUpdatedQuery.value}`, WEATHER_UPDATED_TYPE],
@@ -292,7 +302,7 @@ export function useAlertClient(
 
     return Promise.allSettled(
       [...queries.keys()].map(async (queryUrl) =>
-        crossFetch(queryUrl).then((response) =>
+        crossFetch(appendCacheBuster(queryUrl)).then((response) =>
           response
             .json()
             .then((json: unknown) => {
@@ -309,9 +319,13 @@ export function useAlertClient(
             })
         )
       )
-    ).then(() => {
-      warningsData.value = responseData as WarningsData
-    })
+    )
+      .then(() => {
+        warningsData.value = responseData as WarningsData
+      })
+      .finally(() => {
+        fetchInProgress.value = false
+      })
   }
 
   /**
