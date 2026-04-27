@@ -253,7 +253,7 @@ function warningIcon(warning: WarningIconInput): WarningIcon {
       icon.scale = 0.8
       icon.geom = `
         <title>rain-symbol</title>
-        <g id="icons" stroke="rgba(255, 255, 255, 1)" stroke-width="2.5px" stroke-linecap: round paint-order="stroke" fill="none" fill-rule="evenodd">
+        <g id="icons" stroke="rgba(255, 255, 255, 1)" stroke-width="2.5px" stroke-linecap="round" paint-order="stroke" fill="none" fill-rule="evenodd">
             <g id="Symbols" transform="translate(-9.5, -10)">
                 <g id="fill-3" transform="translate(10.978, 17.233)">
                     <g id="Clip-2"></g>
