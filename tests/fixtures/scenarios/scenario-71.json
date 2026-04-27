@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "id": 71,
+    "label": "2025-03-20 — spring equinox",
+    "source": "cap",
+    "description": "Transition weather",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2025/03-20/12-47-38Z-atom_fi-FI.xml",
+    "updateTimeIso": "2025-03-20T12:47:38Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2025-03-20T12:47:38Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2025-03-20T12:47:38Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2025-03-20T12:47:38Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2025-03-20T12:47:38Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.66328873806940194945624134957758363813.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2025.6785258.66328873806940194945624134957758363813#county.21",
+            "warning_context": "forest-fire-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.66328873806940194945624134957758363813",
+            "publication_time": "2025-03-20T14:47:38+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2025-03-20T14:47:38+02:00",
+            "effective_from": "2025-03-20T22:00:00.000Z",
+            "effective_until": "2025-03-24T22:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Maastopalovaroitus on voimassa.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.21",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452#sea_region.B1S",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452",
+            "publication_time": "2025-03-20T14:47:38+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2025-03-20T14:47:38+02:00",
+            "effective_from": "2025-03-22T03:00:00.000Z",
+            "effective_until": "2025-03-22T22:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Kovan lounaistuulen todennäköisyys on 40 % lauantaiaamusta lauantain ja sunnuntain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 16,
+            "physical_unit": "m/s",
+            "physical_direction": 225,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B1S",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452.2",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452#sea_region.B1N",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.123580892080495957454056588408324581452",
+            "publication_time": "2025-03-20T14:47:38+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2025-03-20T14:47:38+02:00",
+            "effective_from": "2025-03-22T03:00:00.000Z",
+            "effective_until": "2025-03-22T22:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Kovan lounaistuulen todennäköisyys on 40 % lauantaiaamusta lauantain ja sunnuntain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 16,
+            "physical_unit": "m/s",
+            "physical_direction": 225,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B1N",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.21126659031304354902971201309443669934.3",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2025.6785258.21126659031304354902971201309443669934#county.21",
+            "warning_context": "forest-fire-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2025.6785258.21126659031304354902971201309443669934",
+            "publication_time": "2025-03-20T14:47:38+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2025-03-20T14:47:38+02:00",
+            "effective_from": "2025-03-20T12:47:38.000Z",
+            "effective_until": "2025-03-20T22:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Maastopalovaroitus on voimassa.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.21",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 4
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

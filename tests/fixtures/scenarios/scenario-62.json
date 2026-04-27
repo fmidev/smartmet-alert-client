@@ -1,0 +1,231 @@
+{
+  "meta": {
+    "id": 62,
+    "label": "2023-11-05 — November sleet",
+    "source": "cap",
+    "description": "Onset of winter conditions",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2023/11-05/12-34-13Z-atom_fi-FI.xml",
+    "updateTimeIso": "2023-11-05T12:34:13Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2023-11-05T12:34:13Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2023-11-05T12:34:13Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2023-11-05T12:34:13Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2023-11-05T12:34:13Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454#county.11",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-07T00:00:00.000Z",
+            "effective_until": "2023-11-07T09:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 20 % maanantain ja tiistain välisenä yönä ja tiistaina aamulla lumi- tai räntäsateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.11",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454#municipality.47",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-07T00:00:00.000Z",
+            "effective_until": "2023-11-07T09:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 20 % maanantain ja tiistain välisenä yönä ja tiistaina aamulla lumi- tai räntäsateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.47",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454.2",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454#county.12",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.300238108013578930714532512613750594454",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-07T00:00:00.000Z",
+            "effective_until": "2023-11-07T09:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 20 % maanantain ja tiistain välisenä yönä ja tiistaina aamulla lumi- tai räntäsateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.12",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368.3",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368#county.11",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-08T00:00:00.000Z",
+            "effective_until": "2023-11-08T18:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikko-iltaan lumi- tai räntäsateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.11",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368.4",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368#county.12",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.22073390311457253403442279381667826368",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-08T00:00:00.000Z",
+            "effective_until": "2023-11-08T18:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikko-iltaan lumi- tai räntäsateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.12",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.42916008511959115786550676959308161092.5",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.26656453.42916008511959115786550676959308161092#county.19",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.26656453.42916008511959115786550676959308161092",
+            "publication_time": "2023-11-05T14:34:13+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-11-05T14:34:13+02:00",
+            "effective_from": "2023-11-05T12:34:13.000Z",
+            "effective_until": "2023-11-06T06:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Ajokeli on huono aluksi jäätävän tihkusateen, lumi- tai räntäsateen ja sään lauhtumisen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.19",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 6
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

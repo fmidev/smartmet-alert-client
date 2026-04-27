@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "id": 12,
+    "label": "WFS capture #14",
+    "source": "wfs",
+    "description": "Manually generated FMI WFS payload",
+    "updateTimeIso": "2020-09-03T11:06:45.543Z"
+  },
+  "data": {
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0,
+      "numberMatched": 0,
+      "numberReturned": 0,
+      "timeStamp": "2020-09-03T14:11:58.267Z",
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "urn:ogc:def:crs:EPSG::404000"
+        }
+      }
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0,
+      "numberMatched": 0,
+      "numberReturned": 0,
+      "timeStamp": "2020-09-03T14:12:24.809Z",
+      "crs": null
+    },
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "weather_update_time.fid-6e60b88_17404f59329_-7491",
+          "geometry": null,
+          "properties": {
+            "update_time": "2020-09-03T11:06:45.543Z"
+          }
+        }
+      ],
+      "totalFeatures": 1,
+      "numberMatched": 1,
+      "numberReturned": 1,
+      "timeStamp": "2020-09-03T14:12:10.688Z",
+      "crs": null
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "flood_update_time.fid-6e60b88_17404f59329_-7490",
+          "geometry": null,
+          "properties": {
+            "update_time": "2020-06-16T00:09:18.274Z"
+          }
+        }
+      ],
+      "totalFeatures": 1,
+      "numberMatched": 1,
+      "numberReturned": 1,
+      "timeStamp": "2020-09-03T14:12:17.230Z",
+      "crs": null
+    }
+  }
+}

@@ -16,6 +16,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
+    // Custom reporter that writes tests/__artifacts__/review.html at the
+    // end of every run for visual comparison of map SVG snapshots.
+    reporters: ['default', './tests/reporters/snapshotReviewReporter.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
