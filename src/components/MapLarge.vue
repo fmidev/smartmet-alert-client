@@ -633,7 +633,7 @@ export default defineComponent({
       const warnings = this.warnings
 
       return this.coverageWarnings.reduce(
-        (iconData: IconData[], warningId: string) => {
+        (iconData: IconData[], warningId: string, covIndex: number) => {
           const warning = warnings?.[warningId]
           const coverageLarge = warning?.coveragesLarge[0]
           const baseReference = coverageLarge?.reference
@@ -674,7 +674,11 @@ export default defineComponent({
               icon.aspectRatio[1]
             const height = iconScale * this.iconSize
             iconData.push({
-              key: warningId + Math.random(),
+              // Deterministic key: warningId is unique per warning, covIndex
+              // disambiguates the (rare) case where the same warning yields
+              // multiple coverage icons. Kept stable across renders so the
+              // element is not unnecessarily recreated.
+              key: `${warningId}-cov-${covIndex}`,
               x: `${reference[0] - width / 2}px`,
               y: `${reference[1] - height / 2}px`,
               width,
