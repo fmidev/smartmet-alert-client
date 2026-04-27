@@ -573,12 +573,22 @@ export default defineComponent({
                 )
                 if (identifier && iconSizes.length < maxWarningIcons) {
                   const warningData = warnings![identifier]
+                  // instanceKey is region+identifier(+m for the aggregated
+                  // "multiple" icon) so that sea-water-height icons which
+                  // reuse <mask>/<use>-bound ids still get globally unique
+                  // ids when several of them land on the same map.
                   const icon =
                     iconSizes.length === maxWarningIcons - 1 &&
                     regionWarnings.length > maxWarningIcons
-                      ? this.warningIcon({ type: MULTIPLE, severity: 0 })
+                      ? this.warningIcon(
+                          { type: MULTIPLE, severity: 0 },
+                          `${regionId}-${identifier}-m`
+                        )
                       : warningData
-                        ? this.warningIcon(warningData)
+                        ? this.warningIcon(
+                            warningData,
+                            `${regionId}-${identifier}`
+                          )
                         : null
                   if (!icon) return
                   const iconScale = icon.scale ? icon.scale : 1
@@ -667,7 +677,12 @@ export default defineComponent({
             if (iterIndex >= this.iconMaxIter) {
               reference = [baseReference[0], baseReference[1]]
             }
-            const icon = this.warningIcon(warning)
+            // instanceKey here mirrors the deterministic icon key below
+            // so coverage icons also get globally unique ids.
+            const icon = this.warningIcon(
+              warning,
+              `${warningId}-cov-${covIndex}`
+            )
             const iconScale = icon.scale ? icon.scale : 1
             const width =
               (iconScale * icon.aspectRatio[0] * this.iconSize) /
