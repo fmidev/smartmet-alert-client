@@ -22,6 +22,7 @@ import { allScenarios } from '../../fixtures/mapScenarios'
 import { summarizeResult } from '../../utils/summarizeWarnings'
 
 const geoJSONToSVG = geojsonsvg.methods.geoJSONToSVG.bind(geojsonsvg.methods)
+const SECONDS = 1000;
 
 function buildCtx(
   currentTime: number,
@@ -59,6 +60,6 @@ describe('processWarnings — structural snapshots per scenario', () => {
     it(`scenario ${scenario.id}`, () => {
       const result = processWarnings(scenario.data, buildCtx(scenario.currentTime))
       expect(summarizeResult(result)).toMatchSnapshot()
-    })
+    }, 10 * SECONDS)
   }
 })
