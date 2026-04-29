@@ -220,14 +220,14 @@ div.warning-map-status {
   position: absolute;
   margin-left: 15px;
   text-align: left;
-  z-index: 6;
+  z-index: 2;
   pointer-events: none;
 }
 
 div.data-providers {
   position: relative;
   text-align: right;
-  z-index: 7;
+  z-index: 3;
   pointer-events: none;
   padding-left: 50%;
   margin-top: -50px;

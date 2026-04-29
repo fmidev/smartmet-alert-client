@@ -442,7 +442,7 @@ onServerPrefetch(() => {
 
   *:focus {
     outline-offset: 2px;
-    z-index: 10;
+    z-index: 5;
   }
 
   .bold-text {

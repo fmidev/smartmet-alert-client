@@ -1225,6 +1225,7 @@ div.day-map-large {
 
 button.fmi-warnings-map-tool {
   position: absolute;
+  z-index: 3;
   right: 10px;
   height: 35px;
   width: 35px;
@@ -1359,7 +1360,7 @@ div.day-map-large
   bottom: 12px;
   left: -50px;
   min-width: $popup-width;
-  z-index: 9;
+  z-index: 2;
   cursor: default;
   pointer-events: auto;
 }
@@ -1401,14 +1402,14 @@ div.day-map-large
     left: 60px;
     margin-left: -11px;
     top: -11px;
-    z-index: 10;
+    z-index: 3;
   }
 
   .arrow::before {
     border: 10px solid transparent;
     left: -10px;
     top: -11px;
-    z-index: 9;
+    z-index: 2;
   }
 
   &.light-theme {
@@ -1470,7 +1471,7 @@ button.fmi-warnings-popup-closer {
 
   &#day-map-large-base-popup-closer {
     border-bottom: 0 none transparent;
-    z-index: 8;
+    z-index: 1;
     pointer-events: auto;
     outline: none !important;
   }
@@ -1794,7 +1795,7 @@ div.prevent-tooltip {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 9;
 }
 
 path.region-path {
