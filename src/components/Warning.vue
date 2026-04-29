@@ -249,8 +249,7 @@ div.symbol-list-text {
     font-family: 'Noto Sans', sans-serif;
     font-size: $font-size;
     forced-color-adjust: none;
-    height: 20px;
-    line-height: 20px;
+    line-height: 1;
   }
 }
 

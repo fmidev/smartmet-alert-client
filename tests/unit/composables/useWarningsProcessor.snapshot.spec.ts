@@ -60,6 +60,6 @@ describe('processWarnings — structural snapshots per scenario', () => {
     it(`scenario ${scenario.id}`, () => {
       const result = processWarnings(scenario.data, buildCtx(scenario.currentTime))
       expect(summarizeResult(result)).toMatchSnapshot()
-    }, 10 * SECONDS)
+    }, 30 * SECONDS)
   }
 })

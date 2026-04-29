@@ -141,8 +141,7 @@ div#gray-scale-select {
     font-family: $symbol-font-family;
     font-size: $font-size;
     forced-color-adjust: none;
-    height: 20px;
-    line-height: 20px;
+    line-height: 1;
   }
 }
 
