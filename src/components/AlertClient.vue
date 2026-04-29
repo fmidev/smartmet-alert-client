@@ -431,6 +431,7 @@ onServerPrefetch(() => {
 
 :deep(*) {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
