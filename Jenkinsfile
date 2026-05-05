@@ -82,6 +82,7 @@ pipeline {
                 sh "scp -rp dist/* ${deployUserAndHost}:${deployBaseDirectory}/${packageVersion}/"
             }
         }
+    }
 
     post {
         success {
