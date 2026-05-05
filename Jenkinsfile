@@ -43,7 +43,7 @@ pipeline {
                 sh "npm --version"
                 sh "node --version"
                 sh "rm --recursive --force node_modules"
-                sh "npm install"
+                sh "npm install --ignore-scripts"
             }
         }
 
@@ -53,10 +53,9 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Validate') {
             steps {
-                sh "docker stop docker_chromium_1 || true && docker rm docker_chromium_1 || true"
-                sh "npm test || echo \"Some or all tests failed\""
+                sh "npm run validate"
             }
         }
 
