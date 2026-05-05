@@ -3,8 +3,7 @@
     <div class="current-description-image-cell" aria-hidden="true">
       <div
         :class="`current-description-image warning-image symbol-image transform-rotate-${rotation} level-${input.severity} ${typeClass}`"
-        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`"
-      >
+        :aria-label="`${warningLevel} ${warningTitle.toLowerCase()}${warningDetails}`">
         <span
           :class="`symbol-text transform-rotate-${invertedRotation} region-warning-symbol-text`"
           >{{ input.text }}</span
@@ -14,8 +13,14 @@
     <div class="current-description-text-cell">
       <div class="description-info">
         <span
-          class="warning-valid bold-text"
-          v-html="`${warningTitle} — ${validText} ${input.validInterval}`" />
+          tabindex="0"
+          :aria-label="`${warningTitle}: ${validText} ${input.validIntervalAriaLabel}`">
+          <span
+            class="warning-valid bold-text"
+            aria-hidden="true">
+            {{ warningTitle }} — {{ validText }} {{ input.validInterval }}
+          </span>
+        </span>
         <span>
           {{ info }}
         </span>
@@ -38,42 +43,68 @@
   </div>
 </template>
 
-<script>
-import fields from '../mixins/fields'
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useFields } from '@/composables/useFields'
+import { useI18n } from '@/composables/useI18n'
+import type { Warning, Language } from '@/types'
 
-export default {
-  name: 'DescriptionWarning',
-  mixins: [fields, i18n, utils],
-  props: ['input', 'language', 'theme'],
-  computed: {
-    warningTitle() {
-      return this.t(this.input.type)
-    },
-    warningLevel() {
-      return this.t(`warningLevel${this.input.severity}`)
-    },
-    warningDetails() {
-      if (this.input.text == null || this.input.direction == null) {
-        return ''
-      }
-      return ` (${this.input.text} m/s ${this.t("fromDirection")} ${this.input.direction + 180}°)`
-    },
-    info() {
-      return this.input.info[this.language]
-    },
-    validText() {
-      return this.t('valid')
-    },
-    linkHidden() {
-      return this.input.link == null || this.input.link.length === 0
-    },
-    description() {
-      return this.t(`${this.input.type}DescriptionLevel${this.input.severity}`)
-    },
-  },
-}
+// Props
+const props = defineProps<{
+  input: Warning
+  language?: Language | string
+  theme?: string
+}>()
+
+// Composables
+const { typeClass, rotation, invertedRotation, severity } = useFields(
+  toRef(props, 'input')
+)
+const { t } = useI18n(toRef(props, 'language'))
+
+// Expose for testing
+defineExpose({
+  severity,
+})
+
+// Computed
+const warningTitle = computed((): string => {
+  return t(props.input.type).replace(/&shy;/g, '');
+})
+
+const warningLevel = computed((): string => {
+  return t(`warningLevel${props.input.severity}`)
+})
+
+const warningDetails = computed((): string => {
+  if (
+    props.input.text == null ||
+    props.input.text === '' ||
+    props.input.direction == null
+  ) {
+    return ''
+  }
+  return ` (${props.input.text} m/s ${t('fromDirection')} ${
+    props.input.direction + 180
+  }°)`
+})
+
+const info = computed((): string => {
+  const lang = props.language as Language
+  return props.input.info[lang] ?? ''
+})
+
+const validText = computed((): string => {
+  return t('valid')
+})
+
+const linkHidden = computed((): boolean => {
+  return props.input.link == null || props.input.link.length === 0
+})
+
+const description = computed((): string => {
+  return t(`${props.input.type}DescriptionLevel${props.input.severity}`)
+})
 </script>
 
 <style scoped lang="scss">
@@ -146,33 +177,56 @@ div.current-description-text-cell {
 }
 
 a.ext-link {
-  padding-right: 14px;
-  background: transparent url($ui-image-path + 'ext-link.gif') no-repeat center
-    right;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding-right: 20px;
   margin-right: 2px;
+  background-size: 16px 16px;
+  font-style: normal;
+  text-decoration: none;
 }
 
 .light-theme a.ext-link {
   color: $light-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-blue.svg');
+  border-bottom: 1px solid $light-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $dark-blue;
+  }
 }
 
 .dark-theme a.ext-link {
   color: $dark-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-white.svg');
+  border-bottom: 1px solid $dark-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $notification-color;
+  }
 }
 
 .light-gray-theme a.ext-link {
   color: $light-gray-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-blue.svg');
+  border-bottom: 1px solid $light-gray-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $black;
+  }
 }
 
 .dark-gray-theme a.ext-link {
   color: $dark-gray-ext-link-color;
+  background-image: url($ui-image-path + 'ext-link-white.svg');
+  border-bottom: 1px solid $dark-gray-ext-link-underground-color;
+  &:hover {
+    border-bottom-color: $white;
+  }
 }
 
 span.warning-valid {
   display: block;
   font-family: $font-family;
   font-size: $font-size;
-  font-weight: bold;
   margin-top: 0;
   margin-bottom: 5px;
 }

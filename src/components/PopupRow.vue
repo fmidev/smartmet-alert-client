@@ -26,19 +26,31 @@
   </div>
 </template>
 
-<script>
-import fields from '../mixins/fields'
+<script setup lang="ts">
+import { toRef } from 'vue'
+import { useFields } from '@/composables/useFields'
+import type { PopupRowInput } from '@/types'
 
-export default {
-  name: 'PopupRow',
-  mixins: [fields],
-  props: {
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-}
+// Props
+const props = withDefaults(
+  defineProps<{
+    input?: PopupRowInput
+  }>(),
+  {
+    input: () => ({
+      type: '',
+      severity: 0,
+      direction: 0,
+      text: '',
+      interval: '',
+    }),
+  }
+)
+
+// Composables
+const { typeClass, rotation, invertedRotation, severity } = useFields(
+  toRef(props, 'input')
+)
 </script>
 
 <style scoped lang="scss">

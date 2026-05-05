@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "id": 34,
+    "label": "2021-03-15 — March thaw / wind",
+    "source": "cap",
+    "description": "Spring transition",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2021/03-15/12-30-10Z-atom_fi-FI.xml",
+    "updateTimeIso": "2021-03-15T12:30:10Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2021-03-15T12:30:10Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-03-15T12:30:10Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2021-03-15T12:30:10Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-03-15T12:30:10Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486#municipality.148",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486",
+            "publication_time": "2021-03-15T14:30:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-03-15T14:30:10+02:00",
+            "effective_from": "2021-03-15T12:30:10.000Z",
+            "effective_until": "2021-03-15T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Ajokeli on huono aluksi lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.148",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486#municipality.890",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.6352210.164493498775187488842835693312741834486",
+            "publication_time": "2021-03-15T14:30:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-03-15T14:30:10+02:00",
+            "effective_from": "2021-03-15T12:30:10.000Z",
+            "effective_until": "2021-03-15T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Ajokeli on huono aluksi lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.890",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 2
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

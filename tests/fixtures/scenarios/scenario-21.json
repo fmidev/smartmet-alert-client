@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "id": 21,
+    "label": "2024-03-18 midday — spring storm systems",
+    "source": "cap",
+    "description": "Late winter / early spring precipitation and wind",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2024/03-18/12-44-10Z-atom_fi-FI.xml",
+    "updateTimeIso": "2024-03-18T12:44:10Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2024-03-18T12:44:10Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2024-03-18T12:44:10Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2024-03-18T12:44:10Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2024-03-18T12:44:10Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.171001882905659189013293982624986704178.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2024.6698650.171001882905659189013293982624986704178#sea_region.B1N",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.171001882905659189013293982624986704178",
+            "publication_time": "2024-03-18T14:44:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2024-03-18T14:44:10+02:00",
+            "effective_from": "2024-03-18T12:44:10.000Z",
+            "effective_until": "2024-03-18T17:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Etelän ja lounaan välistä tuulta aluksi 14 m/s.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 14,
+            "physical_unit": "m/s",
+            "physical_direction": 202,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B1N",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.273439665340940765294707945478572441763.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2024.6698650.273439665340940765294707945478572441763#municipality.890",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.273439665340940765294707945478572441763",
+            "publication_time": "2024-03-18T14:44:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2024-03-18T14:44:10+02:00",
+            "effective_from": "2024-03-18T12:44:10.000Z",
+            "effective_until": "2024-03-18T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Ajokeli on huono aluksi lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.890",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883.2",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883#county.19",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883",
+            "publication_time": "2024-03-18T14:44:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2024-03-18T14:44:10+02:00",
+            "effective_from": "2024-03-22T06:00:00.000Z",
+            "effective_until": "2024-03-22T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 30 % perjantaiaamusta perjantain ja lauantain väliseen yöhön lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.19",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883.3",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883#county.18",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883",
+            "publication_time": "2024-03-18T14:44:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2024-03-18T14:44:10+02:00",
+            "effective_from": "2024-03-22T06:00:00.000Z",
+            "effective_until": "2024-03-22T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 30 % perjantaiaamusta perjantain ja lauantain väliseen yöhön lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.18",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883.4",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883#county.17",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2024.6698650.235855920560272294985432150042347208883",
+            "publication_time": "2024-03-18T14:44:10+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2024-03-18T14:44:10+02:00",
+            "effective_from": "2024-03-22T06:00:00.000Z",
+            "effective_until": "2024-03-22T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Liikennesää: Huonon ajokelin todennäköisyys on 30 % perjantaiaamusta perjantain ja lauantain väliseen yöhön lumisateen vuoksi.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.17",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 5
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "id": 16,
+    "label": "WFS capture #18",
+    "source": "wfs",
+    "description": "Manually generated FMI WFS payload",
+    "updateTimeIso": "2021-03-18T04:41:40.457Z"
+  },
+  "data": {
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "totalFeatures": 2,
+      "features": [
+        {
+          "type": "Feature",
+          "id": "weather_finland_active_all.fid--1afa37c0_177aebada81_-7d08",
+          "geometry": {
+            "type": "GeometryCollection",
+            "geometries": [
+              {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      222194.54208620975,
+                      6806826.908953972
+                    ],
+                    [
+                      224647.0234556662,
+                      6811932.983563852
+                    ],
+                    [
+                      229848.1022867348,
+                      6813432.895163403
+                    ],
+                    [
+                      273653.00309674797,
+                      6801868.671414612
+                    ],
+                    [
+                      281302.8114955117,
+                      6802757.082040118
+                    ],
+                    [
+                      292331.22744363383,
+                      6807418.87302777
+                    ],
+                    [
+                      303732.82188085595,
+                      6806900.55304793
+                    ],
+                    [
+                      315390.90398181754,
+                      6803141.929694746
+                    ],
+                    [
+                      322878.7174281097,
+                      6798691.676319931
+                    ],
+                    [
+                      328182.29288065364,
+                      6793230.469219354
+                    ],
+                    [
+                      330306.3187216787,
+                      6787107.120133016
+                    ],
+                    [
+                      328594.7326599887,
+                      6780897.935332026
+                    ],
+                    [
+                      324745.2976797513,
+                      6775790.430612082
+                    ],
+                    [
+                      312686.2510912295,
+                      6768938.924620749
+                    ],
+                    [
+                      296474.9925483129,
+                      6766203.678734359
+                    ],
+                    [
+                      274968.75260514277,
+                      6767631.788113111
+                    ],
+                    [
+                      253678.8469182902,
+                      6773384.289948088
+                    ],
+                    [
+                      235769.8063330379,
+                      6782790.2942146165
+                    ],
+                    [
+                      228275.08789365244,
+                      6789550.384796011
+                    ],
+                    [
+                      224415.83913425892,
+                      6795187.257770626
+                    ],
+                    [
+                      222345.6417986647,
+                      6801252.051766916
+                    ],
+                    [
+                      222194.54208620975,
+                      6806826.908953972
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          "geometry_name": "geom",
+          "properties": {
+            "identifier": "urn:x-finnish-meterological-institute:warning:traffic-weather:190c7171-fc09-42e1-9819-5228441ecd521616042508981:1616042508970#4c1ab290-1593-4163-ae10-bc598d399db1",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:x-finnish-meterological-institute:warning:publication:f976cd9f-0be4-4c0d-9c67-875a266e1ca1",
+            "publication_time": "2021-03-18T04:41:40.457Z",
+            "causes": "freezing-rain freezing-drizzle",
+            "context_extension": null,
+            "actualization_probability": 40,
+            "creation_time": "2021-03-11T07:08:39.137Z",
+            "effective_from": "2021-03-18T06:00:00Z",
+            "effective_until": "2021-03-19T00:18:13.760Z",
+            "info_en": "Traffic weather warning: Bad road conditions are expected from the morning on because of freezing rain and freezing drizzle.",
+            "info_fi": "Liikennes&auml;&auml;: Ajokeli muuttuu huonoksi aamusta alkaen j&auml;&auml;t&auml;v&auml;n vesisateen ja j&auml;&auml;t&auml;v&auml;n tihkusateen vuoksi.",
+            "info_sv": "Trafikv&auml;dret: V&auml;glaget blir d&aring;ligt fr&aring;n och med morgonen p.g.a. isbildande regn och isbildande duggregn.",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "representative_x": 279317.51967692614,
+            "representative_y": 6784748.836620758,
+            "reference": "1200",
+            "coverage_references": "http://gml.fmi.fi/static/2021/FI/county.xml?c=1#county.5, http://gml.fmi.fi/static/2021/FI/county.xml?c=11#county.6, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.7, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.9, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.10, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.11, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.12, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.13, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.14, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.18, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.1, http://gml.fmi.fi/static/2021/FI/county.xml?c=1#county.2, http://gml.fmi.fi/static/2021/FI/county.xml?c=20#county.4, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.8, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.15, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.16, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.21, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.47, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.148, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.240, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.320, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.241, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.261, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.273, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.305, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.498, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.583, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.854, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.614, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.615, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.683, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.698, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.732, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.742, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.751, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.758, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.832, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.845, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.851, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.890, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.976"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "weather_finland_active_all.fid--1afa37c0_177aebada81_-7d07",
+          "geometry": {
+            "type": "GeometryCollection",
+            "geometries": [
+              {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      345170.73109472566,
+                      6817752.687889321
+                    ],
+                    [
+                      346264.52207028156,
+                      6835218.179381422
+                    ],
+                    [
+                      351270.8880443106,
+                      6853141.015612544
+                    ],
+                    [
+                      357895.7689495238,
+                      6866808.513050594
+                    ],
+                    [
+                      366288.8694112048,
+                      6877935.806745594
+                    ],
+                    [
+                      373983.313311103,
+                      6884133.700661656
+                    ],
+                    [
+                      382305.0822984143,
+                      6887205.991727006
+                    ],
+                    [
+                      394651.99628636654,
+                      6887968.409692522
+                    ],
+                    [
+                      399038.14783391426,
+                      6894114.117616893
+                    ],
+                    [
+                      409603.44357480487,
+                      6921188.82441746
+                    ],
+                    [
+                      414278.47790812654,
+                      6925494.545463292
+                    ],
+                    [
+                      418237.2989030264,
+                      6925081.34844252
+                    ],
+                    [
+                      424305.90621814143,
+                      6920988.640131001
+                    ],
+                    [
+                      427938.45419845154,
+                      6916029.878124264
+                    ],
+                    [
+                      430268.341096487,
+                      6907897.682987776
+                    ],
+                    [
+                      430127.4026534114,
+                      6898381.381971101
+                    ],
+                    [
+                      427954.13483867905,
+                      6887865.74481718
+                    ],
+                    [
+                      423047.1431900012,
+                      6873900.659414275
+                    ],
+                    [
+                      406215.1689340355,
+                      6840936.624408944
+                    ],
+                    [
+                      386565.4485864815,
+                      6810280.762794727
+                    ],
+                    [
+                      378666.47218047606,
+                      6801036.097040126
+                    ],
+                    [
+                      370289.92092967115,
+                      6794365.407200249
+                    ],
+                    [
+                      363954.56091187324,
+                      6792140.964718517
+                    ],
+                    [
+                      357775.6139824871,
+                      6793147.592536739
+                    ],
+                    [
+                      352484.8657642503,
+                      6797298.915243461
+                    ],
+                    [
+                      347781.82334441604,
+                      6805160.1398241855
+                    ],
+                    [
+                      345170.73109472566,
+                      6817752.687889321
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          "geometry_name": "geom",
+          "properties": {
+            "identifier": "urn:x-finnish-meterological-institute:warning:traffic-weather:190c7171-fc09-42e1-9819-5228441ecd521616042508981:1616042508970#d3b93688-4088-4d7e-836e-ad8d146700c3",
+            "warning_context": "traffic-weather",
+            "publication_id": "urn:x-finnish-meterological-institute:warning:publication:f976cd9f-0be4-4c0d-9c67-875a266e1ca1",
+            "publication_time": "2021-03-18T04:41:40.457Z",
+            "causes": "strong-wind",
+            "context_extension": null,
+            "actualization_probability": 70,
+            "creation_time": "2021-03-11T07:10:05.922Z",
+            "effective_from": "2021-03-18T06:00:00Z",
+            "effective_until": "2021-03-18T18:00:00Z",
+            "info_en": "Traffic weather warning: Very bad road conditions are expected from the morning on because of strong wind.",
+            "info_fi": "Liikennes&auml;&auml;: Ajokeli muuttuu eritt&auml;in huonoksi aamusta alkaen voimakkaan tuulen vuoksi.",
+            "info_sv": "Trafikv&auml;dret: V&auml;glaget blir mycket d&aring;ligt fr&aring;n och med morgonen p.g.a. h&aring;rd vind.",
+            "severity": "level-3",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "representative_x": 385294.1222979682,
+            "representative_y": 6858357.578704226,
+            "reference": "1201",
+            "coverage_references": "http://gml.fmi.fi/static/2021/FI/county.xml?c=1#county.5, http://gml.fmi.fi/static/2021/FI/county.xml?c=18#county.6, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.7, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.9, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.10, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.11, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.12, http://gml.fmi.fi/static/2021/FI/county.xml?c=15#county.13, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.14, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.18, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.1, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.2, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.4, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.8, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.15, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.16, http://gml.fmi.fi/static/2021/FI/county.xml?c=0#county.21, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.47, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.148, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.240, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.320, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.241, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.261, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.273, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.305, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.498, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.583, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.854, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.614, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.615, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.683, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.698, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.732, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.742, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.751, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.758, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.832, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.845, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.851, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.890, http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.976"
+          }
+        }
+      ],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "urn:ogc:def:crs:EPSG::3067"
+        }
+      }
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "totalFeatures": 0,
+      "features": [],
+      "crs": null
+    },
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "totalFeatures": 1,
+      "features": [
+        {
+          "type": "Feature",
+          "id": "weather_update_time.fid--1afa37c0_177aebada81_-7d05",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-03-18T04:41:40.457Z"
+          }
+        }
+      ],
+      "crs": null
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "totalFeatures": 1,
+      "features": [
+        {
+          "type": "Feature",
+          "id": "flood_update_time.fid--1afa37c0_177aebada81_-7cbf",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-02-11T04:05:12.373Z"
+          }
+        }
+      ],
+      "crs": null
+    }
+  }
+}

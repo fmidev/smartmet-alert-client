@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "id": 27,
+    "label": "SYKE current floods — snapshot 2026-03-28T07:41:54Z",
+    "source": "syke",
+    "description": "Active flood warnings from SYKE at snapshot time",
+    "sourceUrl": "https://wwwi2.ymparisto.fi/i2/CAP/SYKE_CAP_current.atom",
+    "updateTimeIso": "2026-03-28T07:41:54Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2026-03-28T07:41:54Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2026-03-28T07:41:54Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2026-03-28T07:41:54Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2026-03-28T07:41:54Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "flood_syke.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "vesistomallit@ymparisto.fi,2.49.0.0.246.1.FI.260328074154.WSFS4782,2026-03-28T09:41:54+02:00#municipality.751",
+            "sent": "2026-03-28T07:41:54.000Z",
+            "description": "%5B%22Tulvakeskus%2FSYKE%3A%20J%C3%A4%C3%A4padot%20voivat%20aiheuttaa%20jokien%20ja%20purojen%20tulvimista%20alavimmille%20pelloille%20ja%20paikallisteille.%22%5D",
+            "language": "fi-FI",
+            "event": "Tulva",
+            "expires": "2026-03-29T20:59:59.000Z",
+            "onset": "2026-03-27T22:00:00.000Z",
+            "severity": "MODERATE",
+            "area_desc": "%5B%22Simo%22%5D",
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality.xml#municipality.751",
+            "order_index": 1
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "flood_syke.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "vesistomallit@ymparisto.fi,2.49.0.0.246.1.FI.260328074154.WSFS4782,2026-03-28T09:41:54+02:00#municipality_139_208_244_317_425_436_483_494_535_563_564_625_626_630_678_69_691_71_72_746_748_785_791_859_889_9.977",
+            "sent": "2026-03-28T07:41:54.000Z",
+            "description": "%5B%22Tulvakeskus%2FSYKE%3A%20J%C3%A4%C3%A4padot%20voivat%20aiheuttaa%20jokien%20ja%20purojen%20tulvimista%20alavimmille%20pelloille%20ja%20paikallisteille.%22%5D",
+            "language": "fi-FI",
+            "event": "Tulva",
+            "expires": "2026-03-29T20:59:59.000Z",
+            "onset": "2026-03-27T22:00:00.000Z",
+            "severity": "MODERATE",
+            "area_desc": "%5B%22Pohjois-Pohjanmaan%20l%C3%A4nsiosa%22%5D",
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/municipality_139_208_244_317_425_436_483_494_535_563_564_625_626_630_678_69_691_71_72_746_748_785_791_859_889_9.xml#municipality_139_208_244_317_425_436_483_494_535_563_564_625_626_630_678_69_691_71_72_746_748_785_791_859_889_9.977",
+            "order_index": 2
+          }
+        }
+      ],
+      "totalFeatures": 2
+    }
+  }
+}

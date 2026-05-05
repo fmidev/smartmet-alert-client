@@ -21,10 +21,11 @@
           :opacity="path.opacity" />
         <path
           v-for="path in seaBorders"
-          class="border-path"
           :key="path.key"
+          class="border-path"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -91,14 +92,16 @@
           :key="path.key"
           :stroke="strokeColor"
           :stroke-width="path.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
           v-for="path in landBorders"
-          class="border-path"
           :key="path.key"
+          class="border-path"
           :stroke="strokeColor"
-          :stroke-width="1.5*path.strokeWidth"
+          :stroke-width="1.5 * Number(path.strokeWidth)"
+          :stroke-opacity="strokeOpacity"
           :d="path.d"
           fill-opacity="0" />
         <path
@@ -106,6 +109,7 @@
           :key="coverage.key"
           :stroke="strokeColor"
           :stroke-width="coverage.strokeWidth"
+          :stroke-opacity="strokeOpacity"
           :fill="coverage.fill"
           :d="coverage.d"
           :fill-opacity="coverage.fillOpacity"
@@ -115,126 +119,142 @@
   </div>
 </template>
 
-<script>
-import { onMounted, onUnmounted, ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onUnmounted, toRef } from 'vue'
+import type { DayRegions, WarningsMap, Theme } from '@/types'
+import { useMapPaths } from '@/composables/useMapPaths'
 
-import config from '../mixins/config'
-import utils from '../mixins/utils'
+// ============================================================================
+// Props
+// ============================================================================
 
-export default {
-  name: 'MapSmall',
-  mixins: [config, utils],
-  props: {
-    index: {
-      type: Number,
-    },
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    geometryId: {
-      type: Number,
-    },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-  },
-  setup() {
-    const windowWidth = ref(window.innerWidth)
-    const updateWidth = () => {
-      windowWidth.value = window.innerWidth
-    }
-    onMounted(() => {
-      window.addEventListener('resize', updateWidth)
-    })
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateWidth)
-    })
-    return { windowWidth }
-  },
-  data() {
-    return {
-      coverageRegions: {},
-      coverageWarnings: [],
-      pathsNeeded: false,
-    }
-  },
-  computed: {
-    size() {
-      return 'Small'
-    },
-    strokeColor() {
-     return 'DarkSlateGray'
-    },
-    strokeWidth() {
-      return 0.6
-    },
-  },
-  watch: {
-    windowWidth() {
-      this.pathsNeeded = this.isFullMode()
-    },
-    input() {
-      this.coverageRegions = {}
-      this.coverageWarnings = []
-    },
-  },
-  mounted() {
-    this.pathsNeeded = this.isFullMode()
-  },
-  methods: {
-    paths(options) {
-      return this.pathsNeeded
-        ? this.regionIds.reduce((regions, regionId) => {
-            if (
-              this.geometries[this.geometryId][regionId].pathSmall &&
-              (this.geometries[this.geometryId][regionId].type ===
-                options.type) ===
-                (this.geometries[this.geometryId][regionId].subType == null)
-            ) {
-              const visualization = this.regionVisualization(regionId)
-              if (
-                options.severity == null ||
-                visualization.severity === options.severity
-              ) {
-                regions.push({
-                  key: `${regionId}${this.size}${this.index}Path`,
-                  fill: this.loading
-                    ? this.colors[this.theme].missing
-                    : visualization.color,
-                  d: visualization.geom.pathSmall,
-                  opacity: visualization.visible ? '1' : '0',
-                  strokeWidth:
-                    this.geometries[this.geometryId][regionId].type === 'sea' &&
-                    this.geometries[this.geometryId][regionId].subType !==
-                      'lake'
-                      ? this.strokeWidth
-                      : 0,
-                })
-              }
-            }
-            return regions
-          }, [])
-        : []
-    },
-    isFullMode() {
-      return true;
-    },
-  },
+const props = withDefaults(
+  defineProps<{
+    index?: number
+    input?: DayRegions
+    visibleWarnings?: string[]
+    warnings?: WarningsMap | null
+    geometryId?: number
+    loading?: boolean
+    theme?: Theme | string
+  }>(),
+  {
+    index: 0,
+    input: () => ({}) as DayRegions,
+    visibleWarnings: () => [],
+    warnings: null,
+    geometryId: 2021,
+    loading: true,
+    theme: 'light-theme',
+  }
+)
+
+// ============================================================================
+// Local State
+// ============================================================================
+
+const windowWidth = ref<number>(
+  typeof window !== 'undefined' ? window.innerWidth : 0
+)
+const pathsNeeded = ref<boolean>(false)
+const strokeWidthValue = ref<number>(0.6)
+const strokeOpacity = ref<string>('0.5')
+
+// ============================================================================
+// Computed refs for composable
+// ============================================================================
+
+const size = computed<'Large' | 'Small'>(() => 'Small')
+const indexRef = toRef(props, 'index')
+const inputRef = toRef(props, 'input')
+const warningsRef = toRef(props, 'warnings')
+const visibleWarningsRef = toRef(props, 'visibleWarnings')
+const geometryIdRef = toRef(props, 'geometryId')
+const themeRef = toRef(props, 'theme')
+const loadingRef = toRef(props, 'loading')
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const {
+  strokeColor,
+  bluePaths,
+  greenPaths,
+  yellowPaths,
+  orangePaths,
+  redPaths,
+  overlayPaths,
+  landBorders,
+  seaBorders,
+  yellowCoverages,
+  orangeCoverages,
+  redCoverages,
+  overlayCoverages,
+  coverageRegions,
+  coverageWarnings,
+} = useMapPaths({
+  size,
+  index: indexRef,
+  input: inputRef,
+  warnings: warningsRef,
+  visibleWarnings: visibleWarningsRef,
+  geometryId: geometryIdRef,
+  theme: themeRef,
+  loading: loadingRef,
+  strokeWidth: strokeWidthValue,
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+function updateWidth(): void {
+  windowWidth.value = window.innerWidth
 }
+
+function isFullMode(): boolean {
+  return true
+}
+
+// ============================================================================
+// Watchers
+// ============================================================================
+
+watch(windowWidth, () => {
+  pathsNeeded.value = isFullMode()
+})
+
+watch(
+  () => props.input,
+  () => {
+    coverageRegions.value = {}
+    coverageWarnings.value = []
+  }
+)
+
+// ============================================================================
+// Lifecycle
+// ============================================================================
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth)
+  pathsNeeded.value = isFullMode()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth)
+})
+
+// ============================================================================
+// Expose for testing
+// ============================================================================
+
+defineExpose({
+  size,
+  strokeWidth: strokeWidthValue,
+  pathsNeeded,
+})
 </script>
 
 <style scoped lang="scss">

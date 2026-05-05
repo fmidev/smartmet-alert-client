@@ -34,121 +34,157 @@
   </div>
 </template>
 
-<script>
-import i18n from '../mixins/i18n'
-import utils from '../mixins/utils'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+import { twoDigits } from '@/composables/useUtils'
 import MapLarge from './MapLarge.vue'
+import type { Day, DayRegions, WarningsMap, Theme, Language } from '@/types'
 
-export default {
-  name: 'DayLarge',
-  components: { MapLarge },
-  mixins: [i18n, utils],
-  props: {
-    index: {
-      type: Number,
-    },
-    input: {
-      type: Object,
-      default: () => ({}),
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    regions: {
-      type: Object,
-    },
-    geometryId: {
-      type: Number,
-    },
-    staticDays: {
-      type: Boolean,
-      default: true,
-    },
-    timeOffset: {
-      type: Number,
-      default: 0,
-    },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    theme: {
-      type: String,
-    },
-    language: {
-      type: String,
-    },
-    spinnerEnabled: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  computed: {
-    warningsTitle() {
-      return this.t('warnings') || ''
-    },
-    updatedTitle() {
-      return this.t('updated') || ''
-    },
-    atTime() {
-      return this.t('atTime') || ''
-    },
-    warningsDate() {
-      if (
-        this.input.day == null ||
-        this.input.month == null ||
-        this.input.year == null
-      ) {
-        return ''
-      }
-      if (this.staticDays) {
-        return `${this.input.day}.${this.input.month}.${this.input.year}`
-      }
-      const date = new Date(
-        this.input.year,
-        this.input.month - 1,
-        this.input.day
-      )
-      const nextDate = new Date(date.getTime())
-      nextDate.setDate(nextDate.getDate() + 1)
-      const offset = this.timeOffset
-      const offsetDate = new Date(date.getTime())
-      offsetDate.setMilliseconds(offset)
-      const hours = this.twoDigits(offsetDate.getHours())
-      const minutes = this.twoDigits(offsetDate.getMinutes())
-      return `${this.input.day}.${this.input.month}.${this.input.year} ${
-        this.atTime
-      } ${hours}:${minutes} –
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    index: number
+    input?: Day
+    visibleWarnings?: string[]
+    warnings?: WarningsMap | null
+    regions?: DayRegions
+    geometryId?: number
+    staticDays?: boolean
+    timeOffset?: number
+    loading?: boolean
+    theme?: Theme | string
+    language?: Language
+    spinnerEnabled?: boolean
+  }>(),
+  {
+    input: () => ({}) as Day,
+    visibleWarnings: () => [],
+    warnings: null,
+    regions: undefined,
+    geometryId: undefined,
+    staticDays: true,
+    timeOffset: 0,
+    loading: true,
+    theme: undefined,
+    language: undefined,
+    spinnerEnabled: true,
+  }
+)
+
+// ============================================================================
+// Emits
+// ============================================================================
+
+const emit = defineEmits<{
+  loaded: [value: boolean]
+}>()
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { t } = useI18n(toRef(() => props.language))
+
+// ============================================================================
+// Computed Properties
+// ============================================================================
+
+const warningsTitle = computed<string>(() => {
+  return t('warnings') || ''
+})
+
+const updatedTitle = computed<string>(() => {
+  return t('updated') || ''
+})
+
+const atTime = computed<string>(() => {
+  return t('atTime') || ''
+})
+
+const warningsDate = computed<string>(() => {
+  if (
+    props.input?.day == null ||
+    props.input?.month == null ||
+    props.input?.year == null
+  ) {
+    return ''
+  }
+
+  if (props.staticDays) {
+    return `${props.input.day}.${props.input.month}.${props.input.year}`
+  }
+
+  const date = new Date(
+    props.input.year,
+    props.input.month - 1,
+    props.input.day
+  )
+  const nextDate = new Date(date.getTime())
+  nextDate.setDate(nextDate.getDate() + 1)
+
+  const offset = props.timeOffset
+  const offsetDate = new Date(date.getTime())
+  offsetDate.setMilliseconds(offset)
+
+  const hours = twoDigits(offsetDate.getHours())
+  const minutes = twoDigits(offsetDate.getMinutes())
+
+  return `${props.input.day}.${props.input.month}.${props.input.year} ${
+    atTime.value
+  } ${hours}:${minutes} –
       <br> ${nextDate.getDate()}.${
         nextDate.getMonth() + 1
-      }.${nextDate.getFullYear()} ${this.atTime} ${hours}:${minutes}`
-    },
-    updatedDate() {
-      return this.input.updatedDate || ''
-    },
-    updatedTime() {
-      return this.input.updatedTime || ''
-    },
-    dataProviderFirst() {
-      return this.t('dataProviderFirst')
-    },
-    dataProviderSecond() {
-      return this.t('dataProviderSecond')
-    },
-  },
-  methods: {
-    onLoaded(loaded) {
-      if (loaded) {
-        this.$emit('loaded', true)
-      }
-    },
-  },
+      }.${nextDate.getFullYear()} ${atTime.value} ${hours}:${minutes}`
+})
+
+const updatedDate = computed<string>(() => {
+  return props.input?.updatedDate || ''
+})
+
+const updatedTime = computed<string>(() => {
+  return props.input?.updatedTime || ''
+})
+
+const dataProviderFirst = computed<string>(() => {
+  return t('dataProviderFirst')
+})
+
+const dataProviderSecond = computed<string>(() => {
+  return t('dataProviderSecond')
+})
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+const onLoaded = (loaded: boolean): void => {
+  if (loaded) {
+    emit('loaded', true)
+  }
 }
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  warningsTitle,
+  updatedTitle,
+  atTime,
+  warningsDate,
+  updatedDate,
+  updatedTime,
+  dataProviderFirst,
+  dataProviderSecond,
+  onLoaded,
+  // Props exposed for tests
+  input: computed(() => props.input),
+  spinnerEnabled: computed(() => props.spinnerEnabled),
+})
 </script>
 
 <style scoped lang="scss">
@@ -184,14 +220,14 @@ div.warning-map-status {
   position: absolute;
   margin-left: 15px;
   text-align: left;
-  z-index: 6;
+  z-index: 2;
   pointer-events: none;
 }
 
 div.data-providers {
   position: relative;
   text-align: right;
-  z-index: 15;
+  z-index: 3;
   pointer-events: none;
   padding-left: 50%;
   margin-top: -50px;

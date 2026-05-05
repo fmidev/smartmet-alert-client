@@ -149,8 +149,16 @@ test/svg
 # Rollup Plugin Visualizer
 stats.html
 
-# Aider
-.aider.*
-
 # Build
 dist
+
+# Coding agents
+AGENTS.md
+
+# Map snapshot review artifacts (regenerated every test run)
+tests/__artifacts__/
+
+# Raw CAP atom feeds cached while building tests/fixtures/scenarios.
+# The derived JSON envelopes in scenarios/ are committed; the raw XML is
+# just a local cache rebuilt on demand by scripts/build-cap-scenarios.ts.
+tests/fixtures/cap-raw/

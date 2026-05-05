@@ -1,179 +1,241 @@
 <template>
   <div class="row date-selector" :class="theme">
-    <b-tabs
-      id="fmi-warnings-date-selector"
-      v-model="day"
-      :lazy="true"
-      :no-fade="true"
-      nav-class="fmi-warnings-date-nav"
-      nav-wrapper-class="fmi-warnings-date-wrapper"
-      :justified="true">
-      <b-tab
-        v-for="(n, i) in numberOfDays"
-        :key="i"
-        :active="i === day"
-        :title-link-class="['day', `day${i}`]">
-        <template #title>
-          <DaySmall
+    <div id="fmi-warnings-date-selector" class="tabs">
+      <div class="fmi-warnings-date-wrapper">
+        <ul class="nav nav-tabs fmi-warnings-date-nav" role="tablist">
+          <li
+            v-for="(_n, i) in numberOfDays"
+            :key="i"
+            class="nav-item"
+            role="presentation">
+            <button
+              :class="['nav-link', 'day', `day${i}`, { active: i === day }]"
+              type="button"
+              role="tab"
+              :aria-selected="i === day"
+              @click="day = i">
+              <DaySmall
+                :index="i"
+                :input="input[i]"
+                :visible-warnings="visibleWarnings"
+                :warnings="warnings"
+                :regions="regions?.[i]"
+                :geometry-id="geometryId"
+                :active="i === day"
+                :static-days="staticDays"
+                :loading="loading"
+                :theme="theme"
+                :language="language" />
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content">
+        <div
+          v-for="(_n, i) in numberOfDays"
+          :key="i"
+          :class="['tab-pane', { active: i === day, show: i === day }]"
+          role="tabpanel">
+          <DayLarge
+            v-if="i === day"
             :index="i"
             :input="input[i]"
             :visible-warnings="visibleWarnings"
             :warnings="warnings"
-            :regions="regions[i]"
+            :regions="regions?.[i]"
             :geometry-id="geometryId"
-            :active="i === day"
             :static-days="staticDays"
+            :time-offset="timeOffset"
             :loading="loading"
             :theme="theme"
-            :language="language" />
-        </template>
-        <DayLarge
-          :index="i"
-          :input="input[i]"
-          :visible-warnings="visibleWarnings"
-          :warnings="warnings"
-          :regions="regions[i]"
-          :geometry-id="geometryId"
-          :static-days="staticDays"
-          :time-offset="timeOffset"
-          :loading="loading"
-          :theme="theme"
-          :language="language"
-          :spinner-enabled="spinnerEnabled"
-          @loaded="onLoaded" />
-      </b-tab>
-    </b-tabs>
+            :language="language"
+            :spinner-enabled="spinnerEnabled"
+            @loaded="onLoaded" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  onUpdated,
+  getCurrentInstance,
+} from 'vue'
+import { useKeyCodes } from '@/composables/useKeyCodes'
+import { NUMBER_OF_DAYS } from '@/composables/useUtils'
 import DayLarge from './DayLarge.vue'
 import DaySmall from './DaySmall.vue'
-import keycodes from '../mixins/keycodes'
+import type { Day, RegionsData, WarningsMap, Theme, Language } from '@/types'
 
-export default {
-  name: 'Days',
-  mixins: [keycodes],
-  components: {
-    DaySmall,
-    DayLarge,
-  },
-  props: {
-    input: {
-      type: Array,
-      default: () => [],
-    },
-    visibleWarnings: {
-      type: Array,
-      default: () => [],
-    },
-    selectedDay: {
-      type: Number,
-      default: 0,
-      validator(value) {
-        return [0, 1, 2, 3, 4].includes(value)
-      },
-    },
-    staticDays: {
-      type: Boolean,
-      default: true,
-    },
-    timeOffset: {
-      type: Number,
-      default: 0,
-    },
-    warnings: {
-      type: Object,
-      default: null,
-    },
-    regions: Array,
-    geometryId: Number,
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-    language: {
-      type: String,
-    },
-    spinnerEnabled: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  data() {
-    return {
-      day: this.selectedDay,
-    }
-  },
-  computed: {
-    numberOfDays() {
-      return 5
-    },
-  },
-  watch: {
-    day(newSelectedDay) {
-      this.onDaySelected(newSelectedDay)
-    },
-  },
-  mounted() {
-    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
-      (button) => {
-        button.addEventListener('keydown', this.switchDay, true)
-      }
-    )
-  },
-  beforeUnmount() {
-    const button = Array.from(this.$el.querySelectorAll('button.day')).forEach(
-      (button) => {
-        button.removeEventListener('keydown', this.switchDay, true)
-      }
-    )
-  },
-  updated() {
-    Array.from(this.$el.querySelectorAll('button.day')).forEach((button) => {
-      if (button.classList.contains('active')) {
-        button.removeAttribute('tabindex')
-      } else {
-        button.setAttribute('tabindex', -1)
-      }
-    })
-  },
-  methods: {
-    onDaySelected(newSelectedDay) {
-      this.$emit('daySelected', newSelectedDay)
-    },
-    onLoaded(loaded) {
-      if (loaded) {
-        this.$emit('loaded', true)
-      }
-    },
-    switchDay(event) {
-      switch (event.keyCode) {
-        case this.KEY_CODE_LEFT:
-          this.day = Math.max(this.day - 1, 0)
-          event.preventDefault()
-          break
-        case this.KEY_CODE_RIGHT:
-          this.day = Math.min(this.day + 1, 4)
-          event.preventDefault()
-          break
-        case this.KEY_CODE_HOME:
-          this.day = 0
-          event.preventDefault()
-          break
-        case this.KEY_CODE_END:
-          this.day = 4
-          event.preventDefault()
-          break
-      }
-      this.$el.querySelector(`button.day.day${this.day}`).focus()
-    },
-  },
+// ============================================================================
+// Props
+// ============================================================================
+
+const props = withDefaults(
+  defineProps<{
+    input?: Day[]
+    visibleWarnings?: string[]
+    selectedDay?: 0 | 1 | 2 | 3 | 4
+    staticDays?: boolean
+    timeOffset?: number
+    warnings?: WarningsMap | null
+    regions?: RegionsData
+    geometryId?: number
+    loading?: boolean
+    theme?: Theme | string
+    language?: Language
+    spinnerEnabled?: boolean
+  }>(),
+  {
+    input: () => [],
+    visibleWarnings: () => [],
+    selectedDay: 0,
+    staticDays: true,
+    timeOffset: 0,
+    warnings: null,
+    regions: undefined,
+    geometryId: undefined,
+    loading: true,
+    theme: 'light-theme',
+    language: undefined,
+    spinnerEnabled: true,
+  }
+)
+
+// ============================================================================
+// Emits
+// ============================================================================
+
+const emit = defineEmits<{
+  daySelected: [day: number]
+  loaded: [value: boolean]
+}>()
+
+// ============================================================================
+// Composables
+// ============================================================================
+
+const { KEY_CODE_LEFT, KEY_CODE_RIGHT, KEY_CODE_HOME, KEY_CODE_END } =
+  useKeyCodes()
+
+// ============================================================================
+// State
+// ============================================================================
+
+const day = ref<number>(props.selectedDay)
+const instance = getCurrentInstance()
+
+// ============================================================================
+// Computed
+// ============================================================================
+
+const numberOfDays = computed<number>(() => NUMBER_OF_DAYS)
+
+// ============================================================================
+// Methods
+// ============================================================================
+
+const onDaySelected = (newSelectedDay: number): void => {
+  emit('daySelected', newSelectedDay)
 }
+
+const onLoaded = (loaded: boolean): void => {
+  if (loaded) {
+    emit('loaded', true)
+  }
+}
+
+const switchDay = (event: KeyboardEvent): void => {
+  switch (event.keyCode) {
+    case KEY_CODE_LEFT:
+      day.value = Math.max(day.value - 1, 0)
+      event.preventDefault()
+      break
+    case KEY_CODE_RIGHT:
+      day.value = Math.min(day.value + 1, 4)
+      event.preventDefault()
+      break
+    case KEY_CODE_HOME:
+      day.value = 0
+      event.preventDefault()
+      break
+    case KEY_CODE_END:
+      day.value = 4
+      event.preventDefault()
+      break
+  }
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  el?.querySelector<HTMLButtonElement>(`button.day.day${day.value}`)?.focus()
+}
+
+// ============================================================================
+// Watchers
+// ============================================================================
+
+watch(day, (newSelectedDay) => {
+  onDaySelected(newSelectedDay)
+})
+
+// ============================================================================
+// Lifecycle Hooks
+// ============================================================================
+
+onMounted(() => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  if (el) {
+    Array.from(el.querySelectorAll<HTMLButtonElement>('button.day')).forEach(
+      (button) => {
+        button.addEventListener('keydown', switchDay, true)
+      }
+    )
+  }
+})
+
+onBeforeUnmount(() => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  if (el) {
+    Array.from(el.querySelectorAll<HTMLButtonElement>('button.day')).forEach(
+      (button) => {
+        button.removeEventListener('keydown', switchDay, true)
+      }
+    )
+  }
+})
+
+onUpdated(() => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  if (el) {
+    Array.from(el.querySelectorAll<HTMLButtonElement>('button.day')).forEach(
+      (button) => {
+        if (button.classList.contains('active')) {
+          button.removeAttribute('tabindex')
+        } else {
+          button.setAttribute('tabindex', '-1')
+        }
+      }
+    )
+  }
+})
+
+// ============================================================================
+// Expose for tests
+// ============================================================================
+
+defineExpose({
+  day,
+  numberOfDays,
+  switchDay,
+  onDaySelected,
+  onLoaded,
+  // Props exposed for tests
+  input: computed(() => props.input),
+})
 </script>
 
 <style scoped lang="scss">
@@ -210,8 +272,17 @@ div#fmi-warnings-date-selector.tabs {
   flex-wrap: nowrap;
 }
 
+:deep(
+    div.fmi-warnings-date-wrapper
+      > ul.nav.nav-tabs.fmi-warnings-date-nav
+      > li.nav-item
+  ) {
+  flex: 1;
+  margin: 0;
+}
+
 :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
-  width: $day-small-width;
+  width: 100%;
   height: $day-small-height;
   border-radius: 0;
   border: 0;
@@ -222,8 +293,8 @@ div#fmi-warnings-date-selector.tabs {
 }
 
 :deep(button.day div.date-selector-cell) {
-  height: $day-small-height;
-  overflow: hidden;
+  min-height: $day-small-height;
+  overflow: visible;
 }
 
 :deep(button.day) {
@@ -298,7 +369,7 @@ div#fmi-warnings-date-selector.tabs {
 }
 
 :deep(div.tab-content) {
-  margin-top: 4px;
+  margin-top: 20px;
 }
 
 @media (max-width: 767px) {
@@ -317,7 +388,8 @@ div#fmi-warnings-date-selector.tabs {
 
   :deep(button.day div.date-selector-cell) {
     height: $day-small-mobile-height;
+    min-height: $day-small-mobile-height;
+    max-height: $day-small-mobile-height;
   }
-
 }
 </style>

@@ -1,0 +1,291 @@
+{
+  "meta": {
+    "id": 60,
+    "label": "2023-09-10 — early autumn wind",
+    "source": "cap",
+    "description": "Early-autumn weather",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2023/09-10/11-31-18Z-atom_fi-FI.xml",
+    "updateTimeIso": "2023-09-10T11:31:18Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2023-09-10T11:31:18Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2023-09-10T11:31:18Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2023-09-10T11:31:18Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2023-09-10T11:31:18Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529#county.2",
+            "warning_context": "rain",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-13T00:00:00.000Z",
+            "effective_until": "2023-09-13T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Sadevaroitus: Runsaiden sateiden todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikon ja torstain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 50,
+            "physical_unit": "mm/d",
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.2",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529#county.6",
+            "warning_context": "rain",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-13T00:00:00.000Z",
+            "effective_until": "2023-09-13T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Sadevaroitus: Runsaiden sateiden todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikon ja torstain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 50,
+            "physical_unit": "mm/d",
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.6",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529.2",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529#county.13",
+            "warning_context": "rain",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-13T00:00:00.000Z",
+            "effective_until": "2023-09-13T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Sadevaroitus: Runsaiden sateiden todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikon ja torstain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 50,
+            "physical_unit": "mm/d",
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.13",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529.3",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529#county.4",
+            "warning_context": "rain",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.31924350266234541289213434572535285529",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-13T00:00:00.000Z",
+            "effective_until": "2023-09-13T21:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Sadevaroitus: Runsaiden sateiden todennäköisyys on 20 % tiistain ja keskiviikon välisestä yöstä keskiviikon ja torstain väliseen yöhön.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 50,
+            "physical_unit": "mm/d",
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.4",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287.4",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287#sea_region.B7E",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-14T00:00:00.000Z",
+            "effective_until": "2023-09-14T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Kovan pohjoistuulen todennäköisyys on 30 % keskiviikon ja torstain välisestä yöstä torstai-iltaan.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 14,
+            "physical_unit": "m/s",
+            "physical_direction": 0,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B7E",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287.5",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287#sea_region.B4W",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-14T00:00:00.000Z",
+            "effective_until": "2023-09-14T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Kovan pohjoistuulen todennäköisyys on 30 % keskiviikon ja torstain välisestä yöstä torstai-iltaan.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 14,
+            "physical_unit": "m/s",
+            "physical_direction": 0,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B4W",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287.6",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287#sea_region.B7W",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.69173138908841589055383235090185491287",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-14T00:00:00.000Z",
+            "effective_until": "2023-09-14T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Kovan tuulen varoitus: Kovan pohjoistuulen todennäköisyys on 30 % keskiviikon ja torstain välisestä yöstä torstai-iltaan.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 14,
+            "physical_unit": "m/s",
+            "physical_direction": 0,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B7W",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.151718083073865610797836704194064847035.7",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2023.21814278.151718083073865610797836704194064847035#sea_region.B1N",
+            "warning_context": "sea-wind",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2023.21814278.151718083073865610797836704194064847035",
+            "publication_time": "2023-09-10T14:31:18+03:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2023-09-10T14:31:18+03:00",
+            "effective_from": "2023-09-10T11:31:18.000Z",
+            "effective_until": "2023-09-10T13:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Huomautus veneilijöille: Etelän ja lounaan välistä tuulta aluksi 12 m/s.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": 12,
+            "physical_unit": "m/s",
+            "physical_direction": 202,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B1N",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 8
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

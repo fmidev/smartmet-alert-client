@@ -16,65 +16,69 @@
         @click="toggleGrayScale"
         @keydown.enter="toggleGrayScale"
         @keydown.space="toggleGrayScale">
-          <span>
-            {{ toggleText }}
-          </span>
-        </div>
+        <span>
+          {{ toggleText }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import i18n from '../mixins/i18n'
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
-export default {
-  name: 'GrayScaleToggle',
-  mixins: [i18n],
-  props: {
-    language: {
-      type: String,
-      default: import.meta.env.VITE_LANGUAGE || 'fi',
-    },
-    grayScaleSelector: {
-      type: Boolean,
-      default: false,
-    },
-    theme: {
-      type: String,
-      default: 'light-theme',
-    },
-  },
-  computed: {
-    grayScale() {
-      if (this.theme == null || this.theme.length === 0) {
-        return false
-      }
-      const themeParts = this.theme.split('-')
-      return themeParts.length > 1 && themeParts[1] === 'gray'
-    },
-    grayScaleText() {
-      return this.t('grayScale')
-    },
-    toggleText() {
-      return this.grayScale ? this.t('toggleOn') : this.t('toggleOff')
-    },
-  },
-  methods: {
-    toggleGrayScale(event) {
-      event.preventDefault()
-      if (this.theme == null || this.theme.length === 0) {
-        return
-      }
-      const baseTheme = this.theme.split('-')[0]
-      this.$emit(
-        'themeChanged',
-        this.grayScale ? baseTheme : `${baseTheme}-gray`
-      )
-    },
-    preventEvents(event) {
-      event.preventDefault()
-    },
-  },
+// Props
+const props = withDefaults(
+  defineProps<{
+    language?: string
+    grayScaleSelector?: boolean
+    theme?: string
+  }>(),
+  {
+    language: import.meta.env.VITE_LANGUAGE || 'fi',
+    grayScaleSelector: false,
+    theme: 'light-theme',
+  }
+)
+
+// Emits
+const emit = defineEmits<{
+  themeChanged: [theme: string]
+}>()
+
+// Composables
+const { t } = useI18n(toRef(props, 'language'))
+
+// Computed
+const grayScale = computed((): boolean => {
+  if (props.theme == null || props.theme.length === 0) {
+    return false
+  }
+  const themeParts = props.theme.split('-')
+  return themeParts.length > 1 && themeParts[1] === 'gray'
+})
+
+const grayScaleText = computed((): string => {
+  return t('grayScale')
+})
+
+const toggleText = computed((): string => {
+  return grayScale.value ? t('toggleOn') : t('toggleOff')
+})
+
+// Methods
+function toggleGrayScale(event: Event): void {
+  event.preventDefault()
+  if (props.theme == null || props.theme.length === 0) {
+    return
+  }
+  const baseTheme = props.theme.split('-')[0] ?? 'light'
+  emit('themeChanged', grayScale.value ? baseTheme : `${baseTheme}-gray`)
+}
+
+function preventEvents(event: Event): void {
+  event.preventDefault()
 }
 </script>
 
@@ -111,9 +115,8 @@ div#gray-scale-select-container {
 }
 
 div#gray-scale-select {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 100%;
   height: $symbol-list-select-height;
   margin: 0;
@@ -138,6 +141,7 @@ div#gray-scale-select {
     font-family: $symbol-font-family;
     font-size: $font-size;
     forced-color-adjust: none;
+    line-height: 1;
   }
 }
 

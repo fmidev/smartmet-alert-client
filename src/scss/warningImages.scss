@@ -1,8 +1,9 @@
-@import "./constants.scss";
+@use 'sass:string';
+@import './constants.scss';
 
 @for $i from 0 through 72 {
   $angle: 5 * $i;
-  $rotationDegree: unquote($angle + 'deg');
+  $rotationDegree: string.unquote($angle + 'deg');
   .transform-rotate-#{$angle} {
     transform: rotate($rotationDegree);
   }
@@ -101,7 +102,11 @@ div.symbol-image {
 }
 
 @media (forced-colors: active) {
-  .level-0, .level-1, .level-2, .level-3, .level-4 {
+  .level-0,
+  .level-1,
+  .level-2,
+  .level-3,
+  .level-4 {
     forced-color-adjust: none;
   }
 }

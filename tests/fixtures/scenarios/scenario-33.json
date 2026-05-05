@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "id": 33,
+    "label": "2021-02-10 — cold-wave peak",
+    "source": "cap",
+    "description": "Deep Feb cold spell",
+    "sourceUrl": "https://alerts.fmi.fi/cap/feed/2021/02-10/12-38-43Z-atom_fi-FI.xml",
+    "updateTimeIso": "2021-02-10T12:38:43Z"
+  },
+  "data": {
+    "weather_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2021-02-10T12:38:43Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-02-10T12:38:43Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "flood_update_time": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "update_time.2021-02-10T12:38:43Z",
+          "geometry": null,
+          "properties": {
+            "update_time": "2021-02-10T12:38:43Z"
+          }
+        }
+      ],
+      "totalFeatures": 1
+    },
+    "weather_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.21462277858057486927372050959989136150.0",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.21462277858057486927372050959989136150#sea_region.B7E",
+            "warning_context": "sea-icing",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.21462277858057486927372050959989136150",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T23:00:00.000Z",
+            "effective_until": "2021-02-11T12:03:04.000Z",
+            "info_en": "",
+            "info_fi": "Jäätämisvaroitus: Jään kertyminen alusten rakenteisiin on yöstä alkaen kohtalaista.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B7E",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257.1",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257#sea_region.B3N",
+            "warning_context": "sea-icing",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T12:38:43.000Z",
+            "effective_until": "2021-02-10T18:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Jäätämisvaroitus: Jään kertyminen alusten rakenteisiin on aluksi kohtalaista.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B3N",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257.2",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257#sea_region.B3S",
+            "warning_context": "sea-icing",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.209813146980954372372691570217409596257",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T12:38:43.000Z",
+            "effective_until": "2021-02-10T18:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Jäätämisvaroitus: Jään kertyminen alusten rakenteisiin on aluksi kohtalaista.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B3S",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423.3",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423#sea_region.B3N",
+            "warning_context": "sea-water-height",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-13T09:00:00.000Z",
+            "effective_until": "2021-02-13T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Vedenkorkeusvaroitus: Lauantaina päivällä merivesi on 30 % todennäköisyydellä matalalla.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B3N",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423.4",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423#sea_region.B2",
+            "warning_context": "sea-water-height",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-13T09:00:00.000Z",
+            "effective_until": "2021-02-13T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Vedenkorkeusvaroitus: Lauantaina päivällä merivesi on 30 % todennäköisyydellä matalalla.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B2",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423.5",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423#sea_region.B3S",
+            "warning_context": "sea-water-height",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.34787991921347806676355520197219774423",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-13T09:00:00.000Z",
+            "effective_until": "2021-02-13T15:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Vedenkorkeusvaroitus: Lauantaina päivällä merivesi on 30 % todennäköisyydellä matalalla.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/sea_region.xml#sea_region.B3S",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063.6",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063#county.11",
+            "warning_context": "cold-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T23:00:00.000Z",
+            "effective_until": "2021-02-12T07:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Pakkasvaroitus: Lähivuorokauden aikana esiintyy kireää pakkasta.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.11",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063.7",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063#county.12",
+            "warning_context": "cold-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T23:00:00.000Z",
+            "effective_until": "2021-02-12T07:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Pakkasvaroitus: Lähivuorokauden aikana esiintyy kireää pakkasta.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.12",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063.8",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063#county.18",
+            "warning_context": "cold-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T23:00:00.000Z",
+            "effective_until": "2021-02-12T07:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Pakkasvaroitus: Lähivuorokauden aikana esiintyy kireää pakkasta.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.18",
+            "coverage_references": ""
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063.9",
+          "geometry": null,
+          "properties": {
+            "identifier": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063#county.13",
+            "warning_context": "cold-weather",
+            "publication_id": "urn:oid:2.49.0.1.246.0.0.2021.3501523.256579803269227885248891934328997915063",
+            "publication_time": "2021-02-10T14:38:43+02:00",
+            "causes": null,
+            "context_extension": null,
+            "actualization_probability": null,
+            "creation_time": "2021-02-10T14:38:43+02:00",
+            "effective_from": "2021-02-10T23:00:00.000Z",
+            "effective_until": "2021-02-12T07:00:00.000Z",
+            "info_en": "",
+            "info_fi": "Pakkasvaroitus: Lähivuorokauden aikana esiintyy kireää pakkasta.",
+            "info_sv": "",
+            "severity": "level-2",
+            "physical_reference": null,
+            "physical_value": null,
+            "physical_unit": null,
+            "physical_direction": null,
+            "geom": null,
+            "representative_x": null,
+            "representative_y": null,
+            "reference": "http://gml.fmi.fi/static/2021/FI/county.xml#county.13",
+            "coverage_references": ""
+          }
+        }
+      ],
+      "totalFeatures": 10
+    },
+    "flood_finland_active_all": {
+      "type": "FeatureCollection",
+      "features": [],
+      "totalFeatures": 0
+    }
+  }
+}

@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install
+        env:
+          NPM_CONFIG_IGNORE_SCRIPTS: true
+        run: |
+          npm install --ignore-scripts
+
+      - name: Validate
+        run: |
+          npm run validate

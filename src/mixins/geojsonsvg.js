@@ -2933,7 +2933,7 @@ export default {
     },
     copyDataset(dataset) {
       const d2 = extendUtil({}, dataset)
-      d2.layers = d2.layers.map(this.copyLayer)
+      d2.layers = d2.layers.map((lyr) => this.copyLayer(lyr))
       if (d2.arcs) {
         d2.arcs = d2.arcs.getFilteredCopy()
       }
@@ -2960,7 +2960,7 @@ export default {
       })
     },
     cloneShapes(arr) {
-      return Array.isArray(arr) ? arr.map(this.cloneShape) : null
+      return Array.isArray(arr) ? arr.map((shp) => this.cloneShape(shp)) : null
     },
     pluck(arr, key) {
       return arr.map(function (obj) {
@@ -3140,7 +3140,9 @@ export default {
           svg += obj.value
         }
         if (obj.children) {
-          svg += obj.children.map(this.stringify).join(joinStr)
+          svg += obj.children
+            .map((child) => this.stringify(child))
+            .join(joinStr)
         }
         svg += joinStr + '</' + obj.tag + '>'
       } else {
