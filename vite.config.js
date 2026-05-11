@@ -5,7 +5,6 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
 import dts from 'vite-plugin-dts'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import pkg from './package.json'
 
@@ -31,17 +30,7 @@ export default defineConfig({
             outDir: 'dist/vue',
           }),
         ]
-      : [
-          viteStaticCopy({
-            targets: [
-              {
-                src: 'dist/index.mjs',
-                dest: './',
-                rename: 'index.js',
-              },
-            ],
-          }),
-        ]),
+      : []),
   ],
   build:
     buildMode === 'vue'
@@ -83,35 +72,55 @@ export default defineConfig({
           cssCodeSplit: false,
           cssMinify: true,
           chunkSizeWarningLimit: 1500,
+          lib: {
+            entry: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
+            name: 'SmartMetAlertClient',
+            formats: ['es', 'iife'],
+          },
           rollupOptions: {
-            output: {
-              entryFileNames: 'index.mjs',
-              compact: true,
-              inlineDynamicImports: false,
-              manualChunks: (id) => {
-                // XML parsers as separate chunk
-                if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
-                  return 'xml-parser'
-                }
-                // Locale files as separate chunks
-                if (id.includes('/locales/')) {
-                  const match = id.match(/locales\/(\w+)\.json/)
-                  if (match) {
-                    return `locale-${match[1]}`
+            output: [
+              {
+                format: 'es',
+                entryFileNames: 'index.mjs',
+                chunkFileNames: '[name]-[hash].js',
+                compact: true,
+                inlineDynamicImports: false,
+                manualChunks: (id) => {
+                  // XML parsers as separate chunk
+                  if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
+                    return 'xml-parser'
                   }
-                }
-                // Core vendor libraries
-                if (id.includes('node_modules')) {
-                  if (id.includes('vue')) {
-                    return 'vendor'
+                  // Locale files as separate chunks
+                  if (id.includes('/locales/')) {
+                    const match = id.match(/locales\/(\w+)\.json/)
+                    if (match) {
+                      return `locale-${match[1]}`
+                    }
                   }
-                }
+                  // Core vendor libraries
+                  if (id.includes('node_modules')) {
+                    if (id.includes('vue')) {
+                      return 'vendor'
+                    }
+                  }
+                },
+                generatedCode: {
+                  constBindings: true,
+                  objectShorthand: true,
+                },
               },
-              generatedCode: {
-                constBindings: true,
-                objectShorthand: true,
+              {
+                format: 'iife',
+                name: 'SmartMetAlertClient',
+                entryFileNames: 'index.js',
+                compact: true,
+                inlineDynamicImports: true,
+                generatedCode: {
+                  constBindings: true,
+                  objectShorthand: true,
+                },
               },
-            },
+            ],
           },
         },
   css: {
@@ -129,5 +138,13 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    // In lib mode Vite does NOT auto-replace process.env.NODE_ENV, so Vue 3's
+    // dev-mode guards end up referencing `process` in the browser. The Vue
+    // library build (consumed by another app's bundler) leaves it alone so the
+    // consumer decides; the web component build is consumed as-is and must
+    // hard-code production.
+    ...(buildMode !== 'vue'
+      ? { 'process.env.NODE_ENV': JSON.stringify('production') }
+      : {}),
   },
 })
