@@ -5,6 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
 import dts from 'vite-plugin-dts'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 import pkg from './package.json'
 
@@ -30,7 +31,17 @@ export default defineConfig({
             outDir: 'dist/vue',
           }),
         ]
-      : []),
+      : [
+          viteStaticCopy({
+            targets: [
+              {
+                src: 'dist/index.mjs',
+                dest: './',
+                rename: 'index.js',
+              },
+            ],
+          }),
+        ]),
   ],
   build:
     buildMode === 'vue'
@@ -112,7 +123,7 @@ export default defineConfig({
               {
                 format: 'iife',
                 name: 'SmartMetAlertClient',
-                entryFileNames: 'index.js',
+                entryFileNames: 'index.iife.js',
                 compact: true,
                 inlineDynamicImports: true,
                 generatedCode: {
