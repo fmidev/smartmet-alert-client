@@ -1,16 +1,17 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.7.1",
+  "version": "4.7.2",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
+  "unpkg": "dist/index.iife.js",
+  "jsdelivr": "dist/index.iife.js",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.mjs"
     },
     "./vue": {
       "import": "./dist/vue/index.mjs",
