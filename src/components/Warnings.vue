@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings-view" :class="theme">
+  <div id="fmi-warnings-view" :class="theme" :lang="language">
     <div
       v-if="input.length > 0"
       :class="['row', 'symbol-list-main-row', 'show-text-row']">
@@ -419,7 +419,11 @@ div#fmi-warnings-view {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
-  word-break: break-word;
+  // See Warning.vue: overflow-wrap instead of word-break so &shy; hints win,
+  // plus automatic hyphenation (with -webkit- prefix for Safari) for the
+  // interpolated level texts, scoped by the :lang on #fmi-warnings-view.
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
   hyphens: auto;
 }
 
