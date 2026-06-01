@@ -239,4 +239,10 @@ div.data-providers {
     height: $map-large-height;
   }
 }
+
+@media (width < 576px) {
+  div.data-providers {
+    margin-right: 2px;
+  }
+}
 </style>

@@ -484,6 +484,11 @@ div#fmi-warnings {
   width: 700px;
   padding: 0;
   margin-bottom: 20px;
+  // Prevent iOS Safari from auto-inflating font sizes on orientation change
+  // (e.g. the data-providers text growing in landscape); 100% keeps the user's
+  // own pinch-zoom working, unlike `none`.
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 
   h2.valid-warnings {
     text-align: left;
