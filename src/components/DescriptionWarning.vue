@@ -69,7 +69,7 @@ defineExpose({
 
 // Computed
 const warningTitle = computed((): string => {
-  return t(props.input.type).replace(/&shy;/g, '');
+  return t(props.input.type).replace(/&shy;/g, '')
 })
 
 const warningLevel = computed((): string => {

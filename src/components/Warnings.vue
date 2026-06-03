@@ -419,12 +419,11 @@ div#fmi-warnings-view {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
-  // See Warning.vue: overflow-wrap instead of word-break so &shy; hints win,
-  // plus automatic hyphenation (with -webkit- prefix for Safari) for the
-  // interpolated level texts, scoped by the :lang on #fmi-warnings-view.
-  overflow-wrap: break-word;
-  -webkit-hyphens: auto;
-  hyphens: auto;
+  // Break words only at explicit &shy;, never via automatic hyphenation
+  // or arbitrary character breaks.
+  overflow-wrap: normal;
+  -webkit-hyphens: manual;
+  hyphens: manual;
 }
 
 hr {

@@ -220,14 +220,14 @@ div.symbol-list-text {
   height: $symbol-list-line-height;
   max-width: 141px;
   padding-right: 10px;
-  // Break only when a word genuinely overflows, instead of mid-word at any
-  // character (word-break: break-word), which overrode the &shy; hints.
-  overflow-wrap: break-word;
-  // Automatic hyphenation where the browser has a dictionary for :lang;
-  // -webkit- prefix is required for Safari. &shy; hints in the locale
-  // strings still apply and provide the preferred compound-word breaks.
-  -webkit-hyphens: auto;
-  hyphens: auto;
+  // Break words ONLY at the explicit soft hyphens (&shy;) placed at compound-
+  // word junctions in the locale strings — never via automatic hyphenation
+  // (hyphens: auto varies by browser/dictionary) nor arbitrary character breaks
+  // (overflow-wrap: break-word). This keeps wrapping deterministic across
+  // browsers. -webkit- prefix required for Safari.
+  overflow-wrap: normal;
+  -webkit-hyphens: manual;
+  hyphens: manual;
 }
 
 .symbol-list-select-container {
