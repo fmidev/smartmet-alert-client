@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.7.8",
+  "version": "4.7.9",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -155,8 +155,8 @@
   },
   "homepage": "https://github.com/fmidev/smartmet-alert-client#readme",
   "engines": {
-    "npm": ">=8.0.0",
-    "node": ">=14.0.0"
+    "npm": ">=11.12.1",
+    "node": ">=26.0.0"
   },
   "keywords": [
     "smartmet",
