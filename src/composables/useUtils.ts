@@ -362,7 +362,11 @@ export interface CoveragePathData {
  * Parse coverage data from SVG string
  */
 export function coverageData(coverage: string): CoveragePathData[] {
-  const doc = new DOMParser().parseFromString(coverage, 'text/xml')
+  // xmldom's Document type is not assignable to the DOM lib Node used by xpath
+  const doc = new DOMParser().parseFromString(
+    coverage,
+    'text/xml'
+  ) as unknown as Node
   const paths = xpath.select(
     '//*[name()="svg"]//*[local-name()="path" and @id!="bbox"]',
     doc
