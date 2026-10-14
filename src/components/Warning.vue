@@ -84,6 +84,7 @@ const title = computed((): string => {
 // Title stripped of HTML entities (e.g. the &shy; hyphenation hints) for use
 // in aria-labels, where the raw entity text would otherwise be read aloud.
 const plainTitle = computed((): string => {
+  // eslint-disable-next-line sonarjs/super-linear-regex -- short titles only
   return title.value.replace(/&[^;]*;/g, '')
 })
 

@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Vite dev server (`npm run serve` previews a build)
 - `npm run build` — `vue-tsc --noEmit`, then web component build (`dist/`), then Vue library build (`dist/vue/`)
 - `npm run build:ce` / `npm run build:vue` — build only one of the two targets (`BUILD_MODE=vue` switches Vite config)
-- `npm run lint` / `lint:fix` — ESLint over `src` (`.js,.ts,.vue`); Prettier is enforced via ESLint (no semicolons, single quotes)
+- `npm run lint` / `lint:fix` — ESLint (flat config in `eslint.config.js`) over `src`. Prettier (no semicolons, single quotes; config in `package.json`) is not run by ESLint — use `npx prettier --check <file>`
 - `npm run typecheck` — `vue-tsc --noEmit`
 - `npm run validate` — lint + typecheck + tests; this is the husky pre-commit hook
 - `npm run test:run` — run Vitest once; `npm test` is watch mode

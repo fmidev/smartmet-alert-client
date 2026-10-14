@@ -184,7 +184,6 @@ const regions = ref<RegionsData>(regionsDefault())
 const parents = ref<ParentsMap>({})
 const legend = ref<LegendItem[]>([])
 const timeOffset = ref(0)
-// eslint-disable-next-line no-undef
 const version = __APP_VERSION__
 const errors = ref<string[]>([])
 
