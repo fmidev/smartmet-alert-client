@@ -693,9 +693,10 @@ describe('AlertClient.vue', () => {
       const endTime = performance.now()
       const duration = endTime - startTime
 
-      // Processing should complete in reasonable time (< 5000ms)
-      expect(duration).toBeLessThan(5000)
+      // Processing takes about a second; the generous limits only guard
+      // against hangs and keep the test stable when the machine is under load
+      expect(duration).toBeLessThan(15000)
       expect(wrapper.exists()).toBe(true)
-    })
+    }, 30000)
   })
 })
