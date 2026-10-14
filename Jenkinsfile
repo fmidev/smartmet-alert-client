@@ -14,7 +14,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'nodejs-26'
+        nodejs 'nodejs-22'
     }
 
     options {
