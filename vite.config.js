@@ -7,7 +7,7 @@ import banner from 'vite-plugin-banner'
 import dts from 'vite-plugin-dts'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
-import pkg from './package.json'
+import pkg from './package.json' with { type: 'json' }
 
 // Check build mode: 'vue' for library build, default for web component
 const buildMode = process.env.BUILD_MODE
@@ -37,7 +37,7 @@ export default defineConfig({
               {
                 src: 'dist/index.mjs',
                 dest: './',
-                rename: 'index.js',
+                rename: { stripBase: true, name: 'index.js' },
               },
             ],
           }),
@@ -50,7 +50,6 @@ export default defineConfig({
           target: 'es2020',
           outDir: 'dist/vue',
           sourcemap: false,
-          minify: 'esbuild',
           cssCodeSplit: false,
           cssMinify: true,
           copyPublicDir: false,
@@ -59,16 +58,13 @@ export default defineConfig({
             name: 'SmartMetAlertClient',
             formats: ['es'],
             fileName: () => 'index.mjs',
+            cssFileName: 'style',
           },
-          rollupOptions: {
+          rolldownOptions: {
             external: ['vue'],
             output: {
               globals: {
                 vue: 'Vue',
-              },
-              generatedCode: {
-                constBindings: true,
-                objectShorthand: true,
               },
             },
           },
@@ -79,7 +75,6 @@ export default defineConfig({
           outDir: 'dist',
           assetsDir: '',
           sourcemap: false,
-          minify: 'esbuild',
           cssCodeSplit: false,
           cssMinify: true,
           chunkSizeWarningLimit: 1500,
@@ -88,14 +83,12 @@ export default defineConfig({
             name: 'SmartMetAlertClient',
             formats: ['es', 'iife'],
           },
-          rollupOptions: {
+          rolldownOptions: {
             output: [
               {
                 format: 'es',
                 entryFileNames: 'index.mjs',
                 chunkFileNames: '[name]-[hash].js',
-                compact: true,
-                inlineDynamicImports: false,
                 manualChunks: (id) => {
                   // XML parsers as separate chunk
                   if (id.includes('@xmldom/xmldom') || id.includes('xpath')) {
@@ -115,21 +108,12 @@ export default defineConfig({
                     }
                   }
                 },
-                generatedCode: {
-                  constBindings: true,
-                  objectShorthand: true,
-                },
               },
               {
                 format: 'iife',
                 name: 'SmartMetAlertClient',
                 entryFileNames: 'index.iife.js',
-                compact: true,
-                inlineDynamicImports: true,
-                generatedCode: {
-                  constBindings: true,
-                  objectShorthand: true,
-                },
+                codeSplitting: false,
               },
             ],
           },
