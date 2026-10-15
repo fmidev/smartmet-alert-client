@@ -5,10 +5,9 @@ import {
   warningType,
   regionFromReference,
   relativeCoverageFromReference,
-  toTimeZone,
-  msSinceStartOfDay,
   validInterval,
 } from '@/composables/useUtils'
+import { toTimeZone, msSinceStartOfDay } from '@/composables/useTimeZone'
 
 describe('useUtils composable - pure functions', () => {
   describe('uncapitalize', () => {

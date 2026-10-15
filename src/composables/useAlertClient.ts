@@ -13,7 +13,7 @@
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import crossFetch from 'cross-fetch'
 import { useConfig } from '@/composables/useConfig'
-import { parseDateInTimeZone } from '@/composables/useUtils'
+import { parseDateInTimeZone } from '@/composables/useTimeZone'
 import type { Language, WarningsData } from '@/types'
 
 // ============================================================================

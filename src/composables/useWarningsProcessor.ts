@@ -54,13 +54,15 @@ import {
   REGION_SEA,
   uncapitalize,
   twoDigits,
-  toTimeZone,
   validInterval,
   validIntervalAriaLabel,
-  msSinceStartOfDay,
-  startOfDayInTimeZone,
   coverageData,
 } from './useUtils'
+import {
+  toTimeZone,
+  msSinceStartOfDay,
+  dayBoundaries,
+} from './useTimeZone'
 import he from 'he'
 
 // ============================================================================
@@ -196,44 +198,47 @@ function getWarningText(properties: Record<string, unknown>): string {
 }
 
 /**
+ * Boundaries of the days (UTC timestamps, one more than the number of days)
+ * that warnings are assigned to. They are the same for all warnings, so they
+ * are calculated once for each processing.
+ */
+interface DayWindows {
+  /** Calendar days, from midnight to midnight */
+  daily: number[]
+  /** Days that start at the time of day of the reference time */
+  timed: number[]
+}
+
+/**
+ * The time that the first day is counted from
+ */
+function referenceTimeOf(
+  updatedAt: number | null,
+  currentTime: number,
+  startFrom: string
+): number {
+  return startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
+}
+
+/**
  * Calculate effective days for a warning
  */
 function calculateEffectiveDays(
   start: string,
   end: string,
   dailyWarning: boolean,
-  updatedAt: number | null,
-  currentTime: number,
-  startFrom: string,
-  timeOffset: number,
-  timeZone: string,
-  locale: string
+  dayWindows: DayWindows
 ): boolean[] {
-  const referenceTime =
-    startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
+  const boundaries = dailyWarning ? dayWindows.daily : dayWindows.timed
+  const startTime = new Date(start).getTime()
+  const endTime = new Date(end).getTime()
 
-  return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const offset = dailyWarning ? 0 : timeOffset
-    const startOfDay = startOfDayInTimeZone(
-      referenceTime,
-      index,
-      timeZone,
-      locale,
-      offset
+  return boundaries
+    .slice(0, NUMBER_OF_DAYS)
+    .map(
+      (startOfDay, index) =>
+        startTime < (boundaries[index + 1] as number) && endTime > startOfDay
     )
-    const startOfNextDay = startOfDayInTimeZone(
-      referenceTime,
-      index + 1,
-      timeZone,
-      locale,
-      offset
-    )
-
-    return (
-      new Date(start).getTime() < startOfNextDay &&
-      new Date(end).getTime() > startOfDay
-    )
-  })
 }
 
 /**
@@ -291,10 +296,7 @@ function createWeatherWarning(
   geometryId: string,
   geometries: GeometryCollection,
   dailyWarningTypes: string[],
-  updatedAt: number | null,
-  currentTime: number,
-  startFrom: string,
-  timeOffset: number,
+  dayWindows: DayWindows,
   timeZone: string,
   locale: string,
   t: (key: string) => string
@@ -333,12 +335,7 @@ function createWeatherWarning(
       properties[EFFECTIVE_FROM] as string,
       properties[EFFECTIVE_UNTIL] as string,
       dailyWarningTypes.includes(type),
-      updatedAt,
-      currentTime,
-      startFrom,
-      timeOffset,
-      timeZone,
-      locale
+      dayWindows
     ),
     validInterval: validInterval(
       properties[EFFECTIVE_FROM] as string,
@@ -373,10 +370,7 @@ function createWeatherWarning(
 function createFloodWarning(
   warning: GeoJSONFeature,
   dailyWarningTypes: string[],
-  updatedAt: number | null,
-  currentTime: number,
-  startFrom: string,
-  timeOffset: number,
+  dayWindows: DayWindows,
   timeZone: string,
   locale: string,
   t: (key: string) => string,
@@ -415,12 +409,7 @@ function createFloodWarning(
       properties[ONSET] as string,
       properties[EXPIRES] as string,
       dailyWarningTypes.includes(FLOOD_LEVEL_TYPE),
-      updatedAt,
-      currentTime,
-      startFrom,
-      timeOffset,
-      timeZone,
-      locale
+      dayWindows
     ),
     validInterval: validInterval(
       properties[ONSET] as string,
@@ -452,8 +441,7 @@ function createFloodWarning(
 function createDays(
   warnings: WarningsMap,
   updatedAt: number | null,
-  currentTime: number,
-  startFrom: string,
+  dayWindows: DayWindows,
   timeZone: string,
   locale: string
 ): Day[] {
@@ -465,12 +453,9 @@ function createDays(
     ? `${twoDigits(updatedAtTz.hour)}:${twoDigits(updatedAtTz.minute)}`
     : ''
 
-  const referenceTime =
-    startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
-
   return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
     const moment = toTimeZone(
-      startOfDayInTimeZone(referenceTime, index, timeZone, locale),
+      dayWindows.daily[index] as number,
       timeZone,
       locale
     )
@@ -731,7 +716,6 @@ export function processWarnings(
 ): HandleMapWarningsResult & { updatedAt: number | null; timeOffset: number } {
   const warnings: WarningsMap = {}
   const parents: ParentsMap = {}
-  let updatedAt: number | null = null
   let timeOffset = 0
 
   // Process update times
@@ -771,7 +755,7 @@ export function processWarnings(
     .reverse()
 
   const firstUpdateTime = allUpdateTimes[0]
-  updatedAt =
+  const updatedAt: number | null =
     allUpdateTimes.length > 0 && firstUpdateTime != null
       ? firstUpdateTime
       : null
@@ -783,6 +767,31 @@ export function processWarnings(
     }
   }
 
+  const referenceTime = referenceTimeOf(
+    updatedAt,
+    ctx.currentTime,
+    ctx.startFrom
+  )
+  const daily = dayBoundaries(
+    referenceTime,
+    NUMBER_OF_DAYS,
+    ctx.timeZone,
+    ctx.locale
+  )
+  const dayWindows: DayWindows = {
+    daily,
+    timed:
+      timeOffset === 0
+        ? daily
+        : dayBoundaries(
+            referenceTime,
+            NUMBER_OF_DAYS,
+            ctx.timeZone,
+            ctx.locale,
+            timeOffset
+          ),
+  }
+
   // Create warning factories
   const createWarnings: Record<string, (warning: GeoJSONFeature) => Warning> = {
     [WEATHER_WARNINGS]: (warning: GeoJSONFeature) =>
@@ -791,10 +800,7 @@ export function processWarnings(
         ctx.geometryId,
         ctx.geometries,
         ctx.dailyWarningTypes,
-        updatedAt,
-        ctx.currentTime,
-        ctx.startFrom,
-        timeOffset,
+        dayWindows,
         ctx.timeZone,
         ctx.locale,
         ctx.t
@@ -803,10 +809,7 @@ export function processWarnings(
       createFloodWarning(
         warning,
         ctx.dailyWarningTypes,
-        updatedAt,
-        ctx.currentTime,
-        ctx.startFrom,
-        timeOffset,
+        dayWindows,
         ctx.timeZone,
         ctx.locale,
         ctx.t,
@@ -948,8 +951,7 @@ export function processWarnings(
   const days = createDays(
     warnings,
     updatedAt,
-    ctx.currentTime,
-    ctx.startFrom,
+    dayWindows,
     ctx.timeZone,
     ctx.locale
   )

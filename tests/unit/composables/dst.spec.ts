@@ -15,11 +15,11 @@ import {
   type WarningsProcessorContext,
 } from '@/composables/useWarningsProcessor'
 import {
-  createDays,
+  dayBoundaries,
   msSinceStartOfDay,
   parseDateInTimeZone,
   startOfDayInTimeZone,
-} from '@/composables/useUtils'
+} from '@/composables/useTimeZone'
 import geojsonsvg from '@/mixins/geojsonsvg'
 import type { GeoJSONFeature, WarningsData } from '@/types'
 
@@ -95,36 +95,34 @@ describe('msSinceStartOfDay', () => {
   })
 })
 
-describe('createDays around the DST changes', () => {
-  const labels = (now: number): string[] =>
-    createDays({}, null, now, '', TZ, LOCALE).map(
-      (d) => `${d.day}.${d.month}.${d.year}`
-    )
-
-  it('lists consecutive dates when loaded 00:30 before the autumn change', () => {
-    // Wed 21.10.2026 00:30 local time
-    expect(labels(utc('2026-10-20T21:30:00Z'))).toEqual([
-      '21.10.2026',
-      '22.10.2026',
-      '23.10.2026',
-      '24.10.2026',
-      '25.10.2026',
-    ])
+describe('dayBoundaries', () => {
+  it('lists the starts of consecutive calendar days across the changes', () => {
+    // Wed 21.10.2026 00:30 local time, the clocks change on Sun 25.10.
+    expect(
+      dayBoundaries(utc('2026-10-20T21:30:00Z'), 5, TZ, LOCALE).map(
+        (t) => (t - utc('2026-10-20T21:00:00Z')) / HOUR
+      )
+    ).toEqual([0, 24, 48, 72, 96, 121])
+    // Thu 25.3.2027 23:30 local time, the clocks change on Sun 28.3.
+    expect(
+      dayBoundaries(utc('2027-03-25T21:30:00Z'), 5, TZ, LOCALE).map(
+        (t) => (t - utc('2027-03-24T22:00:00Z')) / HOUR
+      )
+    ).toEqual([0, 24, 48, 72, 95, 119])
   })
 
-  it('lists consecutive dates when loaded 23:30 before the spring change', () => {
-    // Thu 25.3.2027 23:30 local time
-    expect(labels(utc('2027-03-25T21:30:00Z'))).toEqual([
-      '25.3.2027',
-      '26.3.2027',
-      '27.3.2027',
-      '28.3.2027',
-      '29.3.2027',
+  it('starts the days at a time of day', () => {
+    expect(
+      dayBoundaries(utc('2026-10-24T09:00:00Z'), 2, TZ, LOCALE, 12 * HOUR)
+    ).toEqual([
+      utc('2026-10-24T09:00:00Z'),
+      utc('2026-10-25T10:00:00Z'),
+      utc('2026-10-26T10:00:00Z'),
     ])
   })
 })
 
-describe('effective days of warnings around the DST changes', () => {
+describe('processing warnings around the DST changes', () => {
   const scenario = loadScenario(1)
   const template = scenario.data.weather_finland_active_all
     ?.features[0] as GeoJSONFeature
@@ -157,14 +155,13 @@ describe('effective days of warnings around the DST changes', () => {
     }
   }
 
-  /** Effective days of one warning valid from `from` to `until` (ISO) */
-  const effective = (
+  /** Processes warnings valid from `from` to `until` (ISO) */
+  const run = (
     now: number,
-    from: string,
-    until: string,
+    warnings: Array<[string, string]>,
     staticDays = true,
     dailyWarningTypes: string[] = []
-  ): number[] => {
+  ) => {
     const updateTime = new Date(now - 10 * 60 * 1000).toISOString()
     const data = {
       weather_update_time: {
@@ -177,26 +174,146 @@ describe('effective days of warnings around the DST changes', () => {
       },
       weather_finland_active_all: {
         type: 'FeatureCollection',
-        features: [
-          {
-            ...template,
-            properties: {
-              ...template.properties,
-              effective_from: from,
-              effective_until: until,
-            },
+        features: warnings.map(([from, until], index) => ({
+          ...template,
+          properties: {
+            ...template.properties,
+            identifier: `warning-${index}`,
+            effective_from: from,
+            effective_until: until,
           },
-        ],
+        })),
       },
       flood_finland_active_all: { type: 'FeatureCollection', features: [] },
     } as unknown as WarningsData
-    const result = processWarnings(
-      data,
-      ctx(now, staticDays, dailyWarningTypes)
-    )
-    const warning = Object.values(result.warnings)[0]
+    return processWarnings(data, ctx(now, staticDays, dailyWarningTypes))
+  }
+
+  /** Effective days of one warning valid from `from` to `until` (ISO) */
+  const effective = (
+    now: number,
+    from: string,
+    until: string,
+    staticDays = true,
+    dailyWarningTypes: string[] = []
+  ): number[] => {
+    const warning = Object.values(
+      run(now, [[from, until]], staticDays, dailyWarningTypes).warnings
+    )[0]
     return (warning?.effectiveDays ?? []).map((d) => Number(d))
   }
+
+  const labels = (now: number): string[] =>
+    run(now, []).days.map((d) => `${d.day}.${d.month}.${d.year}`)
+
+  it('lists consecutive dates when loaded 00:30 before the autumn change', () => {
+    // Wed 21.10.2026 00:30 local time
+    expect(labels(utc('2026-10-20T21:30:00Z'))).toEqual([
+      '21.10.2026',
+      '22.10.2026',
+      '23.10.2026',
+      '24.10.2026',
+      '25.10.2026',
+    ])
+  })
+
+  it('lists consecutive dates when loaded 23:30 before the spring change', () => {
+    // Thu 25.3.2027 23:30 local time
+    expect(labels(utc('2027-03-25T21:30:00Z'))).toEqual([
+      '25.3.2027',
+      '26.3.2027',
+      '27.3.2027',
+      '28.3.2027',
+      '29.3.2027',
+    ])
+  })
+
+  describe('day boundaries compared with an independent calculation', () => {
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: TZ,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hourCycle: 'h23',
+    })
+    const wallClock = (t: number): Record<string, number> =>
+      Object.fromEntries(
+        formatter
+          .formatToParts(new Date(t))
+          .filter((part) => part.type !== 'literal')
+          .map((part) => [part.type, Number(part.value)])
+      )
+    /** Local midnight of the calendar day `days` after the day of `t` */
+    const midnight = (t: number, days: number): number => {
+      const local = wallClock(t)
+      const day = Date.UTC(
+        local.year as number,
+        (local.month as number) - 1,
+        (local.day as number) + days
+      )
+      // Local midnight is 2 or 3 hours before UTC midnight
+      const found = [3, 2]
+        .map((hours) => day - hours * HOUR)
+        .find((candidate) => {
+          const wall = wallClock(candidate)
+          return wall.hour === 0 && wall.minute === 0 && wall.second === 0
+        })
+      return found as number
+    }
+
+    it.each([
+      ['autumn', utc('2026-10-25T01:00:00Z')],
+      ['spring', utc('2027-03-28T01:00:00Z')],
+    ])(
+      'puts warnings on the right day in the five days before and after the %s change',
+      (_name, change) => {
+        const mismatches: string[] = []
+        for (
+          let now = change - 5 * 24 * HOUR;
+          now <= change + 5 * 24 * HOUR;
+          now += HOUR
+        ) {
+          const boundaries = Array.from({ length: 6 }, (_, i) =>
+            midnight(now, i)
+          )
+          // Short warnings just before and just after each day boundary
+          const probes: Array<[number, number]> = boundaries.flatMap((b) => [
+            [b - 90 * 60 * 1000, b - 30 * 60 * 1000],
+            [b + 30 * 60 * 1000, b + 90 * 60 * 1000],
+            [b - 2000, b - 1000],
+            [b + 1000, b + 2000],
+          ])
+          const result = run(
+            now,
+            probes.map(([from, until]) => [
+              new Date(from).toISOString(),
+              new Date(until).toISOString(),
+            ])
+          )
+          probes.forEach(([from, until], index) => {
+            const expected = Array.from(
+              { length: 5 },
+              (_, day) =>
+                from < (boundaries[day + 1] as number) &&
+                until > (boundaries[day] as number)
+            )
+            const actual = result.warnings[`warning-${index}`]?.effectiveDays
+            if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+              mismatches.push(
+                `${new Date(now).toISOString()} probe ${index}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`
+              )
+            }
+          })
+        }
+        expect(mismatches).toEqual([])
+      },
+      // Many warnings are processed, which is slow when the machine is busy
+      60000
+    )
+  })
 
   // Sun 25.10.2026 (25 hours) from 00:00 UTC+3 until 00:00 UTC+2
   const AUTUMN_DAY = ['2026-10-24T21:00:00Z', '2026-10-25T22:00:00Z'] as const
