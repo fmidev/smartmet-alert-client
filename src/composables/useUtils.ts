@@ -16,6 +16,12 @@ import { toTimeZone } from './useTimeZone'
 // ============================================================================
 
 export const NUMBER_OF_DAYS = 5
+/**
+ * Screens narrower than this (in pixels) are narrow: the small maps of the
+ * date selector are hidden there. Same as the width in the media queries of
+ * DaySmall and MapSmall (a test checks this).
+ */
+export const NARROW_SCREEN_BREAKPOINT = 576
 export const REGION_LAND = 'land'
 export const REGION_SEA = 'sea'
 export const REGION_LAKE = 'lake'
