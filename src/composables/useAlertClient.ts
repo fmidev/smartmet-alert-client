@@ -12,6 +12,8 @@
  */
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
 import crossFetch from 'cross-fetch'
+import { useConfig } from '@/composables/useConfig'
+import { parseDateInTimeZone } from '@/composables/useUtils'
 import type { Language, WarningsData } from '@/types'
 
 // ============================================================================
@@ -127,6 +129,8 @@ export function useAlertClient(
     floodWarnings,
   } = options
 
+  const config = useConfig()
+
   // -------------------------------------------------------------------------
   // Reactive State
   // -------------------------------------------------------------------------
@@ -196,11 +200,11 @@ export function useAlertClient(
       return refreshedAt.value
     }
     if (currentDate?.value) {
-      const date =
-        currentDate.value instanceof Date
-          ? currentDate.value
-          : new Date(currentDate.value)
-      return date.getTime()
+      return parseDateInTimeZone(
+        currentDate.value,
+        config.timeZone,
+        config.dateTimeFormatLocale
+      )
     }
     return Date.now()
   })

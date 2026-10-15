@@ -351,6 +351,7 @@ const createDataForChildren = () => {
     const result = handleMapWarnings(props.warningsData)
     warnings.value = result.warnings
     days.value = result.days
+    timeOffset.value = result.timeOffset
     regions.value = result.regions
     parents.value = result.parents
     legend.value = result.legend

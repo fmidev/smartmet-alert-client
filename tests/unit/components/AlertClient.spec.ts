@@ -271,6 +271,23 @@ describe('AlertClient.vue', () => {
       expect(vm.days.length).toBe(5)
     })
 
+    it('should pass the time of day to the days when days are not static', async () => {
+      wrapper = mount(AlertClient, {
+        props: {
+          warningsData: mockWarningsData,
+          language: 'fi' as Language,
+          staticDays: false,
+          // 14:00 in Helsinki (UTC+2)
+          currentTime: new Date('2025-10-31T12:00:00Z').getTime(),
+        },
+      })
+
+      await flushPromises()
+
+      const vm = wrapper.vm as ComponentInstance
+      expect(vm.timeOffset).toBe(14 * 60 * 60 * 1000)
+    })
+
     it('should create visible warnings from legend', async () => {
       wrapper = mount(AlertClient, {
         props: {

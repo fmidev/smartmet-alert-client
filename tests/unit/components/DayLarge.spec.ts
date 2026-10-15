@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
+import { twoDigits } from '@/composables/useUtils'
 import DayLarge from '@/components/DayLarge.vue'
 import type { Day, DayRegions, WarningsMap, Theme, Language } from '@/types'
 
@@ -129,6 +130,71 @@ describe('DayLarge.vue', () => {
         '31.10.2025'
       )
     })
+
+    it('should show the time of day of the time offset for both days', () => {
+      wrapper = mount(DayLarge, {
+        props: {
+          index: 0,
+          input: { ...mockDay, day: 31, month: 12, year: 2025 },
+          staticDays: false,
+          // 14:35 (wall clock time of day)
+          timeOffset: (14 * 60 + 35) * 60 * 1000,
+          language: 'fi' as Language,
+        },
+      })
+
+      const text = (wrapper.vm as ComponentInstance).warningsDate
+        .replace(/<br>/g, '')
+        .replace(/\s+/g, ' ')
+      expect(text).toMatch(/^31\.12\.2025 .* 14:35 – 1\.1\.2026 .* 14:35$/)
+    })
+
+    it.each([
+      'Pacific/Auckland',
+      'America/New_York',
+      'Asia/Kolkata',
+      'Europe/Helsinki',
+    ])(
+      'should not depend on the time zone of the browser (%s)',
+      (browserTimeZone) => {
+        const original = process.env.TZ
+        process.env.TZ = browserTimeZone
+        try {
+          // Times that do not exist in the time zone of the browser on the
+          // day its clocks change: Finland 28.3.2027 03:30, New York
+          // 8.3.2026 02:30 and New Zealand 27.9.2026 02:30
+          for (const [day, month, year, hour, minute] of [
+            [25, 10, 2026, 14, 0],
+            [28, 3, 2027, 3, 30],
+            [8, 3, 2026, 2, 30],
+            [27, 9, 2026, 2, 30],
+          ] as const) {
+            wrapper = mount(DayLarge, {
+              props: {
+                index: 0,
+                input: { ...mockDay, day, month, year },
+                staticDays: false,
+                timeOffset: (hour * 60 + minute) * 60 * 1000,
+                language: 'fi' as Language,
+              },
+            })
+            const text = (wrapper.vm as ComponentInstance).warningsDate
+              .replace(/<br>/g, '')
+              .replace(/\s+/g, ' ')
+            const time = `${twoDigits(hour)}:${twoDigits(minute)}`
+            expect(text).toContain(`${day}.${month}.${year}`)
+            expect(text.split(time)).toHaveLength(3)
+            wrapper.unmount()
+          }
+        } finally {
+          if (original === undefined) {
+            delete process.env.TZ
+          } else {
+            process.env.TZ = original
+          }
+        }
+      }
+    )
 
     it('should return empty warningsDate when input is missing date parts', () => {
       wrapper = mount(DayLarge, {

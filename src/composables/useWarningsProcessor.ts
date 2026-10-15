@@ -58,6 +58,7 @@ import {
   validInterval,
   validIntervalAriaLabel,
   msSinceStartOfDay,
+  startOfDayInTimeZone,
   coverageData,
 } from './useUtils'
 import he from 'he'
@@ -210,21 +211,23 @@ function calculateEffectiveDays(
 ): boolean[] {
   const referenceTime =
     startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
-  const day = 1000 * 60 * 60 * 24
 
   return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const dayTime = referenceTime + index * day
-    const dayStartOffset = msSinceStartOfDay(dayTime, timeZone, locale)
-    let startOfDay = dayTime - dayStartOffset
-
-    const nextDayTime = referenceTime + (index + 1) * day
-    const nextDayStartOffset = msSinceStartOfDay(nextDayTime, timeZone, locale)
-    let startOfNextDay = nextDayTime - nextDayStartOffset
-
-    if (!dailyWarning) {
-      startOfDay = startOfDay + timeOffset
-      startOfNextDay = startOfNextDay + timeOffset
-    }
+    const offset = dailyWarning ? 0 : timeOffset
+    const startOfDay = startOfDayInTimeZone(
+      referenceTime,
+      index,
+      timeZone,
+      locale,
+      offset
+    )
+    const startOfNextDay = startOfDayInTimeZone(
+      referenceTime,
+      index + 1,
+      timeZone,
+      locale,
+      offset
+    )
 
     return (
       new Date(start).getTime() < startOfNextDay &&
@@ -466,9 +469,11 @@ function createDays(
     startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
 
   return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const date = new Date(referenceTime)
-    date.setDate(date.getDate() + index)
-    const moment = toTimeZone(date, timeZone, locale)
+    const moment = toTimeZone(
+      startOfDayInTimeZone(referenceTime, index, timeZone, locale),
+      timeZone,
+      locale
+    )
 
     return {
       weekdayName: moment.weekday,

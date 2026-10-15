@@ -330,7 +330,8 @@ export function validIntervalAriaLabel(
 }
 
 /**
- * Calculate milliseconds since start of day
+ * Wall clock time of day (milliseconds since 00:00 local time) in the given
+ * time zone
  */
 export function msSinceStartOfDay(
   timestamp: number,
@@ -338,15 +339,85 @@ export function msSinceStartOfDay(
   locale: string
 ): number {
   const moment = toTimeZone(timestamp, timeZone, locale)
-  const ms =
+  return (
     ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 +
     moment.millisecond
-  // Daylight saving time adjustment
-  const ref = toTimeZone(timestamp - ms, timeZone, locale)
-  if (ref.day !== moment.day) {
-    return ms - 60 * 60 * 1000
+  )
+}
+
+/**
+ * Instant (UTC timestamp) of the wall clock time `msOfDay` on the calendar day
+ * `dayOffset` days after the day that contains `timestamp`, in the given time
+ * zone. By default this is the start of that day. Days are counted on the
+ * local calendar (not in 24 hour steps), so days that are 23 or 25 hours long
+ * because of the daylight saving time change are handled.
+ */
+export function startOfDayInTimeZone(
+  timestamp: number,
+  dayOffset: number,
+  timeZone: string,
+  locale: string,
+  msOfDay = 0
+): number {
+  const moment = toTimeZone(timestamp, timeZone, locale)
+  const target =
+    Date.UTC(moment.year, moment.month - 1, moment.day + dayOffset) + msOfDay
+  let guess = target
+  for (let i = 0; i < 3; i++) {
+    const local = toTimeZone(guess, timeZone, locale)
+    const localAsUtc = Date.UTC(
+      local.year,
+      local.month - 1,
+      local.day,
+      local.hour,
+      local.minute,
+      local.second,
+      local.millisecond
+    )
+    const diff = localAsUtc - target
+    if (diff === 0) {
+      break
+    }
+    guess -= diff
   }
-  return ms + ref.hour * 60 * 60 * 1000
+  return guess
+}
+
+const DATE_TIME_WITHOUT_ZONE =
+  /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3})\d*)?)?$/
+
+/**
+ * Convert a date given as a Date or a string to a UTC timestamp. A date and
+ * time string without a time zone or UTC offset (e.g. `2026-10-25T12:00`) is
+ * the wall clock time in the given time zone, not in the time zone of the
+ * browser. Other strings are parsed as `new Date(value)` does.
+ */
+export function parseDateInTimeZone(
+  value: Date | string,
+  timeZone: string,
+  locale: string
+): number {
+  if (value instanceof Date) {
+    return value.getTime()
+  }
+  const match = DATE_TIME_WITHOUT_ZONE.exec(value.trim())
+  if (match == null) {
+    return new Date(value).getTime()
+  }
+  const [year, month, day, hour, minute, second, millisecond] = match
+    .slice(1)
+    .map((part, index) =>
+      part == null ? 0 : parseInt(index === 6 ? part.padEnd(3, '0') : part, 10)
+    ) as [number, number, number, number, number, number, number]
+  // Any instant on the right calendar day of the time zone will do
+  const noon = Date.UTC(year, month - 1, day, 12)
+  return startOfDayInTimeZone(
+    noon,
+    0,
+    timeZone,
+    locale,
+    ((hour * 60 + minute) * 60 + second) * 1000 + millisecond
+  )
 }
 
 // ============================================================================
@@ -424,21 +495,23 @@ export function effectiveDays(
     context
   const referenceTime =
     startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
-  const day = 1000 * 60 * 60 * 24
 
   return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const dayTime = referenceTime + index * day
-    const dayStartOffset = msSinceStartOfDay(dayTime, timeZone, locale)
-    let startOfDay = dayTime - dayStartOffset
-
-    const nextDayTime = referenceTime + (index + 1) * day
-    const nextDayStartOffset = msSinceStartOfDay(nextDayTime, timeZone, locale)
-    let startOfNextDay = nextDayTime - nextDayStartOffset
-
-    if (!dailyWarning) {
-      startOfDay = startOfDay + timeOffset
-      startOfNextDay = startOfNextDay + timeOffset
-    }
+    const offset = dailyWarning ? 0 : timeOffset
+    const startOfDay = startOfDayInTimeZone(
+      referenceTime,
+      index,
+      timeZone,
+      locale,
+      offset
+    )
+    const startOfNextDay = startOfDayInTimeZone(
+      referenceTime,
+      index + 1,
+      timeZone,
+      locale,
+      offset
+    )
 
     return (
       new Date(start).getTime() < startOfNextDay &&
@@ -621,9 +694,11 @@ export function createDays(
     startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
 
   return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const date = new Date(referenceTime)
-    date.setDate(date.getDate() + index)
-    const moment = toTimeZone(date, timeZone, locale)
+    const moment = toTimeZone(
+      startOfDayInTimeZone(referenceTime, index, timeZone, locale),
+      timeZone,
+      locale
+    )
 
     return {
       weekdayName: moment.weekday,
