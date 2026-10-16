@@ -10,7 +10,7 @@
  * Components using this composable must provide:
  * - Props with appropriate types
  */
-import { ref, computed, type Ref, type ComputedRef } from 'vue'
+import { ref, shallowRef, computed, type Ref, type ComputedRef } from 'vue'
 import crossFetch from 'cross-fetch'
 import { useConfig } from '@/composables/useConfig'
 import { parseDateInTimeZone } from '@/composables/useTimeZone'
@@ -139,7 +139,9 @@ export function useAlertClient(
   const updatedAt = ref<number | null>(null)
   const refreshedAt = ref<number | null>(null)
   const themeClass = ref<string>(`${theme.value}-theme`)
-  const warningsData = ref<WarningsData | null>(null)
+  // The data is only replaced as a whole, and it is large, so it is not made
+  // deeply reactive
+  const warningsData = shallowRef<WarningsData | null>(null)
   const visible = ref<boolean>(true)
   const fetchInProgress = ref<boolean>(false)
 

@@ -31,7 +31,7 @@
     :aria-expanded="open"
     class="accordion-panel"
     :hidden="open ? undefined : ''">
-    <div class="current-description">
+    <div v-if="opened" class="current-description">
       <div class="current-description-table">
         <DescriptionWarning
           v-for="warning in reducedWarnings"
@@ -95,6 +95,9 @@ const { coverageCriterion } = useConfig()
 // ============================================================================
 
 const open = ref<boolean>(false)
+// The descriptions are drawn when the region is opened for the first time:
+// most of them are never opened, and there can be hundreds of them
+const opened = ref<boolean>(false)
 
 // ============================================================================
 // Computed Properties
@@ -169,6 +172,9 @@ const ariaInfo = computed<string[]>(() => {
 
 const onRegionToggle = (): void => {
   open.value = !open.value
+  if (open.value) {
+    opened.value = true
+  }
 }
 
 // ============================================================================

@@ -189,8 +189,16 @@ export function validInterval(
   timeZone: string,
   locale: string
 ): string {
-  const startMoment = toTimeZone(start, timeZone, locale)
-  const endMoment = toTimeZone(end, timeZone, locale)
+  return formatValidInterval(
+    toTimeZone(start, timeZone, locale),
+    toTimeZone(end, timeZone, locale)
+  )
+}
+
+function formatValidInterval(
+  startMoment: TimeZoneMoment,
+  endMoment: TimeZoneMoment
+): string {
   return `${formatTimeMoment(startMoment)} – ${formatTimeMoment(
     endMoment
   )}`
@@ -219,12 +227,45 @@ export function validIntervalAriaLabel(
   locale: string,
   t: (key: string) => string
 ): string {
-  const startMoment = toTimeZone(start, timeZone, locale)
-  const endMoment = toTimeZone(end, timeZone, locale)
+  return formatValidIntervalAriaLabel(
+    toTimeZone(start, timeZone, locale),
+    toTimeZone(end, timeZone, locale),
+    t
+  )
+}
+
+function formatValidIntervalAriaLabel(
+  startMoment: TimeZoneMoment,
+  endMoment: TimeZoneMoment,
+  t: (key: string) => string
+): string {
   return `${formatTimeMomentAriaLabel(startMoment, t)} – ${formatTimeMomentAriaLabel(
     endMoment,
     t
   )}`
+}
+
+/**
+ * Both the valid interval string and its ARIA label, converting the start and
+ * the end to the time zone only once
+ */
+export function validIntervalTexts(
+  start: string,
+  end: string,
+  timeZone: string,
+  locale: string,
+  t: (key: string) => string
+): { validInterval: string; validIntervalAriaLabel: string } {
+  const startMoment = toTimeZone(start, timeZone, locale)
+  const endMoment = toTimeZone(end, timeZone, locale)
+  return {
+    validInterval: formatValidInterval(startMoment, endMoment),
+    validIntervalAriaLabel: formatValidIntervalAriaLabel(
+      startMoment,
+      endMoment,
+      t
+    ),
+  }
 }
 
 // ============================================================================

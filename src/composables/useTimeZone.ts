@@ -72,10 +72,21 @@ function partsToWhole(
 }
 
 // Creating an Intl.DateTimeFormat is expensive, so one is kept for each
-// combination of time zone and locale
+// combination of time zone and locale. The latest one is also kept apart,
+// because the same combination is used almost always.
 const formatters = new Map<string, Intl.DateTimeFormat>()
+let latestFormatter: Intl.DateTimeFormat | null = null
+let latestTimeZone = ''
+let latestLocale = ''
 
 function getFormatter(timeZone: string, locale: string): Intl.DateTimeFormat {
+  if (
+    latestFormatter != null &&
+    timeZone === latestTimeZone &&
+    locale === latestLocale
+  ) {
+    return latestFormatter
+  }
   const key = `${timeZone}|${locale}`
   let formatter = formatters.get(key)
   if (formatter == null) {
@@ -94,6 +105,9 @@ function getFormatter(timeZone: string, locale: string): Intl.DateTimeFormat {
     } as Intl.DateTimeFormatOptions)
     formatters.set(key, formatter)
   }
+  latestFormatter = formatter
+  latestTimeZone = timeZone
+  latestLocale = locale
   return formatter
 }
 

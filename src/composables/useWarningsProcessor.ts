@@ -54,8 +54,7 @@ import {
   REGION_SEA,
   uncapitalize,
   twoDigits,
-  validInterval,
-  validIntervalAriaLabel,
+  validIntervalTexts,
   coverageData,
 } from './useUtils'
 import {
@@ -289,6 +288,17 @@ function isValidWarning(
 }
 
 /**
+ * Decode HTML entities of a text. Most texts have none, and the decoding is
+ * slow, so it is skipped for them.
+ */
+function decodeEntities(text: string | null | undefined): string {
+  if (!text) {
+    return ''
+  }
+  return text.includes('&') ? he.decode(text) : text
+}
+
+/**
  * Create a weather warning from raw data
  */
 function createWeatherWarning(
@@ -337,13 +347,7 @@ function createWeatherWarning(
       dailyWarningTypes.includes(type),
       dayWindows
     ),
-    validInterval: validInterval(
-      properties[EFFECTIVE_FROM] as string,
-      properties[EFFECTIVE_UNTIL] as string,
-      timeZone,
-      locale
-    ),
-    validIntervalAriaLabel: validIntervalAriaLabel(
+    ...validIntervalTexts(
       properties[EFFECTIVE_FROM] as string,
       properties[EFFECTIVE_UNTIL] as string,
       timeZone,
@@ -355,9 +359,9 @@ function createWeatherWarning(
     value: (properties[PHYSICAL_VALUE] as number) ?? 0,
     text: getWarningText(properties),
     info: {
-      fi: properties[INFO_FI] ? he.decode(properties[INFO_FI] as string) : '',
-      sv: properties[INFO_SV] ? he.decode(properties[INFO_SV] as string) : '',
-      en: properties[INFO_EN] ? he.decode(properties[INFO_EN] as string) : '',
+      fi: decodeEntities(properties[INFO_FI] as string | undefined),
+      sv: decodeEntities(properties[INFO_SV] as string | undefined),
+      en: decodeEntities(properties[INFO_EN] as string | undefined),
     },
     link: '',
     linkText: '',
@@ -411,13 +415,7 @@ function createFloodWarning(
       dailyWarningTypes.includes(FLOOD_LEVEL_TYPE),
       dayWindows
     ),
-    validInterval: validInterval(
-      properties[ONSET] as string,
-      properties[EXPIRES] as string,
-      timeZone,
-      locale
-    ),
-    validIntervalAriaLabel: validIntervalAriaLabel(
+    ...validIntervalTexts(
       properties[ONSET] as string,
       properties[EXPIRES] as string,
       timeZone,

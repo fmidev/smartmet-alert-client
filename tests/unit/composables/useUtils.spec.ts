@@ -6,6 +6,8 @@ import {
   regionFromReference,
   relativeCoverageFromReference,
   validInterval,
+  validIntervalAriaLabel,
+  validIntervalTexts,
 } from '@/composables/useUtils'
 import { toTimeZone, msSinceStartOfDay } from '@/composables/useTimeZone'
 
@@ -183,6 +185,27 @@ describe('useUtils composable - pure functions', () => {
 
       expect(result).toBeGreaterThanOrEqual(0)
       expect(result).toBeLessThan(24 * 60 * 60 * 1000)
+    })
+  })
+
+  describe('validIntervalTexts', () => {
+    it('gives the same texts as the separate functions', () => {
+      const t = (key: string): string => `<${key}>`
+      const start = '2026-10-25T00:30:00Z'
+      const end = '2026-10-26T23:30:00Z'
+
+      expect(
+        validIntervalTexts(start, end, 'Europe/Helsinki', 'fi-FI', t)
+      ).toEqual({
+        validInterval: validInterval(start, end, 'Europe/Helsinki', 'fi-FI'),
+        validIntervalAriaLabel: validIntervalAriaLabel(
+          start,
+          end,
+          'Europe/Helsinki',
+          'fi-FI',
+          t
+        ),
+      })
     })
   })
 

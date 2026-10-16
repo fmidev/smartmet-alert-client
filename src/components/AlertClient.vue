@@ -95,6 +95,7 @@ import {
   onServerPrefetch,
   getCurrentInstance,
   toRef,
+  shallowRef,
 } from 'vue'
 import Days from './Days.vue'
 import Legend from './Legend.vue'
@@ -178,10 +179,12 @@ const selectedDay = ref<DayIndex>(props.defaultDay as DayIndex)
 const visibleWarnings = ref<string[]>([])
 const timer = ref<ReturnType<typeof setInterval> | null>(null)
 const visibilityListener = ref<(() => void) | null>(null)
-const warnings = ref<WarningsMap | null>(null)
-const days = ref<Day[]>([])
-const regions = ref<RegionsData>(regionsDefault())
-const parents = ref<ParentsMap>({})
+// The results of the processing are only ever replaced as a whole, so they do
+// not need to be deeply reactive, which is slow for large amounts of warnings
+const warnings = shallowRef<WarningsMap | null>(null)
+const days = shallowRef<Day[]>([])
+const regions = shallowRef<RegionsData>(regionsDefault())
+const parents = shallowRef<ParentsMap>({})
 const legend = ref<LegendItem[]>([])
 const timeOffset = ref(0)
 const version = __APP_VERSION__
