@@ -1,5 +1,7 @@
 <template>
-  <div class="row date-selector" :class="theme">
+  <div
+    class="row date-selector"
+    :class="[theme, { 'date-labels-wrapped': wrapDates }]">
     <div id="fmi-warnings-date-selector" class="tabs">
       <div class="fmi-warnings-date-wrapper">
         <ul class="nav nav-tabs fmi-warnings-date-nav" role="tablist">
@@ -68,7 +70,10 @@ import {
   getCurrentInstance,
 } from 'vue'
 import { useKeyCodes } from '@/composables/useKeyCodes'
-import { NUMBER_OF_DAYS } from '@/composables/useUtils'
+import {
+  NARROW_SCREEN_BREAKPOINT,
+  NUMBER_OF_DAYS,
+} from '@/composables/useUtils'
 import DayLarge from './DayLarge.vue'
 import DaySmall from './DaySmall.vue'
 import type { Day, RegionsData, WarningsMap, Theme, Language } from '@/types'
@@ -130,6 +135,8 @@ const { KEY_CODE_LEFT, KEY_CODE_RIGHT, KEY_CODE_HOME, KEY_CODE_END } =
 
 const day = ref<number>(props.selectedDay)
 const instance = getCurrentInstance()
+// The dates do not fit in the row: all of them are shown on two lines
+const wrapDates = ref<boolean>(false)
 
 // ============================================================================
 // Computed
@@ -149,6 +156,44 @@ const onLoaded = (loaded: boolean): void => {
   if (loaded) {
     emit('loaded', true)
   }
+}
+
+// Width taken by the borders of a tab: 2 px at both sides of the selected one.
+// The same width is used for all tabs, so that the result does not depend on
+// the selected day.
+const TAB_BORDER_WIDTH = 4
+
+/**
+ * The text of a date is on one line, and a tab cannot be narrower than its
+ * text. If the dates are wider than the row (a wide font, a long weekday name),
+ * the row would grow out of the date selector and the last tab would be cut off.
+ * In that case all the dates are shown on two lines, the weekday above the date,
+ * as on a narrow screen. Nothing changes when the dates fit in the row.
+ *
+ * The width of the text on one line is measured from a hidden copy of it, so
+ * that it is known also when the dates are on two lines.
+ */
+const fitDateLabels = (): void => {
+  const el = instance?.proxy?.$el as HTMLElement | undefined
+  const row = el?.querySelector<HTMLElement>('ul.fmi-warnings-date-nav')
+  // On a narrow screen the dates are always on two lines, and without weekdays
+  // there is nothing to put on the upper line
+  if (
+    !el ||
+    !row ||
+    !props.staticDays ||
+    window.innerWidth < NARROW_SCREEN_BREAKPOINT
+  ) {
+    wrapDates.value = false
+    return
+  }
+  let neededWidth = 0
+  row
+    .querySelectorAll<HTMLElement>('.date-selector-probe-text')
+    .forEach((probe) => {
+      neededWidth += probe.getBoundingClientRect().width + TAB_BORDER_WIDTH
+    })
+  wrapDates.value = neededWidth > row.getBoundingClientRect().width
 }
 
 const switchDay = (event: KeyboardEvent): void => {
@@ -182,12 +227,31 @@ watch(day, (newSelectedDay) => {
   onDaySelected(newSelectedDay)
 })
 
+// The texts of the dates change
+watch(() => [props.input, props.language, props.staticDays], fitDateLabels, {
+  flush: 'post',
+})
+
 // ============================================================================
 // Lifecycle Hooks
 // ============================================================================
 
+let resizeObserver: ResizeObserver | null = null
+
 onMounted(() => {
   const el = instance?.proxy?.$el as HTMLElement | undefined
+  fitDateLabels()
+  // The size of the row changes, or it becomes visible
+  if (el && typeof ResizeObserver !== 'undefined') {
+    resizeObserver = new ResizeObserver(fitDateLabels)
+    const row = el.querySelector('ul.fmi-warnings-date-nav')
+    if (row) {
+      resizeObserver.observe(row)
+    }
+  }
+  // The widths of the texts change when the web font has been loaded
+  document.fonts?.ready.then(fitDateLabels)
+  document.fonts?.addEventListener?.('loadingdone', fitDateLabels)
   if (el) {
     Array.from(el.querySelectorAll<HTMLButtonElement>('button.day')).forEach(
       (button) => {
@@ -198,6 +262,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+  document.fonts?.removeEventListener?.('loadingdone', fitDateLabels)
   const el = instance?.proxy?.$el as HTMLElement | undefined
   if (el) {
     Array.from(el.querySelectorAll<HTMLButtonElement>('button.day')).forEach(
@@ -229,6 +295,8 @@ onUpdated(() => {
 
 defineExpose({
   day,
+  wrapDates,
+  fitDateLabels,
   numberOfDays,
   switchDay,
   onDaySelected,
@@ -370,6 +438,26 @@ div#fmi-warnings-date-selector.tabs {
 
 :deep(div.tab-content) {
   margin-top: 20px;
+}
+
+// The dates do not fit in the row, so they are on two lines (see
+// fitDateLabels). The date is as high as on a narrow screen.
+.date-labels-wrapped {
+  :deep(div.fmi-warnings-date-wrapper li.nav-item button.day) {
+    height: $day-small-height + 30px;
+  }
+
+  :deep(button.day div.date-selector-cell) {
+    min-height: $day-small-height + 30px;
+  }
+
+  :deep(button.day div.date-selector-cell-date) {
+    height: 60px;
+  }
+
+  :deep(button.day .date-selector-text br) {
+    display: inline !important;
+  }
 }
 
 @media (max-width: 767px) {
