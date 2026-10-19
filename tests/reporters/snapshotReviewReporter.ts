@@ -20,8 +20,7 @@ import {
 } from 'node:fs'
 import { basename, extname, resolve } from 'node:path'
 
-import type { Reporter } from 'vitest/reporters'
-import type { TestCase } from 'vitest/node'
+import type { Reporter, TestCase } from 'vitest/node'
 
 import {
   buildReviewHtml,

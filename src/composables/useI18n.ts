@@ -20,6 +20,14 @@ const translations: Record<Language, Record<string, string>> = {
   sv,
 }
 
+// Sanitizing is slow and the translations are static, so each translation is
+// sanitized only once
+const sanitized: Record<string, Map<string, string>> = {
+  en: new Map(),
+  fi: new Map(),
+  sv: new Map(),
+}
+
 export interface UseI18nReturn {
   t: (key: string | null | undefined) => string
 }
@@ -52,8 +60,16 @@ export function useI18n(
       return ''
     }
 
+    const cache = sanitized[lang] as Map<string, string>
+    const cached = cache.get(key)
+    if (cached !== undefined) {
+      return cached
+    }
+
     const translation = translationMap[key as TranslationKey]
-    return translation ? DOMPurify.sanitize(translation) : ''
+    const result = translation ? DOMPurify.sanitize(translation) : ''
+    cache.set(key, result)
+    return result
   }
 
   return {

@@ -51,7 +51,12 @@ const warningLevel = computed((): string => {
 })
 
 const warningTypeText = computed((): string => {
-  return t(props.input.type).toLowerCase()
+  // Strip HTML entities (e.g. the &shy; hyphenation hints) so they are not
+  // read aloud; this value is only used in an aria-label, never rendered.
+  return t(props.input.type)
+    // eslint-disable-next-line sonarjs/super-linear-regex -- short titles only
+    .replace(/&[^;]*;/g, '')
+    .toLowerCase()
 })
 
 const warningDetails = computed((): string => {

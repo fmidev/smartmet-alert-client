@@ -1,32 +1,27 @@
 /**
  * Utility functions and constants composable
  *
- * Provides helper functions for warning data processing, time handling,
- * and region visualization.
+ * Provides constants and helper functions for warning data processing, time
+ * interval formatting and region visualization. Time zone conversions are in
+ * useTimeZone.
  */
 
-import { computed, type Ref, type ComputedRef } from 'vue'
 import { DOMParser } from '@xmldom/xmldom'
-import he from 'he'
 import xpath from 'xpath'
-import type {
-  Warning,
-  WarningsMap,
-  Day,
-  LegendItem,
-  RegionsData,
-  RegionType,
-  Severity,
-  GeometryCollection,
-  ThemeColorMap,
-  LocalizedText,
-} from '@/types'
+import type { RegionsData, TimeZoneMoment } from '@/types'
+import { toTimeZone } from './useTimeZone'
 
 // ============================================================================
 // Constants
 // ============================================================================
 
 export const NUMBER_OF_DAYS = 5
+/**
+ * Screens narrower than this (in pixels) are narrow: the small maps of the
+ * date selector are hidden there. Same as the width in the media queries of
+ * DaySmall and MapSmall (a test checks this).
+ */
+export const NARROW_SCREEN_BREAKPOINT = 576
 export const REGION_LAND = 'land'
 export const REGION_SEA = 'sea'
 export const REGION_LAKE = 'lake'
@@ -171,105 +166,8 @@ export function regionsDefault(): RegionsData {
 }
 
 // ============================================================================
-// Date/Time Formatting Interface
+// Date/Time Formatting
 // ============================================================================
-
-export interface TimeZoneMoment {
-  year: number
-  month: number
-  day: number
-  weekday: string
-  hour: number
-  minute: number
-  second: number
-  millisecond: number
-  timeZoneName?: string
-  timeZone?: string
-}
-
-/**
- * Convert DateTimeFormat parts to whole object
- */
-export function partsToWhole(parts: Intl.DateTimeFormatPart[]): TimeZoneMoment {
-  const whole: TimeZoneMoment = {
-    year: 0,
-    month: 0,
-    day: 0,
-    weekday: '',
-    hour: 0,
-    minute: 0,
-    second: 0,
-    millisecond: 0,
-  }
-
-  parts.forEach((part) => {
-    const val: string = part.value
-    const partType = part.type as string
-    switch (partType) {
-      case 'literal':
-        return
-      case 'timeZoneName':
-        whole.timeZoneName = val
-        break
-      case 'month':
-        whole.month = parseInt(val, 10)
-        break
-      case 'weekday':
-        whole.weekday = val
-        break
-      case 'hour':
-        whole.hour = parseInt(val, 10) % 24
-        break
-      case 'fractionalSecond':
-        whole.millisecond = parseInt(val, 10)
-        return
-      case 'year':
-        whole.year = parseInt(val, 10)
-        break
-      case 'day':
-        whole.day = parseInt(val, 10)
-        break
-      case 'second':
-        whole.second = parseInt(val, 10)
-        break
-      case 'minute':
-        whole.minute = parseInt(val, 10)
-        break
-      default:
-        break
-    }
-  })
-
-  return whole
-}
-
-/**
- * Convert date to timezone-specific moment
- */
-export function toTimeZone(
-  date: Date | number | string,
-  timeZone: string,
-  locale: string
-): TimeZoneMoment {
-  const dateObj = new Date(date)
-  const parts = new Intl.DateTimeFormat(locale, {
-    timeZoneName: 'short',
-    timeZone,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    weekday: 'short',
-    hour12: false,
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    fractionalSecondDigits: 3,
-  } as Intl.DateTimeFormatOptions).formatToParts(dateObj)
-
-  const whole = partsToWhole(parts)
-  whole.timeZone = timeZone
-  return whole
-}
 
 /**
  * Format a single time moment as an HTML <time> element
@@ -291,8 +189,16 @@ export function validInterval(
   timeZone: string,
   locale: string
 ): string {
-  const startMoment = toTimeZone(start, timeZone, locale)
-  const endMoment = toTimeZone(end, timeZone, locale)
+  return formatValidInterval(
+    toTimeZone(start, timeZone, locale),
+    toTimeZone(end, timeZone, locale)
+  )
+}
+
+function formatValidInterval(
+  startMoment: TimeZoneMoment,
+  endMoment: TimeZoneMoment
+): string {
   return `${formatTimeMoment(startMoment)} – ${formatTimeMoment(
     endMoment
   )}`
@@ -321,8 +227,18 @@ export function validIntervalAriaLabel(
   locale: string,
   t: (key: string) => string
 ): string {
-  const startMoment = toTimeZone(start, timeZone, locale)
-  const endMoment = toTimeZone(end, timeZone, locale)
+  return formatValidIntervalAriaLabel(
+    toTimeZone(start, timeZone, locale),
+    toTimeZone(end, timeZone, locale),
+    t
+  )
+}
+
+function formatValidIntervalAriaLabel(
+  startMoment: TimeZoneMoment,
+  endMoment: TimeZoneMoment,
+  t: (key: string) => string
+): string {
   return `${formatTimeMomentAriaLabel(startMoment, t)} – ${formatTimeMomentAriaLabel(
     endMoment,
     t
@@ -330,23 +246,26 @@ export function validIntervalAriaLabel(
 }
 
 /**
- * Calculate milliseconds since start of day
+ * Both the valid interval string and its ARIA label, converting the start and
+ * the end to the time zone only once
  */
-export function msSinceStartOfDay(
-  timestamp: number,
+export function validIntervalTexts(
+  start: string,
+  end: string,
   timeZone: string,
-  locale: string
-): number {
-  const moment = toTimeZone(timestamp, timeZone, locale)
-  const ms =
-    ((moment.hour * 60 + moment.minute) * 60 + moment.second) * 1000 +
-    moment.millisecond
-  // Daylight saving time adjustment
-  const ref = toTimeZone(timestamp - ms, timeZone, locale)
-  if (ref.day !== moment.day) {
-    return ms - 60 * 60 * 1000
+  locale: string,
+  t: (key: string) => string
+): { validInterval: string; validIntervalAriaLabel: string } {
+  const startMoment = toTimeZone(start, timeZone, locale)
+  const endMoment = toTimeZone(end, timeZone, locale)
+  return {
+    validInterval: formatValidInterval(startMoment, endMoment),
+    validIntervalAriaLabel: formatValidIntervalAriaLabel(
+      startMoment,
+      endMoment,
+      t
+    ),
   }
-  return ms + ref.hour * 60 * 60 * 1000
 }
 
 // ============================================================================
@@ -362,7 +281,11 @@ export interface CoveragePathData {
  * Parse coverage data from SVG string
  */
 export function coverageData(coverage: string): CoveragePathData[] {
-  const doc = new DOMParser().parseFromString(coverage, 'text/xml')
+  // xmldom's Document type is not assignable to the DOM lib Node used by xpath
+  const doc = new DOMParser().parseFromString(
+    coverage,
+    'text/xml'
+  ) as unknown as Node
   const paths = xpath.select(
     '//*[name()="svg"]//*[local-name()="path" and @id!="bbox"]',
     doc
@@ -385,349 +308,4 @@ export function coverageData(coverage: string): CoveragePathData[] {
           : ([] as []),
     }
   })
-}
-
-// ============================================================================
-// Warning Creation Helpers
-// ============================================================================
-
-export interface WarningCreationContext {
-  geometryId: string
-  geometries: GeometryCollection
-  timeZone: string
-  locale: string
-  currentTime: number
-  updatedAt: number | null
-  startFrom: string
-  staticDays: boolean
-  timeOffset: number
-  dailyWarningTypes: string[]
-  warningTypes: Map<string, RegionType>
-  t: (key: string) => string
-  handleError: (error: string) => void
-}
-
-/**
- * Calculate effective days for a warning
- */
-export function effectiveDays(
-  start: string,
-  end: string,
-  dailyWarning: boolean,
-  context: WarningCreationContext
-): boolean[] {
-  const { timeOffset, startFrom, updatedAt, currentTime, timeZone, locale } =
-    context
-  const referenceTime =
-    startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
-  const day = 1000 * 60 * 60 * 24
-
-  return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const dayTime = referenceTime + index * day
-    const dayStartOffset = msSinceStartOfDay(dayTime, timeZone, locale)
-    let startOfDay = dayTime - dayStartOffset
-
-    const nextDayTime = referenceTime + (index + 1) * day
-    const nextDayStartOffset = msSinceStartOfDay(nextDayTime, timeZone, locale)
-    let startOfNextDay = nextDayTime - nextDayStartOffset
-
-    if (!dailyWarning) {
-      startOfDay = startOfDay + timeOffset
-      startOfNextDay = startOfNextDay + timeOffset
-    }
-
-    return (
-      new Date(start).getTime() < startOfNextDay &&
-      new Date(end).getTime() > startOfDay
-    )
-  })
-}
-
-/**
- * Create weather warning from raw data
- */
-export function createWeatherWarning(
-  warning: { properties: Record<string, unknown> },
-  context: WarningCreationContext
-): Warning {
-  const { geometryId, geometries, timeZone, locale, dailyWarningTypes, t } =
-    context
-  let direction = 0
-  let severity = Number(
-    String(warning.properties.severity ?? '').slice(-1)
-  ) as Severity
-
-  switch (warning.properties[WARNING_CONTEXT]) {
-    case SEA_WIND:
-      direction =
-        ((warning.properties[PHYSICAL_DIRECTION] as number) ?? 0) - 180
-      if (warning.properties[SEVERITY] === WARNING_LEVELS[0]) {
-        severity = (severity + 1) as Severity
-      }
-      break
-    case WIND:
-      direction = ((warning.properties[PHYSICAL_DIRECTION] as number) ?? 0) - 90
-      break
-    default:
-  }
-
-  const regionId = regionFromReference(warning.properties.reference as string)
-  const type = warningType(warning.properties)
-  const geometryData = geometries[geometryId]
-
-  return {
-    type,
-    id: warning.properties.identifier as string,
-    regions: geometryData?.[regionId] ? { [regionId]: true } : {},
-    covRegions: new Map(),
-    coveragesLarge: [],
-    coveragesSmall: [],
-    effectiveFrom: warning.properties[EFFECTIVE_FROM] as string,
-    effectiveUntil: warning.properties[EFFECTIVE_UNTIL] as string,
-    effectiveDays: effectiveDays(
-      warning.properties[EFFECTIVE_FROM] as string,
-      warning.properties[EFFECTIVE_UNTIL] as string,
-      dailyWarningTypes.includes(type),
-      context
-    ),
-    validInterval: validInterval(
-      warning.properties[EFFECTIVE_FROM] as string,
-      warning.properties[EFFECTIVE_UNTIL] as string,
-      timeZone,
-      locale
-    ),
-    validIntervalAriaLabel: validIntervalAriaLabel(
-      warning.properties[EFFECTIVE_FROM] as string,
-      warning.properties[EFFECTIVE_UNTIL] as string,
-      timeZone,
-      locale,
-      t
-    ),
-    severity,
-    direction,
-    value: (warning.properties[PHYSICAL_VALUE] as number) ?? 0,
-    text: getWarningText(warning.properties),
-    info: {
-      fi: warning.properties[INFO_FI]
-        ? he.decode(warning.properties[INFO_FI] as string)
-        : '',
-      sv: warning.properties[INFO_SV]
-        ? he.decode(warning.properties[INFO_SV] as string)
-        : '',
-      en: warning.properties[INFO_EN]
-        ? he.decode(warning.properties[INFO_EN] as string)
-        : '',
-    },
-    link: '',
-    linkText: '',
-  }
-}
-
-/**
- * Create flood warning from raw data
- */
-export function createFloodWarning(
-  warning: { properties: Record<string, unknown> },
-  context: WarningCreationContext
-): Warning {
-  const { timeZone, locale, dailyWarningTypes, t, handleError } = context
-
-  let info = ''
-  try {
-    info = JSON.parse(
-      decodeURIComponent(
-        warning.properties.description != null
-          ? (warning.properties.description as string)
-          : '[%22%22]'
-      ).replace(/[\n|\t]/g, ' ')
-    )[0]
-  } catch (e) {
-    handleError((e as Error).name)
-  }
-
-  const regionId = regionFromReference(warning.properties.reference as string)
-  const langKey = (warning.properties.language as string)
-    ?.substring(0, 2)
-    ?.toLowerCase() as keyof LocalizedText
-
-  return {
-    type: FLOOD_LEVEL_TYPE,
-    id: warning.properties.identifier as string,
-    regions: { [regionId]: true },
-    covRegions: new Map(),
-    coveragesLarge: [],
-    coveragesSmall: [],
-    effectiveFrom: warning.properties[ONSET] as string,
-    effectiveUntil: warning.properties[EXPIRES] as string,
-    effectiveDays: effectiveDays(
-      warning.properties[ONSET] as string,
-      warning.properties[EXPIRES] as string,
-      dailyWarningTypes.includes(FLOOD_LEVEL_TYPE),
-      context
-    ),
-    validInterval: validInterval(
-      warning.properties[ONSET] as string,
-      warning.properties[EXPIRES] as string,
-      timeZone,
-      locale
-    ),
-    validIntervalAriaLabel: validIntervalAriaLabel(
-      warning.properties[ONSET] as string,
-      warning.properties[EXPIRES] as string,
-      timeZone,
-      locale,
-      t
-    ),
-    severity: (FLOOD_LEVELS[
-      (warning.properties.severity as string)?.toLowerCase()
-    ] ?? 0) as Severity,
-    direction: 0,
-    value: 0,
-    text: '',
-    info: { [langKey]: info },
-    link: t('floodLink'),
-    linkText: t('floodLinkText'),
-  }
-}
-
-// ============================================================================
-// Data Processing Functions
-// ============================================================================
-
-/**
- * Create days array from warnings
- */
-export function createDays(
-  warnings: WarningsMap,
-  updatedAt: number | null,
-  currentTime: number,
-  startFrom: string,
-  timeZone: string,
-  locale: string
-): Day[] {
-  const updatedAtTz = updatedAt ? toTimeZone(updatedAt, timeZone, locale) : null
-  const updatedDate = updatedAtTz
-    ? `${updatedAtTz.day}.${updatedAtTz.month}.${updatedAtTz.year}`
-    : ''
-  const updatedTime = updatedAtTz
-    ? `${twoDigits(updatedAtTz.hour)}:${twoDigits(updatedAtTz.minute)}`
-    : ''
-
-  const referenceTime =
-    startFrom === 'updated' ? updatedAt ?? currentTime : currentTime
-
-  return Array.from({ length: NUMBER_OF_DAYS }, (_, index) => {
-    const date = new Date(referenceTime)
-    date.setDate(date.getDate() + index)
-    const moment = toTimeZone(date, timeZone, locale)
-
-    return {
-      weekdayName: moment.weekday,
-      day: moment.day,
-      month: moment.month,
-      year: moment.year,
-      severity: Object.values(warnings).reduce(
-        (maxSeverity, warning) =>
-          warning.effectiveDays[index]
-            ? (Math.max(warning.severity, maxSeverity) as Severity)
-            : maxSeverity,
-        0 as Severity
-      ),
-      updatedDate,
-      updatedTime,
-    }
-  })
-}
-
-/**
- * Get maximum severities by warning type
- */
-export function getMaxSeverities(
-  warnings: WarningsMap
-): Record<string, Severity> {
-  return Object.values(warnings).reduce(
-    (maxSeverities, warning) => {
-      const currentMax = maxSeverities[warning.type]
-      if (
-        warning.effectiveDays.some((effectiveDay) => effectiveDay) &&
-        (currentMax == null || currentMax < warning.severity)
-      ) {
-        maxSeverities[warning.type] = warning.severity
-      }
-      return maxSeverities
-    },
-    {} as Record<string, Severity>
-  )
-}
-
-/**
- * Create legend from severities
- */
-export function createLegend(
-  severities: Record<string, Severity>,
-  warningTypes: Map<string, RegionType>
-): LegendItem[] {
-  const warningKeys = Object.keys(severities)
-  return [4, 3, 2].reduce<LegendItem[]>((orderedSeverities, severity) => {
-    const warningTypesBySeverity = warningKeys.filter(
-      (key) => severities[key] === severity
-    )
-    warningTypes.forEach((_, warnType) => {
-      if (warningTypesBySeverity.includes(warnType)) {
-        const warnSeverity = severities[warnType]
-        if (warnSeverity !== undefined) {
-          orderedSeverities.push({
-            type: warnType,
-            severity: warnSeverity,
-            visible: true,
-          })
-        }
-      }
-    })
-    return orderedSeverities
-  }, [])
-}
-
-// ============================================================================
-// Composable
-// ============================================================================
-
-export interface UseUtilsOptions {
-  theme: Ref<string>
-  geometryId: Ref<string>
-  geometries: Ref<GeometryCollection>
-  colors: Ref<ThemeColorMap>
-  warnings: Ref<WarningsMap | null>
-  visibleWarnings: Ref<string[]>
-  index: Ref<number>
-  size: Ref<string>
-  strokeWidth: Ref<number>
-  regionIds: Ref<string[]>
-  warningTypes: Ref<Map<string, RegionType>>
-  coverageCriterion: Ref<number>
-  timeZone: Ref<string>
-  locale: Ref<string>
-}
-
-export interface UseUtilsReturn {
-  strokeColor: ComputedRef<string>
-  // Add more computed values as needed
-}
-
-/**
- * Utils composable for reactive computed values
- */
-export function useUtils(options: UseUtilsOptions): UseUtilsReturn {
-  const { theme, colors } = options
-
-  const strokeColor = computed<string>(() => {
-    return (
-      colors.value?.[theme.value as keyof ThemeColorMap]?.stroke ??
-      'DarkSlateGray'
-    )
-  })
-
-  return {
-    strokeColor,
-  }
 }

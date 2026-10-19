@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
 import Days from '@/components/Days.vue'
 import type { Day, DayRegions, Theme, Language } from '@/types'
@@ -543,6 +543,143 @@ describe('Days.vue', () => {
 
         expect(wrapper.find('.date-selector').classes()).toContain(theme)
       })
+    })
+  })
+  describe('Dates that do not fit in the row', () => {
+    const ROW_WIDTH = 440
+    let dateWidth = 80
+    const originalWidth = window.innerWidth
+    const originalObserver = global.ResizeObserver
+    let observerCallback: (() => void) | null = null
+    let disconnected = false
+
+    // The class is set in the update that follows mounting
+    const mountDays = async (
+      props: Record<string, unknown> = {}
+    ): Promise<VueWrapper> => {
+      const mounted = mount(Days, {
+        props: {
+          input: mockDaysInput,
+          language: 'en' as Language,
+          ...props,
+        },
+      })
+      await mounted.vm.$nextTick()
+      return mounted
+    }
+
+    const setWindowWidth = (width: number): void => {
+      Object.defineProperty(window, 'innerWidth', {
+        value: width,
+        configurable: true,
+        writable: true,
+      })
+    }
+
+    beforeEach(() => {
+      dateWidth = 80
+      disconnected = false
+      observerCallback = null
+      setWindowWidth(1024)
+      vi.spyOn(
+        HTMLElement.prototype,
+        'getBoundingClientRect'
+      ).mockImplementation(function (this: HTMLElement) {
+        const width = this.classList.contains('date-selector-probe-text')
+          ? dateWidth
+          : this.classList.contains('fmi-warnings-date-nav')
+            ? ROW_WIDTH
+            : 0
+        return { width } as DOMRect
+      })
+      global.ResizeObserver = class {
+        constructor(callback: () => void) {
+          observerCallback = callback
+        }
+        observe(): void {}
+        unobserve(): void {}
+        disconnect(): void {
+          disconnected = true
+        }
+      } as unknown as typeof ResizeObserver
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      global.ResizeObserver = originalObserver
+      setWindowWidth(originalWidth)
+    })
+
+    it('keeps the dates on one line when they fit in the row', async () => {
+      // 5 × (84 + 4) = 440
+      dateWidth = 84
+      wrapper = await mountDays()
+
+      expect(wrapper.classes()).not.toContain('date-labels-wrapped')
+      expect((wrapper.vm as ComponentInstance).wrapDates).toBe(false)
+    })
+
+    it('puts all the dates on two lines when they do not fit', async () => {
+      dateWidth = 85
+      wrapper = await mountDays()
+
+      expect(wrapper.classes()).toContain('date-labels-wrapped')
+    })
+
+    it('measures a hidden copy of each date, which is not read by screen readers', async () => {
+      wrapper = await mountDays()
+
+      const probes = wrapper.findAll('.date-selector-probe')
+      expect(probes).toHaveLength(5)
+      probes.forEach((probe) => {
+        expect(probe.attributes('aria-hidden')).toBe('true')
+      })
+    })
+
+    it('goes back to one line when the dates fit again', async () => {
+      dateWidth = 100
+      wrapper = await mountDays()
+      expect(wrapper.classes()).toContain('date-labels-wrapped')
+
+      dateWidth = 70
+      observerCallback?.()
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.classes()).not.toContain('date-labels-wrapped')
+    })
+
+    it('measures again when the dates change', async () => {
+      wrapper = await mountDays()
+      expect(wrapper.classes()).not.toContain('date-labels-wrapped')
+
+      dateWidth = 100
+      await wrapper.setProps({ language: 'sv' as Language })
+
+      expect(wrapper.classes()).toContain('date-labels-wrapped')
+    })
+
+    it('does not do anything on a narrow screen, where the dates are on two lines', async () => {
+      setWindowWidth(500)
+      dateWidth = 200
+      wrapper = await mountDays()
+
+      expect(wrapper.classes()).not.toContain('date-labels-wrapped')
+    })
+
+    it('does not do anything without weekdays', async () => {
+      dateWidth = 200
+      wrapper = await mountDays({ staticDays: false })
+
+      expect(wrapper.classes()).not.toContain('date-labels-wrapped')
+      expect(wrapper.findAll('.date-selector-probe')).toHaveLength(0)
+    })
+
+    it('stops observing the row when it is removed', async () => {
+      wrapper = await mountDays()
+      wrapper.unmount()
+      wrapper = null
+
+      expect(disconnected).toBe(true)
     })
   })
 })

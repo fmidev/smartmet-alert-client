@@ -1,5 +1,5 @@
 <template>
-  <div id="fmi-warnings-view" :class="theme">
+  <div id="fmi-warnings-view" :class="theme" :lang="language">
     <div
       v-if="input.length > 0"
       :class="['row', 'symbol-list-main-row', 'show-text-row']">
@@ -419,8 +419,11 @@ div#fmi-warnings-view {
 div.symbol-list-text {
   display: table-cell;
   height: $symbol-list-line-height;
-  word-break: break-word;
-  hyphens: auto;
+  // Break words only at explicit &shy;, never via automatic hyphenation
+  // or arbitrary character breaks.
+  overflow-wrap: normal;
+  -webkit-hyphens: manual;
+  hyphens: manual;
 }
 
 hr {

@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import DOMPurify from 'dompurify'
 import { ref } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
@@ -111,6 +112,31 @@ describe('useI18n composable', () => {
 
       // Note: In a real scenario, changing the ref would require re-calling t()
       // The composable evaluates the language at call time
+    })
+  })
+  describe('sanitizing', () => {
+    it('sanitizes each translation only once', () => {
+      const sanitize = vi.spyOn(DOMPurify, 'sanitize')
+      const { t } = useI18n('en')
+
+      const first = t('validWarnings')
+      sanitize.mockClear()
+      const second = t('validWarnings')
+      const { t: tAgain } = useI18n('en')
+      const third = tAgain('validWarnings')
+
+      expect(sanitize).not.toHaveBeenCalled()
+      expect(second).toBe(first)
+      expect(third).toBe(first)
+      sanitize.mockRestore()
+    })
+
+    it('does not mix up the languages', () => {
+      const fi = useI18n('fi').t('validWarnings')
+      const en = useI18n('en').t('validWarnings')
+
+      expect(fi).not.toBe(en)
+      expect(useI18n('fi').t('validWarnings')).toBe(fi)
     })
   })
 })

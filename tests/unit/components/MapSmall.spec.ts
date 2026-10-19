@@ -1,7 +1,12 @@
+import { readFileSync } from 'node:fs'
 import { describe, it, expect, afterEach } from 'vitest'
-import { mount, VueWrapper } from '@vue/test-utils'
+import { mount, flushPromises, VueWrapper } from '@vue/test-utils'
 import MapSmall from '@/components/MapSmall.vue'
+import { NARROW_SCREEN_BREAKPOINT } from '@/composables/useUtils'
+import { processWarnings } from '@/composables/useWarningsProcessor'
 import type { DayRegions, WarningsMap, Theme } from '@/types'
+import { loadScenario } from '../../fixtures/mapScenarios'
+import { buildCtx } from '../../integration/mapSnapshotHelpers'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ComponentInstance = any
@@ -363,5 +368,103 @@ describe('MapSmall.vue', () => {
         Array.isArray((wrapper.vm as ComponentInstance).overlayCoverages)
       ).toBe(true)
     })
+  })
+  describe('Drawing the map only when it is shown', () => {
+    const originalWidth = window.innerWidth
+    const scenario = loadScenario(1)
+    const processed = processWarnings(
+      scenario.data,
+      buildCtx(scenario.currentTime, 'fi')
+    )
+
+    const setWidth = async (width: number): Promise<void> => {
+      Object.defineProperty(window, 'innerWidth', {
+        value: width,
+        configurable: true,
+        writable: true,
+      })
+      window.dispatchEvent(new Event('resize'))
+      await flushPromises()
+    }
+
+    const mountMap = async (): Promise<VueWrapper> => {
+      const mounted = mount(MapSmall, {
+        props: {
+          index: 0,
+          input: processed.regions[0],
+          warnings: processed.warnings,
+          visibleWarnings: processed.legend.map((item) => item.type),
+          geometryId: 2021,
+          loading: false,
+        },
+      })
+      await flushPromises()
+      return mounted
+    }
+
+    afterEach(async () => {
+      await setWidth(originalWidth)
+    })
+
+    it('draws the map on a wide screen', async () => {
+      await setWidth(1024)
+      wrapper = await mountMap()
+
+      expect(wrapper.findAll('path').length).toBeGreaterThan(0)
+    })
+
+    it('does not draw the map on a narrow screen, where it is hidden', async () => {
+      await setWidth(390)
+      wrapper = await mountMap()
+
+      expect((wrapper.vm as ComponentInstance).pathsNeeded).toBe(false)
+      expect(wrapper.findAll('path')).toHaveLength(0)
+    })
+
+    it('draws the map when a narrow screen becomes wide', async () => {
+      await setWidth(390)
+      wrapper = await mountMap()
+      expect(wrapper.findAll('path')).toHaveLength(0)
+
+      // The window is widened or a phone is turned to landscape orientation
+      await setWidth(844)
+
+      expect(wrapper.findAll('path').length).toBeGreaterThan(0)
+    })
+
+    it('uses the same width as the media query that hides the map', async () => {
+      await setWidth(575)
+      wrapper = await mountMap()
+      expect(wrapper.findAll('path')).toHaveLength(0)
+
+      await setWidth(576)
+      expect(wrapper.findAll('path').length).toBeGreaterThan(0)
+    })
+
+    it('keeps the map when the screen narrows again', async () => {
+      await setWidth(844)
+      wrapper = await mountMap()
+      const paths = wrapper.findAll('path').length
+
+      await setWidth(390)
+
+      expect(wrapper.findAll('path')).toHaveLength(paths)
+    })
+  })
+  describe('Narrow screen breakpoint', () => {
+    it.each(['MapSmall.vue', 'DaySmall.vue'])(
+      'is the width in the media query of %s that hides the small maps',
+      (file) => {
+        const source = readFileSync(`src/components/${file}`, 'utf8')
+        // @media (width < 576px) { ...selectors with .map-small { display: none
+        const hidingQuery =
+          /@media \(width < (\d+)px\)\s*\{[^{}]*\.map-small[^{}]*\{[^}]*display:\s*none/.exec(
+            source
+          )
+
+        expect(hidingQuery).not.toBeNull()
+        expect(Number(hidingQuery?.[1])).toBe(NARROW_SCREEN_BREAKPOINT)
+      }
+    )
   })
 })

@@ -118,27 +118,23 @@ const warningsDate = computed<string>(() => {
     return `${props.input.day}.${props.input.month}.${props.input.year}`
   }
 
-  const date = new Date(
-    props.input.year,
-    props.input.month - 1,
-    props.input.day
+  // The day and the time of day are already in the application's time zone,
+  // so they are formatted with plain calendar arithmetic (UTC) instead of the
+  // time zone of the browser.
+  const nextDate = new Date(
+    Date.UTC(props.input.year, props.input.month - 1, props.input.day + 1)
   )
-  const nextDate = new Date(date.getTime())
-  nextDate.setDate(nextDate.getDate() + 1)
 
-  const offset = props.timeOffset
-  const offsetDate = new Date(date.getTime())
-  offsetDate.setMilliseconds(offset)
-
-  const hours = twoDigits(offsetDate.getHours())
-  const minutes = twoDigits(offsetDate.getMinutes())
+  const totalMinutes = Math.floor(props.timeOffset / (60 * 1000))
+  const hours = twoDigits(Math.floor(totalMinutes / 60) % 24)
+  const minutes = twoDigits(totalMinutes % 60)
 
   return `${props.input.day}.${props.input.month}.${props.input.year} ${
     atTime.value
   } ${hours}:${minutes} –
-      <br> ${nextDate.getDate()}.${
-        nextDate.getMonth() + 1
-      }.${nextDate.getFullYear()} ${atTime.value} ${hours}:${minutes}`
+      <br> ${nextDate.getUTCDate()}.${
+        nextDate.getUTCMonth() + 1
+      }.${nextDate.getUTCFullYear()} ${atTime.value} ${hours}:${minutes}`
 })
 
 const updatedDate = computed<string>(() => {
@@ -237,6 +233,12 @@ div.data-providers {
 @media screen and (orientation: landscape) {
   div.map-container {
     height: $map-large-height;
+  }
+}
+
+@media (width < 576px) {
+  div.data-providers {
+    margin-right: 2px;
   }
 }
 </style>

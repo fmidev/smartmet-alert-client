@@ -169,7 +169,7 @@ button.panel-toggle {
 
   &.collapsed {
     background-image: url($ui-image-path + 'arrow-down.svg');
-    border-radius: 0 3px 3px 0;
+    border-radius: 0;
   }
 }
 

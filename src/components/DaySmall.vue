@@ -22,6 +22,13 @@
         {{ date }}
       </div>
     </div>
+    <!-- The width of the date on one line is measured from this hidden copy
+         (see fitDateLabels in Days) -->
+    <span v-if="staticDays" class="date-selector-probe" aria-hidden="true">
+      <span class="date-selector-probe-text"
+        ><span class="bold-text">{{ weekday }}</span> {{ date }}</span
+      >
+    </span>
     <div :class="`date-selector-cell-footer dark-level-${severity}`"></div>
   </div>
 </template>
@@ -136,6 +143,23 @@ defineExpose({
 
 <style scoped lang="scss">
 @import '../scss/constants.scss';
+
+// Out of the flow, so that the text on one line does not widen the tab
+.date-selector-probe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.date-selector-probe-text {
+  display: inline-block;
+  white-space: nowrap;
+}
 
 div.date-selector-cell {
   &.active {

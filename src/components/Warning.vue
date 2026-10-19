@@ -3,12 +3,15 @@
     <div class="symbol-list-cell symbol-list-cell-image">
       <div
         :class="`level-${severity} ${typeClass} symbol-list-image-column symbol-list-image warning-image`"
-        :aria-label="`${warningLevelText} ${title.toLowerCase()}`"></div>
+        :aria-label="`${warningLevelText} ${plainTitle.toLowerCase()}`"></div>
     </div>
     <div class="symbol-list-cell symbol-list-cell-text">
       <div class="symbol-list-text-select">
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="item-text symbol-list-text" v-html="title"></div>
+        <div
+          class="item-text symbol-list-text"
+          :lang="language"
+          v-html="title"></div>
         <div class="symbol-list-select-container d-none d-md-table-cell">
           <div
             :id="id"
@@ -22,7 +25,7 @@
             role="button"
             tabindex="0"
             :aria-pressed="input.visible ? 'true' : 'false'"
-            :aria-label="title.replace(/&[^;]*;/g, '')"
+            :aria-label="plainTitle"
             @mousedown="preventEvents"
             @click="toggle"
             @keydown.enter="toggle"
@@ -76,6 +79,13 @@ const id = computed((): string => {
 
 const title = computed((): string => {
   return t(props.input.type)
+})
+
+// Title stripped of HTML entities (e.g. the &shy; hyphenation hints) for use
+// in aria-labels, where the raw entity text would otherwise be read aloud.
+const plainTitle = computed((): string => {
+  // eslint-disable-next-line sonarjs/super-linear-regex -- short titles only
+  return title.value.replace(/&[^;]*;/g, '')
 })
 
 const warningLevelText = computed((): string => {
@@ -211,8 +221,14 @@ div.symbol-list-text {
   height: $symbol-list-line-height;
   max-width: 141px;
   padding-right: 10px;
-  word-break: break-word;
-  hyphens: auto;
+  // Break words ONLY at the explicit soft hyphens (&shy;) placed at compound-
+  // word junctions in the locale strings — never via automatic hyphenation
+  // (hyphens: auto varies by browser/dictionary) nor arbitrary character breaks
+  // (overflow-wrap: break-word). This keeps wrapping deterministic across
+  // browsers. -webkit- prefix required for Safari.
+  overflow-wrap: normal;
+  -webkit-hyphens: manual;
+  hyphens: manual;
 }
 
 .symbol-list-select-container {

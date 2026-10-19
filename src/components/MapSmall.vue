@@ -123,6 +123,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, toRef } from 'vue'
 import type { DayRegions, WarningsMap, Theme } from '@/types'
 import { useMapPaths } from '@/composables/useMapPaths'
+import { NARROW_SCREEN_BREAKPOINT } from '@/composables/useUtils'
 
 // ============================================================================
 // Props
@@ -213,16 +214,24 @@ function updateWidth(): void {
   windowWidth.value = window.innerWidth
 }
 
-function isFullMode(): boolean {
-  return true
+/**
+ * The small maps are hidden by CSS on narrow screens (see the media query in
+ * the styles below), so there is no need to draw them there
+ */
+function isWideEnough(): boolean {
+  return window.innerWidth >= NARROW_SCREEN_BREAKPOINT
 }
 
 // ============================================================================
 // Watchers
 // ============================================================================
 
+// The paths are drawn when the screen is wide enough, for example when the
+// window is widened or a phone is turned to landscape orientation. They are
+// kept if the screen narrows again, so that turning the phone back and forth
+// does not draw them again.
 watch(windowWidth, () => {
-  pathsNeeded.value = isFullMode()
+  pathsNeeded.value = pathsNeeded.value || isWideEnough()
 })
 
 watch(
@@ -239,7 +248,7 @@ watch(
 
 onMounted(() => {
   window.addEventListener('resize', updateWidth)
-  pathsNeeded.value = isFullMode()
+  pathsNeeded.value = isWideEnough()
 })
 
 onUnmounted(() => {

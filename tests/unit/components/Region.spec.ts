@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
 import Region from '@/components/Region.vue'
+import DescriptionWarning from '@/components/DescriptionWarning.vue'
 import type {
   RegionWarningItem,
   WarningsMap,
@@ -23,7 +24,8 @@ const mockWarning: Warning = {
   effectiveUntil: '2025-11-01T12:00:00Z',
   effectiveDays: [true, true, false, false, false],
   validInterval: '31.10.2025 14:00 – 1.11.2025 14:00',
-  validIntervalAriaLabel: '31. lokakuuta 2025 14:00 – 1. marraskuuta 2025 14:00',
+  validIntervalAriaLabel:
+    '31. lokakuuta 2025 14:00 – 1. marraskuuta 2025 14:00',
   severity: 3,
   direction: 270,
   value: 25,
@@ -192,6 +194,49 @@ describe('Region.vue', () => {
       ;(wrapper.vm as ComponentInstance).onRegionToggle()
 
       expect((wrapper.vm as ComponentInstance).open).toBe(false)
+    })
+  })
+
+  describe('Descriptions of the warnings', () => {
+    const mountRegion = (): VueWrapper =>
+      mount(Region, {
+        props: {
+          type: 'land',
+          code: 'county.1',
+          name: 'county.1',
+          input: mockRegionWarnings,
+          warnings: mockWarnings,
+          language: 'fi' as Language,
+        },
+      })
+
+    it('are not drawn before the region is opened', () => {
+      wrapper = mountRegion()
+
+      expect(wrapper.findAllComponents(DescriptionWarning)).toHaveLength(0)
+      // The panel itself stays, as the button refers to it
+      expect(wrapper.find('#accordion-section-county\\.1').exists()).toBe(true)
+    })
+
+    it('are drawn when the region is opened', async () => {
+      wrapper = mountRegion()
+
+      await wrapper.find('.accordion-trigger').trigger('click')
+
+      expect(wrapper.findAllComponents(DescriptionWarning)).toHaveLength(1)
+    })
+
+    it('stay drawn when the region is closed again', async () => {
+      wrapper = mountRegion()
+      const trigger = wrapper.find('.accordion-trigger')
+
+      await trigger.trigger('click')
+      await trigger.trigger('click')
+
+      expect(wrapper.findAllComponents(DescriptionWarning)).toHaveLength(1)
+      expect(
+        wrapper.find('.accordion-panel').attributes('hidden')
+      ).toBeDefined()
     })
   })
 

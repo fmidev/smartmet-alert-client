@@ -431,7 +431,7 @@ export interface MapLargeProps {
   language: Language
 }
 
-export interface MapSmallProps extends MapLargeProps {}
+export type MapSmallProps = MapLargeProps
 
 // ============================================================================
 // Time Utilities
