@@ -290,11 +290,35 @@ div.region-type-container {
   padding: 0;
 }
 
+// The frame and the lines between the regions are drawn on top of the rows.
+// As borders around the rows they were sometimes hidden under the backgrounds
+// of the rows, because a 0.5px line does not fill whole device pixels at all
+// device pixel ratios (e.g. 1.875 in Firefox on Android).
 div.accordion {
+  position: relative;
+  isolation: isolate;
   margin: 0;
-  border: 0.5px solid $variant-gray-darker;
   border-radius: 0;
   > * + * {
+    position: relative;
+  }
+  &::after,
+  > * + *::before {
+    content: '';
+    position: absolute;
+    // Above a focused region button, which has z-index 5
+    z-index: 6;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+  }
+  &::after {
+    top: 0;
+    bottom: 0;
+    border: 0.5px solid $variant-gray-darker;
+  }
+  > * + *::before {
+    top: 0;
     border-top: 0.5px solid $variant-gray-darker;
   }
 }
