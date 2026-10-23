@@ -365,6 +365,8 @@ describe('DayLarge.vue', () => {
       ]
 
       themes.forEach((theme) => {
+        // Unmount the previous one, so that the drawn maps do not pile up
+        wrapper?.unmount()
         wrapper = mount(DayLarge, {
           props: {
             index: 0,

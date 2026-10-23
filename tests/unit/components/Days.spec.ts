@@ -125,6 +125,8 @@ describe('Days.vue', () => {
       const validDays: (0 | 1 | 2 | 3 | 4)[] = [0, 1, 2, 3, 4]
 
       validDays.forEach((day) => {
+        // Unmount the previous one, so that the drawn maps do not pile up
+        wrapper?.unmount()
         wrapper = mount(Days, {
           props: {
             input: mockDaysInput,
@@ -531,6 +533,8 @@ describe('Days.vue', () => {
       ]
 
       themes.forEach((theme) => {
+        // Unmount the previous one, so that the drawn maps do not pile up
+        wrapper?.unmount()
         wrapper = mount(Days, {
           props: {
             input: mockDaysInput,
