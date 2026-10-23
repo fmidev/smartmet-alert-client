@@ -30,7 +30,7 @@ import { parseSnapFile } from '../utils/snapshotParser'
 import { sanitizeKey } from '../utils/artifactPaths'
 
 // Resolve repo-relative paths via process.cwd(). Vitest, `npm test` and
-// the vite-node review script all run from the repository root, so this
+// the review script all run from the repository root, so this
 // is the simplest way to support both Node (reporter) and jsdom (test
 // files) without import.meta.url quirks.
 const REPO_ROOT = process.cwd()

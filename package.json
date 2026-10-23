@@ -1,6 +1,6 @@
 {
   "name": "@fmidev/smartmet-alert-client",
-  "version": "4.7.34",
+  "version": "4.7.35",
   "description": "Web application for viewing weather and flood alerts",
   "author": "Finnish Meteorological Institute",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
-    "snapshots:review": "vite-node scripts/review-snapshots.ts",
+    "snapshots:review": "node scripts/review-snapshots.ts",
     "optimize:svg": "svgo -f src/assets/img --recursive",
     "prepare": "husky",
     "validate": "npm run lint && npm run typecheck && npm test"

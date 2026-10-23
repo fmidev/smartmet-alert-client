@@ -10,7 +10,8 @@
  * gallery. The same HTML is written automatically by the Vitest
  * snapshot review reporter on every `npm run test:run`.
  *
- * Run with: `npx vite-node scripts/review-snapshots.ts`
+ * Run with: `node scripts/review-snapshots.ts` (Node runs TypeScript by
+ * stripping the types, so the relative imports have the .ts extension)
  * or via:   `npm run snapshots:review`
  */
 
@@ -26,9 +27,9 @@ import { basename, extname, resolve } from 'node:path'
 import {
   buildReviewHtml,
   type ReviewEntryInput,
-} from '../tests/utils/reviewHtmlTemplate'
-import { parseSnapFile } from '../tests/utils/snapshotParser'
-import { sanitizeKey } from '../tests/utils/artifactPaths'
+} from '../tests/utils/reviewHtmlTemplate.ts'
+import { parseSnapFile } from '../tests/utils/snapshotParser.ts'
+import { sanitizeKey } from '../tests/utils/artifactPaths.ts'
 
 // Run from the repository root (e.g. via `npm run snapshots:review`).
 const REPO_ROOT = process.cwd()

@@ -8,7 +8,7 @@
  *
  * Paths are resolved relative to the working directory. This is safe
  * because every entry point that consumes these paths — Vitest test
- * files, the custom reporter and the vite-node review script — is
+ * files, the custom reporter and the review script — is
  * launched from the repository root by the npm scripts defined in
  * package.json. Using process.cwd() sidesteps the fact that
  * import.meta.url is not a file:// URL under jsdom.
