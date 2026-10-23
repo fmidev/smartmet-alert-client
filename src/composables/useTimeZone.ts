@@ -203,12 +203,15 @@ export function dayBoundaries(
 
 const DATE_TIME_WITHOUT_ZONE =
   /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3})\d*)?)?$/
+const DATE_WITHOUT_TIME = /^(\d{4})-(\d{2})-(\d{2})$/
 
 /**
  * Convert a date given as a Date or a string to a UTC timestamp. A date and
  * time string without a time zone or UTC offset (e.g. `2026-10-25T12:00`) is
  * the wall clock time in the given time zone, not in the time zone of the
- * browser. Other strings are parsed as `new Date(value)` does.
+ * browser, and a date alone (e.g. `2026-10-25`) is the start of that day in
+ * the time zone, not midnight UTC. Other strings are parsed as
+ * `new Date(value)` does.
  */
 export function parseDateInTimeZone(
   value: Date | string,
@@ -218,15 +221,22 @@ export function parseDateInTimeZone(
   if (value instanceof Date) {
     return value.getTime()
   }
-  const match = DATE_TIME_WITHOUT_ZONE.exec(value.trim())
+  const trimmed = value.trim()
+  const match =
+    DATE_TIME_WITHOUT_ZONE.exec(trimmed) ?? DATE_WITHOUT_TIME.exec(trimmed)
   if (match == null) {
     return new Date(value).getTime()
   }
-  const [year, month, day, hour, minute, second, millisecond] = match
-    .slice(1)
-    .map((part, index) =>
-      part == null ? 0 : parseInt(index === 6 ? part.padEnd(3, '0') : part, 10)
-    ) as [number, number, number, number, number, number, number]
+  // The parts missing from the string (e.g. the time of a date alone) are 0
+  const [year, month, day, hour, minute, second, millisecond] = Array.from(
+    { length: 7 },
+    (_, index) => {
+      const part = match[index + 1]
+      return part == null
+        ? 0
+        : parseInt(index === 6 ? part.padEnd(3, '0') : part, 10)
+    }
+  ) as [number, number, number, number, number, number, number]
   // Any instant on the right calendar day of the time zone will do
   const noon = Date.UTC(year, month - 1, day, 12)
   return startOfDayInTimeZone(

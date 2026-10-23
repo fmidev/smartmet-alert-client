@@ -392,6 +392,19 @@ describe('parseDateInTimeZone', () => {
     expect(parse('2027-03-28T15:00')).toBe(utc('2027-03-28T12:00:00Z'))
   })
 
+  it('reads a date alone as the start of the day in Finnish time', () => {
+    expect(parse('2026-10-20')).toBe(utc('2026-10-19T21:00:00Z'))
+    expect(parse('2026-12-20')).toBe(utc('2026-12-19T22:00:00Z'))
+    expect(parse(' 2026-10-20 ')).toBe(utc('2026-10-19T21:00:00Z'))
+  })
+
+  it('reads a date alone on the days of the DST change as Finnish time', () => {
+    expect(parse('2026-10-25')).toBe(utc('2026-10-24T21:00:00Z'))
+    expect(parse('2026-10-26')).toBe(utc('2026-10-25T22:00:00Z'))
+    expect(parse('2027-03-28')).toBe(utc('2027-03-27T22:00:00Z'))
+    expect(parse('2027-03-29')).toBe(utc('2027-03-28T21:00:00Z'))
+  })
+
   it('keeps explicit time zones and dates as they are', () => {
     const date = new Date('2026-10-20T12:00:00Z')
     expect(parse(date)).toBe(date.getTime())

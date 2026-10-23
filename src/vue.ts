@@ -27,7 +27,8 @@
  *   base-url            String                   (FMI GeoServer) Base URL for WFS queries
  *   start-from          String                   ''             Start date override (ISO format)
  *   current-date        String|Date              null           Override current date for testing (a string without
- *                                                                time zone is Finnish time, not browser time)
+ *                                                                time zone is Finnish time, not browser time; a date
+ *                                                                alone is the start of the day in Finnish time)
  *   warnings            String|Object            null           Pre-loaded warnings data (skip fetch)
  *   weather-warnings    String                   ''             Custom weather warnings query
  *   flood-warnings      String                   ''             Custom flood warnings query
