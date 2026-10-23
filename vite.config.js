@@ -81,7 +81,6 @@ export default defineConfig({
           lib: {
             entry: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
             name: 'SmartMetAlertClient',
-            formats: ['es', 'iife'],
           },
           rolldownOptions: {
             output: [
