@@ -5,7 +5,7 @@ Unit and integration tests for the SmartMet Alert Client. All test code is TypeS
 ## Test Environment
 
 - **Vitest** (config in `vitest.config.js`, `@/` is aliased to `src/`)
-- **@vue/test-utils** and **@testing-library/vue** for component tests
+- **@vue/test-utils** for component tests
 - **jsdom** environment; `tests/setup.ts` sets `VITE_LANGUAGE=fi`, stubs `GrayScaleToggle` and `CollapsiblePanel`, and mocks `getComputedStyle` and `IntersectionObserver`
 - Timezone-dependent tests assume Europe/Helsinki
 

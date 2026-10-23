@@ -279,7 +279,7 @@ details summary { cursor: pointer; color: var(--muted); font-size: 12px; }
  * default` qualifier from the main function so it becomes a plain
  * function reference in the surrounding IIFE's scope.
  *
- * Upstream: https://github.com/mapbox/pixelmatch (node_modules/pixelmatch).
+ * Upstream: https://github.com/mapbox/pixelmatch
  */
 const PIXELMATCH_SRC = `
 // Pixelmatch (MIT) - https://github.com/mapbox/pixelmatch
