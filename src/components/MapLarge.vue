@@ -1692,10 +1692,6 @@ span.region-popup-header-text {
   }
 }
 
-:deep(div.tooltip-inner) {
-  padding: 0;
-}
-
 .popup-table {
   border-spacing: 4px;
   display: table;
