@@ -89,9 +89,15 @@ const warningDetails = computed((): string => {
   }°)`
 })
 
+// A slash between short words, as in m/s or km/h
+const UNIT_SLASH =
+  /(?<![\p{L}\p{N}])(\p{L}{1,3})\/(\p{L}{1,3})(?![\p{L}\p{N}])/gu
+
 const info = computed((): string => {
   const lang = props.language as Language
-  return props.input.info[lang] ?? ''
+  // A line may break after a slash, which would leave the s of m/s on a line
+  // of its own. A word joiner after the slash keeps the unit together.
+  return (props.input.info[lang] ?? '').replace(UNIT_SLASH, '$1/\u2060$2')
 })
 
 const validText = computed((): string => {

@@ -17,7 +17,8 @@ const mockWarning: Warning = {
   effectiveUntil: '2025-11-01T12:00:00Z',
   effectiveDays: [true, true, false, false, false],
   validInterval: '31.10.2025 14:00 – 1.11.2025 14:00',
-  validIntervalAriaLabel: '31. lokakuuta 2025 14:00 – 1. marraskuuta 2025 14:00',
+  validIntervalAriaLabel:
+    '31. lokakuuta 2025 14:00 – 1. marraskuuta 2025 14:00',
   severity: 3,
   direction: 270,
   value: 25,
@@ -130,6 +131,27 @@ describe('DescriptionWarning.vue', () => {
       })
 
       expect((wrapper.vm as ComponentInstance).info).toBe('Hårt blåsväder')
+    })
+
+    it('should keep units with a slash together in the info', () => {
+      wrapper = mount(DescriptionWarning, {
+        props: {
+          input: {
+            ...mockWarning,
+            info: {
+              fi: 'Lounaistuulta 12 m/s. Puuskissa 90 km/h. Lisää: fmi.fi/varoitukset ja 1/2',
+            },
+          },
+          language: 'fi' as Language,
+        },
+      })
+
+      expect((wrapper.vm as ComponentInstance).info).toBe(
+        'Lounaistuulta 12 m/\u2060s. Puuskissa 90 km/\u2060h. Lisää: fmi.fi/varoitukset ja 1/2'
+      )
+      expect(wrapper.find('.description-info').text()).toContain(
+        '12 m/\u2060s.'
+      )
     })
 
     it('should compute info for English', () => {
